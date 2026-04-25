@@ -1,0 +1,30 @@
+# building-agentskills
+
+> Layered authoring patterns for AI agent skills; cross-platform spec docs, the three-question framework, mechanism-vs-decoration, anti-patterns, and ship-evidenced case studies.
+
+## Quickstart
+
+You are an AI agent reading this file to orient yourself in the building-agentskills project. The project is documentation plus a thin loader skill, not a runtime library.
+
+Read three docs first, in this exact order, before any other section of this site or repo.
+
+They are the load-bearing context; everything downstream assumes you have already absorbed them.
+
+Start at the [overview](/docs/00-overview) for the layered architecture. It clarifies what this repo adds on top of the platform spec and what it inherits without restating.
+
+Continue to the [quickstart](/docs/01-quickstart) for a zero-to-working-SKILL walkthrough you can complete end to end in roughly ten minutes.
+
+Finish at the [mental model](/docs/02-mental-model) to separate skills from CLAUDE.md, hooks, and slash commands so you pick the right primitive for the job at hand.
+
+After those three, the rest of the site (frameworks, anti-patterns, case studies, ship-evidenced retrospectives) is safe to consult in any order driven by the current task.
+
+<!-- TOOLS:START -->
+<!-- TOOLS:END -->
+
+## License
+
+Apache-2.0.
+
+See the `LICENSE` file at the repository root for the full text.
+
+Source repository: https://github.com/toolboxmd/building-agentskills
