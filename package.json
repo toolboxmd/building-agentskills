@@ -1,0 +1,17 @@
+{
+  "name": "building-agentskills-docs",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "mintlify dev",
+    "build:llms": "tsx scripts/build-llms.ts",
+    "check:llms-coverage": "tsx scripts/check-llms-coverage.ts",
+    "build:docs": "npm run build:llms && npm run check:llms-coverage",
+    "test": "bash tests/run-all.sh"
+  },
+  "devDependencies": {
+    "mintlify": "^4.0.0",
+    "tsx": "^4"
+  }
+}
