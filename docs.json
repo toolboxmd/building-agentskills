@@ -1,0 +1,89 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "building-agentskills",
+  "logo": {
+    "light": "/logo.svg",
+    "dark": "/logo.svg"
+  },
+  "favicon": "/favicon.png",
+  "colors": {
+    "primary": "#e0952a",
+    "light": "#e0952a",
+    "dark": "#e0952a"
+  },
+  "background": {
+    "color": {
+      "dark": "#0a0a0a"
+    }
+  },
+  "appearance": {
+    "default": "dark"
+  },
+  "fonts": {
+    "family": "JetBrains Mono"
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Hero",
+        "pages": [
+          "docs/00-overview",
+          "docs/01-quickstart",
+          "docs/02-mental-model",
+          "docs/03-three-questions",
+          "docs/04-token-economics"
+        ]
+      },
+      {
+        "group": "Authoring",
+        "pages": [
+          "docs/05-authoring/frontmatter",
+          "docs/05-authoring/prose-discipline",
+          "docs/05-authoring/triggers",
+          "docs/05-authoring/iron-laws",
+          "docs/05-authoring/line-budget"
+        ]
+      },
+      {
+        "group": "Testing",
+        "pages": [
+          "docs/06-testing/red-green-for-prose",
+          "docs/06-testing/unit-tests",
+          "docs/06-testing/tests-that-pass-immediately"
+        ]
+      },
+      {
+        "group": "Standalone",
+        "pages": [
+          "docs/07-mechanism-vs-decoration",
+          "docs/08-packaging-as-plugin",
+          "docs/09-evolution",
+          "docs/10-anti-patterns",
+          "docs/12-update-mechanism"
+        ]
+      },
+      {
+        "group": "Cross-platform",
+        "pages": [
+          "docs/11-cross-platform/claude-code",
+          "docs/11-cross-platform/codex",
+          "docs/11-cross-platform/gemini-cli",
+          "docs/11-cross-platform/others"
+        ]
+      },
+      {
+        "group": "Case studies and examples",
+        "pages": [
+          "case-studies/2026-04-25-karpathy-wiki-v2.2",
+          "examples/minimal-skill/SKILL"
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/toolboxmd/building-agentskills"
+    }
+  }
+}
