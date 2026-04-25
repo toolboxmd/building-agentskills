@@ -35,7 +35,7 @@ The full deep dive is in `docs/07-mechanism-vs-decoration.md`. The audit method:
 
 The reviewer's sharpened framing (`REVIEWER`, "Stress test of the decoration vs mechanism headline"):
 
-> Every threshold, invariant, or rule in your SKILL.md is either decoration or mechanism. Decoration is fine for guidance prose. For invariants — words like "must," "always," "never," numeric thresholds — decoration is a wish; mechanism is a contract. Any line containing "must" or a numeric threshold should answer the question "what fires on this if violated?" If the answer is "the agent decides," rewrite as guidance or wire to a mechanism.
+> Every threshold, invariant, or rule in your SKILL.md is either decoration or mechanism. Decoration is fine for guidance prose. For invariants (words like "must," "always," "never," numeric thresholds), decoration is a wish; mechanism is a contract. Any line containing "must" or a numeric threshold should answer the question "what fires on this if violated?" If the answer is "the agent decides," rewrite as guidance or wire to a mechanism.
 
 ### Worked answer for karpathy-wiki
 
@@ -59,7 +59,7 @@ The full numerical breakdown is in `docs/04-token-economics.md`, which gives you
 
 ### Worked answer for karpathy-wiki
 
-Karpathy-wiki's SKILL.md is 476 lines as of v2.2 (`REVIEWER` verification table). At ~10 tokens per line, that is roughly 4,800 tokens — under the 5,000-token auto-compaction floor by a small margin. The audit checked the cap during planning; v2.2's net change was +21 lines (well within budget).
+Karpathy-wiki's SKILL.md is 476 lines as of v2.2 (`REVIEWER` verification table). At ~10 tokens per line, that is roughly 4,800 tokens, just under the 5,000-token auto-compaction floor. The audit checked the cap during planning; v2.2's net change was +21 lines (well within budget).
 
 The description (lines 3-12) is approximately 750 characters, well under the 1,024 spec cap. Combined with `when_to_use` (not used here), it is well under the 1,536-character listing cap.
 
