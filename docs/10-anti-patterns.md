@@ -2,7 +2,7 @@
 
 Each anti-pattern below has a one-line definition, a one-line evidence trail (citing the karpathy-wiki v2.2 commit or the source report section), and a one-line counter. Use this as a checklist for self-audit and as a reviewer aid.
 
-For the positive form of each pattern, follow the cross-link.
+For the positive form of each pattern, follow the cross-link. Many of these anti-patterns are concrete failures of the second hero question (what fires on rules?) from the three-question framework; see `docs/03-three-questions.md` for the framework that this catalog inverts.
 
 ## Decoration without mechanism
 
@@ -95,4 +95,4 @@ For plan review:
 - `LANDSCAPE` 4.4 (no-test-coverage anti-pattern).
 - `LANDSCAPE` 4.5 (undocumented-harness-behavior anti-pattern).
 
-Cross-links: `docs/07-mechanism-vs-decoration.md`, `docs/05-authoring/prose-discipline.md`, `docs/06-testing/unit-tests.md`, `docs/06-testing/tests-that-pass-immediately.md`, `docs/05-authoring/triggers.md`, `case-studies/2026-04-25-karpathy-wiki-v2.2.md`.
+Cross-links: `docs/03-three-questions.md`, `docs/07-mechanism-vs-decoration.md`, `docs/05-authoring/prose-discipline.md`, `docs/06-testing/unit-tests.md`, `docs/06-testing/tests-that-pass-immediately.md`, `docs/05-authoring/triggers.md`, `case-studies/2026-04-25-karpathy-wiki-v2.2.md`.
