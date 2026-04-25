@@ -88,7 +88,7 @@ The standalone deep dive. Sharpened framing of the rule. Three karpathy-wiki v2.
 Claude Code plugin packaging from the karpathy-wiki shape. Minimal `.claude-plugin/plugin.json`, skills in `skills/<name>/SKILL.md`, optional `references/`/`scripts/`/`assets/` siblings. Symlink install pattern. The `${CLAUDE_PLUGIN_ROOT}` substitution gotcha and three workarounds.
 
 ### `docs/09-evolution.md`
-Audit cycle, semver for skills, deprecation strategies, license-of-skills nuance. Reviewer fix-up rate as a quality signal (25-40% is healthy; <5% means rubber-stamp; >50% means vague plans).
+Audit cycle, semver for skills, deprecation strategies, license-of-skills nuance. Reviewer fix-up rate as a quality signal (25-40% is healthy; `<5%` means rubber-stamp; `>50%` means vague plans).
 
 ### `docs/10-anti-patterns.md`
 The failure modes catalog. Each pattern with a one-line definition, evidence trail (commit citation), and counter (cross-link to the positive form).
