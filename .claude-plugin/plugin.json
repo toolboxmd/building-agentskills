@@ -1,0 +1,8 @@
+{
+  "name": "building-agentskills",
+  "version": "0.1.0",
+  "description": "Layered authoring patterns for AI agent skills: Layer 1 agent-skills foundation, Layer 2 superpowers conventions, Layer 3 ship-evidenced deltas.",
+  "author": "lukaszmaj",
+  "repository": "https://github.com/toolboxmd/building-agentskills",
+  "license": "Apache-2.0"
+}
