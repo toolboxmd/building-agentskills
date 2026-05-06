@@ -3,10 +3,11 @@
 **Date:** 2026-05-06
 **Subject:** building-agentskills v0.1 deployment cleanup
 **Companion repo:** `toolboxmd/karpathy-wiki` (one-file PR)
-**Status:** v1.2 spec, awaiting user review
+**Status:** v1.3 spec, awaiting user review
 **Revision history:**
 - **v1.0 → v1.1.** Two independent reviewers (Opus + Codex) found two BLOCKERs and several HIGHs. v1.1 corrects the URL convention (Mintlify routes preserve the `docs/` prefix), replaces the broken line-number enumerations with grep-derived ground-truth tables, scopes the CI gate to exclude `docs/superpowers/specs/`, conforms to the existing `*.test.sh` test-harness convention, adds an explicit README.md exception (GitHub-rendered), makes Step-A merge a hard preflight for Step B, and clarifies the diff-scope rule with an inline DONE_WITH_CONCERNS protocol.
 - **v1.1 → v1.2.** Re-review by both reviewers found two new BLOCKERs in v1.1 (a cross-repo URL pointing to a path that 404s post-v2.4-split, and a CI-gate self-test fixture that was logically vacuous). v1.2 pins all karpathy-wiki cross-repo URLs to commit `4f4c00d` (the v2.2 tip per the case study) so they remain byte-stable forever, fixes the linked-chip fixture to actually contain a backticked chip in link syntax, removes a self-contradiction in the Pattern A taxonomy around `skills/`, extends the bare-paths gate to catch `.md:<line>` and `.md:<start>-<end>` suffixes, clarifies the gate's argument-mode contract, scopes the gate to `.md` chips only (excluding `.sh`/`.py`), and corrects an off-by-one `docs.json` line citation.
+- **v1.2 → v1.3.** Both reviewers pronounced v1.2 plan-ready with minor fixes; no BLOCKERs. v1.3 cleans up: a stale Risks-section paragraph contradicting the binding table directive (the v2.2 audit doc is in fact public), a new off-by-one in the SHA-pin justification citation, a "three fixtures" → "four fixtures" wording update, a tightening of the "now-defunct `:366`" phrasing, an explicit acknowledgment of the `#Lnnn` regex gap, an additional fixture exercising the line-*range* suffix (not just single-line), and a one-clause justification for keeping `karpathy-wiki/TODO.md` on `main` rather than SHA-pinning.
 
 ## Why
 
@@ -93,7 +94,7 @@ The Step B PR may make zero changes to README.md if the audit confirms no `/User
 Format: absolute GitHub blob URL. Choose the ref carefully:
 
 - **Use `main`** when the link target is a long-lived, stable artifact whose path is stable across versions (e.g., `wiki/concepts/claude-code-plugin-root-substitution.md` — once Step A creates it, it lives there indefinitely).
-- **Use a commit SHA pin** when the link target's path or content is volatile across versions. This applies to anything tied to a specific historical ship — the case-study citations, the v2.2 spec doc, the v2.2 audit doc, the pre-split SKILL.md path. The canonical pin for v2.2-era karpathy-wiki content is **`4f4c00d`** (the v2-rewrite branch tip per `case-studies/2026-04-25-karpathy-wiki-v2.2.md:5`). Pinning to a SHA produces byte-stable permalinks immune to future renames or deletions; this is the pattern GitHub itself recommends ("press `y` for permalink").
+- **Use a commit SHA pin** when the link target's path or content is volatile across versions. This applies to anything tied to a specific historical ship — the case-study citations, the v2.2 spec doc, the v2.2 audit doc, the pre-split SKILL.md path. The canonical pin for v2.2-era karpathy-wiki content is **`4f4c00d`** (the v2-rewrite branch tip per `case-studies/2026-04-25-karpathy-wiki-v2.2.md:4`). Pinning to a SHA produces byte-stable permalinks immune to future renames or deletions; this is the pattern GitHub itself recommends ("press `y` for permalink").
 
 Examples:
 
@@ -198,7 +199,7 @@ Cross-links: [README](https://github.com/toolboxmd/building-agentskills/blob/mai
 | 27–29 | End of "Question 2: what fires on rules?" intro paragraph (line 29 ends "what enforces the claim?"). | Insert the on-ramp sentence (text below) after line 29 but **before** the bullets at line 31, so the definition lands adjacent to its first use. |
 | 34 | "ask 'what fires on this if violated?'" + chip `` `docs/07-mechanism-vs-decoration.md` `` (Pattern A) | Convert chip: `[Mechanism vs decoration](/docs/07-mechanism-vs-decoration)`. The shorthand `"what fires on this if violated?"` stays — by this point it's defined. |
 | 44 | `` `index.md` `` (Pattern C, topical — discussing a wiki's index file). | Leave as-is. Topical, not navigational. |
-| 48 | "(`` `karpathy-wiki/docs/planning/2026-04-24-karpathy-wiki-v2.2-audit.md:366` ``)…see `` `docs/07-mechanism-vs-decoration.md` ``" (one Pattern C cross-repo chip with line anchor; one Pattern A chip) | Cross-repo chip: convert to **v2.2-pinned** GitHub URL: `[karpathy-wiki v2.2 audit, line 366](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/docs/planning/2026-04-24-karpathy-wiki-v2.2-audit.md?plain=1#L366)`. The prose describes the v2.2 audit state. Note that the original chip uses the now-defunct `:366` anchor format; the rewrite must use `?plain=1#L366` (per the line-range-anchors convention above). In-repo chip: standard convert. |
+| 48 | "(`` `karpathy-wiki/docs/planning/2026-04-24-karpathy-wiki-v2.2-audit.md:366` ``)…see `` `docs/07-mechanism-vs-decoration.md` ``" (one Pattern C cross-repo chip with line anchor; one Pattern A chip) | Cross-repo chip: convert to **v2.2-pinned** GitHub URL: `[karpathy-wiki v2.2 audit, line 366](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/docs/planning/2026-04-24-karpathy-wiki-v2.2-audit.md?plain=1#L366)`. The prose describes the v2.2 audit state. Note that the original chip uses an IDE-style `:366` line citation (the convention used by `grep -n` and many editors), which is NOT a valid GitHub URL anchor; the rewrite must use `?plain=1#L366` per the line-range-anchors convention above. In-repo chip: standard convert. |
 | 58 | "is in `` `docs/04-token-economics.md` ``" (Pattern A) | Convert. |
 | 66 | "discussed in `` `docs/04-token-economics.md` ``" (Pattern A) | Convert. |
 | 78 | "(`` `01-quickstart.md` ``, `` `02-mental-model.md` ``, `` `04-token-economics.md` ``)" (Pattern B, three chips) | Convert all three. |
@@ -301,7 +302,7 @@ Cross-links: [README](https://github.com/toolboxmd/building-agentskills/blob/mai
 | 109 | "Layer 2 patterns from `` `obra/superpowers` ``…See `` `docs/00-overview.md` ``" (one cross-repo Pattern C; one Pattern A) | Cross-repo: convert to `[obra/superpowers](https://github.com/obra/superpowers)`. In-repo: convert. |
 | 118 | "documented in `` `docs/10-anti-patterns.md` ``" (Pattern A) | Convert. |
 | 124–130 | Bullet list of "What the existing canon missed" patterns, each ending "See `` `docs/<...>.md` ``" (Pattern A, seven chips) | Convert all seven. Line 127 also contains the in-prose chip `` `subagent-driven-development` `` (Pattern C, code reference, leave). |
-| 134 | "documented in `` `karpathy-wiki/TODO.md` ``" (cross-repo) | Convert to GitHub URL: `[karpathy-wiki TODO.md](https://github.com/toolboxmd/karpathy-wiki/blob/main/TODO.md)`. |
+| 134 | "documented in `` `karpathy-wiki/TODO.md` ``" (cross-repo) | Convert to GitHub URL with `main` ref (NOT `4f4c00d`): `[karpathy-wiki TODO.md](https://github.com/toolboxmd/karpathy-wiki/blob/main/TODO.md)`. The case-study prose says "Two known imperfections shipped, documented in `karpathy-wiki/TODO.md` with `status: open`" — readers want the *current* TODO list (where they can see whether the items are still open or have been resolved), not a frozen v2.2 snapshot. This is a forward-looking citation, so `main` is correct per the version-pinning decision rule above. |
 | 153–159 | `## Cross-links` section, seven `docs/...` chips. (Pattern A) | Convert all seven. |
 | 165 | "the `` `skills/pdf` `` path correction" (Pattern C, topic reference within a citation; not karpathy-wiki, refers to anthropics/skills) | Leave as-is. Topical. |
 
@@ -334,7 +335,11 @@ A Bash script that:
 
 **Argument mode.** If invoked with one or more positional arguments (`bash scripts/check-no-bare-paths.sh path1 path2 ...`), the script ignores the default scope and greps only the given paths (files or directories). The allowlist and link-detection logic are unchanged. Used for fixture self-testing and ad-hoc per-file checks. The default no-arg invocation is the CI-gate behavior; arg mode is a developer convenience.
 
-**Scope of the gate.** The grep is restricted to backtick-wrapped strings whose payload ends in `.md` (with optional `:<line>` suffix). Non-`.md` filename chips — `.sh`, `.py`, `.ts`, `.json`, `.yaml`, etc. — are out of scope and are implicitly Pattern C. This includes script names like `wiki-commit.sh`, `wiki-validate-page.py`, and `wiki-normalize-frontmatter.py` that appear repeatedly in the case study; the gate does not flag them.
+**Scope of the gate.** The grep is restricted to backtick-wrapped strings whose payload ends in `.md` (with optional `:<line>` or `:<start>-<end>` suffix). Out of scope:
+
+- **Non-`.md` filename chips** — `.sh`, `.py`, `.ts`, `.json`, `.yaml`, etc. — are implicitly Pattern C. This includes script names like `wiki-commit.sh`, `wiki-validate-page.py`, and `wiki-normalize-frontmatter.py` that appear repeatedly in the case study; the gate does not flag them.
+- **GitHub-form anchors `#L<n>` or `#L<n>-L<m>`** appended to chips. Example: `` `foo.md#L48` ``. The gate's regex stops at `.md(:N(-N)?)?` and does not look for `#L`. This is a known gap; rely on review until a future iteration extends the regex. The realistic risk is someone pasting a GitHub permalink into a chip and forgetting to convert it; this would slip past the gate but is caught by the editorial walkthrough in the verification section.
+- **Reference-style links** (`` `foo.md` `` followed elsewhere by `[`foo.md`][1]\n[1]: …`). Multi-line/separated link syntax is not detected by the regex-based heuristic. Add to allowlist if encountered. Same for **multi-line links** where the chip and `[…](…)` wrappers span lines.
 
 The script is intentionally simple regex-based (no Markdown AST parser dependency). False positives are tuned by extending the allowlist; false negatives are tuned by review. Initial allowlist is conservative; future extensions are documented in a comment block at the top of the script.
 
@@ -394,10 +399,14 @@ echo 'See [`docs/03-three-questions.md`](/docs/03-three-questions) for details.'
 # Fixture 3: topical mention (allowlisted) — should be allowed.
 echo 'Your `SKILL.md` should be under 500 lines.' > "$fixture_dir/topical.md"
 
-# Fixture 4: chip with line-range suffix (e.g. `something.md:366`) — should be flagged.
-# The gate must catch `.md:<line>` and `.md:<start>-<end>` suffix patterns,
-# not just bare `.md`-terminated chips.
+# Fixture 4: chip with single-line suffix (e.g. `something.md:366`) — should be flagged.
+# The gate must catch `.md:<line>` suffix patterns.
 echo 'See `docs/03-three-questions.md:48` for the audit reference.' > "$fixture_dir/bare-with-line.md"
+
+# Fixture 5: chip with line-range suffix (e.g. `something.md:30-65`) — should be flagged.
+# Distinct from fixture 4 because the regex's optional second group `(-[0-9]+)?`
+# is exercised only by ranges, not single-line suffixes.
+echo 'See `docs/03-three-questions.md:30-65` for the architectural decision.' > "$fixture_dir/bare-with-range.md"
 
 # Self-test mode: the script accepts a path argument for fixture-mode testing.
 if bash scripts/check-no-bare-paths.sh "$fixture_dir/linked.md"; then
@@ -419,9 +428,15 @@ else
 fi
 
 if ! bash scripts/check-no-bare-paths.sh "$fixture_dir/bare-with-line.md"; then
+  echo "PASS: bare chip with single-line suffix flagged"
+else
+  echo "FAIL: bare chip with single-line suffix not flagged (gate missed `.md:<line>` pattern)"; exit 1
+fi
+
+if ! bash scripts/check-no-bare-paths.sh "$fixture_dir/bare-with-range.md"; then
   echo "PASS: bare chip with line-range suffix flagged"
 else
-  echo "FAIL: bare chip with line-range suffix not flagged (gate missed `.md:<line>` pattern)"; exit 1
+  echo "FAIL: bare chip with line-range suffix not flagged (gate missed `.md:<start>-<end>` pattern)"; exit 1
 fi
 ```
 
@@ -453,7 +468,7 @@ After Step A merges and Step B is on a draft branch:
 
 - Run `bash tests/run-all.sh` on the hotfix branch. Both new gates plus the existing `build-llms.test.sh` and `check-llms-coverage.test.sh` must pass.
 - Manually introduce a violation (a `/Users/` path in `docs/00-overview.md`) and re-run. Confirm `tests/check-no-absolute-paths.test.sh` fails with the offending file:line.
-- The `tests/check-no-bare-paths.test.sh` self-tests its three fixture cases (bare/linked/topical) on every run, so its correctness is verified inline.
+- The `tests/check-no-bare-paths.test.sh` self-tests its five fixture cases (bare, linked, topical-allowlisted, bare-with-single-line-suffix, bare-with-line-range-suffix) on every run, so its correctness is verified inline.
 
 ## Risks and known imperfections
 
@@ -467,7 +482,7 @@ The `check-no-bare-paths.sh` script's allowlist will need tuning. Initial set is
 
 ### The `karpathy-wiki/docs/planning/2026-04-24-karpathy-wiki-v2.2-audit.md` reference
 
-`docs/03-three-questions.md` line 48 references this file. It is not currently part of `toolboxmd/karpathy-wiki/main` (only `docs/superpowers/specs/` exists publicly). The implementer must verify reachability before rewriting; if the file is not public, fall back to a path-citation (no link) until karpathy-wiki publishes its audit docs.
+`docs/03-three-questions.md` line 48 references this file. Verified publicly reachable at both `main` (current) and `4f4c00d` (v2.2 tip) via `curl -sI` returning HTTP/2 200. The per-file change table at line 201 above unconditionally pins this rewrite to `4f4c00d` per the v2.2-historical-citation rule; no fallback condition. If at some future point the file is removed from the public repo, the SHA-pinned link still resolves on GitHub (SHA pins survive branch deletions and rebases).
 
 ### CI gates might fail on first push if the hotfix is incomplete
 
