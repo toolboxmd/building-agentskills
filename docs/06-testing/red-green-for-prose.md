@@ -44,7 +44,7 @@ Karpathy-wiki Task 56's prose half (insert ingest step 7.6) shipped with a hered
 1. Assert the section header exists: `grep -c '^7.6\.' SKILL.md` returns 1.
 2. Rehearse the heredoc verbatim in a unit test. Paste the bytes from SKILL.md into the test; do not retype. Assert the rendered output is exactly what the SKILL.md prose claims it will be.
 
-The verbatim-snippet test catches the silent-correctness bugs documented in `docs/05-authoring/prose-discipline.md` (the heredoc indent leak; the `wc -c` whitespace leak). Without it, the bugs slip past the prose-as-addition's "section exists" check.
+The verbatim-snippet test catches the silent-correctness bugs documented in [Prose discipline](/docs/05-authoring/prose-discipline) (the heredoc indent leak; the `wc -c` whitespace leak). Without it, the bugs slip past the prose-as-addition's "section exists" check.
 
 ## Prose-as-tightening
 
@@ -87,4 +87,4 @@ For behavior-bearing prose that includes embedded code snippets (the prose-as-ad
 - `LESSONS` 4 (the four prose-change sub-modes; Tasks 51, 55, 56-prose, 59-prose).
 - `LESSONS` 6.2 (Task 51 multi-pattern grep miss; the orphan `type: source` references).
 
-Cross-links: `docs/06-testing/unit-tests.md`, `docs/06-testing/tests-that-pass-immediately.md`.
+Cross-links: [Unit tests](/docs/06-testing/unit-tests), [Tests that pass immediately](/docs/06-testing/tests-that-pass-immediately).

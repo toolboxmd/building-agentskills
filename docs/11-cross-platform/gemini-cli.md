@@ -33,7 +33,7 @@ For a 500-line skill:
 
 For a power user with five extensions installed, the always-on cost is ~25,000 tokens of `GEMINI.md` content before the user has typed anything. This is the cost gap; it is real and it scales linearly.
 
-See `docs/04-token-economics.md` for the full token-budget arithmetic.
+See [Token economics](/docs/04-token-economics) for the full token-budget arithmetic.
 
 ## What Gemini does NOT support
 
@@ -59,4 +59,4 @@ The skip-the-Gemini-port choice is legitimate. Not every skill needs every harne
 - `LANDSCAPE` 1.4 (cross-platform comparison; Gemini section).
 - `LANDSCAPE` 2.3 (Gemini CLI: Extensions, not Skills; the always-on context model).
 
-Cross-links: `docs/04-token-economics.md` (the cost gap of always-on context).
+Cross-links: [Token economics](/docs/04-token-economics) (the cost gap of always-on context).

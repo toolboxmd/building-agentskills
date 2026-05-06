@@ -1,6 +1,6 @@
 # Token economics: the why of skill constraints
 
-This is Question 3 of the hero framework (`docs/03-three-questions.md`). What is the token budget for your skill, and what governs it?
+This is Question 3 of the hero framework ([Three questions](/docs/03-three-questions)). What is the token budget for your skill, and what governs it?
 
 The 500-line cap is not a stylistic preference. It is the auto-compaction survival floor. The 1024-character description cap is not arbitrary; it is what fits in the listing the agent reads on every turn. The SessionStart-hook injection pattern is not free; it costs the full SKILL.md per session. Authors who do not know these numbers ship 1,200-line skills and wonder why the agent stops following the rules after a long session.
 
@@ -130,7 +130,7 @@ If karpathy-wiki had grown to 1,200 lines, every long session would silently los
 
 - Other harnesses have different (or no) auto-compaction. Codex has no documented auto-compaction model; Gemini's Extensions are always-on (no compaction; everything in `GEMINI.md` loads at session start). Cross-platform numbers are in `docs/11-cross-platform/`.
 - The `25,000 / 5,000` numbers are Claude Code-current as of 2026 docs. They will change. Re-fetch when shipping.
-- Fork-mode skills (`context: fork` + `agent`) do not pay the parent context's compaction tax; the fork has its own context. This is the cost-saving rationale for forking; see `docs/02-mental-model.md` and `REVIEWER` M3.
+- Fork-mode skills (`context: fork` + `agent`) do not pay the parent context's compaction tax; the fork has its own context. This is the cost-saving rationale for forking; see [Mental model](/docs/02-mental-model) and `REVIEWER` M3.
 
 ## Sources
 
@@ -140,4 +140,4 @@ If karpathy-wiki had grown to 1,200 lines, every long session would silently los
 - `LANDSCAPE` 2.1 (the SessionStart-hook injection cost; superpowers issue #1220 measurement).
 - `LANDSCAPE` 1.3 (Anthropic Claude Code docs lifecycle; auto-compaction behavior).
 
-Cross-links: `docs/03-three-questions.md` (Q3), `docs/05-authoring/line-budget.md` (the 500-line rule), `docs/05-authoring/frontmatter.md` (where `model:` and `effort:` live), `docs/11-cross-platform/claude-code.md` (the SessionStart hook), `docs/02-mental-model.md` (when to fork).
+Cross-links: [Three questions](/docs/03-three-questions) (Q3), [Line budget](/docs/05-authoring/line-budget) (the 500-line rule), [Frontmatter reference](/docs/05-authoring/frontmatter) (where `model:` and `effort:` live), [Claude Code cross-platform notes](/docs/11-cross-platform/claude-code) (the SessionStart hook), [Mental model](/docs/02-mental-model) (when to fork).

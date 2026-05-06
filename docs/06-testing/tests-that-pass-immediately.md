@@ -84,7 +84,7 @@ When to use mechanism-rehearsal:
 - The mechanism's contract is expressible as code (bash, python).
 - Running the LLM call is too expensive for routine testing.
 
-The verbatim discipline is essential. Retyping the snippet is the failure mode that hid the v2.2 heredoc bugs originally; only the verbatim-paste catches platform-whitespace and indent-leak bugs. See `docs/05-authoring/prose-discipline.md`.
+The verbatim discipline is essential. Retyping the snippet is the failure mode that hid the v2.2 heredoc bugs originally; only the verbatim-paste catches platform-whitespace and indent-leak bugs. See [Prose discipline](/docs/05-authoring/prose-discipline).
 
 ## When the inversion is invalid
 
@@ -120,4 +120,4 @@ Without this annotation, the implementer will think they are violating TDD and m
 - `LESSONS` 5 (the two valid TDD inversions; Tasks 56 and 59).
 - `REVIEWER` "What the analyzer got right" #6 (TDD-inversion is genuinely new; not in superpowers test-driven-development or writing-skills RED-GREEN-REFACTOR).
 
-Cross-links: `docs/06-testing/red-green-for-prose.md`.
+Cross-links: [Red-green for prose](/docs/06-testing/red-green-for-prose).

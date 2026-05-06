@@ -22,7 +22,7 @@ Format constraints:
 
 - Maximum 1,024 characters per the spec.
 - Plain text. The harness reads this on every turn to decide whether to activate the skill.
-- See `docs/05-authoring/triggers.md` for the discipline of writing triggering descriptions.
+- See [Triggers](/docs/05-authoring/triggers) for the discipline of writing triggering descriptions.
 
 ### `license` (optional)
 
@@ -87,7 +87,7 @@ These fields are recognized by Claude Code only. Other harnesses ignore them sil
 
 - **`context: fork`** (optional). Run the skill in a forked subagent context. Pair with `agent: Explore | Plan | general-purpose` to pick the subagent type.
 - **`agent`** (optional, with `context: fork`). Names the subagent type to fork into.
-- See `docs/02-mental-model.md` for when forking is the right primitive and the trap from `REVIEWER` M5 (fork without an actionable prompt returns nothing useful).
+- See [Mental model](/docs/02-mental-model) for when forking is the right primitive and the trap from `REVIEWER` M5 (fork without an actionable prompt returns nothing useful).
 
 ## Per-skill character budgets (Claude Code only)
 
@@ -97,7 +97,7 @@ Three distinct numbers, often confused. Source: `REVIEWER` B4. These constrain C
 - **1,536 characters.** Truncation threshold on the combined `description` + `when_to_use` text in Claude Code's skill listing. Long descriptions ARE accepted but only the first 1,536 chars are visible to the agent on each turn.
 - **8,000 characters (or 1% of context window).** Total budget across ALL skills' descriptions, governed by `SLASH_COMMAND_TOOL_CHAR_BUDGET`. Default is 1% of context window with an 8,000-character fallback.
 
-Front-load triggers in the description; the bottom of a long description may never be read. See `docs/04-token-economics.md` for the budget arithmetic.
+Front-load triggers in the description; the bottom of a long description may never be read. See [Token economics](/docs/04-token-economics) for the budget arithmetic.
 
 ## Worked example: karpathy-wiki frontmatter
 
@@ -129,18 +129,18 @@ metadata:
 ---
 ```
 
-This is the entire frontmatter for karpathy-wiki at v2.2 (lines 1-19 of `karpathy-wiki/skills/karpathy-wiki/SKILL.md`). It uses no Claude Code extensions; it works on every spec-compatible harness. The `metadata.hermes` block is harness-specific but lives inside the spec-compliant `metadata` field.
+This is the entire frontmatter for karpathy-wiki at v2.2 ([lines 1–19 of the v2.2 SKILL.md](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L1-L19)). It uses no Claude Code extensions; it works on every spec-compatible harness. The `metadata.hermes` block is harness-specific but lives inside the spec-compliant `metadata` field.
 
 ## Auditing your frontmatter
 
-The cheapest validation is `skills-ref validate ./your-skill` (the agent-skills validator). Run it before merging any frontmatter change. See `docs/06-testing/unit-tests.md`.
+The cheapest validation is `skills-ref validate ./your-skill` (the agent-skills validator). Run it before merging any frontmatter change. See [Unit tests](/docs/06-testing/unit-tests).
 
 For Claude Code-targeted skills, additionally:
 
 - Verify `name` matches parent directory name exactly.
 - Verify combined `description` + `when_to_use` fits 1,536 chars (Claude Code listing-truncation).
 - Verify total across all your skills' descriptions fits 8,000 chars (or 1% of context window).
-- If you use `paths`, verify your globs are correct in the actual environment (see `docs/07-mechanism-vs-decoration.md` for `paths` as activation gate in reverse).
+- If you use `paths`, verify your globs are correct in the actual environment (see [Mechanism vs decoration](/docs/07-mechanism-vs-decoration) for `paths` as activation gate in reverse).
 
 ## Sources
 
@@ -153,4 +153,4 @@ For Claude Code-targeted skills, additionally:
 - `REVIEWER` B4 (per-skill character budget enumeration).
 - `REVIEWER` M4 (`compatibility:` as documentation surface).
 
-Cross-links: `docs/02-mental-model.md`, `docs/07-mechanism-vs-decoration.md` (paths as activation gate), `docs/04-token-economics.md`.
+Cross-links: [Mental model](/docs/02-mental-model), [Mechanism vs decoration](/docs/07-mechanism-vs-decoration) (paths as activation gate), [Token economics](/docs/04-token-economics).

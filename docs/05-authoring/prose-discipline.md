@@ -56,7 +56,7 @@ The discipline:
 
 > When SKILL.md prose embeds a snippet that the agent will execute (bash heredoc, Python source, YAML template, JSON object), the snippet is production code. Test it by rehearsing the verbatim copy. Paste the bytes from SKILL.md into your test. Do not retype.
 
-See `docs/06-testing/red-green-for-prose.md` for the prose-as-addition discipline that operationalizes this rule.
+See [Red-green for prose](/docs/06-testing/red-green-for-prose) for the prose-as-addition discipline that operationalizes this rule.
 
 ## The markdown-renders-whitespace hazard
 
@@ -93,4 +93,4 @@ Before shipping a SKILL.md prose change:
 - `LESSONS` 2.2 (the karpathy-wiki v2.2 heredoc bugs; commits `dabf10a`, `0e0f815`).
 - `LANDSCAPE` 3.2 (voice conventions across superpowers; the no-emoji rule).
 
-Cross-links: `docs/06-testing/red-green-for-prose.md` (the prose-change testing discipline), `case-studies/2026-04-25-karpathy-wiki-v2.2.md` (the full ship narrative including the heredoc bugs).
+Cross-links: [Red-green for prose](/docs/06-testing/red-green-for-prose) (the prose-change testing discipline), [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) (the full ship narrative including the heredoc bugs).

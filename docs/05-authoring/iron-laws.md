@@ -25,7 +25,7 @@ Each Iron Law is one sentence. No qualifiers. No "in most cases." No "unless." I
 
 ### Karpathy-wiki Iron Laws
 
-From `karpathy-wiki/skills/karpathy-wiki/SKILL.md` lines 48-60:
+From [the v2.2 SKILL.md, lines 48–60](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L48-L60):
 
 ```
 NO WIKI WRITE IN THE FOREGROUND
@@ -51,7 +51,7 @@ The table is built from observation, not invention. You write down the actual ra
 
 ### Karpathy-wiki rationalization table
 
-From `karpathy-wiki/skills/karpathy-wiki/SKILL.md` lines 435-458 (excerpt; the full table has 16 rows):
+From [the v2.2 SKILL.md, lines 435–458](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L435-L458) (excerpt; the full table has 16 rows):
 
 ```
 | Rationalization | Reality |
@@ -75,7 +75,7 @@ The list is written from the agent's first-person perspective (paradoxically; th
 
 ### Karpathy-wiki red flag example
 
-From `karpathy-wiki/skills/karpathy-wiki/SKILL.md` lines 175-181:
+From [the v2.2 SKILL.md, lines 175–181](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L175-L181):
 
 ```
 ### Red flags. STOP and expand the body.
@@ -110,7 +110,7 @@ The cure for the technicality loophole is to require explicit citation. If the a
 - **Red Flag list.** For thought patterns the agent should recognize as warning signs. Use when the violation has a recognizable upstream signature.
 - **Spirit-vs-letter clause.** Use once per skill, near the rationalization table. It is the meta-rule that protects all the others.
 
-Every Iron Law begs a mechanism question. "NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST" is decoration unless something fires when production code lands without a failing test (a hook, a CI check, a pre-commit gate). See `docs/07-mechanism-vs-decoration.md` for the audit method.
+Every Iron Law begs a mechanism question. "NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST" is decoration unless something fires when production code lands without a failing test (a hook, a CI check, a pre-commit gate). See [Mechanism vs decoration](/docs/07-mechanism-vs-decoration) for the audit method.
 
 ## Sources
 
@@ -120,4 +120,4 @@ Every Iron Law begs a mechanism question. "NO PRODUCTION CODE WITHOUT A FAILING 
 - `KP-SKILL` lines 435-458 (rationalization table).
 - `KP-SKILL` lines 175-181 (red flag list).
 
-Cross-links: `docs/07-mechanism-vs-decoration.md` (every Iron Law begs a mechanism question).
+Cross-links: [Mechanism vs decoration](/docs/07-mechanism-vs-decoration) (every Iron Law begs a mechanism question).

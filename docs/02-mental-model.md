@@ -2,7 +2,7 @@
 
 This is the decision matrix. Before you write a skill, ask: is a skill actually the right primitive for what you want? The cost of a wrong-primitive answer is a skill that never triggers, that bloats every conversation, or that should have been a script.
 
-This doc answers Question 1 of the hero framework (who invokes?). For the full framework, see `docs/03-three-questions.md`.
+This doc answers Question 1 of the hero framework (who invokes?). For the full framework, see [Three questions](/docs/03-three-questions).
 
 ## The four primitives
 
@@ -46,7 +46,7 @@ If your CLAUDE.md is over ~200 lines and growing, the procedure-shaped sections 
 The behavior is mechanism shaped (something must happen automatically) and the trigger is an event the harness can observe.
 
 Examples:
-- SessionStart hook injecting an iron-law block (`obra/superpowers` uses this for the `using-superpowers` bootstrap; cost measured in `LANDSCAPE` 2.1 at ~17.8k tokens over 57 hours / 13 firings, see `docs/04-token-economics.md`).
+- SessionStart hook injecting an iron-law block (`obra/superpowers` uses this for the `using-superpowers` bootstrap; cost measured in `LANDSCAPE` 2.1 at ~17.8k tokens over 57 hours / 13 firings, see [Token economics](/docs/04-token-economics)).
 - PreToolUse hook validating a Bash command before execution.
 - Stop hook running a final lint or test suite before the agent emits its done sentinel.
 
@@ -62,7 +62,7 @@ Examples:
 
 In Claude Code, custom slash commands have merged into skills. A file at `.claude/commands/deploy.md` and a skill at `.claude/skills/deploy/SKILL.md` both create `/deploy` and behave the same way (per Claude Code's official docs). Pick whichever shape fits your authoring model; they are interchangeable. The skill shape is more general (it can also auto-trigger if you do not opt out); the command shape is conventionally for user-initiated work and conventionally never auto-fires.
 
-To force user-only invocation, set `disable-model-invocation: true` in your skill's frontmatter (Claude Code extension). This is the hard line between "agent may invoke" and "user must invoke." See `docs/11-cross-platform/claude-code.md` for the full taxonomy.
+To force user-only invocation, set `disable-model-invocation: true` in your skill's frontmatter (Claude Code extension). This is the hard line between "agent may invoke" and "user must invoke." See [Claude Code cross-platform notes](/docs/11-cross-platform/claude-code) for the full taxonomy.
 
 ## When a subagent fork is the right primitive
 
@@ -70,7 +70,7 @@ Claude Code's `context: fork` + `agent: Explore | Plan | general-purpose` runs a
 
 When to fork:
 
-- The skill produces an artifact and does not need the parent's context. Karpathy-wiki's headless ingester is morally a fork (in practice, it is a `claude -p` subprocess; see `docs/07-mechanism-vs-decoration.md`).
+- The skill produces an artifact and does not need the parent's context. Karpathy-wiki's headless ingester is morally a fork (in practice, it is a `claude -p` subprocess; see [Mechanism vs decoration](/docs/07-mechanism-vs-decoration)).
 - The skill needs a different model. Set `model: claude-opus-4-7` in frontmatter; the fork uses Opus while the parent uses Sonnet.
 - The parent context is heavy and the skill's output is small. Forking saves the parent from carrying the skill's body for the rest of the session.
 
@@ -79,7 +79,7 @@ When NOT to fork:
 - The skill needs to see the conversation. A fork starts with no history; you must pass everything explicitly in the skill body or as arguments.
 - The skill's output needs to influence the parent's next decision in real time. Forks return their output but do not persist their reasoning.
 
-Per Anthropic's docs: "`context: fork` only makes sense for skills with explicit instructions. If your skill contains guidelines like 'use these API conventions' without a task, the subagent receives the guidelines but no actionable prompt, and returns without meaningful output." This is a subtle authoring trap; see `docs/04-token-economics.md` for the cost trade-off (`REVIEWER` M3, M5).
+Per Anthropic's docs: "`context: fork` only makes sense for skills with explicit instructions. If your skill contains guidelines like 'use these API conventions' without a task, the subagent receives the guidelines but no actionable prompt, and returns without meaningful output." This is a subtle authoring trap; see [Token economics](/docs/04-token-economics) for the cost trade-off (`REVIEWER` M3, M5).
 
 ## Decision shortcuts
 
@@ -88,12 +88,12 @@ If you are still unsure, these heuristics resolve most cases:
 - "I want this loaded every session" → CLAUDE.md (if it is a fact) or SessionStart hook (if it is a mechanism).
 - "I want the agent to pick this up when relevant" → skill, with a description that names the triggers.
 - "I want the user to call this explicitly" → skill with `disable-model-invocation: true`, or a `.claude/commands/` markdown file.
-- "I want the harness to enforce this" → hook. Skills are advisory; hooks are mechanism. See `docs/07-mechanism-vs-decoration.md`.
+- "I want the harness to enforce this" → hook. Skills are advisory; hooks are mechanism. See [Mechanism vs decoration](/docs/07-mechanism-vs-decoration).
 - "I have a CLAUDE.md section over 30 lines that reads like a procedure" → it is a skill candidate.
 
 ## Cost matters
 
-Per-session cost differs by primitive. CLAUDE.md is paid every session, every turn. Skills are paid only when activated. Hooks are paid only when the event fires. The dollar consequences are real for long-running sessions; the full numbers are in `docs/04-token-economics.md` (Question 3 of the hero framework).
+Per-session cost differs by primitive. CLAUDE.md is paid every session, every turn. Skills are paid only when activated. Hooks are paid only when the event fires. The dollar consequences are real for long-running sessions; the full numbers are in [Token economics](/docs/04-token-economics) (Question 3 of the hero framework).
 
 ## Source layering
 
@@ -106,4 +106,4 @@ This doc is Layer 3 (synthesis). The four primitives are Layer 1 / Claude Code s
 - `REVIEWER` M3 (the cost trade-off of `context: fork`).
 - Claude Code docs at https://code.claude.com/docs/en/skills (frontmatter taxonomy).
 
-Cross-links: `docs/03-three-questions.md` (Question 1: who invokes), `docs/04-token-economics.md` (cost), `docs/11-cross-platform/claude-code.md` (per-harness specifics), `docs/07-mechanism-vs-decoration.md` (skills are advisory; hooks enforce).
+Cross-links: [Three questions](/docs/03-three-questions) (Question 1: who invokes), [Token economics](/docs/04-token-economics) (cost), [Claude Code cross-platform notes](/docs/11-cross-platform/claude-code) (per-harness specifics), [Mechanism vs decoration](/docs/07-mechanism-vs-decoration) (skills are advisory; hooks enforce).

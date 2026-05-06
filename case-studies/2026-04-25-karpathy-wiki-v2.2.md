@@ -9,7 +9,7 @@
 
 This is the seed case study for `toolboxmd/building-agentskills`. It documents what one stateful, artifact-manipulating skill learned in shipping v2.2: what worked, what failed, what the existing canon missed, what we added.
 
-The full retrospective lives in `LESSONS` (`/Users/lukaszmaj/dev/bigbrain/research/building-agentskills/2026-04-24-lessons-from-v2.2-ship.md`). This case study is the public-audience version, written for readers who landed here from a search.
+The full retrospective lives in the document we cite as `LESSONS` (see [Overview → Sources](/docs/00-overview#sources)). This case study is the public-audience version, written for readers who landed here from a search.
 
 ## Ship summary
 
@@ -30,11 +30,11 @@ Source: `LESSONS` 3.
 
 The audit listed Findings 02 (mistyped sources/), 05 (stub bodies), 09 (duplicate sources) as three separate findings to fix mechanically. The brainstorming step asked "are these symptoms or the disease?" and surfaced an architectural answer: the `sources/` category itself was the wrong abstraction. Deleting it collapsed three findings into one cut.
 
-The architectural decision is documented in the v2.2 spec doc (`/Users/lukaszmaj/dev/toolboxmd/karpathy-wiki/docs/superpowers/specs/2026-04-24-karpathy-wiki-v2.2-design.md:30-65`) with an explicit "Architectural decision: kill `sources/`" section and a job-vs-replacement table. Without brainstorming, v2.2 would have shipped 7+ patches plus 31 stub-improvement passes; instead it shipped one architectural cut + 5 mechanism-wirings.
+The architectural decision is documented in the [v2.2 spec doc, lines 30–65](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/docs/superpowers/specs/2026-04-24-karpathy-wiki-v2.2-design.md?plain=1#L30-L65), with an explicit "Architectural decision: kill `sources/`" section and a job-vs-replacement table. Without brainstorming, v2.2 would have shipped 7+ patches plus 31 stub-improvement passes; instead it shipped one architectural cut + 5 mechanism-wirings.
 
 The pattern: brainstorming surfaces architectural decisions that audit findings cannot. The audit is shape-blind by design (it enumerates symptoms); brainstorming asks "what is the disease?" The deletion of `sources/` was not in the audit; it came from the brainstorming step.
 
-For your own skills: when an audit lists multiple findings that share a category, ask whether the category itself is the right abstraction. If the answer is no, the brainstorming output is "delete the category" rather than "fix each finding." See `docs/02-mental-model.md` for the broader frame.
+For your own skills: when an audit lists multiple findings that share a category, ask whether the category itself is the right abstraction. If the answer is no, the brainstorming output is "delete the category" rather than "fix each finding." See [Mental model](/docs/02-mental-model) for the broader frame.
 
 ## The three decoration-to-mechanism wirings
 
@@ -60,7 +60,7 @@ Pre-v2.2 SKILL.md said "Do NOT commit a wiki state where the validator fails." T
 
 v2.2 strengthened the prose to "the ingester MUST NOT call `wiki-commit.sh` if the validator exits non-zero for any touched page." This is still mostly prose; the full mechanism (a hook that blocks commit on non-zero exit) is deferred. The pairing with `f72bfc3` (code-block-link skip fix) reduces false-positives so the validator's signals are trustworthy.
 
-This is honest evidence that the decoration-vs-mechanism rule is a spectrum. Sometimes you wire fully; sometimes you wire partially. See `docs/07-mechanism-vs-decoration.md`.
+This is honest evidence that the decoration-vs-mechanism rule is a spectrum. Sometimes you wire fully; sometimes you wire partially. See [Mechanism vs decoration](/docs/07-mechanism-vs-decoration).
 
 ## The five reviewer-driven fix-ups
 
@@ -72,25 +72,25 @@ Source: `LESSONS` 2.6; verified commit-by-commit in `REVIEWER` verification tabl
 
 Task 50 removed `type: source` from `wiki-validate-page.py:VALID_TYPES`. The implementer ran `test-validate-page.sh`, saw it pass, committed. They did not run `tests/run-all.sh`. The reviewer caught it: `wiki-normalize-frontmatter.py` mapped `sources/` → `type: source`, which the validator now rejects. Fix: map `sources/` → `type: concept` instead.
 
-Lesson for the building-agentskills repo: contract-touching changes default to the full test suite scope. See `docs/06-testing/unit-tests.md`.
+Lesson for the building-agentskills repo: contract-touching changes default to the full test suite scope. See [Unit tests](/docs/06-testing/unit-tests).
 
 ### `697318a`: 3 orphan `type: source` references in SKILL.md
 
 Task 51 removed the `sources/` source-pointer rule prose. The implementer's grep was for `sources/<basename>`; they missed three lines mentioning `type: source` (the type-whitelist value, different pattern). The reviewer caught it.
 
-Lesson: prose-deletion tasks need to enumerate ALL related patterns. See `docs/06-testing/red-green-for-prose.md`.
+Lesson: prose-deletion tasks need to enumerate ALL related patterns. See [Red-green for prose](/docs/06-testing/red-green-for-prose).
 
 ### `3dfc26b`: stale module-level docstring in `wiki-manifest.py`
 
 Task 54 added a `validate` subcommand. The implementer updated `usage:` print in `main()`; missed the module-level docstring at lines 4-7 that also enumerates subcommands.
 
-Lesson: when modifying a script's interface, the plan's modify set should include the script's own docstring, help string, and any READMEs that mention the interface. See `docs/10-anti-patterns.md`.
+Lesson: when modifying a script's interface, the plan's modify set should include the script's own docstring, help string, and any READMEs that mention the interface. See [Anti-patterns](/docs/10-anti-patterns).
 
 ### `0e0f815`: heredoc indent + `wc -c` whitespace bugs
 
 Task 56 prose half embedded a bash heredoc in SKILL.md. Two silent correctness bugs: 3-space indent leak (validator rejected the rendered captures) and macOS `wc -c` whitespace leak in trigger-field strings. Reviewer caught both; fix rehearses the snippet verbatim and adds a `head -1 file == '---'` assertion.
 
-Lesson: snippets in SKILL.md prose are production code when a headless subprocess executes them. See `docs/05-authoring/prose-discipline.md`.
+Lesson: snippets in SKILL.md prose are production code when a headless subprocess executes them. See [Prose discipline](/docs/05-authoring/prose-discipline).
 
 ### `ff12716`: `${wiki}` interpolation hardening in inline Python
 
@@ -106,7 +106,7 @@ Lesson: when BEFORE/AFTER blocks embed inline languages, variable interpolation 
 - Fresh-subagent-per-task dispatch. Zero context pollution between tasks.
 - Iron Laws plus rationalization tables. Karpathy-wiki has 3 Iron Laws and a 16-row rationalization table; both are load-bearing.
 
-These are Layer 2 patterns from `obra/superpowers`. We did not invent them; we applied them and they worked. See `docs/00-overview.md` for the layer distinction.
+These are Layer 2 patterns from [obra/superpowers](https://github.com/obra/superpowers). We did not invent them; we applied them and they worked. See [00 overview](/docs/00-overview) for the layer distinction.
 
 ## What failed (or what would have been better)
 
@@ -115,23 +115,23 @@ These are Layer 2 patterns from `obra/superpowers`. We did not invent them; we a
 - Plan Task 56's fixture used `range(90)` claiming "~9000 bytes"; each entry was actually ~70 bytes (= 6,300, below threshold). Caught at implementation time, not in plan self-review.
 - The implementer for Task 62 reflowed all of TODO.md as part of a section-move commit; 230-line diff for a 10-line task. Documented as TODO.md item but not yet fixed in the implementer prompt template.
 
-Each of these surfaces a pattern the existing canon does not cover, documented in `docs/10-anti-patterns.md`.
+Each of these surfaces a pattern the existing canon does not cover, documented in [Anti-patterns](/docs/10-anti-patterns).
 
 ## What the existing canon missed (Layer 3 deltas)
 
 Patterns from this ship that are not in agent-skills + superpowers + Anthropic docs:
 
-- **Decoration vs mechanism.** Named in the audit (line 366); not in any existing meta-skill. See `docs/07-mechanism-vs-decoration.md`.
-- **Heredoc-in-prose silent correctness.** The class of bugs Task 56 surfaced. See `docs/05-authoring/prose-discipline.md`.
-- **TDD inversions (regression-pin and mechanism-rehearsal).** Tasks 56 and 59 used these legitimately; the existing TDD skill treats them as anti-patterns. See `docs/06-testing/tests-that-pass-immediately.md`.
-- **Subagent reformatting hazard.** Task 62 surfaced this; the `subagent-driven-development` red-flag list does not include it. See `docs/10-anti-patterns.md`.
-- **Cross-script regression as plan-shape rule.** Task 50 surfaced this; writing-plans does not name it. See `docs/06-testing/unit-tests.md`.
-- **Spec arithmetic sanity-check.** Task 56's fixture math; writing-plans self-review does not check this. See `docs/10-anti-patterns.md`.
-- **Reviewer fix-up rate as quality signal.** 26.3% on this ship; not named anywhere as a metric. See `docs/09-evolution.md`.
+- **Decoration vs mechanism.** Named in the audit (line 366); not in any existing meta-skill. See [Mechanism vs decoration](/docs/07-mechanism-vs-decoration).
+- **Heredoc-in-prose silent correctness.** The class of bugs Task 56 surfaced. See [Prose discipline](/docs/05-authoring/prose-discipline).
+- **TDD inversions (regression-pin and mechanism-rehearsal).** Tasks 56 and 59 used these legitimately; the existing TDD skill treats them as anti-patterns. See [Tests that pass immediately](/docs/06-testing/tests-that-pass-immediately).
+- **Subagent reformatting hazard.** Task 62 surfaced this; the `subagent-driven-development` red-flag list does not include it. See [Anti-patterns](/docs/10-anti-patterns).
+- **Cross-script regression as plan-shape rule.** Task 50 surfaced this; writing-plans does not name it. See [Unit tests](/docs/06-testing/unit-tests).
+- **Spec arithmetic sanity-check.** Task 56's fixture math; writing-plans self-review does not check this. See [Anti-patterns](/docs/10-anti-patterns).
+- **Reviewer fix-up rate as quality signal.** 26.3% on this ship; not named anywhere as a metric. See [Evolution](/docs/09-evolution).
 
 ## What we missed (honest list)
 
-The v2.2 ship was good but not perfect. Two known imperfections shipped, documented in `karpathy-wiki/TODO.md` with `status: open / labels: [known-imperfection]`:
+The v2.2 ship was good but not perfect. Two known imperfections shipped, documented in [karpathy-wiki TODO.md](https://github.com/toolboxmd/karpathy-wiki/blob/main/TODO.md) with `status: open / labels: [known-imperfection]`:
 
 - **Migration-script regex misses inline-list.** The v2.2 migration script's regex for finding source-pointer references in SKILL.md missed inline-list mentions; manual cleanup would still be required for one specific case.
 - **Subagent reformatting hazard.** Task 62's reformatting was caught and documented but the implementer-prompt.md fix has not been applied. The next ship will absorb this.
@@ -150,13 +150,13 @@ The single most important pattern, if you read only one: **decoration vs mechani
 
 ## Cross-links
 
-- `docs/03-three-questions.md` (the hero framework; karpathy-wiki's worked answers expanded)
-- `docs/07-mechanism-vs-decoration.md` (the three v2.2 wirings in detail)
-- `docs/05-authoring/prose-discipline.md` (the Task 56 heredoc bugs)
-- `docs/12-update-mechanism.md` (per-ship retrospective format)
-- `docs/10-anti-patterns.md` (every fix-up commit corresponds to an anti-pattern)
-- `docs/02-mental-model.md` (when a skill is the right primitive at all; karpathy-wiki is auto-trigger by design)
-- `docs/09-evolution.md` (reviewer fix-up rate at 26.3% is healthy)
+- [Three questions](/docs/03-three-questions) (the hero framework; karpathy-wiki's worked answers expanded)
+- [Mechanism vs decoration](/docs/07-mechanism-vs-decoration) (the three v2.2 wirings in detail)
+- [Prose discipline](/docs/05-authoring/prose-discipline) (the Task 56 heredoc bugs)
+- [Update mechanism](/docs/12-update-mechanism) (per-ship retrospective format)
+- [Anti-patterns](/docs/10-anti-patterns) (every fix-up commit corresponds to an anti-pattern)
+- [Mental model](/docs/02-mental-model) (when a skill is the right primitive at all; karpathy-wiki is auto-trigger by design)
+- [Evolution](/docs/09-evolution) (reviewer fix-up rate at 26.3% is healthy)
 
 ## Sources
 

@@ -44,7 +44,7 @@ Required fields per the Claude Code plugin spec: `name`, `version`, `description
 
 The `name` is the namespace prefix for your plugin's skills (Claude Code uses `plugin-name:skill-name` for namespacing). Pick a name that will not collide with other plugins.
 
-The `version` follows semantic versioning. Note: a description-string change in your skills can break implicit triggering (the description is the activation contract); a description change is conceptually a major-version shift even if the body is unchanged. See `docs/09-evolution.md`.
+The `version` follows semantic versioning. Note: a description-string change in your skills can break implicit triggering (the description is the activation contract); a description change is conceptually a major-version shift even if the body is unchanged. See [Evolution](/docs/09-evolution).
 
 ## Where skills live
 
@@ -53,7 +53,7 @@ Per the convention from `KP-PLUGIN` and Claude Code's docs: plugin skills live a
 Optional sibling sub-directories under each skill:
 
 - **`scripts/`.** Helper scripts the SKILL.md invokes. The agent-skills spec convention (Layer 1).
-- **`references/`.** Heavy reference docs loaded on demand. One level deep from SKILL.md; never nested. See `docs/05-authoring/line-budget.md`.
+- **`references/`.** Heavy reference docs loaded on demand. One level deep from SKILL.md; never nested. See [Line budget](/docs/05-authoring/line-budget).
 - **`assets/`.** Data files, fixtures, images. Loaded as needed.
 
 These sub-directories are spec-canonical (Layer 1) and recognized by every spec-compatible harness, not just Claude Code.
@@ -66,7 +66,7 @@ Claude Code recognizes plugins via:
 - **Local clone + symlink.** The pattern karpathy-wiki uses for development: `git clone` the plugin repo, then `ln -s <plugin-skill-dir> ~/.claude/skills/<name>` to make the skill available without going through the plugin system.
 - **Direct copy.** `cp -r <plugin-skill-dir> ~/.claude/skills/<name>`. Less common; loses the link to upstream.
 
-Per-scope priority for Claude Code skills (per `docs/04-token-economics.md` and `docs/11-cross-platform/claude-code.md`):
+Per-scope priority for Claude Code skills (per [Token economics](/docs/04-token-economics) and [Claude Code cross-platform notes](/docs/11-cross-platform/claude-code)):
 
 > enterprise > personal > project > plugin
 
@@ -74,7 +74,7 @@ A skill at `~/.claude/skills/wiki/` (personal) shadows a skill at `<plugin>/skil
 
 ## The `${CLAUDE_PLUGIN_ROOT}` gotcha
 
-Source: `REVIEWER` G3, "wiki concept page references" (`/Users/lukaszmaj/wiki/concepts/claude-code-plugin-root-substitution.md`).
+Source: `REVIEWER` G3, "wiki concept page references" ([wiki concept page](https://github.com/toolboxmd/karpathy-wiki/blob/main/wiki/concepts/claude-code-plugin-root-substitution.md)).
 
 The literal string `${CLAUDE_PLUGIN_ROOT}` appears as a config-time substitution token in `plugin.json` and `hooks.json`. Claude Code expands it to the plugin's installed path when reading those files. The token works inside Claude Code's own configuration plumbing.
 

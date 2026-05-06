@@ -1,6 +1,6 @@
 # Line budget: why 500 lines is a contract
 
-The 500-line cap on SKILL.md is not a stylistic preference. It is a load-bearing constraint tied to Claude Code's auto-compaction floor. This page explains the why; the numerical detail is in `docs/04-token-economics.md`.
+The 500-line cap on SKILL.md is not a stylistic preference. It is a load-bearing constraint tied to Claude Code's auto-compaction floor. This page explains the why; the numerical detail is in [Token economics](/docs/04-token-economics).
 
 ## The number
 
@@ -16,7 +16,7 @@ Claude Code carries activated skills forward across auto-compaction within a 25,
 
 A 500-line skill survives compaction. A 1,000-line skill is truncated to its first half after compaction; the truncated half is the part the agent will not see for the rest of the session.
 
-The full numerical breakdown is in `docs/04-token-economics.md`. The summary: the 500-line cap is the auto-compaction survival floor. Going over is not a style issue; it is a silent loss of behavior after the next compaction event.
+The full numerical breakdown is in [Token economics](/docs/04-token-economics). The summary: the 500-line cap is the auto-compaction survival floor. Going over is not a style issue; it is a silent loss of behavior after the next compaction event.
 
 ## The implication
 
@@ -66,4 +66,4 @@ If over 500, the next ship's plan should include a "split to references" task. D
 - `LANDSCAPE` 3.5 (the 500-line cap as universal across spec / superpowers / Anthropic docs).
 - `REVIEWER` G2 ("a 500-line SKILL.md is roughly 5,000 tokens").
 
-Cross-links: `docs/04-token-economics.md` (the full token-budget arithmetic), `docs/08-packaging-as-plugin.md` (where references live in the directory tree).
+Cross-links: [Token economics](/docs/04-token-economics) (the full token-budget arithmetic), [Packaging as a plugin](/docs/08-packaging-as-plugin) (where references live in the directory tree).

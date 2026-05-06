@@ -90,7 +90,7 @@ Test fixtures (the captured input data your tests run against) carry the same di
 
 ## Test scope and the audit cycle
 
-Skills evolve. As a skill grows, the test surface grows. A discipline skill that started with 50 lines of prose and one rationalization may need 4 GREEN scenarios + 21 unit tests + a self-review meta-test by version 2. The audit cycle (`docs/09-evolution.md`) should include "test surface coverage" as a checked dimension; if the skill has scripts but no tests, that is an audit finding.
+Skills evolve. As a skill grows, the test surface grows. A discipline skill that started with 50 lines of prose and one rationalization may need 4 GREEN scenarios + 21 unit tests + a self-review meta-test by version 2. The audit cycle ([Evolution](/docs/09-evolution)) should include "test surface coverage" as a checked dimension; if the skill has scripts but no tests, that is an audit finding.
 
 ## Sources
 
@@ -99,4 +99,4 @@ Skills evolve. As a skill grows, the test surface grows. A discipline skill that
 - `LANDSCAPE` 1.2 (superpowers' TDD-for-skills; pressure scenarios with subagents).
 - `LANDSCAPE` 3.7 (test patterns: unit tests, integration tests, GREEN scenarios, self-review meta-test).
 
-Cross-links: `case-studies/2026-04-25-karpathy-wiki-v2.2.md` (the cross-script regression in detail), `docs/09-evolution.md` (audit-cycle includes test surface coverage).
+Cross-links: [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) (the cross-script regression in detail), [Evolution](/docs/09-evolution) (audit-cycle includes test surface coverage).

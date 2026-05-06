@@ -14,7 +14,7 @@ The cycle has five phases:
 4. **Execute.** Dispatch one implementer subagent per task. Two-stage review (spec compliance, then code quality) on each commit. Fix-up commits as needed (reviewer fix-up rate stays in 25-40 percent for a healthy ship).
 5. **Next audit.** The cycle repeats. The "things deliberately not covered" list from the previous audit becomes the seed for the next audit's scope.
 
-Cycle cadence: typically per major-version ship. Karpathy-wiki ran the cycle for v2 (Tasks 1-29), v2-hardening (Tasks 30-44), v2.1 (missed-capture patch), and v2.2 (Tasks 50-62). Four cycles in six months. Each cycle produced lessons that fed the next.
+Cycle cadence: typically per major-version ship. Karpathy-wiki ran the cycle for v2 (Tasks 1-29), v2-hardening (Tasks 30-44), v2.1 (missed-capture patch), and v2.2 (Tasks 50-62). Each cycle produced lessons that fed the next.
 
 ## Versioning policy
 
@@ -75,7 +75,7 @@ When publishing your own skill: pick the license that matches your downstream-us
 
 ## What this repo expects from contributors
 
-Per `docs/12-update-mechanism.md`: case studies, per-ship retrospectives, reader-submitted issues. The audit cycle is not strictly required for every contribution (a small typo fix does not need a brainstorming pass), but for non-trivial ships it is the proven pattern.
+Per [Update mechanism](/docs/12-update-mechanism): case studies, per-ship retrospectives, reader-submitted issues. The audit cycle is not strictly required for every contribution (a small typo fix does not need a brainstorming pass), but for non-trivial ships it is the proven pattern.
 
 ## Sources
 
@@ -85,4 +85,4 @@ Per `docs/12-update-mechanism.md`: case studies, per-ship retrospectives, reader
 - `REVIEWER` M6 (the license-of-skills nuance; Apache 2.0 patent grant rationale).
 - `KP-LICENSE` (for contrast only; karpathy-wiki is MIT, this repo is Apache 2.0).
 
-Cross-links: `docs/12-update-mechanism.md`, `case-studies/2026-04-25-karpathy-wiki-v2.2.md`.
+Cross-links: [Update mechanism](/docs/12-update-mechanism), [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2).

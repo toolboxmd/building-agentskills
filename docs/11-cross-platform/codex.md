@@ -14,7 +14,7 @@ Codex scans for skills in three locations, in this priority order:
 
 Plus built-in skills shipped with Codex itself.
 
-A spec-compliant SKILL.md (cross-platform-safe frontmatter; see `docs/05-authoring/frontmatter.md`) loads in Codex without modification. Discovery is at startup; progressive disclosure follows the spec.
+A spec-compliant SKILL.md (cross-platform-safe frontmatter; see [Frontmatter reference](/docs/05-authoring/frontmatter)) loads in Codex without modification. Discovery is at startup; progressive disclosure follows the spec.
 
 ## Invocation
 
@@ -66,7 +66,7 @@ Without this flag, `context: fork`-style skills (Claude Code pattern) do not wor
 
 Where Claude Code uses `CLAUDE.md` and Codex uses `AGENTS.md` for persistent always-on context, the convention is "vendor-neutral file in the repo root, vendor-specific symlink as needed." Codex reads `AGENTS.md`; Claude Code reads `CLAUDE.md`. Some authors symlink one to the other for cross-vendor compatibility; others maintain both.
 
-`AGENTS.md` is NOT a skill; it is the always-on memory equivalent. See `docs/02-mental-model.md` for the mental model.
+`AGENTS.md` is NOT a skill; it is the always-on memory equivalent. See [Mental model](/docs/02-mental-model) for the mental model.
 
 ## What Codex does NOT support (vs Claude Code)
 
@@ -79,4 +79,4 @@ Where Claude Code uses `CLAUDE.md` and Codex uses `AGENTS.md` for persistent alw
 - `LANDSCAPE` 1.4 (cross-platform comparison; Codex section).
 - `LANDSCAPE` 2.2 (Codex CLI: native Agent Skills, agents/openai.yaml sidecar, multi-agent opt-in, AGENTS.md).
 
-Cross-links: `docs/11-cross-platform/others.md`.
+Cross-links: [Other harnesses](/docs/11-cross-platform/others).

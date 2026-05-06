@@ -75,9 +75,9 @@ When you typed "ping skill," the agent matched your prompt against the loaded de
 
 ## Why the description matters
 
-The description is the only part of your skill the agent reads on every turn. If the description does not name the trigger conditions, the skill will never activate. The Layer 2 convention is "Use when..." followed by an enumeration of triggers (per `obra/superpowers` writing-skills); the Layer 1 spec just says "describes what the skill does and when to use it." Both shapes work; both are covered in `docs/05-authoring/triggers.md`.
+The description is the only part of your skill the agent reads on every turn. If the description does not name the trigger conditions, the skill will never activate. The Layer 2 convention is "Use when..." followed by an enumeration of triggers (per `obra/superpowers` writing-skills); the Layer 1 spec just says "describes what the skill does and when to use it." Both shapes work; both are covered in [Triggers](/docs/05-authoring/triggers).
 
-What the description must NOT do: summarize the body's workflow. A description that reads "Replies with a one-line confirmation that the skill activated" instead of "Use when the user asks to test that a custom skill is working" causes the agent to follow the description instead of reading the body. This is the single most common Layer 2 failure mode; see `docs/10-anti-patterns.md` for the full pattern.
+What the description must NOT do: summarize the body's workflow. A description that reads "Replies with a one-line confirmation that the skill activated" instead of "Use when the user asks to test that a custom skill is working" causes the agent to follow the description instead of reading the body. This is the single most common Layer 2 failure mode; see [Anti-patterns](/docs/10-anti-patterns) for the full pattern.
 
 ## Troubleshooting
 
@@ -96,10 +96,10 @@ The skill activated but the body was not followed.
 
 ## What to read next
 
-- `docs/02-mental-model.md`: when is a skill the right primitive? When should you use CLAUDE.md, hooks, or a slash command instead? The decision matrix.
-- `docs/03-three-questions.md`: the three-question framework. The hero mental model for designing any skill.
-- `docs/04-token-economics.md`: why the 500-line cap exists, and what auto-compaction does to your skill across a long session.
-- `examples/minimal-skill/SKILL.md`: a working minimal skill you can copy as a starting point for your own work.
+- [Mental model](/docs/02-mental-model): when is a skill the right primitive? When should you use CLAUDE.md, hooks, or a slash command instead? The decision matrix.
+- [Three questions](/docs/03-three-questions): the three-question framework. The hero mental model for designing any skill.
+- [Token economics](/docs/04-token-economics): why the 500-line cap exists, and what auto-compaction does to your skill across a long session.
+- [Minimal example skill](/examples/minimal-skill/SKILL): a working minimal skill you can copy as a starting point for your own work.
 
 ## Sources
 

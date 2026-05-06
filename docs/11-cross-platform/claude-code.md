@@ -37,7 +37,7 @@ When you do use SessionStart-hook injection:
 
 ## `${CLAUDE_PLUGIN_ROOT}` substitution gotcha
 
-Source: `REVIEWER` G3; `/Users/lukaszmaj/wiki/concepts/claude-code-plugin-root-substitution.md`.
+Source: `REVIEWER` G3; [plugin-root substitution wiki page](https://github.com/toolboxmd/karpathy-wiki/blob/main/wiki/concepts/claude-code-plugin-root-substitution.md).
 
 The token `${CLAUDE_PLUGIN_ROOT}` is a config-time substitution in `plugin.json` and `hooks.json`; Claude Code expands it to the plugin's installed path when reading those files.
 
@@ -49,7 +49,7 @@ Three workarounds:
 2. **Use a relative path.** `bash scripts/foo.sh` works if the skill's working directory is the skill's base directory.
 3. **Compute the path explicitly.** Read the base directory from the harness preamble at the top of the skill's body, `cd` into it, then invoke. Karpathy-wiki uses this pattern.
 
-See `docs/08-packaging-as-plugin.md` for the full discussion.
+See [Packaging as a plugin](/docs/08-packaging-as-plugin) for the full discussion.
 
 ## Invocation taxonomy: `disable-model-invocation` and `user-invocable`
 
@@ -71,7 +71,7 @@ The four combinations:
 
 Most skills should leave both at default (auto-trigger AND user-invocable). Set explicit values only when you want one of the constrained combinations.
 
-This taxonomy is the foundational design question for any new skill (Question 1 of the hero framework, `docs/03-three-questions.md`). Decide explicitly; do not let the defaults answer for you.
+This taxonomy is the foundational design question for any new skill (Question 1 of the hero framework, [Three questions](/docs/03-three-questions)). Decide explicitly; do not let the defaults answer for you.
 
 ## `paths:` glob as activation gate
 
@@ -85,7 +85,7 @@ paths: ["**/*.md"]
 
 The skill only auto-loads when the agent is working with markdown files. This is decoration-vs-mechanism in reverse: a more reliable gate than description-keyword matching, with the trade-off that it is Claude Code only.
 
-See `docs/05-authoring/frontmatter.md` for the field reference; `docs/07-mechanism-vs-decoration.md` for the broader pattern.
+See [Frontmatter reference](/docs/05-authoring/frontmatter) for the field reference; [Mechanism vs decoration](/docs/07-mechanism-vs-decoration) for the broader pattern.
 
 ## Sources
 
@@ -95,4 +95,4 @@ See `docs/05-authoring/frontmatter.md` for the field reference; `docs/07-mechani
 - `REVIEWER` G4 (per-scope priority).
 - `REVIEWER` G10 (`disable-model-invocation` / `user-invocable` taxonomy).
 
-Cross-links: `docs/04-token-economics.md` (the SessionStart-hook injection cost), `docs/08-packaging-as-plugin.md` (the plugin manifest and the substitution gotcha).
+Cross-links: [Token economics](/docs/04-token-economics) (the SessionStart-hook injection cost), [Packaging as a plugin](/docs/08-packaging-as-plugin) (the plugin manifest and the substitution gotcha).

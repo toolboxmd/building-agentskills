@@ -14,7 +14,7 @@ A working minimal SKILL.md the quickstart references. Copy this file as your sta
 NO SKILL.md WITHOUT A DESCRIPTION THAT NAMES A TRIGGER
 ```
 
-If your description does not name when the skill should activate, the agent will never trigger your skill. See `docs/05-authoring/triggers.md` in the building-agentskills repo for the discipline.
+If your description does not name when the skill should activate, the agent will never trigger your skill. See [Triggers](/docs/05-authoring/triggers) in the building-agentskills repo for the discipline.
 
 ## Activation behavior
 

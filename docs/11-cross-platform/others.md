@@ -84,4 +84,4 @@ The cross-platform-safe core is most of what matters for skill authoring. The ha
 - `LANDSCAPE` 2.6 (Continue.dev as not directly Agent Skills compatible).
 - `LANDSCAPE` 1.4 (Hermes agent, GitHub Copilot CLI v1.0.11+).
 
-Cross-links: `docs/11-cross-platform/codex.md`, `docs/11-cross-platform/gemini-cli.md`.
+Cross-links: [Codex CLI](/docs/11-cross-platform/codex), [Gemini CLI](/docs/11-cross-platform/gemini-cli).

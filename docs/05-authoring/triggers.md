@@ -6,7 +6,7 @@ The description is the only part of your SKILL.md the agent reads on every turn.
 
 Source: `LANDSCAPE` 1.2; `obra/superpowers` writing-skills/SKILL.md lines 140-198.
 
-Verbatim from `writing-skills/SKILL.md:152`:
+Verbatim from [obra/superpowers writing-skills/SKILL.md, line 152](https://github.com/obra/superpowers/blob/main/skills/writing-skills/SKILL.md?plain=1#L152):
 
 > Description should ONLY describe triggering conditions. Do NOT summarize the skill's process or workflow in the description. Testing revealed that when a description summarizes the skill's workflow, Claude may follow the description instead of reading the full skill content.
 
@@ -39,7 +39,7 @@ Pick the shape that fits your domain. A discipline skill (where over-firing is a
 
 ## Karpathy-wiki's description
 
-Karpathy-wiki uses the superpowers shape. Lines 3-12 of `karpathy-wiki/skills/karpathy-wiki/SKILL.md`:
+Karpathy-wiki uses the superpowers shape. From [the v2.2 SKILL.md, lines 3–12](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L3-L12):
 
 ```yaml
 description: |
@@ -88,7 +88,7 @@ For skills that gate on `paths:` glob patterns, additionally test that the skill
 - **No SKIP clause when the domain is ambiguous.** A skill that triggers on "what do we know about X" should explicitly NOT trigger on "what does X mean in general" (the second is a definition request, not a wiki query).
 - **Over-broad anti-trigger.** "DO NOT trigger on routine file edits" is fine; "DO NOT trigger if the user is busy" is meaningless. Anti-triggers must be specific.
 
-See `docs/10-anti-patterns.md` for the catalog of failure modes; `docs/06-testing/unit-tests.md` for the harness-side validation.
+See [Anti-patterns](/docs/10-anti-patterns) for the catalog of failure modes; [Unit tests](/docs/06-testing/unit-tests) for the harness-side validation.
 
 ## Sources
 
@@ -99,4 +99,4 @@ See `docs/10-anti-patterns.md` for the catalog of failure modes; `docs/06-testin
 - `REVIEWER` "Failed-URL re-fetches" (the path correction: `skills/pdf` not `document-skills/pdf`; the PDF skill's enumerative trigger inventory shape).
 - `REVIEWER` B3 (Claude Code-specific patterns claimed as harness-neutral; the "use when..." format is convention, not spec rule).
 
-Cross-links: `docs/02-mental-model.md` (when a skill is the right primitive at all), `docs/06-testing/unit-tests.md` (harness-side validation including pressure scenarios).
+Cross-links: [Mental model](/docs/02-mental-model) (when a skill is the right primitive at all), [Unit tests](/docs/06-testing/unit-tests) (harness-side validation including pressure scenarios).

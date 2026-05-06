@@ -2,19 +2,19 @@
 
 Each anti-pattern below has a one-line definition, a one-line evidence trail (citing the karpathy-wiki v2.2 commit or the source report section), and a one-line counter. Use this as a checklist for self-audit and as a reviewer aid.
 
-For the positive form of each pattern, follow the cross-link. Many of these anti-patterns are concrete failures of the second hero question (what fires on rules?) from the three-question framework; see `docs/03-three-questions.md` for the framework that this catalog inverts.
+For the positive form of each pattern, follow the cross-link. Many of these anti-patterns are concrete failures of the second hero question (what fires on rules?) from the three-question framework; see [Three questions](/docs/03-three-questions) for the framework that this catalog inverts.
 
 ## Decoration without mechanism
 
 - **Definition.** A SKILL.md invariant ("must," "always," "never," numeric threshold) that lives only in prose. The agent reads it and decides whether to act.
 - **Evidence.** Karpathy-wiki pre-v2.2 had three decoration-without-mechanism instances: index-size threshold (live wiki was 25 KB / 3x over an 8 KB stated threshold; zero schema-proposal captures fired across 30+ ingests); manifest origin contract (Iron Rule #7 enumerated valid origins, but the validator did not check); validator-blocks-commit (audit Finding 04 traced 7 broken links to ingester ignoring validator). `LESSONS` 2.1, commits `dabf10a`, `36f0aa8`, `d325dda`.
-- **Counter.** Every threshold or invariant must answer "what fires on it?" Wire to a script, validator, hook, or captured artifact. See `docs/07-mechanism-vs-decoration.md`.
+- **Counter.** Every threshold or invariant must answer "what fires on it?" Wire to a script, validator, hook, or captured artifact. See [Mechanism vs decoration](/docs/07-mechanism-vs-decoration).
 
 ## Heredoc-in-prose silent correctness
 
 - **Definition.** A snippet embedded in SKILL.md prose (bash heredoc, JSON template, YAML stub) that gets executed verbatim by a headless subprocess, with subtle textual hazards (leading whitespace, line endings, character substitution) corrupting the output without failing tests.
 - **Evidence.** Karpathy-wiki Task 56 (commit `dabf10a`) shipped two such bugs: 3-space indent leak from numbered-list rendering (validator rejected the rendered captures) and macOS `wc -c` whitespace leak in trigger-field strings. Both caught by reviewer in `0e0f815`. `LESSONS` 2.2.
-- **Counter.** Test the snippet by rehearsing the verbatim copy. Paste the bytes from SKILL.md into the test; do not retype. Add an assertion on the rendered output's first byte (e.g., `head -1 file == '---'`). See `docs/05-authoring/prose-discipline.md`.
+- **Counter.** Test the snippet by rehearsing the verbatim copy. Paste the bytes from SKILL.md into the test; do not retype. Add an assertion on the rendered output's first byte (e.g., `head -1 file == '---'`). See [Prose discipline](/docs/05-authoring/prose-discipline).
 
 ## Subagent reformatting hazard
 
@@ -26,7 +26,7 @@ For the positive form of each pattern, follow the cross-link. Many of these anti
 
 - **Definition.** A change to one script breaks another script that shares a contract (a constant, a schema, an exported interface). The plan's narrow test step ("run the validator's own test") misses the cross-script breakage.
 - **Evidence.** Karpathy-wiki Task 50 (`LESSONS` 2.4): removing `type: source` from `wiki-validate-page.py:VALID_TYPES` broke `wiki-normalize-frontmatter.py` (which mapped `sources/` directory to `type: source`). Caught by reviewer running full suite; commit `42b24bf`.
-- **Counter.** When a task modifies a contract, the regression-test scope is the FULL test suite (`bash tests/run-all.sh`), not the test for the immediate file. See `docs/06-testing/unit-tests.md`.
+- **Counter.** When a task modifies a contract, the regression-test scope is the FULL test suite (`bash tests/run-all.sh`), not the test for the immediate file. See [Unit tests](/docs/06-testing/unit-tests).
 
 ## Spec arithmetic errors
 
@@ -44,31 +44,31 @@ For the positive form of each pattern, follow the cross-link. Many of these anti
 
 - **Definition.** A script's interface (subcommand list, function list, flag list) is updated in `main()` or the help string but the module-level docstring at the top of the file remains stale.
 - **Evidence.** Karpathy-wiki Task 54 (commit `36f0aa8`, fixed in `3dfc26b`): added `validate` subcommand to `wiki-manifest.py`. Updated `usage:` print statement in `main()` but not the module-level docstring at lines 4-7. `LESSONS` 6.3.
-- **Counter.** When modifying a script's interface, the plan's modify set should include the script's own docstring, own help string, and any READMEs that mention the interface. See `docs/06-testing/unit-tests.md`.
+- **Counter.** When modifying a script's interface, the plan's modify set should include the script's own docstring, own help string, and any READMEs that mention the interface. See [Unit tests](/docs/06-testing/unit-tests).
 
 ## Description summarizing workflow instead of triggers (Claude Code-specific)
 
 - **Definition.** A SKILL.md description summarizes the body's workflow instead of naming triggering conditions. Claude Code's agent may follow the description and skip the body.
 - **Evidence.** Source: `LANDSCAPE` 1.2; `obra/superpowers` writing-skills/SKILL.md:160-172. Verbatim: "A description saying 'code review between tasks' caused Claude to do ONE review, even though the skill's flowchart clearly showed TWO reviews (spec compliance then code quality)."
-- **Counter.** Description starts with triggers ("Use when...") and lists 3-7 concrete trigger conditions. Skip the workflow summary; that lives in the body. See `docs/05-authoring/triggers.md`. (Flag: this anti-pattern is most acute on Claude Code, where the description is the primary activation signal. Other harnesses with explicit invocation, like OpenCode's `skill` tool, are less affected.)
+- **Counter.** Description starts with triggers ("Use when...") and lists 3-7 concrete trigger conditions. Skip the workflow summary; that lives in the body. See [Triggers](/docs/05-authoring/triggers). (Flag: this anti-pattern is most acute on Claude Code, where the description is the primary activation signal. Other harnesses with explicit invocation, like OpenCode's `skill` tool, are less affected.)
 
 ## Skills with no test coverage
 
 - **Definition.** "It's just prose" rationalization. The skill ships with no tests; the prose is treated as self-evidently correct.
 - **Evidence.** Karpathy-wiki Task 56's heredoc bugs (`LESSONS` 4.4): the original test was a hand-cleaned variant of the snippet that hid the bugs. Without the verbatim-snippet test added in `0e0f815`, the malformed captures would have shipped to production.
-- **Counter.** Pressure scenarios for discipline skills; verbatim-snippet tests for prose-with-snippets; `skills-ref validate` for spec compliance. See `docs/06-testing/unit-tests.md`.
+- **Counter.** Pressure scenarios for discipline skills; verbatim-snippet tests for prose-with-snippets; `skills-ref validate` for spec compliance. See [Unit tests](/docs/06-testing/unit-tests).
 
 ## Skills depending on undocumented harness behaviors
 
 - **Definition.** A skill depends on harness-specific quirks (substitution semantics, env var propagation, hook event ordering) that are not in the documented spec.
-- **Evidence.** Karpathy-wiki: `${CLAUDE_PLUGIN_ROOT}` is a config-time substitution token in plugin.json and hooks.json; it does NOT propagate to the Bash tool. A SKILL.md using `${CLAUDE_PLUGIN_ROOT}` in bash fails for personal-symlink installs (literal string reaches Bash, expands to empty, command becomes invalid). See `/Users/lukaszmaj/wiki/concepts/claude-code-plugin-root-substitution.md`. (`LANDSCAPE` 4.5.)
+- **Evidence.** Karpathy-wiki: `${CLAUDE_PLUGIN_ROOT}` is a config-time substitution token in plugin.json and hooks.json; it does NOT propagate to the Bash tool. A SKILL.md using `${CLAUDE_PLUGIN_ROOT}` in bash fails for personal-symlink installs (literal string reaches Bash, expands to empty, command becomes invalid). See [the plugin-root substitution wiki page](https://github.com/toolboxmd/karpathy-wiki/blob/main/wiki/concepts/claude-code-plugin-root-substitution.md). (`LANDSCAPE` 4.5.)
 - **Counter.** Test on real harness instances (not just the spec). Document harness gotchas in `docs/11-cross-platform/`. Use spec-portable patterns when possible; isolate harness-specific code paths.
 
 ## TDD-doesn't-fit gating absent
 
 - **Definition.** A plan task's test step is "run the test to verify it passes immediately" without naming whether this is a regression-pin, a mechanism-rehearsal, or a TDD violation.
 - **Evidence.** Karpathy-wiki Tasks 56 and 59: plan said "test passes immediately" without flagging the inversion as legitimate. The implementer is left guessing whether they are violating TDD discipline. `LESSONS` 5.
-- **Counter.** Mark "test passes immediately" tasks explicitly. State whether the test is a regression-pin or a mechanism-rehearsal, and link the relevant doc. See `docs/06-testing/tests-that-pass-immediately.md`.
+- **Counter.** Mark "test passes immediately" tasks explicitly. State whether the test is a regression-pin or a mechanism-rehearsal, and link the relevant doc. See [Tests that pass immediately](/docs/06-testing/tests-that-pass-immediately).
 
 ## How to use this catalog
 
@@ -95,4 +95,4 @@ For plan review:
 - `LANDSCAPE` 4.4 (no-test-coverage anti-pattern).
 - `LANDSCAPE` 4.5 (undocumented-harness-behavior anti-pattern).
 
-Cross-links: `docs/03-three-questions.md`, `docs/07-mechanism-vs-decoration.md`, `docs/05-authoring/prose-discipline.md`, `docs/06-testing/unit-tests.md`, `docs/06-testing/tests-that-pass-immediately.md`, `docs/05-authoring/triggers.md`, `case-studies/2026-04-25-karpathy-wiki-v2.2.md`.
+Cross-links: [Three questions](/docs/03-three-questions), [Mechanism vs decoration](/docs/07-mechanism-vs-decoration), [Prose discipline](/docs/05-authoring/prose-discipline), [Unit tests](/docs/06-testing/unit-tests), [Tests that pass immediately](/docs/06-testing/tests-that-pass-immediately), [Triggers](/docs/05-authoring/triggers), [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2).

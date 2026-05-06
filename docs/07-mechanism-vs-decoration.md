@@ -2,7 +2,7 @@
 
 Every threshold, invariant, or rule in your SKILL.md is either decoration or mechanism. Decoration is fine for guidance prose. For invariants (words like "must," "always," "never," numeric thresholds), decoration is a wish; mechanism is a contract. This page is the standalone deep dive on the rule, the audit method, and the v2.2 case studies that prove the rule is load-bearing.
 
-This is Question 2 of the hero framework (`docs/03-three-questions.md`). The auditor named the pattern "decoration vs mechanism" and called it "the strongest signal for what v2.2-hardening should fix" (`karpathy-wiki/docs/planning/2026-04-24-karpathy-wiki-v2.2-audit.md:366`).
+This is Question 2 of the hero framework ([Three questions](/docs/03-three-questions)). The auditor named the pattern "decoration vs mechanism" and called it "the strongest signal for what v2.2-hardening should fix" ([karpathy-wiki v2.2 audit, line 366](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/docs/planning/2026-04-24-karpathy-wiki-v2.2-audit.md?plain=1#L366)).
 
 ## The rule (sharpened)
 
@@ -57,7 +57,7 @@ Mechanism-form: "bash measures, bash writes capture, next turn sees capture, sch
 
 The threshold is now a contract. The 25 KB wiki produces a capture; the agent cannot rationalize past it.
 
-The first version of this wiring shipped with two silent correctness bugs (heredoc indent leak, `wc -c` whitespace). The reviewer caught them in `0e0f815`. The bugs are documented in `docs/05-authoring/prose-discipline.md`.
+The first version of this wiring shipped with two silent correctness bugs (heredoc indent leak, `wc -c` whitespace). The reviewer caught them in `0e0f815`. The bugs are documented in [Prose discipline](/docs/05-authoring/prose-discipline).
 
 ### Wiring 2: manifest origin contract (commit `36f0aa8`, Iron Rule strengthened in `d325dda`)
 
@@ -132,4 +132,4 @@ The audit's question is not "is every rule a mechanism?" but "is every rule that
 - `REVIEWER` "Stress test of the decoration vs mechanism headline" (the sharpened framing used in this doc).
 - `REVIEWER` G8 (`paths:` glob as activation gate).
 
-Cross-links: `docs/03-three-questions.md` (Q2), `docs/10-anti-patterns.md` (decoration without mechanism is the headline anti-pattern), `case-studies/2026-04-25-karpathy-wiki-v2.2.md` (the three wirings as ship narrative).
+Cross-links: [Three questions](/docs/03-three-questions) (Q2), [Anti-patterns](/docs/10-anti-patterns) (decoration without mechanism is the headline anti-pattern), [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) (the three wirings as ship narrative).
