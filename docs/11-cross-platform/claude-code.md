@@ -23,9 +23,7 @@ The plugin-skill-shadowed-by-personal-skill case is the karpathy-wiki developmen
 
 Source: `LANDSCAPE` 2.1; `REVIEWER` G2; superpowers issue #1220.
 
-The SessionStart hook reads SKILL.md, escapes for JSON, and emits the body as `hookSpecificOutput.additionalContext`. The agent receives the entire body before its first turn. This guarantees the iron laws are in context every turn but costs the full SKILL.md size in input tokens every session.
-
-The empirical anchor: superpowers issue #1220 measured ~17.8k tokens of SessionStart-hook injection over 57 hours across 13 firings of `using-superpowers`. That is ~1,370 tokens per firing on average; the skill body is the floor.
+The SessionStart hook reads SKILL.md, escapes for JSON, and emits the body as `hookSpecificOutput.additionalContext`. The agent receives the entire body before its first turn. This guarantees the iron laws are in context every turn but costs the full SKILL.md size in input tokens every session. The empirical cost (~17.8k tokens / 57 hours / 13 firings of `using-superpowers`) is in [Token economics — SessionStart-hook injection cost](/docs/04-token-economics).
 
 The pattern is justified for the bootstrap skill (`using-superpowers` is the canonical exception), where the iron laws of the entire ceremony must be in context from turn 1. It is rarely justified elsewhere; description-triggered loading is the cheaper default for most skills.
 
@@ -33,23 +31,11 @@ When you do use SessionStart-hook injection:
 
 - Keep the injected body small. The cost is paid every session whether the skill is invoked or not.
 - Document the injection in the skill's prose so users know the cost.
-- Measure the injection cost on a representative session sample. The 17.8k / 57 hours / 13 firings number is the right shape; substitute your own.
+- Measure the injection cost on a representative session sample; substitute your own number.
 
 ## `${CLAUDE_PLUGIN_ROOT}` substitution gotcha
 
-Source: `REVIEWER` G3; [plugin-root substitution wiki page](https://github.com/toolboxmd/karpathy-wiki/blob/main/wiki/concepts/claude-code-plugin-root-substitution.md).
-
-The token `${CLAUDE_PLUGIN_ROOT}` is a config-time substitution in `plugin.json` and `hooks.json`; Claude Code expands it to the plugin's installed path when reading those files.
-
-The token does NOT propagate to the Bash tool. A SKILL.md that says `bash "${CLAUDE_PLUGIN_ROOT}/scripts/foo.sh"` fails for personal-symlink installs (the literal string reaches Bash, expands to empty, command becomes `bash /scripts/foo.sh` which does not exist).
-
-Three workarounds:
-
-1. **Use `${CLAUDE_SKILL_DIR}` instead.** This token IS available in bash injection commands.
-2. **Use a relative path.** `bash scripts/foo.sh` works if the skill's working directory is the skill's base directory.
-3. **Compute the path explicitly.** Read the base directory from the harness preamble at the top of the skill's body, `cd` into it, then invoke. Karpathy-wiki uses this pattern.
-
-See [Packaging as a plugin](/docs/08-packaging-as-plugin) for the full discussion.
+Token expands inside `plugin.json` / `hooks.json`, does NOT propagate to the Bash tool — silent breakage on personal-symlink installs. Full discussion and workarounds in [Packaging as a plugin → The `${CLAUDE_PLUGIN_ROOT}` gotcha](/docs/08-packaging-as-plugin#the-claude_plugin_root-gotcha).
 
 ## Invocation taxonomy: `disable-model-invocation` and `user-invocable`
 

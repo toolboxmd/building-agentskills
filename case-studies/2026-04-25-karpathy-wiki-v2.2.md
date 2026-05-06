@@ -38,29 +38,15 @@ For your own skills: when an audit lists multiple findings that share a category
 
 ## The three decoration-to-mechanism wirings
 
-Source: `LESSONS` 2.1; commits `dabf10a`, `36f0aa8`, `d325dda`.
+Source: `LESSONS` 2.1; commits `dabf10a`, `36f0aa8`, `d325dda`, `0e0f815`, `f72bfc3`.
 
-### Wiring 1: index-size threshold (commit `dabf10a`, finalized in `0e0f815`)
+v2.2 converted three SKILL.md decorations into wired mechanisms:
 
-Pre-v2.2 SKILL.md said "Split or atom-ize `index.md` when it exceeds ~200 entries / 8KB / 2000 tokens." This was decoration. The live wiki was 25 KB (3x over). Across 30+ ingests, the agent never authored a single schema-proposal capture because nothing measured.
+1. **Index-size threshold** — pre-v2.2 prose said "split when `index.md` > 8KB" but the live wiki was 25 KB and 30+ ingests had never written a schema-proposal capture. v2.2 wired ingest step 7.6 to measure (`wc -c`) and emit a capture when over threshold.
+2. **Manifest origin contract** — Iron Rule #7 enumerated valid `origin` values; two live entries had `"origin": ""` and the validator never checked. v2.2 added `wiki-manifest.py validate` with exit 1 on empty/typename/relative-path origins.
+3. **Validator-blocks-commit** — partial wiring; SKILL.md prose strengthened, paired with `f72bfc3` to reduce false-positives. Honest evidence that the rule is a spectrum.
 
-v2.2 wired ingest step 7.6 to compute size and write a schema-proposal capture file when over threshold. The mechanism: bash `wc -c` measures, `[[ ${size} -gt 8192 ]]` fires, `cat > ...` writes the capture file. The next turn's "check pending captures" loop surfaces it.
-
-The threshold became a contract. The 25 KB wiki produces a capture; the agent cannot rationalize past it.
-
-### Wiring 2: manifest origin contract (commit `36f0aa8`, Iron Rule strengthened in `d325dda`)
-
-Iron Rule #7 enumerated valid `origin` values without enumerating the empty string. Two live entries had `"origin": ""`; outside the rule's enumeration but accepted by the validator (which never checked).
-
-v2.2 added `wiki-manifest.py validate` returning exit 1 on empty/typename/relative-path origins. The Iron Rule is now backed by a script with an exit code. The empty-origin regression cannot recur silently.
-
-### Wiring 3: validator-blocks-commit (commit `d325dda`, paired with `f72bfc3`)
-
-Pre-v2.2 SKILL.md said "Do NOT commit a wiki state where the validator fails." The audit traced 7 broken links to the ingester ignoring the validator.
-
-v2.2 strengthened the prose to "the ingester MUST NOT call `wiki-commit.sh` if the validator exits non-zero for any touched page." This is still mostly prose; the full mechanism (a hook that blocks commit on non-zero exit) is deferred. The pairing with `f72bfc3` (code-block-link skip fix) reduces false-positives so the validator's signals are trustworthy.
-
-This is honest evidence that the decoration-vs-mechanism rule is a spectrum. Sometimes you wire fully; sometimes you wire partially. See [Mechanism vs decoration](/docs/07-mechanism-vs-decoration).
+Full walkthrough with all five commits: [Mechanism vs decoration — three wirings](/docs/07-mechanism-vs-decoration).
 
 ## The five reviewer-driven fix-ups
 

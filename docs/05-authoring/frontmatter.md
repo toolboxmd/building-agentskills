@@ -91,35 +91,20 @@ These fields are recognized by Claude Code only. Other harnesses ignore them sil
 
 ## Per-skill character budgets (Claude Code only)
 
-Three distinct numbers, often confused. Source: `REVIEWER` B4. These constrain Claude Code-targeted skills; the cross-platform-safe spec only enforces the first.
-
-- **1,024 characters.** Hard cap on the `description` field per the agent-skills spec. Required for cross-platform compatibility.
-- **1,536 characters.** Truncation threshold on the combined `description` + `when_to_use` text in Claude Code's skill listing. Long descriptions ARE accepted but only the first 1,536 chars are visible to the agent on each turn.
-- **8,000 characters (or 1% of context window).** Total budget across ALL skills' descriptions, governed by `SLASH_COMMAND_TOOL_CHAR_BUDGET`. Default is 1% of context window with an 8,000-character fallback.
-
-Front-load triggers in the description; the bottom of a long description may never be read. See [Token economics](/docs/04-token-economics) for the budget arithmetic.
+Three distinct numbers (1,024 / 1,536 / 8,000) constrain Claude Code-targeted skills. Front-load triggers in the description; the bottom of a long description may never be read. Full numbers and arithmetic in [Token economics — The description listing budget](/docs/04-token-economics).
 
 ## Worked example: karpathy-wiki frontmatter
 
-Cross-platform safe (the spec-compliant minimum):
+Cross-platform safe (the spec-compliant minimum). Showing field shape only — full TRIGGER/SKIP body in [Description triggers — Karpathy-wiki's description](/docs/05-authoring/triggers).
 
 ```yaml
 ---
 name: karpathy-wiki
 description: |
-  Load at the start of EVERY conversation. Entry is non-negotiable; once loaded,
-  the skill's rules apply for the whole session.
-
-  TRIGGER when (immediate capture): any research agent or research subagent
-  completes or returns a file; new factual information is found...
-
-  TRIGGER when (orientation + citation): the user asks "what do we know about X"...
-
-  SKIP: routine file edits, syntax lookups, one-off debugging with trivial root
-  causes, time-sensitive data that must be fetched fresh, or questions clearly
-  outside any wiki's scope.
-
-  Do NOT skip based on tone or shape...
+  Load at the start of EVERY conversation. Entry is non-negotiable...
+  TRIGGER when (immediate capture): ...
+  TRIGGER when (orientation + citation): ...
+  SKIP: ...
 metadata:
   hermes:
     config:
@@ -129,7 +114,7 @@ metadata:
 ---
 ```
 
-This is the entire frontmatter for karpathy-wiki at v2.2 ([lines 1–19 of the v2.2 SKILL.md](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L1-L19)). It uses no Claude Code extensions; it works on every spec-compatible harness. The `metadata.hermes` block is harness-specific but lives inside the spec-compliant `metadata` field.
+Source: [v2.2 SKILL.md lines 1–19](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L1-L19). No Claude Code extensions; works on every spec-compatible harness. The `metadata.hermes` block is harness-specific but lives inside the spec-compliant `metadata` field.
 
 ## Auditing your frontmatter
 

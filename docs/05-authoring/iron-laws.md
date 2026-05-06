@@ -41,7 +41,7 @@ NO SKIPPING A CAPTURE BECAUSE "IT DOESN'T LOOK WIKI-SHAPED"
 
 Three Iron Laws. Each one is a sentence. Each one is exception-free. The agent reading the skill should understand each one as a hard constraint, not a default-with-exceptions.
 
-The fourth, called out separately at line 51 ("Iron Rule #7" in the rules section of the same file), reinforces the manifest-origin contract: never set `.manifest.json` `origin` to `"file"`, `"mixed"`, the evidence type, the empty string, or a relative path.
+The fourth, called out separately at line 51 ("Iron Rule #7" in the rules section of the same file), reinforces the manifest-origin contract: never set `.manifest.json` `origin` to `"file"`, `"mixed"`, the evidence type, the empty string, or a relative path. The wiring story (commit `36f0aa8`, validator strengthened in `d325dda`) is in [Mechanism vs decoration](/docs/07-mechanism-vs-decoration).
 
 ## Forbidden-rationalization table
 
