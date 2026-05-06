@@ -3,9 +3,10 @@
 **Date:** 2026-05-06
 **Subject:** building-agentskills v0.1 deployment cleanup
 **Companion repo:** `toolboxmd/karpathy-wiki` (one-file PR)
-**Status:** v1.1 spec, awaiting user review
+**Status:** v1.2 spec, awaiting user review
 **Revision history:**
 - **v1.0 → v1.1.** Two independent reviewers (Opus + Codex) found two BLOCKERs and several HIGHs. v1.1 corrects the URL convention (Mintlify routes preserve the `docs/` prefix), replaces the broken line-number enumerations with grep-derived ground-truth tables, scopes the CI gate to exclude `docs/superpowers/specs/`, conforms to the existing `*.test.sh` test-harness convention, adds an explicit README.md exception (GitHub-rendered), makes Step-A merge a hard preflight for Step B, and clarifies the diff-scope rule with an inline DONE_WITH_CONCERNS protocol.
+- **v1.1 → v1.2.** Re-review by both reviewers found two new BLOCKERs in v1.1 (a cross-repo URL pointing to a path that 404s post-v2.4-split, and a CI-gate self-test fixture that was logically vacuous). v1.2 pins all karpathy-wiki cross-repo URLs to commit `4f4c00d` (the v2.2 tip per the case study) so they remain byte-stable forever, fixes the linked-chip fixture to actually contain a backticked chip in link syntax, removes a self-contradiction in the Pattern A taxonomy around `skills/`, extends the bare-paths gate to catch `.md:<line>` and `.md:<start>-<end>` suffixes, clarifies the gate's argument-mode contract, scopes the gate to `.md` chips only (excluding `.sh`/`.py`), and corrects an off-by-one `docs.json` line citation.
 
 ## Why
 
@@ -89,15 +90,24 @@ The Step B PR may make zero changes to README.md if the audit confirms no `/User
 
 ### Cross-repo links
 
-Format: absolute GitHub blob URL with branch name (typically `main`).
+Format: absolute GitHub blob URL. Choose the ref carefully:
 
-- Example: `[plugin-root substitution wiki page](https://github.com/toolboxmd/karpathy-wiki/blob/main/wiki/concepts/claude-code-plugin-root-substitution.md)`.
+- **Use `main`** when the link target is a long-lived, stable artifact whose path is stable across versions (e.g., `wiki/concepts/claude-code-plugin-root-substitution.md` — once Step A creates it, it lives there indefinitely).
+- **Use a commit SHA pin** when the link target's path or content is volatile across versions. This applies to anything tied to a specific historical ship — the case-study citations, the v2.2 spec doc, the v2.2 audit doc, the pre-split SKILL.md path. The canonical pin for v2.2-era karpathy-wiki content is **`4f4c00d`** (the v2-rewrite branch tip per `case-studies/2026-04-25-karpathy-wiki-v2.2.md:5`). Pinning to a SHA produces byte-stable permalinks immune to future renames or deletions; this is the pattern GitHub itself recommends ("press `y` for permalink").
+
+Examples:
+
+- Stable: `[plugin-root substitution wiki page](https://github.com/toolboxmd/karpathy-wiki/blob/main/wiki/concepts/claude-code-plugin-root-substitution.md)` — Step A puts this here; it stays.
+- v2.2-pinned: `[v2.2 SKILL.md description, lines 3–12](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L3-L12)` — the path `skills/karpathy-wiki/` was deleted post-v2.4-split (commit `b1bf4e6`); only the SHA-pinned URL resolves.
+- v2.2-pinned: `[v2.2 spec doc, lines 30–65](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/docs/superpowers/specs/2026-04-24-karpathy-wiki-v2.2-design.md?plain=1#L30-L65)` — the file is currently public on `main` but pinning to `4f4c00d` ensures the line range matches the v2.2 prose forever.
+
+The decision rule: if our prose describes the file *as it was at v2.2*, pin to `4f4c00d`. If our prose describes the file *as it currently is*, use `main`.
 
 ### Line-range anchors on cross-repo Markdown files
 
 Format: append `?plain=1#L<start>-L<end>`. The `?plain=1` is required for GitHub to render Markdown with line numbers and apply the line-range highlight; without it, the Markdown is rendered as prose and the anchor is ignored.
 
-- Example: `[v2.2 spec doc lines 30–65](https://github.com/toolboxmd/karpathy-wiki/blob/main/docs/superpowers/specs/2026-04-24-karpathy-wiki-v2.2-design.md?plain=1#L30-L65)`.
+- Example: `[v2.2 spec doc lines 30–65](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/docs/superpowers/specs/2026-04-24-karpathy-wiki-v2.2-design.md?plain=1#L30-L65)` — note the SHA pin, not `main`, per the version-pinning rule above.
 
 ### Heading anchors within Mintlify pages
 
@@ -121,14 +131,14 @@ The implementer must:
 1. Apply the prose rewrites and path-leak fixes named in this section. Do not invent additional rewrites beyond what is specified.
 2. For each file, the change tables list every line that changes. Lines not listed must not be touched.
 3. Do not reformat unrelated lines (line wrapping, trailing whitespace cleanup, prose tightening). The acceptable diff is the lines that had to change to satisfy this spec, nothing else.
-4. **DONE_WITH_CONCERNS protocol** (inline definition for context-free implementer agents): if you notice an unrelated improvement that you would normally make, do NOT make it. Instead, when reporting completion of the task, state explicitly: "DONE_WITH_CONCERNS: I noticed [issue], at [file:line], which I did not address per the diff-scope rule. Recommended follow-up: [brief description]." The reviewer will decide whether to fold it in. This protocol exists because subagent reformatting hazards (see `docs/10-anti-patterns.md` "Subagent reformatting hazard") have been observed in past ships.
+4. **DONE_WITH_CONCERNS protocol** (inline definition for context-free implementer agents): if you notice an unrelated improvement that you would normally make, do NOT make it. Instead, append a `## Implementer concerns` section to the **PR description** (NOT the commit message — commit messages describe the change, not handoff notes) with one line per concern in the form: "DONE_WITH_CONCERNS: I noticed [issue], at [file:line], which I did not address per the diff-scope rule. Recommended follow-up: [brief description]." The reviewer will decide whether to fold it in. This protocol exists because subagent reformatting hazards (see `docs/10-anti-patterns.md` "Subagent reformatting hazard") have been observed in past ships.
 5. **Diff-size sanity check.** After implementing, run `git diff --stat HEAD^..HEAD` and confirm only files in the per-file change list appear. The line counts per file should be in the same order of magnitude as the change-table sizes below (roughly: 00-overview ~30 lines changed; 03-three-questions ~20 lines; 09-evolution ~3 lines; 10-anti-patterns ~12 lines; 12-update-mechanism ~10 lines; 08-packaging-as-plugin ~10 lines; 11-cross-platform/claude-code ~6 lines; case-study ~25 lines).
 
 ### Chip-classification rules
 
 Empirically derived from the grep audit, three distinct chip patterns appear in this codebase:
 
-- **Pattern A: Path-prefixed in-repo navigational chip.** Form: `` `docs/<...>.md` ``, `` `case-studies/<...>.md` ``, `` `examples/<...>.md` ``, `` `skills/<...>.md` `` — used as a "see also" reference. **Convert to a Mintlify-form link.** Strip the `.md` and prepend the route per the conventions above.
+- **Pattern A: Path-prefixed in-repo navigational chip.** Form: `` `docs/<...>.md` ``, `` `case-studies/<...>.md` ``, `` `examples/<...>.md` `` — used as a "see also" reference. **Convert to a Mintlify-form link.** Strip the `.md` and prepend the route per the conventions above. **Note:** `` `skills/<...>.md` `` chips are explicitly NOT Pattern A. The `skills/` directory is not in `docs.json`'s navigation tree, so its files are GitHub-rendered, not Mintlify-rendered. Convert `` `skills/<...>.md` `` chips to absolute GitHub URLs (e.g., `[the loader skill](https://github.com/toolboxmd/building-agentskills/blob/main/skills/building-agentskills/SKILL.md)`).
 - **Pattern B: Bare-prefix in-repo navigational chip.** Form: `` `<numeric-prefix>-<name>.md` `` (e.g., `` `07-mechanism-vs-decoration.md` ``, `` `01-quickstart.md` ``) used as a same-section "see also" reference. **Convert to a Mintlify-form link** with the full `/docs/` route inferred from context (these always live under `docs/`). The original spec missed this pattern; v1.1 enumerates it explicitly.
 - **Pattern C: Topical / cross-repo chip — DO NOT CONVERT.**
   - Filenames discussed as topics (e.g., `` `SKILL.md` `` in "your `SKILL.md` should be under 500 lines"). These are code references.
@@ -184,11 +194,11 @@ Cross-links: [README](https://github.com/toolboxmd/building-agentskills/blob/mai
 |---|---|---|
 | 16 | "see `` `docs/11-cross-platform/claude-code.md` `` for the field reference" (Pattern A) | Convert: `[the Claude Code field reference](/docs/11-cross-platform/claude-code)`. |
 | 19 | "The deeper why is in `` `docs/02-mental-model.md` ``…The taxonomy is in `` `docs/05-authoring/frontmatter.md` ``." (Pattern A, two chips) | Convert both. |
-| 23 | "(lines 3-12 of `` `karpathy-wiki/skills/karpathy-wiki/SKILL.md` ``)" (Pattern C, cross-repo) | Convert to GitHub URL: `[lines 3–12 of karpathy-wiki/skills/karpathy-wiki/SKILL.md](https://github.com/toolboxmd/karpathy-wiki/blob/main/skills/karpathy-wiki/SKILL.md?plain=1#L3-L12)`. |
+| 23 | "(lines 3-12 of `` `karpathy-wiki/skills/karpathy-wiki/SKILL.md` ``)" (Pattern C, cross-repo, v2.2-era path) | Convert to GitHub URL with **v2.2 SHA pin** (the path `skills/karpathy-wiki/` was deleted in the v2.4 split, commit `b1bf4e6`; only a pinned link resolves): `[lines 3–12 of the v2.2 karpathy-wiki SKILL.md](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L3-L12)`. The prose is describing the v2.2-tip state, so the v2.2 pin is correct. Verified: at `4f4c00d`, lines 3–12 of that file are the description block beginning "Load at the start of EVERY conversation." |
 | 27–29 | End of "Question 2: what fires on rules?" intro paragraph (line 29 ends "what enforces the claim?"). | Insert the on-ramp sentence (text below) after line 29 but **before** the bullets at line 31, so the definition lands adjacent to its first use. |
 | 34 | "ask 'what fires on this if violated?'" + chip `` `docs/07-mechanism-vs-decoration.md` `` (Pattern A) | Convert chip: `[Mechanism vs decoration](/docs/07-mechanism-vs-decoration)`. The shorthand `"what fires on this if violated?"` stays — by this point it's defined. |
 | 44 | `` `index.md` `` (Pattern C, topical — discussing a wiki's index file). | Leave as-is. Topical, not navigational. |
-| 48 | "(`` `karpathy-wiki/docs/planning/2026-04-24-karpathy-wiki-v2.2-audit.md:366` ``)…see `` `docs/07-mechanism-vs-decoration.md` ``" (one Pattern C cross-repo chip with line anchor; one Pattern A chip) | Cross-repo chip: convert to `[karpathy-wiki v2.2 audit, line 366](https://github.com/toolboxmd/karpathy-wiki/blob/main/docs/planning/2026-04-24-karpathy-wiki-v2.2-audit.md?plain=1#L366)`. **Note:** verify this file exists publicly at karpathy-wiki/main; if not, fall back to a path reference in prose. In-repo chip: standard convert. |
+| 48 | "(`` `karpathy-wiki/docs/planning/2026-04-24-karpathy-wiki-v2.2-audit.md:366` ``)…see `` `docs/07-mechanism-vs-decoration.md` ``" (one Pattern C cross-repo chip with line anchor; one Pattern A chip) | Cross-repo chip: convert to **v2.2-pinned** GitHub URL: `[karpathy-wiki v2.2 audit, line 366](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/docs/planning/2026-04-24-karpathy-wiki-v2.2-audit.md?plain=1#L366)`. The prose describes the v2.2 audit state. Note that the original chip uses the now-defunct `:366` anchor format; the rewrite must use `?plain=1#L366` (per the line-range-anchors convention above). In-repo chip: standard convert. |
 | 58 | "is in `` `docs/04-token-economics.md` ``" (Pattern A) | Convert. |
 | 66 | "discussed in `` `docs/04-token-economics.md` ``" (Pattern A) | Convert. |
 | 78 | "(`` `01-quickstart.md` ``, `` `02-mental-model.md` ``, `` `04-token-economics.md` ``)" (Pattern B, three chips) | Convert all three. |
@@ -240,7 +250,7 @@ Cross-links: [README](https://github.com/toolboxmd/building-agentskills/blob/mai
 | 42 | "live in `` `docs/11-cross-platform/` ``" (Pattern A, directory) | Leave as-is. Directory reference. |
 | 49 | "(`` `/Users/lukaszmaj/dev/bigbrain/research/.../2026-04-24-skill-authoring-landscape-2026.md` ``)" | **Path leak.** Rewrite per text below. |
 | 72 | "The loader skill (`` `skills/building-agentskills/SKILL.md` ``)." (Pattern A) | Convert: `[the loader skill](https://github.com/toolboxmd/building-agentskills/blob/main/skills/building-agentskills/SKILL.md)`. **Note:** `skills/` is NOT in `docs.json`'s navigation tree, so it is GitHub-rendered, not Mintlify-rendered. Use absolute GitHub URL. |
-| 73 | "The example skill (`` `examples/minimal-skill/SKILL.md` ``)." | `examples/minimal-skill/SKILL` IS in `docs.json:78`, so this is Mintlify-rendered. Convert: `[the minimal example skill](/examples/minimal-skill/SKILL)`. |
+| 73 | "The example skill (`` `examples/minimal-skill/SKILL.md` ``)." | `examples/minimal-skill/SKILL` IS in `docs.json:79`, so this is Mintlify-rendered. Convert: `[the minimal example skill](/examples/minimal-skill/SKILL)`. |
 | 83 | "Cross-links: `` `case-studies/2026-04-25-karpathy-wiki-v2.2.md` ``." (Pattern A) | Convert. |
 
 **Line-11 rewrite:**
@@ -299,9 +309,9 @@ Cross-links: [README](https://github.com/toolboxmd/building-agentskills/blob/mai
 
 > The full retrospective lives in the document we cite as `LESSONS` (see [Overview → Sources](/docs/00-overview#sources)). This case study is the public-audience version, written for readers who landed here from a search.
 
-**Line-33 rewrite:**
+**Line-33 rewrite (v2.2-pinned URL):**
 
-> The architectural decision is documented in the [v2.2 spec doc, lines 30–65](https://github.com/toolboxmd/karpathy-wiki/blob/main/docs/superpowers/specs/2026-04-24-karpathy-wiki-v2.2-design.md?plain=1#L30-L65), with an explicit "Architectural decision: kill `sources/`" section and a job-vs-replacement table. Without brainstorming, v2.2 would have shipped 7+ patches plus 31 stub-improvement passes; instead it shipped one architectural cut + 5 mechanism-wirings.
+> The architectural decision is documented in the [v2.2 spec doc, lines 30–65](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/docs/superpowers/specs/2026-04-24-karpathy-wiki-v2.2-design.md?plain=1#L30-L65), with an explicit "Architectural decision: kill `sources/`" section and a job-vs-replacement table. Without brainstorming, v2.2 would have shipped 7+ patches plus 31 stub-improvement passes; instead it shipped one architectural cut + 5 mechanism-wirings.
 
 ### `README.md`
 
@@ -315,12 +325,16 @@ If the implementer's audit during implementation surfaces an issue (e.g., a path
 
 A Bash script that:
 
-1. Greps `docs/`, `case-studies/`, `examples/`, and `README.md` for backtick-wrapped strings ending in `.md`.
+1. Greps `docs/`, `case-studies/`, `examples/`, and `README.md` for backtick-wrapped strings whose payload matches the regex `[A-Za-z0-9._/-]+\.md(:[0-9]+(-[0-9]+)?)?` — i.e., a `.md` path optionally followed by `:<line>` or `:<start>-<end>` (catches both bare chips and chips with line-range suffixes).
 2. Excludes the spec directory `docs/superpowers/specs/`.
 3. For each match, applies the chip-classification rules from this spec:
    - **Pattern A or B (navigational chip):** check whether the surrounding context is Markdown link syntax. The rule: a backtick-wrapped path is OK only if it appears as the link text inside `[…](…)` syntax, OR if the path is in the link target. Specifically: scan for `[<...>`<path>.md`<...>](<...>)` or `[<text>](<...>`<path>.md`<...>)` — both are link forms.
    - **Pattern C (topical chip):** the script's allowlist contains literal exact-match strings: `SKILL.md`, `plugin.json`, `hooks.json`, `marketplace.json`, `.claude-plugin/plugin.json`, `index.md`, `GEMINI.md`, `TODO.md` (when not preceded by `karpathy-wiki/`), `LICENSE`, template patterns matching `<.*>` (angle-bracket placeholders).
 4. Returns 0 if all matches are either inside link syntax or on the allowlist; returns 1 with a list of file:line:violation otherwise.
+
+**Argument mode.** If invoked with one or more positional arguments (`bash scripts/check-no-bare-paths.sh path1 path2 ...`), the script ignores the default scope and greps only the given paths (files or directories). The allowlist and link-detection logic are unchanged. Used for fixture self-testing and ad-hoc per-file checks. The default no-arg invocation is the CI-gate behavior; arg mode is a developer convenience.
+
+**Scope of the gate.** The grep is restricted to backtick-wrapped strings whose payload ends in `.md` (with optional `:<line>` suffix). Non-`.md` filename chips — `.sh`, `.py`, `.ts`, `.json`, `.yaml`, etc. — are out of scope and are implicitly Pattern C. This includes script names like `wiki-commit.sh`, `wiki-validate-page.py`, and `wiki-normalize-frontmatter.py` that appear repeatedly in the case study; the gate does not flag them.
 
 The script is intentionally simple regex-based (no Markdown AST parser dependency). False positives are tuned by extending the allowlist; false negatives are tuned by review. Initial allowlist is conservative; future extensions are documented in a comment block at the top of the script.
 
@@ -370,10 +384,20 @@ trap 'rm -rf "$fixture_dir"' EXIT
 echo 'See `docs/03-three-questions.md` for details.' > "$fixture_dir/bare.md"
 
 # Fixture 2: linked chip — should be allowed.
-echo 'See [Three questions](/docs/03-three-questions) for details.' > "$fixture_dir/linked.md"
+# IMPORTANT: this fixture MUST contain a backtick-wrapped chip *inside* link
+# syntax. A plain Markdown link without a backticked path is NOT a valid test
+# of the link-detection logic — the script's grep would find zero chips and
+# return 0 by absence rather than by correctly recognizing the link context.
+# Per the Pattern A rule, the chip lives as link-text inside [..](..).
+echo 'See [`docs/03-three-questions.md`](/docs/03-three-questions) for details.' > "$fixture_dir/linked.md"
 
 # Fixture 3: topical mention (allowlisted) — should be allowed.
 echo 'Your `SKILL.md` should be under 500 lines.' > "$fixture_dir/topical.md"
+
+# Fixture 4: chip with line-range suffix (e.g. `something.md:366`) — should be flagged.
+# The gate must catch `.md:<line>` and `.md:<start>-<end>` suffix patterns,
+# not just bare `.md`-terminated chips.
+echo 'See `docs/03-three-questions.md:48` for the audit reference.' > "$fixture_dir/bare-with-line.md"
 
 # Self-test mode: the script accepts a path argument for fixture-mode testing.
 if bash scripts/check-no-bare-paths.sh "$fixture_dir/linked.md"; then
@@ -392,6 +416,12 @@ if ! bash scripts/check-no-bare-paths.sh "$fixture_dir/bare.md"; then
   echo "PASS: bare chip flagged"
 else
   echo "FAIL: bare chip not flagged"; exit 1
+fi
+
+if ! bash scripts/check-no-bare-paths.sh "$fixture_dir/bare-with-line.md"; then
+  echo "PASS: bare chip with line-range suffix flagged"
+else
+  echo "FAIL: bare chip with line-range suffix not flagged (gate missed `.md:<line>` pattern)"; exit 1
 fi
 ```
 
