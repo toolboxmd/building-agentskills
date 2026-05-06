@@ -1,0 +1,10 @@
+role = "project"
+main = "/Users/lukaszmaj/wiki"
+created = "2026-05-06"
+
+[platform]
+agent_cli = "claude"
+headless_command = "claude -p"
+
+[settings]
+auto_commit = true
