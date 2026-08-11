@@ -105,6 +105,14 @@ For your own SKILL.md:
 
 The rewrite-as-guidance path is legitimate. Not every must-statement is an invariant. "When in doubt, prefer the simpler approach" reads like a rule but is actually guidance; it is fine as decoration. The audit forces you to make the choice consciously.
 
+## Orchestration rules belong outside the skill
+
+Karpathy-wiki commit [`877e659`](https://github.com/toolboxmd/karpathy-wiki/commit/877e659) applied the same audit to long-running agent work. Rules such as “at most 10 ingests,” “retry four times,” “refresh the lease every 30 seconds,” and “use fallback after a rate limit” are not semantic instructions. They are state-machine invariants.
+
+The correct mechanism is a dispatcher and worker wrapper that atomically claim slots, record cooldowns, maintain heartbeat, and close one terminal outcome. The skill remains responsible for semantic judgment. See [Provider-neutral runtime](/docs/05-authoring/provider-neutral-runtime).
+
+This distinction also prevents a common overcorrection: adding a second model to review every result. Semantic quality is qualified through a benchmark; deterministic runtime mechanisms enforce lifecycle correctness in production. See [Benchmark integrity](/docs/06-testing/benchmark-integrity).
+
 ## `paths:` glob as activation gate (decoration vs mechanism in reverse)
 
 Source: `REVIEWER` G8.
@@ -132,4 +140,4 @@ The audit's question is not "is every rule a mechanism?" but "is every rule that
 - `REVIEWER` "Stress test of the decoration vs mechanism headline" (the sharpened framing used in this doc).
 - `REVIEWER` G8 (`paths:` glob as activation gate).
 
-Cross-links: [Three questions](/docs/03-three-questions) (Q2), [Anti-patterns](/docs/10-anti-patterns) (decoration without mechanism is the headline anti-pattern), [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) (the three wirings as ship narrative).
+Cross-links: [Three questions](/docs/03-three-questions) (Q2), [Anti-patterns](/docs/10-anti-patterns) (decoration without mechanism is the headline anti-pattern), [Provider-neutral runtime](/docs/05-authoring/provider-neutral-runtime), [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) (the three wirings as ship narrative).

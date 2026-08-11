@@ -92,6 +92,12 @@ Test fixtures (the captured input data your tests run against) carry the same di
 
 Skills evolve. As a skill grows, the test surface grows. A discipline skill that started with 50 lines of prose and one rationalization may need 4 GREEN scenarios + 21 unit tests + a self-review meta-test by version 2. The audit cycle ([Evolution](/docs/09-evolution)) should include "test surface coverage" as a checked dimension; if the skill has scripts but no tests, that is an audit finding.
 
+## When the implementation is another model
+
+Unit tests prove deterministic helpers and lifecycle contracts. They do not prove that a model extracts complete knowledge, respects claim boundaries, or leaves a future agent enough authored context to answer realistic questions.
+
+For model-executed skills, add a frozen benchmark with held-out retrieval questions and an independent blind semantic judge. Keep provider attribution, read isolation, deterministic lifecycle evidence, and semantic utility as separate score layers. See [Benchmark integrity](/docs/06-testing/benchmark-integrity).
+
 ## Sources
 
 - `LESSONS` 2.4 (cross-script regression; commit `42b24bf`).
@@ -99,4 +105,4 @@ Skills evolve. As a skill grows, the test surface grows. A discipline skill that
 - `LANDSCAPE` 1.2 (superpowers' TDD-for-skills; pressure scenarios with subagents).
 - `LANDSCAPE` 3.7 (test patterns: unit tests, integration tests, GREEN scenarios, self-review meta-test).
 
-Cross-links: [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) (the cross-script regression in detail), [Evolution](/docs/09-evolution) (audit-cycle includes test surface coverage).
+Cross-links: [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) (the cross-script regression in detail), [Benchmark integrity](/docs/06-testing/benchmark-integrity), [Evolution](/docs/09-evolution) (audit-cycle includes test surface coverage).

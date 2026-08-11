@@ -16,7 +16,7 @@ A public, layered, cross-platform repository of patterns for authoring AI agent 
 
 - **Layer 1, agent-skills foundation.** The format, frontmatter, progressive disclosure rules. Defined at https://agentskills.io/specification.
 - **Layer 2, superpowers conventions.** TDD-for-prose, iron laws, rationalization tables, the brainstorming-spec-plan-execute pipeline. Defined in https://github.com/obra/superpowers.
-- **Layer 3, this repo.** Patterns one stateful skill (karpathy-wiki) discovered in shipping v2.2 that the existing canon does not cover: decoration vs mechanism, prose-as-code, subagent reformatting, TDD inversions.
+- **Layer 3, this repo.** Patterns evidenced by karpathy-wiki ships that the existing canon does not cover: decoration vs mechanism, prose-as-code, TDD inversions, provider-neutral runtimes, and contamination-resistant agent benchmarks.
 
 See [`docs/00-overview.md`](docs/00-overview.md) for the layered architecture explainer.
 
@@ -55,12 +55,14 @@ These three docs close the audience gap a layered repo would otherwise leave. Re
 - [`docs/05-authoring/triggers.md`](docs/05-authoring/triggers.md). Description as activation contract.
 - [`docs/05-authoring/iron-laws.md`](docs/05-authoring/iron-laws.md). The four discipline-prose patterns.
 - [`docs/05-authoring/line-budget.md`](docs/05-authoring/line-budget.md). Why 500 lines is a contract.
+- [`docs/05-authoring/provider-neutral-runtime.md`](docs/05-authoring/provider-neutral-runtime.md). Separate semantic skill judgment from provider adapters and deterministic orchestration.
 
 ### Testing
 
 - [`docs/06-testing/red-green-for-prose.md`](docs/06-testing/red-green-for-prose.md). The four prose-change sub-modes.
 - [`docs/06-testing/unit-tests.md`](docs/06-testing/unit-tests.md). What to test and how.
 - [`docs/06-testing/tests-that-pass-immediately.md`](docs/06-testing/tests-that-pass-immediately.md). The two valid TDD inversions.
+- [`docs/06-testing/benchmark-integrity.md`](docs/06-testing/benchmark-integrity.md). Attribution, read isolation, blind retrieval grading, and contaminated-run handling.
 
 ### Standalone deep dive and reference
 
@@ -80,6 +82,7 @@ These three docs close the audience gap a layered repo would otherwise leave. Re
 ### Case study and example
 
 - [`case-studies/2026-04-25-karpathy-wiki-v2.2.md`](case-studies/2026-04-25-karpathy-wiki-v2.2.md). The seed case study.
+- [`case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md`](case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md). Provider-neutral runtime and benchmark-integrity ship.
 - [`examples/minimal-skill/SKILL.md`](examples/minimal-skill/SKILL.md). A working ~30-line minimal skill.
 
 ### Loader skill

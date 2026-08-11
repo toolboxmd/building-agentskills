@@ -1,6 +1,6 @@
 # Update mechanism: how new lessons flow in
 
-This page covers how new lessons enter this repo. v0 ships ONE case study; this file describes how subsequent ones land. The mechanism has three sources: per-ship retrospective, reader-submitted issues, and quarterly landscape audit.
+This page covers how new lessons enter this repo. The repository began with one seed case study and now includes a second evidence-backed ship. The mechanism has three sources: per-ship retrospective, reader-submitted issues, and quarterly landscape audit.
 
 Source: `REVIEWER` G11; `LESSONS` itself as the seed instance.
 
@@ -24,6 +24,8 @@ Sections in a case study:
 - **What failed.** Patterns that did not. Name what would have caught the failure.
 - **What the existing canon missed.** The gap the ship's lessons fill (the patterns the existing meta-skills do not cover).
 - **What we missed.** Honest list of things the ship did not catch and known imperfections.
+
+When a ship includes a model benchmark, add a small machine-readable evidence manifest beside the case study. Record the frozen snapshot, run count, exact configurations, deterministic and semantic scores, exclusions, protocol amendments, interpretation limits, and hashes of retained raw artifacts. The [provider-aware ingest case study](/case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest) is the worked example.
 
 The [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) is the worked example.
 
@@ -60,19 +62,19 @@ A lesson moves from "observed in a ship" to "documented in this repo" through on
 
 In all three paths, the lesson must cite ship evidence (a commit, a failure mode, a verbatim source). The `LESSONS` and `LANDSCAPE` reports for v2.2 are the prototype: every claim has a source path or a commit SHA.
 
-## What v0 ships
+## What the current corpus ships
 
-v0 ships:
+The current corpus ships:
 
-- One case study (karpathy-wiki v2.2).
-- The patterns that case study surfaced (decoration-vs-mechanism, prose-as-code, subagent reformatting, cross-script regression, spec arithmetic, TDD inversions).
+- Two case studies (karpathy-wiki v2.2 and the provider-aware ingest ship).
+- The patterns those ships surfaced: decoration-vs-mechanism, prose-as-code, subagent reformatting, cross-script regression, spec arithmetic, TDD inversions, provider-neutral runtimes, and benchmark integrity.
 - The cross-platform reference frame (Claude Code, Codex, Gemini CLI, others).
 - The hero framework (the three-question framework).
 - The blocker docs (Quickstart, Mental Model, Token Economics).
 - [The loader skill](https://github.com/toolboxmd/building-agentskills/blob/main/skills/building-agentskills/SKILL.md).
 - [The minimal example skill](/examples/minimal-skill/SKILL).
 
-v0.1+ will add additional case studies (when 3+ ships exist), the per-ship retrospective template formalized, and CI for SKILL.md validation. See the `Out of scope` section of the v0 plan for the deferred-to-v0.1 list.
+Future ships can graduate repeated patterns once at least three independent ship samples exist, formalize more of the retrospective template, and add CI for SKILL.md validation. See the planning backlog for deferred work.
 
 ## Sources
 
@@ -80,4 +82,4 @@ v0.1+ will add additional case studies (when 3+ ships exist), the per-ship retro
 - `LESSONS` itself (the v2.2 lessons report as the seed retrospective instance).
 - `LANDSCAPE` itself (the 2026-04 landscape audit as the seed quarterly-audit instance).
 
-Cross-links: [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2).
+Cross-links: [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2), [provider-aware ingest case study](/case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest), [Benchmark integrity](/docs/06-testing/benchmark-integrity).

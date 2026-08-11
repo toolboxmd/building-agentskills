@@ -1,6 +1,6 @@
 ---
 name: building-agentskills
-description: Use when authoring or auditing an AI agent skill; covers the layered architecture (agent-skills foundation, superpowers conventions, ship-evidenced deltas), the three-question framework (who invokes / what fires on rules / what is the token budget), and pattern catalogs for frontmatter, prose discipline, triggers, iron laws, line budget, prose-change testing, mechanism vs decoration, packaging, evolution, anti-patterns, and cross-platform packaging.
+description: Use when authoring, auditing, benchmarking, or operating an AI agent skill; covers the layered architecture, the three-question framework (who invokes / what fires on rules / what is the token budget), provider-neutral runtimes, contamination-resistant model benchmarks, frontmatter, prose discipline, triggers, testing, packaging, evolution, anti-patterns, and cross-platform packaging.
 license: Apache-2.0
 ---
 
@@ -72,6 +72,9 @@ Four discipline-prose patterns: Iron Law (block-quoted code-fenced single senten
 ### `docs/05-authoring/line-budget.md`
 The 500-line cap as load-bearing constraint. Why 500 lines specifically: the 5k-token auto-compaction survival floor.
 
+### `docs/05-authoring/provider-neutral-runtime.md`
+How to keep semantic judgment in the skill while provider adapters and a deterministic dispatcher own model invocation, configuration, limits, retries, fallback, heartbeat, completion, and activation.
+
 ### `docs/06-testing/red-green-for-prose.md`
 RED-GREEN-REFACTOR for prose changes. Four sub-modes: prose-as-deletion (multi-pattern grep), prose-as-addition (section-header grep + verbatim-snippet test), prose-as-tightening (BEFORE/AFTER + reviewer reads diff), prose-as-refactor (`wc -l` + reviewer reads diff).
 
@@ -80,6 +83,9 @@ What to test in a skill. Script unit tests (TDD discipline), pressure scenarios 
 
 ### `docs/06-testing/tests-that-pass-immediately.md`
 The TDD inversion. Two valid cases: regression-pin (test pins existing correct behavior) and mechanism-rehearsal (test rehearses an LLM-mechanism snippet). Plus the cases where the inversion is invalid.
+
+### `docs/06-testing/benchmark-integrity.md`
+How to freeze agent benchmarks, guard attribution and read isolation, blind semantic review, grade held-out retrieval, preserve contaminated attempts, and separate semantic quality from deterministic runtime acceptance.
 
 ### `docs/07-mechanism-vs-decoration.md`
 The standalone deep dive. Sharpened framing of the rule. Three karpathy-wiki v2.2 wirings (index-size threshold, manifest origin contract, validator-blocks-commit). The `paths:` glob as activation gate in reverse.
@@ -110,6 +116,9 @@ How new lessons enter this repo. Per-ship retrospectives, reader-submitted issue
 
 ### `case-studies/2026-04-25-karpathy-wiki-v2.2.md`
 The seed case study. The v2.2 ship retrospective, written for the public audience.
+
+### `case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md`
+The provider-neutral runtime and benchmark-integrity case study, including invalid-attempt lessons and real-harness acceptance.
 
 ### `examples/minimal-skill/SKILL.md`
 A working ~30-line SKILL.md the quickstart references. Copy as a starting point.

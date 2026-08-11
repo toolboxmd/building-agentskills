@@ -53,7 +53,7 @@ Layer 2 is the convention layer. Most patterns you read about online when resear
 
 ## Layer 3: this repo (the delta)
 
-`toolboxmd/building-agentskills` is the delta. It documents what one stateful artifact-manipulating skill (karpathy-wiki) learned in shipping v2.2 that the existing canon does not yet cover, plus a cross-platform reference frame so readers know which patterns are universal and which are Claude Code specific.
+`toolboxmd/building-agentskills` is the delta. It documents what karpathy-wiki learned across evidenced ships that the existing canon does not yet cover, plus a cross-platform reference frame so readers know which patterns are universal and which are harness specific.
 
 What Layer 3 adds on top of Layers 1 and 2:
 
@@ -62,6 +62,8 @@ What Layer 3 adds on top of Layers 1 and 2:
 - Heredoc-in-prose silent correctness bugs. Snippets in SKILL.md prose are production code when a headless subprocess executes them; test verbatim. See [Prose discipline](/docs/05-authoring/prose-discipline).
 - TDD inversions. Regression-pin and mechanism-rehearsal as legitimate "tests pass immediately" cases. See [Tests that pass immediately](/docs/06-testing/tests-that-pass-immediately).
 - Subagent reformatting hazard. Implementer subagents reformat unrelated lines as a "quality gesture"; the cure is an explicit Diff Scope clause. See [Anti-patterns](/docs/10-anti-patterns).
+- Provider-neutral semantic skills. Provider/model invocation, queue state, retries, fallback, heartbeat, and scheduling belong in adapters and deterministic runtime code rather than in semantic skill prose. See [Provider-neutral runtime](/docs/05-authoring/provider-neutral-runtime).
+- Benchmark integrity for agentic work. Guard model attribution and read isolation, blind the judge, grade authored retrieval utility, and preserve contaminated attempts. See [Benchmark integrity](/docs/06-testing/benchmark-integrity).
 - Cross-platform reference frame. Per-harness sections under `docs/11-cross-platform/` with explicit "X does NOT support Y" labels where applicable.
 
 What Layer 3 deliberately does not add:
@@ -91,6 +93,8 @@ Throughout these docs we cite three nicknames for the private research notes thi
 - `LANDSCAPE` — a 2026 survey of skill-authoring practice and tooling.
 - `REVIEWER` — an adversarial-review pass over the Layer-3 patterns.
 - `LESSONS` — the karpathy-wiki v2.2 ship retrospective.
+
+Later public case studies and evidence manifests are linked directly rather than hidden behind these private nicknames.
 
 These three documents are private; the citations are for honesty about what each claim rests on, not actionable links. Where a public source exists (Anthropic docs, agent-skills spec, GitHub commits), we cite it directly with a working link.
 

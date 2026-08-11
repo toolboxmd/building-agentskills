@@ -64,6 +64,24 @@ For the positive form of each pattern, follow the cross-link. Many of these anti
 - **Evidence.** Karpathy-wiki: `${CLAUDE_PLUGIN_ROOT}` is a config-time substitution token in plugin.json and hooks.json; it does NOT propagate to the Bash tool. A SKILL.md using `${CLAUDE_PLUGIN_ROOT}` in bash fails for personal-symlink installs (literal string reaches Bash, expands to empty, command becomes invalid). See [the plugin-root substitution wiki page](https://github.com/toolboxmd/karpathy-wiki/blob/main/wiki/concepts/claude-code-plugin-root-substitution.md). (`LANDSCAPE` 4.5.)
 - **Counter.** Test on real harness instances (not just the spec). Document harness gotchas in `docs/11-cross-platform/`. Use spec-portable patterns when possible; isolate harness-specific code paths.
 
+## Provider identity embedded in semantic instructions
+
+- **Definition.** A reusable semantic skill calls itself a Claude, Codex, or Grok worker and constructs that provider's CLI command inside the procedure.
+- **Evidence.** In the 2026-08-11 karpathy-wiki benchmark, the Spark model followed the frozen skill's Claude identity and launched a nested Claude ingester during the duplicate case. The attempt became attribution-invalid. The later runtime ship [`877e659`](https://github.com/toolboxmd/karpathy-wiki/commit/877e659) removed provider command construction from the ingest skill.
+- **Counter.** Keep semantic judgment provider-neutral. Put provider/model/effort in structured local profiles and translate them through tested adapters. See [Provider-neutral runtime](/docs/05-authoring/provider-neutral-runtime).
+
+## Contaminated agent benchmark
+
+- **Definition.** A model comparison allows the candidate to delegate to another model or read memory, sibling runs, prior answers, graders, or rubrics.
+- **Evidence.** One Spark attempt delegated to Claude; another read global memory, a previous run, and grader source before its first write. Both were stopped and excluded. The [evidence manifest](/case-studies/evidence/2026-08-11-karpathy-wiki-ingest-benchmark.json) records the invalid attempts and artifact hashes.
+- **Counter.** Freeze inputs, isolate each run, forbid nested agentic invocation, audit read and command events, keep the candidate map outside blind review, and preserve contaminated attempts as ineligible evidence. See [Benchmark integrity](/docs/06-testing/benchmark-integrity).
+
+## Mechanical completion used as a quality score
+
+- **Definition.** Exit zero, valid files, or a green deterministic checker is treated as proof that an authored knowledge base is complete and useful.
+- **Evidence.** The strongest Spark sample passed 19/21 deterministic assertions but scored 69/100 in blind semantic review; all candidates materially under-extracted customer research. Raw sources existed, but future-agent retrieval remained partial.
+- **Counter.** Grade authored pages first with held-out realistic questions. Keep lifecycle, deterministic, semantic, and retrieval scores separate. Do not add a second LLM reviewer to every production ingest; qualify models offline. See [Benchmark integrity](/docs/06-testing/benchmark-integrity).
+
 ## TDD-doesn't-fit gating absent
 
 - **Definition.** A plan task's test step is "run the test to verify it passes immediately" without naming whether this is a regression-pin, a mechanism-rehearsal, or a TDD violation.
@@ -95,4 +113,4 @@ For plan review:
 - `LANDSCAPE` 4.4 (no-test-coverage anti-pattern).
 - `LANDSCAPE` 4.5 (undocumented-harness-behavior anti-pattern).
 
-Cross-links: [Three questions](/docs/03-three-questions), [Mechanism vs decoration](/docs/07-mechanism-vs-decoration), [Prose discipline](/docs/05-authoring/prose-discipline), [Unit tests](/docs/06-testing/unit-tests), [Tests that pass immediately](/docs/06-testing/tests-that-pass-immediately), [Triggers](/docs/05-authoring/triggers), [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2).
+Cross-links: [Three questions](/docs/03-three-questions), [Mechanism vs decoration](/docs/07-mechanism-vs-decoration), [Provider-neutral runtime](/docs/05-authoring/provider-neutral-runtime), [Benchmark integrity](/docs/06-testing/benchmark-integrity), [Prose discipline](/docs/05-authoring/prose-discipline), [Unit tests](/docs/06-testing/unit-tests), [Tests that pass immediately](/docs/06-testing/tests-that-pass-immediately), [Triggers](/docs/05-authoring/triggers), [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2).

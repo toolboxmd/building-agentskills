@@ -42,7 +42,8 @@
           "docs/05-authoring/prose-discipline",
           "docs/05-authoring/triggers",
           "docs/05-authoring/iron-laws",
-          "docs/05-authoring/line-budget"
+          "docs/05-authoring/line-budget",
+          "docs/05-authoring/provider-neutral-runtime"
         ]
       },
       {
@@ -50,7 +51,8 @@
         "pages": [
           "docs/06-testing/red-green-for-prose",
           "docs/06-testing/unit-tests",
-          "docs/06-testing/tests-that-pass-immediately"
+          "docs/06-testing/tests-that-pass-immediately",
+          "docs/06-testing/benchmark-integrity"
         ]
       },
       {
@@ -76,6 +78,7 @@
         "group": "Case studies and examples",
         "pages": [
           "case-studies/2026-04-25-karpathy-wiki-v2.2",
+          "case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest",
           "examples/minimal-skill/SKILL"
         ]
       }
