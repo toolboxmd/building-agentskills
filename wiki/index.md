@@ -11,4 +11,4 @@
 (empty)
 
 ## Ideas
-(empty)
+- [[evidence-gated-continuous-learning]] — automatically detects upstream ships while keeping lesson promotion evidence-gated and human-reviewed.
