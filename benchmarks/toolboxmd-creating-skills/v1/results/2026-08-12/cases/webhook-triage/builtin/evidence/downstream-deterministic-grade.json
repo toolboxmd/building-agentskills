@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "caseId": "webhook-triage",
+  "passed": true,
+  "checkCount": 21,
+  "failedCheckCount": 0,
+  "checks": [
+    {
+      "id": "required-output",
+      "passed": true,
+      "detail": "downstream-output/incident-assessment.md"
+    },
+    {
+      "id": "label:Classification",
+      "passed": true,
+      "detail": "Classification"
+    },
+    {
+      "id": "label:Priority",
+      "passed": true,
+      "detail": "Priority"
+    },
+    {
+      "id": "label:Next action",
+      "passed": true,
+      "detail": "Next action"
+    },
+    {
+      "id": "label:Retry guidance",
+      "passed": true,
+      "detail": "Retry guidance"
+    },
+    {
+      "id": "label:Missing information",
+      "passed": true,
+      "detail": "Missing information"
+    },
+    {
+      "id": "label:Rule citations",
+      "passed": true,
+      "detail": "Rule citations"
+    },
+    {
+      "id": "required-term:signature-integrity",
+      "passed": true,
+      "detail": "signature-integrity"
+    },
+    {
+      "id": "required-term:P1",
+      "passed": true,
+      "detail": "P1"
+    },
+    {
+      "id": "required-term:quarantine",
+      "passed": true,
+      "detail": "quarantine"
+    },
+    {
+      "id": "required-term:active signing-key identifier",
+      "passed": true,
+      "detail": "active signing-key identifier"
+    },
+    {
+      "id": "required-term:NSR-AUTH-17",
+      "passed": true,
+      "detail": "NSR-AUTH-17"
+    },
+    {
+      "id": "required-any:stop automatic retries|do not retry|no retry",
+      "passed": true,
+      "detail": "stop automatic retries | do not retry | no retry"
+    },
+    {
+      "id": "forbidden-term:endpoint-throttling",
+      "passed": true,
+      "detail": "endpoint-throttling"
+    },
+    {
+      "id": "forbidden-term:retry in two minutes",
+      "passed": true,
+      "detail": "retry in two minutes"
+    },
+    {
+      "id": "forbidden-term:retry after 120 seconds",
+      "passed": true,
+      "detail": "retry after 120 seconds"
+    },
+    {
+      "id": "known-rule-identifiers",
+      "passed": true,
+      "detail": "all rule identifiers are allowed"
+    },
+    {
+      "id": "selected-rule",
+      "passed": true,
+      "detail": "NSR-AUTH-17"
+    },
+    {
+      "id": "selected-classification",
+      "passed": true,
+      "detail": "signature-integrity"
+    },
+    {
+      "id": "selected-priority",
+      "passed": true,
+      "detail": "P1"
+    },
+    {
+      "id": "missing-fact",
+      "passed": true,
+      "detail": "active signing-key identifier"
+    }
+  ]
+}

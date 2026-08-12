@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "caseId": "csv-sanitizer",
+  "requiredSkillName": "sanitizing-customer-exports",
+  "authoring": {
+    "allowedWriteRoot": "output/sanitizing-customer-exports",
+    "requiredFiles": [
+      "output/sanitizing-customer-exports/SKILL.md",
+      "output/sanitizing-customer-exports/scripts/sanitize_export.py",
+      "output/sanitizing-customer-exports/validation-report.md"
+    ],
+    "protectedInputs": [
+      "visible-inputs/export-contract.md",
+      "visible-inputs/mixed-valid.csv",
+      "visible-inputs/rejected-duplicate.csv"
+    ],
+    "pythonStandardLibraryOnly": true,
+    "noninteractive": true,
+    "offlineRequired": true,
+    "fixedCli": "python3 scripts/sanitize_export.py --input INPUT --output OUTPUT --audit AUDIT"
+  },
+  "downstream": {
+    "requiredFiles": [
+      "downstream-output/customers-sanitized.csv",
+      "downstream-output/customers-audit.json",
+      "downstream-output/customers-sanitized-second.csv",
+      "downstream-output/customers-audit-second.json",
+      "downstream-output/run-report.md"
+    ],
+    "forbiddenFiles": [
+      "downstream-output/rejected.csv",
+      "downstream-output/rejected-audit.json"
+    ],
+    "byteEqualityPairs": [
+      ["downstream-output/customers-sanitized.csv", "downstream-output/customers-sanitized-second.csv"],
+      ["downstream-output/customers-audit.json", "downstream-output/customers-audit-second.json"]
+    ],
+    "expectedCsvText": "customer_ref,email,region,display_name,note,status\nCUS-0042,ada@example.test,NORTH,Ada Lovelace,\"priority, west\",ACTIVE\nCUS-0013,rene@example.test,NORTH,René Faure,,ACTIVE\nCUS-0077,zoe@example.test,SOUTH,Zoë Quinn,,PAUSED\nCUS-0088,li@example.test,SOUTH,Li Wei,\"calls, Tuesdays\",PAUSED\n",
+    "expectedAuditValues": {
+      "schema_version": 1,
+      "rows_read": 4,
+      "rows_written": 4,
+      "region_counts": {"NORTH": 2, "SOUTH": 2},
+      "status_counts": {"ACTIVE": 2, "PAUSED": 2}
+    },
+    "auditKeyOrder": [
+      "schema_version",
+      "input_sha256",
+      "output_sha256",
+      "rows_read",
+      "rows_written",
+      "region_counts",
+      "status_counts"
+    ],
+    "hashChecks": {
+      "input_sha256Source": "downstream-inputs/customers-unicode.csv",
+      "output_sha256Source": "downstream-output/customers-sanitized.csv"
+    },
+    "invalidInvocationMustExitNonzero": true,
+    "inputsMustRemainByteIdentical": true
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "ffa1ed67605532530759d81e089438bc0d2829c791f4d85ac16e79fccc9e26cc",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "bytes": 1431,
+      "sha256": "92f486036ee28d976d1d05b20e58e0476e4c0e1c56400ff8e8802b47b780bc8d"
+    },
+    {
+      "path": "scripts/sanitize_export.py",
+      "bytes": 11350,
+      "sha256": "c54abb7fa5d2456038a0b3dad4f2c1cb625aff518866d112d440048a49c5e8f1"
+    },
+    {
+      "path": "tests/test_sanitize_export.py",
+      "bytes": 4964,
+      "sha256": "ca060c93d9566489cd6a14014a15f98e2db990918eda2843f916468d47db4635"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 1574,
+      "sha256": "6976a673713f6c5d71e54ed5a241b0ac1efce5c3f4d0e7033bf0864bc334085a"
+    }
+  ]
+}

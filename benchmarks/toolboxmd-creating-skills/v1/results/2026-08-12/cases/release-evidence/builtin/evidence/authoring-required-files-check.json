@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "requiredFiles": [
+    "output/drafting-evidence-backed-releases/SKILL.md",
+    "output/drafting-evidence-backed-releases/validation-report.md"
+  ],
+  "missing": []
+}

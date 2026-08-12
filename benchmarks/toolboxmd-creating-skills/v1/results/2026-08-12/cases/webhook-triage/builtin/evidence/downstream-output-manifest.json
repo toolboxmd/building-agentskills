@@ -1,0 +1,11 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "228497ebf85d833705024c8de2f1cf37e7b096824157b1c078643526e154c5a6",
+  "files": [
+    {
+      "path": "incident-assessment.md",
+      "bytes": 1161,
+      "sha256": "9bafc3d45e3452d949e571fa2f3eb11583f66b09e34bce72cc45f4ccf7657cda"
+    }
+  ]
+}

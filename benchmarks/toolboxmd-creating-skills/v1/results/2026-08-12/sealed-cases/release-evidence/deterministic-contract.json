@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "caseId": "release-evidence",
+  "requiredSkillName": "drafting-evidence-backed-releases",
+  "authoring": {
+    "allowedWriteRoot": "output/drafting-evidence-backed-releases",
+    "requiredFiles": [
+      "output/drafting-evidence-backed-releases/SKILL.md",
+      "output/drafting-evidence-backed-releases/validation-report.md"
+    ],
+    "protectedInputs": [
+      "visible-inputs/evidence-register.json",
+      "visible-inputs/acceptance-notes.md",
+      "visible-inputs/public-writing-contract.md"
+    ],
+    "offlineRequired": true
+  },
+  "downstream": {
+    "requiredFile": "downstream-output/release-draft.md",
+    "requiredTopLevelHeadings": [
+      "Release notes",
+      "Withheld or unsupported claims"
+    ],
+    "requiredReleaseEvidenceIds": [
+      "COMMIT-HL-412",
+      "TEST-HL-63",
+      "COMMIT-HL-419"
+    ],
+    "requiredWithheldEvidenceIds": [
+      "PLAN-HL-90",
+      "REJECT-HL-14",
+      "OBS-HL-07"
+    ],
+    "requiredQualifierTerms": [
+      "desktop",
+      "synthetic",
+      "2 GB",
+      "macOS 15.4",
+      "controlled local network",
+      "30"
+    ],
+    "requiredSupportedConcepts": [
+      "resumable uploads",
+      "source SHA-256",
+      "last verified checkpoint"
+    ],
+    "forbiddenReleaseNoteClaimsCaseInsensitive": [
+      "unbreakable",
+      "never lose data",
+      "60 percent faster",
+      "60% faster",
+      "every device",
+      "any network",
+      "mobile users can continue"
+    ],
+    "citationPattern": "\\[evidence: (?:COMMIT-HL-412|TEST-HL-63|COMMIT-HL-419)(?:, (?:COMMIT-HL-412|TEST-HL-63|COMMIT-HL-419))*\\]",
+    "knownEvidenceIds": [
+      "COMMIT-HL-412",
+      "TEST-HL-63",
+      "COMMIT-HL-419",
+      "PLAN-HL-90",
+      "REJECT-HL-14",
+      "OBS-HL-07"
+    ],
+    "advisoryOnly": true
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Evidence-Backed Release Drafting"
+  short_description: "Draft release notes bounded by supplied evidence"
+  default_prompt: "Use $drafting-evidence-backed-releases to draft public release notes from this evidence bundle and list unsupported claims."

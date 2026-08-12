@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "benchmarkId": "toolboxmd-creating-skills-v1",
+  "seed": "efc67049d715cb69bbfcad04441a4a9d162ba11f3a22ef3328c543bf6da837a2",
+  "mappingAlgorithm": "Sort SHA-256(benchmarkId:caseId:seed), then alternate candidate in A by zero-based rank",
+  "eligibleCaseIds": [
+    "webhook-triage",
+    "release-evidence"
+  ],
+  "cases": [
+    {
+      "caseId": "webhook-triage",
+      "eligible": true,
+      "findings": [],
+      "reviewHashes": {
+        "A": {
+          "skill": "9b12aadfbdd12251d76b2ecc8aba81397f4d24a9e5048027e24d8ca912adb749",
+          "downstreamOutput": "32023b91cc346194ac3ede6a2fb8c0d536ab28b1775644366b0b779defd003d2"
+        },
+        "B": {
+          "skill": "2df6dce386d458aa95cf595bf739fdf188dfbc75d49458cd5af5eab310425b79",
+          "downstreamOutput": "228497ebf85d833705024c8de2f1cf37e7b096824157b1c078643526e154c5a6"
+        }
+      }
+    },
+    {
+      "caseId": "csv-sanitizer",
+      "eligible": false,
+      "findings": [
+        {
+          "treatment": "builtin",
+          "artifact": "skill",
+          "path": "tests/__pycache__/test_sanitize_export.cpython-314.pyc",
+          "marker": "toolboxmd-name"
+        },
+        {
+          "treatment": "builtin",
+          "artifact": "skill",
+          "path": "tests/__pycache__/test_sanitize_export.cpython-314.pyc",
+          "marker": "workspace-user-path"
+        },
+        {
+          "treatment": "builtin",
+          "artifact": "skill",
+          "path": "tests/__pycache__/test_sanitize_export.cpython-314.pyc",
+          "marker": "benchmark-work-path"
+        },
+        {
+          "treatment": "builtin",
+          "artifact": "skill",
+          "path": "tests/__pycache__/test_sanitize_export.cpython-314.pyc",
+          "marker": "builtin-treatment-path"
+        }
+      ],
+      "reviewHashes": {}
+    },
+    {
+      "caseId": "release-evidence",
+      "eligible": true,
+      "findings": [],
+      "reviewHashes": {
+        "A": {
+          "skill": "40c5210c70f0c4f747e6063621b4220c5c0ca4200e6461bcbf399fd9006d2723",
+          "downstreamOutput": "fa291f230e5da38a6108f6921eed4cf918877045af2f0c5a73fcbf343ce6f733"
+        },
+        "B": {
+          "skill": "3a5caa1a01ec12b271f9765db6c308a5bad0a9469a09d5928dcdb788ed9c2862",
+          "downstreamOutput": "5fddaf10530d553a9fc98d964e9921898b54203a34a0abcbcfe5d8c1f6ba57e7"
+        }
+      }
+    }
+  ]
+}

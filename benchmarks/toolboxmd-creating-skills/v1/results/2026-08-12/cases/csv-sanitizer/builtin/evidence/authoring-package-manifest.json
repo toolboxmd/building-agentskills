@@ -1,0 +1,36 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "6ba866812ef4fa48551d40fc9bd29ffde8afc4ebcceed9a8b330549f715910ac",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "bytes": 1059,
+      "sha256": "d6ad53e100f5dc4e05cc95ae6f52c4bd30e6a4ca798593b8c977a8553343e1cd"
+    },
+    {
+      "path": "agents/openai.yaml",
+      "bytes": 246,
+      "sha256": "4bdeee451ffaf24b49c376493c9363bc8e8c66c263d1359366864f57869740ab"
+    },
+    {
+      "path": "scripts/sanitize_export.py",
+      "bytes": 10652,
+      "sha256": "161e82ec02a288afced2a4ba2a6c1b0115e3ed10d127001f8c94672cfa3f8997"
+    },
+    {
+      "path": "tests/__pycache__/test_sanitize_export.cpython-314.pyc",
+      "bytes": 10826,
+      "sha256": "d761f7afc28a5b8f6912e3a4e53610f41f8733b3a26d0cb0cbec232140e346d6"
+    },
+    {
+      "path": "tests/test_sanitize_export.py",
+      "bytes": 6210,
+      "sha256": "17f68f4fa337838e1efea1287fdd83d69b89ce884e5dff743df0587a63d713ae"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 1216,
+      "sha256": "6e465b4ba6436762d952154817d1516a1c9696dc378a36eab08d42eb67060d57"
+    }
+  ]
+}

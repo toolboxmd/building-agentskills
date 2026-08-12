@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "eligible": false,
+  "allowedNewPrefix": "output/triaging-webhook-incidents",
+  "protectedFileCount": 13,
+  "newFiles": [
+    "creator/scripts/__pycache__/generate_openai_yaml.cpython-314.pyc",
+    "output/triaging-webhook-incidents/SKILL.md",
+    "output/triaging-webhook-incidents/agents/openai.yaml",
+    "output/triaging-webhook-incidents/references/delivery-states.md",
+    "output/triaging-webhook-incidents/references/runbook-rules.md",
+    "output/triaging-webhook-incidents/references/training-examples.md",
+    "output/triaging-webhook-incidents/validation-report.md"
+  ],
+  "reasons": [
+    "new file outside allowed prefix: creator/scripts/__pycache__/generate_openai_yaml.cpython-314.pyc"
+  ]
+}

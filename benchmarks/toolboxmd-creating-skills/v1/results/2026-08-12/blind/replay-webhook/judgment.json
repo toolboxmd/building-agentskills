@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "caseId": "webhook-triage",
+      "verdict": "A",
+      "confidence": "high",
+      "scores": {
+        "A": {
+          "primitiveInvocation": 4,
+          "sourceFidelity": 4,
+          "workflowMechanism": 4,
+          "progressiveDisclosure": 4,
+          "downstreamUtility": 4
+        },
+        "B": {
+          "primitiveInvocation": 4,
+          "sourceFidelity": 4,
+          "workflowMechanism": 4,
+          "progressiveDisclosure": 4,
+          "downstreamUtility": 4
+        }
+      },
+      "criticalFailures": {
+        "A": [],
+        "B": [
+          "The authoring run created Python bytecode under the immutable creator directory, outside its assigned output directory."
+        ]
+      },
+      "observations": [
+        {
+          "path": "mechanical-results.json",
+          "observation": "A passes every frozen mechanical check, while B fails authoringWriteBoundary because its authoring run wrote Python bytecode outside the assigned output directory."
+        },
+        {
+          "path": "cases/webhook-triage/A/downstream-output/incident-assessment.md",
+          "observation": "A selects signature-integrity at P1, treats HTTP 429 as secondary, stops retries, requests the missing active signing-key identifier, and cites NSR-AUTH-17 and NSR-MISSING-08."
+        },
+        {
+          "path": "cases/webhook-triage/B/downstream-output/incident-assessment.md",
+          "observation": "B reaches the same source-backed classification, priority, non-retry guidance, missing-fact request, and rule citations without promoting the 429 symptom."
+        },
+        {
+          "path": "cases/webhook-triage/A/skill/SKILL.md",
+          "observation": "A provides precise triggers and near-miss boundaries, routes every assessment through authoritative references, preserves precedence and uncertainty, and defines the required six-section Markdown contract."
+        },
+        {
+          "path": "cases/webhook-triage/B/skill/SKILL.md",
+          "observation": "B likewise provides a clear offline assessment workflow, conditional reference loading, explicit uncertainty handling, and the required six-section output contract."
+        }
+      ],
+      "explanation": "The frozen downstream artifacts are equally accurate and useful, and both packages merit full semantic scores. A wins because it alone clears the complete critical gate: B's out-of-boundary authoring write is an explicit critical failure that cannot be outweighed by its otherwise correct downstream result."
+    }
+  ],
+  "overallNotes": "Single blind replay applying the frozen mechanical gate together with the semantic rubric; only arm labels A and B were used."
+}

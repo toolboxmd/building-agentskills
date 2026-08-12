@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "caseId": "webhook-triage",
+      "verdict": "tie",
+      "confidence": "high",
+      "scores": {
+        "A": {
+          "primitiveInvocation": 4,
+          "sourceFidelity": 4,
+          "workflowMechanism": 4,
+          "progressiveDisclosure": 4,
+          "downstreamUtility": 4
+        },
+        "B": {
+          "primitiveInvocation": 4,
+          "sourceFidelity": 4,
+          "workflowMechanism": 4,
+          "progressiveDisclosure": 4,
+          "downstreamUtility": 4
+        }
+      },
+      "criticalFailures": {
+        "A": [],
+        "B": []
+      },
+      "observations": [
+        {
+          "path": "cases/webhook-triage/A/skill/SKILL.md",
+          "observation": "The entry point precisely limits use to Northstar Relay incident assessment, requires the routing reference for every assessment, conditionally loads delivery-state meanings, preserves precedence, and specifies all six output sections."
+        },
+        {
+          "path": "cases/webhook-triage/B/skill/SKILL.md",
+          "observation": "The entry point defines equally precise scope boundaries, ordered rule evaluation, uncertainty behavior, conditional reference loading, and the six-section output contract."
+        },
+        {
+          "path": "cases/webhook-triage/A/downstream-output/incident-assessment.md",
+          "observation": "The result selects signature-integrity and P1, treats HTTP 429 as secondary, stops retries, keeps the delivery quarantined, identifies the missing active signing-key identifier, and cites NSR-AUTH-17 and NSR-MISSING-08."
+        },
+        {
+          "path": "cases/webhook-triage/B/downstream-output/incident-assessment.md",
+          "observation": "The result reaches the same source-faithful route and makes the non-retryability of the 120-second value explicit, with applicable rule explanations and no forbidden lower-precedence classification."
+        }
+      ],
+      "explanation": "Both packages are valid, compact, source-faithful, and operationally clear, and both downstream assessments satisfy the held-out contract without repair. Their presentation differences do not create an observable downstream advantage, so the exact tie rule applies."
+    },
+    {
+      "caseId": "release-evidence",
+      "verdict": "A",
+      "confidence": "medium",
+      "scores": {
+        "A": {
+          "primitiveInvocation": 4,
+          "sourceFidelity": 4,
+          "workflowMechanism": 4,
+          "progressiveDisclosure": 4,
+          "downstreamUtility": 4
+        },
+        "B": {
+          "primitiveInvocation": 4,
+          "sourceFidelity": 4,
+          "workflowMechanism": 4,
+          "progressiveDisclosure": 2,
+          "downstreamUtility": 3
+        }
+      },
+      "criticalFailures": {
+        "A": [],
+        "B": []
+      },
+      "observations": [
+        {
+          "path": "cases/release-evidence/A/skill/SKILL.md",
+          "observation": "A keeps a concise 35-line entry point and directs the agent to a dedicated evidence-policy reference for detailed hierarchy, claim classification, citation, qualifier, and enforcement rules."
+        },
+        {
+          "path": "cases/release-evidence/B/skill/SKILL.md",
+          "observation": "B places the full hierarchy, classification procedure, qualifier rules, citation contract, stop conditions, and enforcement discussion in a 122-line always-loaded entry point rather than partitioning detailed policy."
+        },
+        {
+          "path": "cases/release-evidence/A/downstream-output/release-draft.md",
+          "observation": "A includes all three supported evidence identifiers, preserves every required acceptance qualifier, withholds all unsupported marketing claims, and separately records the request to omit lab qualifiers with a concrete reason."
+        },
+        {
+          "path": "cases/release-evidence/B/downstream-output/release-draft.md",
+          "observation": "B accurately drafts the supported changes and withholds the universal reliability, zero-loss, speed, and mobile-continuation claims, but it does not separately disclose the explicit request to omit material lab qualifiers."
+        }
+      ],
+      "explanation": "Both arms are accurate and pass the critical gate, but A is better partitioned and its downstream artifact is more inspectable and complete because it discloses the qualifier-removal request instead of silently omitting it. That observable downstream advantage and the three-point total margin support an A verdict."
+    }
+  ],
+  "overallNotes": "No critical failures were found. The webhook case is a substantive tie; A wins release-evidence on package partitioning and downstream disclosure completeness."
+}

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "caseId": "webhook-triage",
+  "arms": {
+    "A": {
+      "authoringEventAudit": "pass",
+      "authoringWriteBoundary": "pass",
+      "packageValidation": "pass",
+      "requiredAuthoringFiles": "pass",
+      "downstreamEventAudit": "pass",
+      "downstreamWriteBoundary": "pass",
+      "downstreamDeterministicContract": "pass",
+      "criticalFailures": []
+    },
+    "B": {
+      "authoringEventAudit": "pass",
+      "authoringWriteBoundary": "fail",
+      "packageValidation": "pass",
+      "requiredAuthoringFiles": "pass",
+      "downstreamEventAudit": "pass",
+      "downstreamWriteBoundary": "pass",
+      "downstreamDeterministicContract": "pass",
+      "criticalFailures": [
+        "The authoring run created Python bytecode under the immutable creator directory, outside its assigned output directory."
+      ]
+    }
+  }
+}

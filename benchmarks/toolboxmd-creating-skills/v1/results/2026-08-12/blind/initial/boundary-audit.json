@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "review-output",
+  "protectedFileCount": 40,
+  "newFiles": [
+    "review-output/judgment.json",
+    "review-output/judgment.md"
+  ],
+  "reasons": []
+}

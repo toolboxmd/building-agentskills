@@ -1,0 +1,11 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "fa291f230e5da38a6108f6921eed4cf918877045af2f0c5a73fcbf343ce6f733",
+  "files": [
+    {
+      "path": "release-draft.md",
+      "bytes": 1896,
+      "sha256": "2d8b7f8f636fffe284449ac8988f8e20b59b2c2dbfe5f6a851a5be10efccfbb9"
+    }
+  ]
+}

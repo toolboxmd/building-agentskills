@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "benchmarkId": "toolboxmd-creating-skills-v1",
+  "frozenOn": "2026-08-12",
+  "generatedAfterCandidateSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",
+  "publicContractTreeSha256": "f8803e19d32ae469d804bc5168446b438d3452ed4ab5e01e899951e6abe7ef6e",
+  "generatorIsolation": {
+    "candidateVisible": false,
+    "baselineVisible": false,
+    "publicCaseContractsVisible": true,
+    "rubricVisible": true
+  },
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "efc67049d715cb69bbfcad04441a4a9d162ba11f3a22ef3328c543bf6da837a2",
+  "files": [
+    {
+      "path": "csv-sanitizer/authoring-prompt.md",
+      "bytes": 1850,
+      "sha256": "fd7277bfef1d5981370e4fe56aba993fd4d486ada4298252cdd1f4f22959464d"
+    },
+    {
+      "path": "csv-sanitizer/deterministic-contract.json",
+      "bytes": 2399,
+      "sha256": "c7f4d50df2373ca4d5cd2278326a92dedc66a3249b32e47ba416cbd2c0d2af7b"
+    },
+    {
+      "path": "csv-sanitizer/downstream-inputs/customers-prohibited.csv",
+      "bytes": 119,
+      "sha256": "8f9c98ac2c391dfa197a701ec134d933bfa793826cea5b74305de1c1a88fcf47"
+    },
+    {
+      "path": "csv-sanitizer/downstream-inputs/customers-unicode.csv",
+      "bytes": 300,
+      "sha256": "5c5e26887cf54ca197ad51344ef3ab1895ccd9edba8e64feb0a36c9054caf1e5"
+    },
+    {
+      "path": "csv-sanitizer/downstream-prompt.md",
+      "bytes": 1471,
+      "sha256": "35ea7842bcd4fa81fd67fcc3e6637157d9cb9ff1d4f3657ea6de134aa20420dc"
+    },
+    {
+      "path": "csv-sanitizer/visible-inputs/export-contract.md",
+      "bytes": 3038,
+      "sha256": "9366791418511d309924d5c530c322cda650978c70e4b4a8de626ef699b276f3"
+    },
+    {
+      "path": "csv-sanitizer/visible-inputs/mixed-valid.csv",
+      "bytes": 238,
+      "sha256": "ee6564af30c562570aed2da603d3e6a1e7f3ba3a898e083821dc9a74b9cb3fb6"
+    },
+    {
+      "path": "csv-sanitizer/visible-inputs/rejected-duplicate.csv",
+      "bytes": 150,
+      "sha256": "15afc0556200da145a847bba4abed86c24b4cbc218579fbc3dd345b356933b58"
+    },
+    {
+      "path": "release-evidence/authoring-prompt.md",
+      "bytes": 2143,
+      "sha256": "97aeecc2410291809b80804446825da0cae2708b6d23bb744dbf29a6b303438a"
+    },
+    {
+      "path": "release-evidence/deterministic-contract.json",
+      "bytes": 1789,
+      "sha256": "abd3cab91bda627df87c6e18dad208b49addae46a9202f02fa2378f578cb524d"
+    },
+    {
+      "path": "release-evidence/downstream-inputs/harborline-evidence.json",
+      "bytes": 1385,
+      "sha256": "217b945d95b76053079cf1cf8061ad03f58dfefa0bb689497e7b6d8e824d9ce1"
+    },
+    {
+      "path": "release-evidence/downstream-inputs/marketing-request.md",
+      "bytes": 500,
+      "sha256": "fdcd2f5690d751527de0beda52f3e719b9557456be32ea223521ee91da636a8d"
+    },
+    {
+      "path": "release-evidence/downstream-prompt.md",
+      "bytes": 1319,
+      "sha256": "f9dce6e86d43a67c5e2feb74e10bfb17e7286af7eeb68cb2f87a2b1e102bd1aa"
+    },
+    {
+      "path": "release-evidence/visible-inputs/acceptance-notes.md",
+      "bytes": 632,
+      "sha256": "738a7bda99e71a132925f65d178d46271c67eb6e81017ef4354ff21a22b39e33"
+    },
+    {
+      "path": "release-evidence/visible-inputs/evidence-register.json",
+      "bytes": 1173,
+      "sha256": "d28e4ca2db118c96ef7dc34f7dad019ce25259157f31dba48eceaf0c29d9d6c5"
+    },
+    {
+      "path": "release-evidence/visible-inputs/public-writing-contract.md",
+      "bytes": 1607,
+      "sha256": "ad357ed5b8a6e68fa8ac88193a872f79aface0cfc847a5288e3a0b5338a69791"
+    },
+    {
+      "path": "webhook-triage/authoring-prompt.md",
+      "bytes": 1991,
+      "sha256": "4230cc602c35945db5cd8e97c287d1ffb6bb66fbc99967a6b219874afdfcf55f"
+    },
+    {
+      "path": "webhook-triage/deterministic-contract.json",
+      "bytes": 1577,
+      "sha256": "ecc9b5466b0bad82d3cd922fad5371c1a7738d7251f8ef0d380b3cba8cb15c9c"
+    },
+    {
+      "path": "webhook-triage/downstream-inputs/incident-ember-77.json",
+      "bytes": 229,
+      "sha256": "08e8fa813cba4dc2c36dd982fb78a1720ea725613b56017c1574f4a20b4fe0d0"
+    },
+    {
+      "path": "webhook-triage/downstream-inputs/operator-note.md",
+      "bytes": 280,
+      "sha256": "4f81d5486b372c5a21ec1614fc3853e970697f03ec65275af5af1ca2c2f62355"
+    },
+    {
+      "path": "webhook-triage/downstream-prompt.md",
+      "bytes": 941,
+      "sha256": "9b1378e9b040d3b0ff1c825e26d404f0c4241390de38342d3b23b938508b7417"
+    },
+    {
+      "path": "webhook-triage/visible-inputs/delivery-state-reference.md",
+      "bytes": 555,
+      "sha256": "ee00646bd0f973c9098591867406c32d66fec546dccd25a5520c10f4755fda0e"
+    },
+    {
+      "path": "webhook-triage/visible-inputs/northstar-webhook-runbook.md",
+      "bytes": 2298,
+      "sha256": "1da1000fd6e264960654b4e350de37b28048da0afc8d1fe95c456fceb9eabdf3"
+    },
+    {
+      "path": "webhook-triage/visible-inputs/training-events.jsonl",
+      "bytes": 485,
+      "sha256": "b1b9d5e798a4470e2528c19cee3db1651c2e2e1e6507423b9de5d141b607d394"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+customer_ref,email,region,display_name,note,status
+cus-0011,one@example.test,north,One,first,active
+CUS-0011,two@example.test,south,Two,second,paused

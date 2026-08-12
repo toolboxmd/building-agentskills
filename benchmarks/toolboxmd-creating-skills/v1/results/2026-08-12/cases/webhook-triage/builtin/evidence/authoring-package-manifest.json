@@ -1,0 +1,36 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "2df6dce386d458aa95cf595bf739fdf188dfbc75d49458cd5af5eab310425b79",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "bytes": 4075,
+      "sha256": "fd0c8ead742dec26d03b2ec48bc548b290da84f5263cfdb152836be1c9f18ce1"
+    },
+    {
+      "path": "agents/openai.yaml",
+      "bytes": 262,
+      "sha256": "a83341405c6aeb59de3cb2cdee63b1092e646f4a24b413614ebc8eece12ac004"
+    },
+    {
+      "path": "references/delivery-states.md",
+      "bytes": 926,
+      "sha256": "500cf2cd57ed891baa62a420815b5328acecb2e989716051f203b853aac987b1"
+    },
+    {
+      "path": "references/runbook-rules.md",
+      "bytes": 2941,
+      "sha256": "379d56d5b4cfce51142f0838d104ac243942a7d18a7892300187317b95b2306c"
+    },
+    {
+      "path": "references/training-examples.md",
+      "bytes": 1357,
+      "sha256": "5a1898224e2ed771f102c3f84e92ebbfe3376083a8d1e90e5519b2971c828f96"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 1394,
+      "sha256": "e1b04282d47f6a1b7dd8be4f5a2f890d644aed5a718147edaaa667800ea7ddc8"
+    }
+  ]
+}

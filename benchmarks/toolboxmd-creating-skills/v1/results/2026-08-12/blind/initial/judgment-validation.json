@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "valid": true,
+  "expectedCaseIds": [
+    "webhook-triage",
+    "release-evidence"
+  ],
+  "derivedCases": [
+    {
+      "caseId": "webhook-triage",
+      "verdict": "tie",
+      "confidence": "high",
+      "totals": {
+        "A": 20,
+        "B": 20
+      }
+    },
+    {
+      "caseId": "release-evidence",
+      "verdict": "A",
+      "confidence": "medium",
+      "totals": {
+        "A": 20,
+        "B": 17
+      }
+    }
+  ],
+  "reasons": []
+}

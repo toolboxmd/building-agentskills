@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "caseId": "csv-sanitizer",
+  "passed": true,
+  "checkCount": 20,
+  "failedCheckCount": 0,
+  "checks": [
+    {
+      "id": "required-file:downstream-output/customers-sanitized.csv",
+      "passed": true,
+      "detail": "downstream-output/customers-sanitized.csv"
+    },
+    {
+      "id": "required-file:downstream-output/customers-audit.json",
+      "passed": true,
+      "detail": "downstream-output/customers-audit.json"
+    },
+    {
+      "id": "required-file:downstream-output/customers-sanitized-second.csv",
+      "passed": true,
+      "detail": "downstream-output/customers-sanitized-second.csv"
+    },
+    {
+      "id": "required-file:downstream-output/customers-audit-second.json",
+      "passed": true,
+      "detail": "downstream-output/customers-audit-second.json"
+    },
+    {
+      "id": "required-file:downstream-output/run-report.md",
+      "passed": true,
+      "detail": "downstream-output/run-report.md"
+    },
+    {
+      "id": "forbidden-file:downstream-output/rejected.csv",
+      "passed": true,
+      "detail": "downstream-output/rejected.csv"
+    },
+    {
+      "id": "forbidden-file:downstream-output/rejected-audit.json",
+      "passed": true,
+      "detail": "downstream-output/rejected-audit.json"
+    },
+    {
+      "id": "byte-equality:downstream-output/customers-sanitized.csv:downstream-output/customers-sanitized-second.csv",
+      "passed": true,
+      "detail": "downstream-output/customers-sanitized.csv equals downstream-output/customers-sanitized-second.csv: true"
+    },
+    {
+      "id": "byte-equality:downstream-output/customers-audit.json:downstream-output/customers-audit-second.json",
+      "passed": true,
+      "detail": "downstream-output/customers-audit.json equals downstream-output/customers-audit-second.json: true"
+    },
+    {
+      "id": "exact-csv:downstream-output/customers-sanitized.csv",
+      "passed": true,
+      "detail": "downstream-output/customers-sanitized.csv"
+    },
+    {
+      "id": "exact-csv:downstream-output/customers-sanitized-second.csv",
+      "passed": true,
+      "detail": "downstream-output/customers-sanitized-second.csv"
+    },
+    {
+      "id": "audit-key-order:downstream-output/customers-audit.json",
+      "passed": true,
+      "detail": "schema_version, input_sha256, output_sha256, rows_read, rows_written, region_counts, status_counts"
+    },
+    {
+      "id": "audit-values:downstream-output/customers-audit.json",
+      "passed": true,
+      "detail": "downstream-output/customers-audit.json"
+    },
+    {
+      "id": "audit-input-hash:downstream-output/customers-audit.json",
+      "passed": true,
+      "detail": "5c5e26887cf54ca197ad51344ef3ab1895ccd9edba8e64feb0a36c9054caf1e5"
+    },
+    {
+      "id": "audit-output-hash:downstream-output/customers-audit.json",
+      "passed": true,
+      "detail": "60207b9cd38d97688cc6a56f5cbdbfabdad63ffa214ced32a76c633598648e4c"
+    },
+    {
+      "id": "audit-key-order:downstream-output/customers-audit-second.json",
+      "passed": true,
+      "detail": "schema_version, input_sha256, output_sha256, rows_read, rows_written, region_counts, status_counts"
+    },
+    {
+      "id": "audit-values:downstream-output/customers-audit-second.json",
+      "passed": true,
+      "detail": "downstream-output/customers-audit-second.json"
+    },
+    {
+      "id": "audit-input-hash:downstream-output/customers-audit-second.json",
+      "passed": true,
+      "detail": "5c5e26887cf54ca197ad51344ef3ab1895ccd9edba8e64feb0a36c9054caf1e5"
+    },
+    {
+      "id": "audit-output-hash:downstream-output/customers-audit-second.json",
+      "passed": true,
+      "detail": "60207b9cd38d97688cc6a56f5cbdbfabdad63ffa214ced32a76c633598648e4c"
+    },
+    {
+      "id": "invalid-invocation-nonzero",
+      "passed": true,
+      "detail": "1"
+    }
+  ]
+}

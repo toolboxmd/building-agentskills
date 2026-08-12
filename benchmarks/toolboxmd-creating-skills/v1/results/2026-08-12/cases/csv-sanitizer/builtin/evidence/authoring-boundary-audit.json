@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "eligible": false,
+  "allowedNewPrefix": "output/sanitizing-customer-exports",
+  "protectedFileCount": 13,
+  "newFiles": [
+    "creator/scripts/__pycache__/generate_openai_yaml.cpython-314.pyc",
+    "output/sanitizing-customer-exports/SKILL.md",
+    "output/sanitizing-customer-exports/agents/openai.yaml",
+    "output/sanitizing-customer-exports/scripts/sanitize_export.py",
+    "output/sanitizing-customer-exports/tests/__pycache__/test_sanitize_export.cpython-314.pyc",
+    "output/sanitizing-customer-exports/tests/test_sanitize_export.py",
+    "output/sanitizing-customer-exports/validation-report.md"
+  ],
+  "reasons": [
+    "new file outside allowed prefix: creator/scripts/__pycache__/generate_openai_yaml.cpython-314.pyc"
+  ]
+}

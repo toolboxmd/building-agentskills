@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sanitize Customer Exports"
+  short_description: "Normalize and validate customer export CSVs"
+  default_prompt: "Use $sanitizing-customer-exports to sanitize this customer export and generate its deterministic audit."

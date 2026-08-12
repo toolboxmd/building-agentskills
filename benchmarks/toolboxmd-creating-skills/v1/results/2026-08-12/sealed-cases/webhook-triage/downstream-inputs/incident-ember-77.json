@@ -1,0 +1,10 @@
+{
+  "event_id": "ember-77",
+  "endpoint": "/hooks/ledger",
+  "delivery_state": "quarantined",
+  "signature_check": "failed",
+  "schema_check": "passed",
+  "http_status": 429,
+  "retry_after_seconds": 120,
+  "attempt_number": 2
+}

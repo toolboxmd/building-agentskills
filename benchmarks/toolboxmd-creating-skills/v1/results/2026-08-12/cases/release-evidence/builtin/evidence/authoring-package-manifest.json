@@ -1,0 +1,26 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "40c5210c70f0c4f747e6063621b4220c5c0ca4200e6461bcbf399fd9006d2723",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "bytes": 3196,
+      "sha256": "a593b4dbbe98ed03b6cb44f0947517cca77f94c841e13053b8624b8047acbec3"
+    },
+    {
+      "path": "agents/openai.yaml",
+      "bytes": 278,
+      "sha256": "531fd52e44cac813fb6e234560238b649090e5df25b4b03b0b92319a426c2cd2"
+    },
+    {
+      "path": "references/evidence-policy.md",
+      "bytes": 6115,
+      "sha256": "58b4c34c4477c1a9ea02d95bb31cf00fb8bb1bf9b364d44a9e380a1d648ce4a8"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 1705,
+      "sha256": "7ca289a33d066a5cdbcdb26cc00875eb4482c24d44e6f4c3c97bca263f457c11"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "7d875ddf21bb7ef04dfe4b7566985811b62c31fc8e227f8339fe0620a9cc8dac",
+  "files": [
+    {
+      "path": "customers-audit-second.json",
+      "bytes": 354,
+      "sha256": "b0dab9b8419ef3ea35a9ea689f92f47b8f43a2f44452d1b41b2f5a667e7516ae"
+    },
+    {
+      "path": "customers-audit.json",
+      "bytes": 354,
+      "sha256": "b0dab9b8419ef3ea35a9ea689f92f47b8f43a2f44452d1b41b2f5a667e7516ae"
+    },
+    {
+      "path": "customers-sanitized-second.csv",
+      "bytes": 287,
+      "sha256": "60207b9cd38d97688cc6a56f5cbdbfabdad63ffa214ced32a76c633598648e4c"
+    },
+    {
+      "path": "customers-sanitized.csv",
+      "bytes": 287,
+      "sha256": "60207b9cd38d97688cc6a56f5cbdbfabdad63ffa214ced32a76c633598648e4c"
+    },
+    {
+      "path": "run-report.md",
+      "bytes": 1260,
+      "sha256": "70864dab4f82fa0dfb27b7012640f8c8f6ba88c9fcd82d052585f7cfa55314df"
+    }
+  ]
+}

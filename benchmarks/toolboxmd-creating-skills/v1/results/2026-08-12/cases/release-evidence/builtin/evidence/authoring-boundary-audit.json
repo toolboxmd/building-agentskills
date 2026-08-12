@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "output/drafting-evidence-backed-releases",
+  "protectedFileCount": 13,
+  "newFiles": [
+    "output/drafting-evidence-backed-releases/SKILL.md",
+    "output/drafting-evidence-backed-releases/agents/openai.yaml",
+    "output/drafting-evidence-backed-releases/references/evidence-policy.md",
+    "output/drafting-evidence-backed-releases/validation-report.md"
+  ],
+  "reasons": []
+}

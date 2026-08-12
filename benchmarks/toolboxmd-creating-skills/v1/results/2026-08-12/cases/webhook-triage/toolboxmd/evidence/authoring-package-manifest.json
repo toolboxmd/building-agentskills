@@ -1,0 +1,31 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "9b12aadfbdd12251d76b2ecc8aba81397f4d24a9e5048027e24d8ca912adb749",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "bytes": 3491,
+      "sha256": "7de55fd9063b0b76810efe480544605bc6fafa368cef0b5d7e904b0a5b7bda74"
+    },
+    {
+      "path": "evals/evals.json",
+      "bytes": 2674,
+      "sha256": "0ef38168744e2cdf5f303106eebe69443fefffdbeeaf1fd88ead02793ab41649"
+    },
+    {
+      "path": "references/delivery-states.md",
+      "bytes": 784,
+      "sha256": "9f2ba03f983732820189ec844b0ece396284426f8b7b6fa699a99a55f7586638"
+    },
+    {
+      "path": "references/incident-routing.md",
+      "bytes": 2786,
+      "sha256": "5175148055dcfb918600f1353f4f6cfa99c6e775279c8db5a8036e93ae4847cb"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 1564,
+      "sha256": "8c8ecd5c065c35dd1a71f60bb417a62bf724fa25acf8034e183ee1c15864cb1c"
+    }
+  ]
+}

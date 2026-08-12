@@ -1,0 +1,21 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "3a5caa1a01ec12b271f9765db6c308a5bad0a9469a09d5928dcdb788ed9c2862",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "bytes": 8536,
+      "sha256": "d055aba06d1a167c1581997783a60f70923dce180529fb7aaea8bbd77eec10e4"
+    },
+    {
+      "path": "evals/evals.json",
+      "bytes": 2841,
+      "sha256": "be009acb861a78b7aeb28040d4caa995d0880164255d96b598ae9b176ddd346e"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 2506,
+      "sha256": "92281256bba59fef679233bd802d34499a1aa0d65df33ef23876be933f393571"
+    }
+  ]
+}

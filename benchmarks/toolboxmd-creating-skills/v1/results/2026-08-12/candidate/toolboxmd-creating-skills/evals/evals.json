@@ -1,0 +1,39 @@
+{
+  "skill_name": "toolboxmd-creating-skills",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our support team keeps asking an agent to turn incident notes into a customer-safe postmortem. I have three real incident reports, two examples the team approved, and reviewer comments rejecting leaked internal hostnames. Create a portable skill package that captures this workflow. It must work offline in both Codex and Claude Code.",
+      "expected_output": "A small new skill grounded in the supplied artifacts, with explicit triggers, inputs, outputs, privacy gotchas, portable frontmatter, proportionate evals, and validation evidence.",
+      "files": [],
+      "assertions": [
+        "The response first evaluates whether a skill is the correct primitive",
+        "The response asks for or inspects the named incident reports, approved examples, and rejection evidence before drafting generic guidance",
+        "The resulting design explicitly answers who invokes, what fires on invariants, and the token budget",
+        "The proposed frontmatter is portable and the description includes capability, triggers, and exclusions without summarizing the workflow"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Make me a skill that guarantees every commit message starts with one of feat:, fix:, docs:, or chore:. This is only for this repository, and our CI can run a shell command on every commit. I don't have examples because the rule is exactly that regex.",
+      "expected_output": "A recommendation to use a deterministic repository mechanism such as a commit-msg hook or CI validator, with at most a small advisory instruction if useful, rather than manufacturing a skill.",
+      "files": [],
+      "assertions": [
+        "The response does not assume a skill is the right primitive",
+        "The invariant is assigned to a real hook or validator mechanism rather than advisory prose",
+        "The response explains why a project-local deterministic rule does not justify a standalone skill"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We already have skills/release-notes/SKILL.md. Please improve it, run the old and new versions against ten prompts, and tell me which is better.",
+      "expected_output": "A clear boundary statement that creation does not cover updating or comparative benchmarking, with future handoffs named and only a narrow fallback offered if explicitly requested.",
+      "files": [],
+      "assertions": [
+        "The response identifies the existing-skill request as a future handoff to toolboxmd-updating-skills",
+        "The response identifies the better-version comparison as a future handoff to toolboxmd-benchmarking-skills",
+        "The response does not construct an updater or a creator-versus-creator benchmark workflow"
+      ]
+    }
+  ]
+}

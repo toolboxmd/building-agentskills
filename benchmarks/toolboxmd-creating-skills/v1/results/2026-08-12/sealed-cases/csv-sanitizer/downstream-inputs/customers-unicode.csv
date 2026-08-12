@@ -1,0 +1,5 @@
+customer_ref,email,region,display_name,note,status
+ＣＵＳ-0042, ADA@EXAMPLE.TEST ,n,  Ada　Lovelace  ,"priority, west",enabled
+CUS-0013,rene@example.test,nord,René  Faure,,active
+cus-0077,zoe@example.test,SUD, Zoë   Quinn ,  ,hold
+CUS-0088,li@example.test,south,Li Wei,"calls, Tuesdays",PAUSED

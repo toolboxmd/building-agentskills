@@ -1,0 +1,46 @@
+{
+  "product": "Harborline",
+  "release": "4.8",
+  "items": [
+    {
+      "id": "COMMIT-HL-412",
+      "type": "commit",
+      "status": "shipped",
+      "summary": "Added resumable uploads for files sent through the desktop client.",
+      "scope": "desktop client uploads only"
+    },
+    {
+      "id": "TEST-HL-63",
+      "type": "acceptance",
+      "status": "passed",
+      "summary": "All 30 interrupted uploads resumed and matched source SHA-256 values.",
+      "scope": "synthetic 2 GB fixtures on macOS 15.4 over a controlled local network"
+    },
+    {
+      "id": "COMMIT-HL-419",
+      "type": "commit",
+      "status": "shipped",
+      "summary": "The desktop client now displays the last verified checkpoint before resuming an upload.",
+      "scope": "desktop client status panel"
+    },
+    {
+      "id": "PLAN-HL-90",
+      "type": "plan",
+      "status": "unshipped",
+      "summary": "Add mobile resumable uploads and cross-device continuation."
+    },
+    {
+      "id": "REJECT-HL-14",
+      "type": "proposal",
+      "status": "rejected",
+      "summary": "Claim uploads can never lose data on any network.",
+      "reason": "Absolute claim exceeds the controlled acceptance scope."
+    },
+    {
+      "id": "OBS-HL-07",
+      "type": "observation",
+      "status": "unverified",
+      "summary": "A teammate estimated resumes felt 60 percent faster."
+    }
+  ]
+}

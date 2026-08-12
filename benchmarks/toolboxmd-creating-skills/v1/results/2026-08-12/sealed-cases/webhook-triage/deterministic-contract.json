@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "caseId": "webhook-triage",
+  "requiredSkillName": "triaging-webhook-incidents",
+  "authoring": {
+    "allowedWriteRoot": "output/triaging-webhook-incidents",
+    "requiredFiles": [
+      "output/triaging-webhook-incidents/SKILL.md",
+      "output/triaging-webhook-incidents/validation-report.md"
+    ],
+    "protectedInputs": [
+      "visible-inputs/northstar-webhook-runbook.md",
+      "visible-inputs/delivery-state-reference.md",
+      "visible-inputs/training-events.jsonl"
+    ],
+    "offlineRequired": true
+  },
+  "downstream": {
+    "requiredFile": "downstream-output/incident-assessment.md",
+    "requiredLabels": [
+      "Classification",
+      "Priority",
+      "Next action",
+      "Retry guidance",
+      "Missing information",
+      "Rule citations"
+    ],
+    "requiredCaseInsensitiveTerms": [
+      "signature-integrity",
+      "P1",
+      "quarantine",
+      "active signing-key identifier",
+      "NSR-AUTH-17"
+    ],
+    "requiredAnyCaseInsensitiveTerms": [
+      ["stop automatic retries", "do not retry", "no retry"]
+    ],
+    "forbiddenCaseInsensitiveTerms": [
+      "endpoint-throttling",
+      "retry in two minutes",
+      "retry after 120 seconds"
+    ],
+    "allowedRuleIdentifiers": [
+      "NSR-AUTH-17",
+      "NSR-DATA-24",
+      "NSR-RATE-31",
+      "NSR-REMOTE-46",
+      "NSR-UNKNOWN-90",
+      "NSR-RETRY-12",
+      "NSR-MISSING-08"
+    ],
+    "selectedRule": "NSR-AUTH-17",
+    "selectedClassification": "signature-integrity",
+    "selectedPriority": "P1",
+    "missingFact": "active signing-key identifier"
+  }
+}

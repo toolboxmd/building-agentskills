@@ -1,0 +1,4 @@
+interface:
+  display_name: "Triaging Webhook Incidents"
+  short_description: "Assess Northstar Relay webhook incidents"
+  default_prompt: "Use $triaging-webhook-incidents to assess this Northstar Relay delivery payload and produce the required incident report."

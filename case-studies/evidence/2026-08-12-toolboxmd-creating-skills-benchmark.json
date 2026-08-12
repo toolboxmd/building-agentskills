@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-12",
+  "benchmark": {
+    "id": "toolboxmd-creating-skills-v1",
+    "decision": "fail",
+    "candidate_recommended": false,
+    "claim_boundary": "One directional comparison of a frozen ToolboxMD candidate against the Codex 0.147.0 built-in creator for three declared skill archetypes on gpt-5.6-sol at medium reasoning effort.",
+    "acceptance": {
+      "candidate_mechanical_passes": 3,
+      "candidate_blind_wins": 0,
+      "required_blind_wins": 2,
+      "baseline_blind_wins": 1,
+      "ties": 1,
+      "invalid_cases": 1,
+      "passed": false
+    },
+    "cases": [
+      {
+        "case_id": "webhook-triage",
+        "deterministic": "both downstream outputs passed 21/21 checks",
+        "semantic": "valid tie at 20/20",
+        "final_outcome": "tie"
+      },
+      {
+        "case_id": "csv-sanitizer",
+        "deterministic": "both downstream outputs passed 20/20 checks",
+        "semantic": "invalid before review because frozen baseline bytecode leaked treatment identity",
+        "final_outcome": "invalid"
+      },
+      {
+        "case_id": "release-evidence",
+        "deterministic": "both downstream outputs passed 26/26 checks",
+        "semantic": "baseline won 20/17 with medium confidence",
+        "final_outcome": "baseline_win"
+      }
+    ],
+    "usage": {
+      "benchmark_sessions_including_one_replay": 14,
+      "cumulative_duration_seconds": 1744,
+      "input_tokens": 2064691,
+      "cached_input_tokens": 1611264,
+      "output_tokens": 73053
+    },
+    "candidate_authoring_usage": {
+      "input_tokens": 2226537,
+      "cached_input_tokens": 2093312,
+      "output_tokens": 20379
+    },
+    "interpretation_limit": "The result does not estimate variance or rank models, providers, or all skill types. It supports only keeping this candidate out of the preferred and distributed skill path."
+  },
+  "evidence": {
+    "result_manifest": "benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/manifest.json",
+    "result_manifest_sha256": "9175a507b65fe26c895b51417af9fb6ce180b36698fff8caf9e98b2738c0c396",
+    "public_contract_sha256": "f8803e19d32ae469d804bc5168446b438d3452ed4ab5e01e899951e6abe7ef6e",
+    "baseline_package_sha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c",
+    "candidate_package_sha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",
+    "sealed_cases_sha256": "efc67049d715cb69bbfcad04441a4a9d162ba11f3a22ef3328c543bf6da837a2",
+    "initial_blind_judgment_sha256": "3be1cab6bbe7106fcad42ad0f92e7fa55c4f41f95352d40dc0095e3ebfdbd3d4",
+    "initial_blind_validation_sha256": "f3a1ba7c26ee2ff8839b73b62d8e9bd8f01a687db8c467dfa408e92fb53c423b"
+  }
+}

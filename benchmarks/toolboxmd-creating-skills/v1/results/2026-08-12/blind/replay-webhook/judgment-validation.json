@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "valid": false,
+  "expectedCaseIds": [
+    "webhook-triage"
+  ],
+  "derivedCases": [
+    {
+      "caseId": "webhook-triage",
+      "verdict": "A",
+      "confidence": "high",
+      "totals": {
+        "A": 20,
+        "B": 20
+      }
+    }
+  ],
+  "reasons": [
+    "webhook-triage: winning score advantage is less than two points",
+    "webhook-triage: win has no scored downstream-utility advantage"
+  ]
+}

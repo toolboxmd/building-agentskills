@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "benchmarkId": "toolboxmd-creating-skills-v1",
+  "codexCliVersion": "0.147.0",
+  "implicitSkillsVisible": [],
+  "skillsProbeResult": "SKILLS: NONE",
+  "networkProbe": {
+    "command": "curl --max-time 5 --silent --show-error --output /dev/null https://example.com",
+    "exitStatus": 6,
+    "result": "Could not resolve host: example.com",
+    "blocked": true
+  },
+  "proofType": "behavioral preflight with the same fresh-home isolation settings used by benchmark runs"
+}

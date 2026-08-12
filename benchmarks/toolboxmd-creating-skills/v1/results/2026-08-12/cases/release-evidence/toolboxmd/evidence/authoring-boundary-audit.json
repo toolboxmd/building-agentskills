@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "output/drafting-evidence-backed-releases",
+  "protectedFileCount": 10,
+  "newFiles": [
+    "output/drafting-evidence-backed-releases/SKILL.md",
+    "output/drafting-evidence-backed-releases/evals/evals.json",
+    "output/drafting-evidence-backed-releases/validation-report.md"
+  ],
+  "reasons": []
+}

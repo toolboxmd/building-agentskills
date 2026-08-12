@@ -9,3 +9,7 @@ Added [[provider-neutral-skill-runtime]] and [[benchmark-integrity-for-agent-ski
 ## [2026-08-12] decision | continuous-learning handoff
 
 Added [[evidence-gated-continuous-learning]] as a proposed source-tracking loop. Automatic discovery may create candidates, while verified evidence and human review remain required before doctrine changes.
+
+## [2026-08-12] benchmark | ToolboxMD creator candidate not promoted
+
+Recorded the failed `toolboxmd-creating-skills` directional benchmark in [[benchmark-integrity-for-agent-skills]]. Three candidate packages passed deterministic checks, but blind review produced no candidate wins. The frozen candidate remains an inspectable benchmark artifact and was removed from the active skill path. The existing loader and public recommendation remain unchanged.

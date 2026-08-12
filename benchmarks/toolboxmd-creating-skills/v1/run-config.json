@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "benchmarkId": "toolboxmd-creating-skills-v1",
+  "date": "2026-08-12",
+  "claimBoundary": "One-run directional comparison for three declared skill archetypes on one frozen Codex configuration.",
+  "cases": [
+    "webhook-triage",
+    "csv-sanitizer",
+    "release-evidence"
+  ],
+  "baseline": {
+    "label": "builtin",
+    "snapshotPath": "baselines/codex-skill-creator-0.147.0/package",
+    "packageManifestSha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c",
+    "skillMdSha256": "da44c88f6b3845a8fa8c60792ec9a722110a55a9793c279757b48fefb11f819c"
+  },
+  "candidate": {
+    "label": "toolboxmd",
+    "sourcePath": "skills/toolboxmd-creating-skills",
+    "freezeBeforeExactCases": true
+  },
+  "harness": {
+    "codexCliVersion": "0.147.0",
+    "model": "gpt-5.6-sol",
+    "modelReasoningEffort": "medium",
+    "sandbox": "workspace-write",
+    "networkAccess": false,
+    "ephemeral": true,
+    "ignoreUserConfig": true,
+    "ignoreRules": true,
+    "implicitSkillsExpected": [],
+    "noNestedDelegation": true
+  },
+  "runBudget": {
+    "authoring": 6,
+    "downstream": 6,
+    "blindJudge": 1,
+    "maxAmbiguousCaseReplays": 1,
+    "maximumSessionsWithReplay": 18
+  },
+  "acceptance": {
+    "candidateCriticalMechanicalPasses": 3,
+    "minimumBlindWins": 2,
+    "criticalRegressionAllowed": false,
+    "manualRepairAllowed": false
+  },
+  "sourceSnapshots": {
+    "agentSkills": "69ef37e9424c0a7ea9dd2293b559e43ec8176379",
+    "anthropicSkills": "f17010c9bb483898c1d9c9f42dde2b3a98889434",
+    "openaiPlugins": "11c74d6ba24d3a6d48f54a194cd00ef3beea18f9",
+    "superpowers": "44c9b2d6e889982ac18c27d05a19fefe335194e1"
+  }
+}

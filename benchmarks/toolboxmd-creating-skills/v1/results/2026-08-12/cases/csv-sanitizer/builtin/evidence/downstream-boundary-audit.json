@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "downstream-output",
+  "protectedFileCount": 9,
+  "newFiles": [
+    "downstream-output/customers-audit-second.json",
+    "downstream-output/customers-audit.json",
+    "downstream-output/customers-sanitized-second.csv",
+    "downstream-output/customers-sanitized.csv",
+    "downstream-output/run-report.md"
+  ],
+  "reasons": []
+}

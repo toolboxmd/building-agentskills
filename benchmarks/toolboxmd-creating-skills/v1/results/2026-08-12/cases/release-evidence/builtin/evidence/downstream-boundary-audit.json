@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "downstream-output",
+  "protectedFileCount": 7,
+  "newFiles": [
+    "downstream-output/release-draft.md"
+  ],
+  "reasons": []
+}

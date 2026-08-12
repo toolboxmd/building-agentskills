@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "caseId": "release-evidence",
+  "passed": true,
+  "checkCount": 26,
+  "failedCheckCount": 0,
+  "checks": [
+    {
+      "id": "required-output",
+      "passed": true,
+      "detail": "downstream-output/release-draft.md"
+    },
+    {
+      "id": "top-level-headings",
+      "passed": true,
+      "detail": "## Release notes | ## Withheld or unsupported claims"
+    },
+    {
+      "id": "release-evidence:COMMIT-HL-412",
+      "passed": true,
+      "detail": "COMMIT-HL-412"
+    },
+    {
+      "id": "release-evidence:TEST-HL-63",
+      "passed": true,
+      "detail": "TEST-HL-63"
+    },
+    {
+      "id": "release-evidence:COMMIT-HL-419",
+      "passed": true,
+      "detail": "COMMIT-HL-419"
+    },
+    {
+      "id": "withheld-evidence:PLAN-HL-90",
+      "passed": true,
+      "detail": "PLAN-HL-90"
+    },
+    {
+      "id": "withheld-evidence:REJECT-HL-14",
+      "passed": true,
+      "detail": "REJECT-HL-14"
+    },
+    {
+      "id": "withheld-evidence:OBS-HL-07",
+      "passed": true,
+      "detail": "OBS-HL-07"
+    },
+    {
+      "id": "qualifier:desktop",
+      "passed": true,
+      "detail": "desktop"
+    },
+    {
+      "id": "qualifier:synthetic",
+      "passed": true,
+      "detail": "synthetic"
+    },
+    {
+      "id": "qualifier:2 GB",
+      "passed": true,
+      "detail": "2 GB"
+    },
+    {
+      "id": "qualifier:macOS 15.4",
+      "passed": true,
+      "detail": "macOS 15.4"
+    },
+    {
+      "id": "qualifier:controlled local network",
+      "passed": true,
+      "detail": "controlled local network"
+    },
+    {
+      "id": "qualifier:30",
+      "passed": true,
+      "detail": "30"
+    },
+    {
+      "id": "supported-concept:resumable uploads",
+      "passed": true,
+      "detail": "resumable uploads"
+    },
+    {
+      "id": "supported-concept:source SHA-256",
+      "passed": true,
+      "detail": "source SHA-256"
+    },
+    {
+      "id": "supported-concept:last verified checkpoint",
+      "passed": true,
+      "detail": "last verified checkpoint"
+    },
+    {
+      "id": "forbidden-release-claim:unbreakable",
+      "passed": true,
+      "detail": "unbreakable"
+    },
+    {
+      "id": "forbidden-release-claim:never lose data",
+      "passed": true,
+      "detail": "never lose data"
+    },
+    {
+      "id": "forbidden-release-claim:60 percent faster",
+      "passed": true,
+      "detail": "60 percent faster"
+    },
+    {
+      "id": "forbidden-release-claim:60% faster",
+      "passed": true,
+      "detail": "60% faster"
+    },
+    {
+      "id": "forbidden-release-claim:every device",
+      "passed": true,
+      "detail": "every device"
+    },
+    {
+      "id": "forbidden-release-claim:any network",
+      "passed": true,
+      "detail": "any network"
+    },
+    {
+      "id": "forbidden-release-claim:mobile users can continue",
+      "passed": true,
+      "detail": "mobile users can continue"
+    },
+    {
+      "id": "supported-citation-format",
+      "passed": true,
+      "detail": "\\[evidence: (?:COMMIT-HL-412|TEST-HL-63|COMMIT-HL-419)(?:, (?:COMMIT-HL-412|TEST-HL-63|COMMIT-HL-419))*\\]"
+    },
+    {
+      "id": "known-evidence-identifiers",
+      "passed": true,
+      "detail": "all evidence identifiers are known"
+    }
+  ]
+}

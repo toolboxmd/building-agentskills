@@ -8,3 +8,4 @@ node_modules/
 .vscode/
 .mintlify/
 dist/
+.benchmark-work/

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "downstream-output",
+  "protectedFileCount": 8,
+  "newFiles": [
+    "downstream-output/incident-assessment.md"
+  ],
+  "reasons": []
+}

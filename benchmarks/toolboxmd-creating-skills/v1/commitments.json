@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "benchmarkId": "toolboxmd-creating-skills-v1",
+  "publicContract": {
+    "frozenOn": "2026-08-12",
+    "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+    "files": [
+      {"path": "README.md", "sha256": "4cf1c818f004e0f8035c521f24d1fe766ea917c6f5c1df88129ede02543c4450"},
+      {"path": "case-contracts/csv-sanitizer.md", "sha256": "e995ffeee5b63448ad22ca95eb30299024d6e4434185be15e125f284a148b00b"},
+      {"path": "case-contracts/release-evidence.md", "sha256": "2d62f64352f69dbc1490db243d8ee539cf154863e2f724806149320c1a0d1365"},
+      {"path": "case-contracts/webhook-triage.md", "sha256": "19e1eff5f90b9508c16afc8de086171e258846d4eb52474cdc5dc218971d9979"},
+      {"path": "rubric.md", "sha256": "4061541ab5413feb441d984536edefdb907bb068e562835be64792c591c38ebf"},
+      {"path": "run-config.json", "sha256": "f78a32cde211d75011b889d3fd144a76246e9e2942d427a2e1f234ca304f5a91"}
+    ],
+    "treeSha256": "f8803e19d32ae469d804bc5168446b438d3452ed4ab5e01e899951e6abe7ef6e"
+  },
+  "baseline": {
+    "aggregateSha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c",
+    "manifest": "baselines/codex-skill-creator-0.147.0/manifest.json"
+  },
+  "candidate": {
+    "frozenOn": "2026-08-12",
+    "sourcePath": "skills/toolboxmd-creating-skills",
+    "authoringIsolation": {
+      "implicitSkillsVisible": [],
+      "benchmarkContractsVisible": false,
+      "nestedDelegationObserved": false,
+      "auditEligible": true
+    },
+    "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+    "aggregateSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",
+    "retainedSnapshot": "results/2026-08-12/candidate/toolboxmd-creating-skills",
+    "benchmarkDecision": "fail_not_recommended",
+    "files": [
+      {"path": "SKILL.md", "bytes": 10056, "sha256": "54411fef8b6477ffdc4ae6af8572f709cf881fdb8f84b6834885ec13afb8af59"},
+      {"path": "agents/openai.yaml", "bytes": 235, "sha256": "92a34e6af17f93aa0dd034f4cca2d559e8601fbb88eb40c0bc3a116c66ff12b7"},
+      {"path": "evals/downstream-smoke.md", "bytes": 1407, "sha256": "1050ee83588a8935f0e1c56eb891269d01e2d55ddf2dac0948d1fe2ab902b368"},
+      {"path": "evals/evals.json", "bytes": 2816, "sha256": "4f3560f5b21d6ae360040b062345b0d52d5c30495834df2bc0d5e9ab34ab8b9a"},
+      {"path": "references/authoring-reference.md", "bytes": 8962, "sha256": "1be30adbf23d1716e1ba4bb4df8b5e5d3dd47e3061ab088838461e6e04153a72"},
+      {"path": "scripts/validate_skill.py", "bytes": 10964, "sha256": "470a9d6cfd7ea582e7b3c8f8609071b39c5e8c872237952635cb87cb81212beb"}
+    ]
+  },
+  "sealedCases": {
+    "frozenOn": "2026-08-12",
+    "generatedAfterCandidateSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",
+    "aggregateSha256": "efc67049d715cb69bbfcad04441a4a9d162ba11f3a22ef3328c543bf6da837a2",
+    "manifest": "sealed-cases-manifest.json"
+  }
+}

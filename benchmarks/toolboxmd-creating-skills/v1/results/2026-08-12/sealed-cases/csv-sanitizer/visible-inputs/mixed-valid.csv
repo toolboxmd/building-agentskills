@@ -1,0 +1,4 @@
+customer_ref,email,region,display_name,note,status
+ cus-0007 ,MIRA@EXAMPLE.TEST,nord,  Mira   Sol  ,"prefers, email",enabled
+CUS-0002,ivo@example.test,SOUTH,Ivo Lane,,paused
+CUS-0009,zoe@example.test,n,Zoë Reed,  VIP   customer  ,ACTIVE

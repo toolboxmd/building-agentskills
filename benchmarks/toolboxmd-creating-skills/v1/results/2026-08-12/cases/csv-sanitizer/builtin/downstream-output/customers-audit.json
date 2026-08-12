@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "input_sha256": "5c5e26887cf54ca197ad51344ef3ab1895ccd9edba8e64feb0a36c9054caf1e5",
+  "output_sha256": "60207b9cd38d97688cc6a56f5cbdbfabdad63ffa214ced32a76c633598648e4c",
+  "rows_read": 4,
+  "rows_written": 4,
+  "region_counts": {
+    "NORTH": 2,
+    "SOUTH": 2
+  },
+  "status_counts": {
+    "ACTIVE": 2,
+    "PAUSED": 2
+  }
+}

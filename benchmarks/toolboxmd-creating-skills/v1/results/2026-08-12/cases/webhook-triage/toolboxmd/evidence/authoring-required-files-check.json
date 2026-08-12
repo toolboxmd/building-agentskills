@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "requiredFiles": [
+    "output/triaging-webhook-incidents/SKILL.md",
+    "output/triaging-webhook-incidents/validation-report.md"
+  ],
+  "missing": []
+}

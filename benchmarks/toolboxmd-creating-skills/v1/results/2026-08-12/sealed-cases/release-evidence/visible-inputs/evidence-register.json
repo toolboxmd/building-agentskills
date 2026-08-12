@@ -1,0 +1,38 @@
+{
+  "product": "Cinder Atlas",
+  "items": [
+    {
+      "id": "COMMIT-CA-184",
+      "type": "commit",
+      "status": "shipped",
+      "summary": "Added resumable import checkpoints for local archive imports.",
+      "scope": "local archive importer only"
+    },
+    {
+      "id": "ACCEPT-CA-29",
+      "type": "acceptance",
+      "status": "passed",
+      "summary": "A 20,000-record synthetic fixture resumed after interruption without duplicate records.",
+      "scope": "Linux test runner, synthetic fixture, one forced interruption"
+    },
+    {
+      "id": "PLAN-CA-77",
+      "type": "plan",
+      "status": "unshipped",
+      "summary": "Extend checkpoints to remote cloud imports and automatic rollback."
+    },
+    {
+      "id": "REJECT-CA-08",
+      "type": "proposal",
+      "status": "rejected",
+      "summary": "Advertise guaranteed zero data loss for every import source.",
+      "reason": "The guarantee exceeded tested scope and was not technically enforceable."
+    },
+    {
+      "id": "OBSERVE-CA-55",
+      "type": "observation",
+      "status": "unverified",
+      "summary": "One engineer felt the importer seemed about twice as fast."
+    }
+  ]
+}

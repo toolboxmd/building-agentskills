@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "reasons": [],
+  "eventCount": 27,
+  "commandCount": 18,
+  "usage": {
+    "inputTokens": 363884,
+    "cachedInputTokens": 303616,
+    "outputTokens": 4796
+  }
+}

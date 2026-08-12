@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "requiredFiles": [
+    "output/sanitizing-customer-exports/SKILL.md",
+    "output/sanitizing-customer-exports/scripts/sanitize_export.py",
+    "output/sanitizing-customer-exports/validation-report.md"
+  ],
+  "missing": []
+}

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "benchmarkId": "toolboxmd-creating-skills-v1",
+  "revealed": true,
+  "revealedOn": "2026-08-12",
+  "revealedAfter": {
+    "initialJudgmentSha256": "3be1cab6bbe7106fcad42ad0f92e7fa55c4f41f95352d40dc0095e3ebfdbd3d4",
+    "initialValidationSha256": "f3a1ba7c26ee2ff8839b73b62d8e9bd8f01a687db8c467dfa408e92fb53c423b",
+    "initialJudgmentValid": true,
+    "webhookReplayJudgmentSha256": "baa253f01a7b6f81b24f4720afa2e269baea41647c122605bf1dcf48c7cdb2b7",
+    "webhookReplayValidationSha256": "636c80ece06e65dd3ab994e93aa067275441e8869eda6a3d129e53df429f4674",
+    "webhookReplayJudgmentValid": false
+  },
+  "mappingAlgorithm": "Sort SHA-256(benchmarkId:caseId:seed), then alternate candidate in A by zero-based rank",
+  "rankedCases": [
+    {
+      "caseId": "csv-sanitizer",
+      "rankHash": "4f9b6f2e06e273cdd5ae57336ee239fda8488894c350aa6c9731a4fde548379e"
+    },
+    {
+      "caseId": "release-evidence",
+      "rankHash": "963b5abb3dc294c70d1ec8c66d54c659fe00ce14710d028f3e68084fec01a459"
+    },
+    {
+      "caseId": "webhook-triage",
+      "rankHash": "f2aa6c613695bc27e9bc6fbad4fa9166bd5c67adcb3ac20bf794bf123d666062"
+    }
+  ],
+  "mapping": {
+    "csv-sanitizer": {
+      "A": "toolboxmd",
+      "B": "builtin"
+    },
+    "release-evidence": {
+      "A": "builtin",
+      "B": "toolboxmd"
+    },
+    "webhook-triage": {
+      "A": "toolboxmd",
+      "B": "builtin"
+    }
+  }
+}

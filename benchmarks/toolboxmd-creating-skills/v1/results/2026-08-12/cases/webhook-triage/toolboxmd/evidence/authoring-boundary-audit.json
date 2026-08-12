@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "output/triaging-webhook-incidents",
+  "protectedFileCount": 10,
+  "newFiles": [
+    "output/triaging-webhook-incidents/SKILL.md",
+    "output/triaging-webhook-incidents/evals/evals.json",
+    "output/triaging-webhook-incidents/references/delivery-states.md",
+    "output/triaging-webhook-incidents/references/incident-routing.md",
+    "output/triaging-webhook-incidents/validation-report.md"
+  ],
+  "reasons": []
+}
