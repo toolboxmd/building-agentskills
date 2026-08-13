@@ -28,8 +28,10 @@ the reviewed Hermes metadata surface, then 460 bytes for optional
 `default_prompt`, all-decodable-file local-path scanning, and single-line
 reference-definition destinations. The bounded round-5 adversarial audit added
 7,353 executable bytes and corrected the claim: this is a canonical ToolboxMD
-package-policy checker, not a general YAML or CommonMark validator. The
-cumulative executable delta from the pre-revision freeze is 10,069 bytes.
+package-policy checker, not a general YAML or CommonMark validator. A later
+two-finding exact-HEAD pass added 27 executable bytes for YAML special-float
+classification and dot-relative script commands. The cumulative executable
+delta from the pre-revision freeze is 10,096 bytes.
 
 Portable-core mode now requires string-to-string metadata. The exact
 `metadata.hermes.config` vendor extension is enabled only by
@@ -47,6 +49,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 34,768 bytes: 4,617 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 29,935-byte read-only checker. The executable is not
+The frozen package is 34,795 bytes: 4,617 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 29,962-byte read-only checker. The executable is not
 loaded as activated core.

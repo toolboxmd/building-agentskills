@@ -87,6 +87,13 @@ bare_exit=$?
 set -e
 [[ $bare_exit -eq 1 ]]
 
+make_fixture "$test_tmp/dot-bare-fixture" $'python3 ./scripts/run.py\nnode ./scripts/run.js\nbash ./scripts/run.sh\nsh ./scripts/run.sh\nruby ./scripts/run.py'
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/dot-bare-fixture" > "$test_tmp/dot-bare.json"
+dot_bare_exit=$?
+set -e
+[[ $dot_bare_exit -eq 1 ]]
+
 make_fixture "$test_tmp/portable-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/portable-fixture" > "$test_tmp/portable.json"
 
@@ -359,7 +366,7 @@ doubled_quote_exit=$?
 set -e
 [[ $doubled_quote_exit -eq 1 ]]
 
-scalar_cases=(boolean true null null numeric 123.5)
+scalar_cases=(boolean true null null numeric 123.5 nan .nan positive-inf +.INF negative-nan -.NaN)
 for ((index = 0; index < ${#scalar_cases[@]}; index += 2)); do
   label="${scalar_cases[$index]}"
   raw="${scalar_cases[$((index + 1))]}"
@@ -729,6 +736,7 @@ const [root, freezePath, temporary] = process.argv.slice(2);
 const freeze = JSON.parse(fs.readFileSync(freezePath));
 const product = JSON.parse(fs.readFileSync(path.join(temporary, "product.json")));
 const bare = JSON.parse(fs.readFileSync(path.join(temporary, "bare.json")));
+const dotBare = JSON.parse(fs.readFileSync(path.join(temporary, "dot-bare.json")));
 const portable = JSON.parse(fs.readFileSync(path.join(temporary, "portable.json")));
 const official = ["pass", "fail", "unexpected", "timeout"].map(mode => JSON.parse(fs.readFileSync(path.join(temporary, `skills-ref-${mode}.json`))));
 const sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "sidecar.json")));
@@ -745,7 +753,7 @@ const escapingReference = JSON.parse(fs.readFileSync(path.join(temporary, "escap
 const reserved = ["claude-helper", "anthropic-helper"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const listDescription = JSON.parse(fs.readFileSync(path.join(temporary, "list-description.json")));
 const quotedDescription = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-description.json")));
-const scalarKinds = ["boolean", "null", "numeric"];
+const scalarKinds = ["boolean", "null", "numeric", "nan", "positive-inf", "negative-nan"];
 const unquotedScalars = scalarKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `unquoted-${name}-description.json`))));
 const quotedScalars = scalarKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `quoted-${name}-description.json`))));
 const commentKinds = ["collection", "boolean", "null", "numeric"];
@@ -796,7 +804,8 @@ assert(freeze.creatorBudgets.packageBytesMaximum === 36000, "reviewed package ca
 assert(freeze.budgetRevision.deterministicExecutableDeltaBytes === 2256, "executable review delta changed");
 assert(freeze.budgetRevision.laterDeterministicExecutableDeltaBytes === 460, "later executable review delta changed");
 assert(freeze.budgetRevision.holisticReviewExecutableDeltaBytes === 7353, "holistic review delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 10069, "current executable delta changed");
+assert(freeze.budgetRevision.latestExactHeadReviewExecutableDeltaBytes === 27, "latest executable review delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 10096, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -817,7 +826,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 34768, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 34795, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -841,6 +850,8 @@ assert(listDescription.status === "fail" && listDescription.issues.some(item => 
 assert(quotedDescription.status === "pass", "quoted collection-looking description must remain a string");
 assert(unquotedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_TYPE")), "obvious unquoted non-string scalars must fail");
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
+assert(dotBare.status === "fail", "dot-relative script fixture must fail under warnings-as-errors");
+assert(dotBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all dot-relative interpreter examples must be detected");
 assert(commentedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_TYPE")), "trailing comments must not hide non-string scalars");
 assert(quotedHash.status === "pass", "hashes inside quoted strings must remain content");
 assert(blockDescription.status === "fail" && blockDescription.issues.some(item => item.code === "FRONTMATTER_STYLE"), "block frontmatter must be rejected as noncanonical");

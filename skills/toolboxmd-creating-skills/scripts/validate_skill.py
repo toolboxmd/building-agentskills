@@ -19,7 +19,7 @@ from urllib.parse import unquote, urlsplit
 PORTABLE_FIELDS = {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
 STRING_FIELDS = PORTABLE_FIELDS - {"metadata"}
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-NON_STRING_RE = re.compile(r"(?i)(?:\[.*\]|\{.*\}|true|false|null|~|[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?)")
+NON_STRING_RE = re.compile(r"(?i)(?:\[.*\]|\{.*\}|true|false|null|~|[-+]?\.(?:inf|nan)|[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?)")
 BLOCK_SCALAR_RE = re.compile(r"[|>](?:[1-9][+-]?|[+-][1-9]?|[+-]?)")
 LINK_RE = re.compile(
     r'''!?\[[^\]]*\]\(\s*(<[^>\n]*>|[^\s)]+)(?:\s+(?:"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|\((?:\\.|[^)])*\)))?\s*\)'''
@@ -33,7 +33,7 @@ OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
 FRAGILE_SCRIPT_RE = re.compile(
     r"\b(?:python(?:3(?:\.\d+)?)?|node|bash|sh|ruby)\b"
-    r"(?:\s+-[A-Za-z0-9-]+(?:=[^\s]+)?)*\s+[\"']?scripts/"
+    r"(?:\s+-[A-Za-z0-9-]+(?:=[^\s]+)?)*\s+[\"']?(?:\./)?scripts/"
 )
 ROOT_NAMES = ("Users", "home", "workspace", "root")
 POSIX_ROOTS = "|".join(re.escape(f"/{name}/") for name in ROOT_NAMES)

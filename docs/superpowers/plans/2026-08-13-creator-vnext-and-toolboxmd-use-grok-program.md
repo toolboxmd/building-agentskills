@@ -104,11 +104,11 @@ changes supported by benchmark v2:
 Do not rewrite the retained creator snapshot. The result is a new candidate
 with its own hash and package inspection.
 
-Completion evidence, 2026-08-13:
+Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 34,768 bytes, aggregate SHA-256
-  `06bd3bd113855118a9e253ebb4379f62d19c8ca5b4f4b755cd3ac5f0eed05023`;
+- exact package: three files, 34,795 bytes, aggregate SHA-256
+  `4ffc8ffc0972dd654f317845848b34642e7ba0e8822ee3b3b5d4ba590a00800b`;
 - activated core: 77 lines and 4,617 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -123,9 +123,12 @@ Completion evidence, 2026-08-13:
 - a bounded adversarial audit added 7,353 executable-only bytes and narrowed
   the claim to a canonical ToolboxMD package-policy checker with optional
   already-installed `skills-ref` cross-checking. The cumulative executable
-  delta from the pre-revision freeze is 10,069 bytes and the package cap is now
+  delta from the pre-revision freeze was 10,069 bytes and the package cap is
   36,000 bytes. Activated-core, description, file, reference, eval, and script
   budgets are unchanged;
+- a later two-finding exact-HEAD pass added 27 executable-only bytes for YAML
+  special-float classification and dot-relative fragile script commands. The
+  current cumulative executable delta is 10,096 bytes;
 - portable-core mode requires string-to-string metadata. The exact
   `metadata.hermes.config` vendor extension requires
   `--allow-hermes-metadata` for an explicitly Hermes-targeted package;
@@ -152,14 +155,15 @@ This step answers only whether the observed problems were fixed without a
 known regression. It is not a new superiority benchmark. Stop and repair the
 candidate if this gate fails.
 
-Completion evidence, 2026-08-13:
+Completion evidence, updated 2026-08-14:
 
 - `tests/toolboxmd-creating-skills-vnext.test.sh` passes from an external
   working directory;
 - the test reproduces the package freeze and budgets, checks exit codes 0/1/2,
-  blocks fragile bare script paths, accepts the explicit `<skill-dir>`
-  contract, accepts supported Codex sidecar sections and titled local links,
-  rejects reserved provider names and obvious unquoted non-string frontmatter,
+  blocks fragile bare and dot-relative script paths, accepts the explicit
+  `<skill-dir>` contract, accepts supported Codex sidecar sections and titled
+  local links, rejects reserved provider names and obvious unquoted non-string
+  frontmatter including YAML special floats,
   prevents trailing comments from hiding YAML types, rejects block scalars,
   accepts the exact Hermes config extension only in explicit extension mode,
   ignores link syntax inside Markdown code, validates canonical single-line
