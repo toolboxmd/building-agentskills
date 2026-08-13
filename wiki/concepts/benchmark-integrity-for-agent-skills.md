@@ -9,14 +9,14 @@ related:
   - /concepts/provider-neutral-skill-runtime.md
 related_files: [docs/06-testing/benchmark-integrity.md, case-studies/evidence/2026-08-11-karpathy-wiki-ingest-benchmark.json, case-studies/evidence/2026-08-12-toolboxmd-creating-skills-benchmark.json, benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/manifest.json, case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md, case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json]
 created: "2026-08-11T00:00:00Z"
-updated: "2026-08-13T16:09:22Z"
+updated: "2026-08-13T17:01:43Z"
 quality:
   accuracy: 5
   completeness: 5
   signal: 5
   interlinking: 4
   overall: 4.75
-  rated_at: "2026-08-13T16:09:22Z"
+  rated_at: "2026-08-13T17:01:43Z"
   rated_by: ingester
 ---
 
@@ -60,17 +60,17 @@ The v2 causal question has two linked stages. First, hold the authoring task, mo
 
 ## v2 final result (2026-08-13)
 
-The v2 daily-use benchmark ran under Codex CLI 0.147.0 with `gpt-5.6-sol` at medium reasoning. A stricter post-result trace audit changed the verdict from mixed, 1 to 1, to inconclusive. The ToolboxMD meeting-followups authoring stream used parent-relative operands without a recorded command cwd, so the audit could not prove that those reads stayed inside the run root. That pipeline is ineligible and its meeting package and downstream result are diagnostic only. The frozen ToolboxMD candidate is not promoted, and no general creator winner was established.
+The v2 daily-use benchmark ran under Codex CLI 0.147.0 with `gpt-5.6-sol` at medium reasoning. A stricter post-result trace audit changed the verdict from mixed, 1 to 1, to inconclusive. The final correction found Git commands in six scored streams without proof of read isolation from repository plus system and global configuration metadata. Empty output and a scoped pathspec do not prove safety. Zero paired creator comparisons remain eligible. The frozen ToolboxMD candidate is not promoted, and no creator or cost winner was established.
 
-Both no-skill runs still qualified their case. Meeting follow-ups passed 2/8 critical checks without a skill; the two retained generated packages then passed 7/8 and produced byte-identical output, but the comparison cannot determine a winner because the ToolboxMD authoring pipeline is ineligible. Weekly status deck is the only eligible pair: no-skill passed 7/8, both generated skills passed 8/8, and ToolboxMD used 23,982 versus 30,228 runtime tokens. This is a low-confidence one-run cost tie-break after equal utility, not a general ranking. All four natural positive prompts loaded the full target `SKILL.md` before output creation and zero of four related near-miss prompts triggered it, but only the deck pair contributes to the creator comparison.
+Both no-skill runs still qualified their case. Meeting follow-ups passed 2/8 critical checks without a skill; the two retained generated packages then passed 7/8 and produced byte-identical output. Weekly status deck passed 7/8 without a skill; both generated packages passed 8/8. All four natural positive prompts loaded the full target `SKILL.md` before output creation, and zero of four related near-miss prompts triggered it. These scores and activation observations are diagnostic raw evidence only because neither case retains two eligible treatment pipelines.
 
-The eligible deck pair supports compact ToolboxMD activation metadata: its description was 39.2% shorter with no observed trigger regression. The meeting description's 29.5% reduction is diagnostic only. The retained packages also show larger `SKILL.md` files, larger packages, and longer authoring time, but meeting differences cannot be used as comparative evidence.
+The retained ToolboxMD descriptions were 29.5% and 39.2% shorter, while its packages had larger `SKILL.md` files, larger total size, and longer authoring time. None of these differences is eligible comparative evidence. They motivate hypotheses for a smaller next candidate and a clean re-benchmark.
 
 Product changes for the next ToolboxMD creator candidate: preserve the compact-description pattern; emit current-directory-independent script commands (observed traces needed `.agents/skills/<name>/scripts/...` repair); move comparative/repeated eval ownership to `toolboxmd-benchmarking-skills`; count always-read references as activated core, not progressive disclosure; make Git delivery checks conditional on an explicit repository-delivery request; enforce a measured artifact-deletion pass before freezing. It must ship as a new frozen candidate, not a mutation of the retained v1 snapshot.
 
 Infrastructure note: the first four authoring attempts were discarded before downstream use because both built-in attempts wrote Python bytecode under the protected creator tree; protocol revision 2 disabled bytecode writes and repeated all four arms symmetrically. The reserve spreadsheet case did not run — it needed five more sessions and only one remained under the 17-session ceiling. Sixteen decision sessions used 728,273 uncached-input-plus-output runtime tokens over 2,759 cumulative seconds.
 
-The corrected auditor now rejects literal POSIX and Windows absolute filesystem operands outside the run root, including those inside quoted shell-wrapper payloads and heredoc code. Direct command executables, URLs, regex literals, and `/dev/null` redirection remain distinguished from data-path reads. Re-auditing all 17 retained streams added one ineligible discarded built-in attempt because `/usr/bin/python3` appeared as a loop operand, but no additional scored pipeline was excluded.
+The corrected auditor rejects literal POSIX and Windows absolute filesystem operands outside the run root, including those inside quoted shell-wrapper payloads and heredoc code. It also rejects executed `git status`, `git diff`, `git ls-files`, and the focused wrapper or substitution forms covered by retained traces unless read isolation is proven. Direct executables, URLs, regex literals, `/dev/null` redirection, and Git words printed by `echo` or `printf` remain distinguished from data-path reads and executed commands. Re-auditing all 17 retained streams made 10 ineligible, including six scored streams, without adding a model session.
 
 Known limitation carried forward: supporting grader and event-audit scripts were not hashed in the pre-run protocol commitment. Their at-result hashes and retained outputs are inspectable, but the commitment alone cannot prove every supporting tool stayed byte-identical during execution. See [case study](../../case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md) and [evidence manifest](../../case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json).
 

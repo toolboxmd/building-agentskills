@@ -2,15 +2,15 @@
 
 ## Release recommendation
 
-Do not promote the frozen ToolboxMD candidate. The corrected benchmark is inconclusive because only one primary case retains an eligible paired pipeline. Keep ToolboxMD as an inspectable product candidate and use the built-in creator as the current default until a simplified revision wins a new benchmark or demonstrates a clear capability the built-in creator lacks.
+Do not promote the frozen ToolboxMD candidate. The corrected benchmark is inconclusive because neither primary case retains an eligible paired pipeline. Keep ToolboxMD as an inspectable product candidate and use the built-in creator as the current default until a simplified revision wins a new benchmark or demonstrates a clear capability the built-in creator lacks.
 
 Do not rewrite the frozen candidate in place. Build the next candidate from these changes, freeze it, and compare it against both the current ToolboxMD snapshot and the built-in baseline.
 
-## Preserve these ToolboxMD strengths
+## Preserve these ToolboxMD hypotheses
 
 ### 1. Compact activation contracts
 
-Keep the current description pattern: capability, concrete intents, and close exclusions without a workflow summary. The eligible deck pair produced a ToolboxMD description 39.2% shorter than the built-in creator while both positive loads occurred and neither treatment loaded on the near miss. The retained meeting artifacts show a 29.5% reduction, but that comparison is diagnostic because the ToolboxMD authoring trace is ineligible.
+Keep the current description pattern as a hypothesis to retest: capability, concrete intents, and close exclusions without a workflow summary. The retained ToolboxMD descriptions are 29.5% and 39.2% shorter than their built-in counterparts, all four positive traces loaded a target, and neither near-miss session loaded one. No paired pipeline remains eligible, so these are diagnostic package and trace observations rather than a demonstrated ToolboxMD advantage.
 
 Acceptance for the next candidate:
 
@@ -27,7 +27,7 @@ Keep the boundary between semantic review and mechanical validation. The Toolbox
 
 ### 3. Portable package defaults
 
-Keep optional platform sidecars optional. ToolboxMD omitted `agents/openai.yaml`, yet the eligible deck target and the diagnostic meeting target were both discovered through portable frontmatter.
+Keep optional platform sidecars optional. ToolboxMD omitted `agents/openai.yaml`, and both retained ToolboxMD targets were discovered through portable frontmatter. Those loads are diagnostic because their pipelines are ineligible, so the next benchmark must retest this portability claim.
 
 ## Change the ToolboxMD creator
 
@@ -76,14 +76,14 @@ If a short reference is required on every invocation, either inline the load-bea
 
 ### P1. Make Git delivery checks conditional
 
-The frozen creator requires a handoff that states validated, tested, committed, and pushed separately. Two ToolboxMD authoring sessions responded by running unscoped `git status`, which exposed names from the ancestor benchmark worktree. The meeting session is independently ineligible because its parent-relative operands lack a recorded cwd. No outside file contents or hidden grader data were observed in the weekly session, but the checks added work and weakened isolation.
+The frozen creator requires a handoff that states validated, tested, committed, and pushed separately. Two ToolboxMD authoring sessions responded by running unscoped `git status`. The strict re-audit also found scoped Git commands in downstream and built-in streams. Even when stdout is empty or paths are scoped below `output/`, Git may read repository plus system, global, or included configuration metadata outside the run root. The retained traces did not prove those reads isolated. This invalidated six scored streams and eliminated every paired comparison.
 
 Change the handoff rule:
 
 - always report validation and testing;
 - report commit and push only when the destination is a Git repository and the user asked for repository delivery;
 - do not inspect ancestor repositories when creating a package in a disposable or non-repository workspace;
-- honor `GIT_CEILING_DIRECTORIES` or an equivalent harness boundary.
+- do not run Git unless the benchmark harness explicitly isolates repository and configuration metadata inside the run root.
 
 ### P2. Make artifact budgets enforceable
 
@@ -108,11 +108,11 @@ This is a targeted trigger test, not a twenty-query optimization campaign for ev
 
 Never allow a parent-relative operand merely because its suffix resembles `creator/`, `authoring-sources/`, `output/`, `knowledge/`, or `workspace/`. Resolve it only when the event records an in-root command cwd and the resolved path stays inside the run root. Treat bare `..`, missing cwd, an outside cwd, and commands that change cwd internally as ineligible when the trace cannot prove the effective location.
 
-The corrected auditor made one scored ToolboxMD authoring stream ineligible and also flagged one previously discarded built-in stream. Preserve both as inspectable failures and keep the overall verdict inconclusive. Future preflight should verify that the harness records cwd before a protocol permits any parent-relative command, and should reject literal absolute filesystem operands outside the run root.
+The corrected auditor rejects unprovable parent traversal, outside absolute filesystem operands, and Git execution without trace-backed read isolation. Re-auditing the same 17 retained streams made 10 ineligible, including six scored streams, without adding a model session. Preserve them as inspectable failures and keep the overall verdict inconclusive. Future preflight should verify that the harness records cwd before permitting parent-relative commands and should prohibit Git by default.
 
 ### P0. Isolate Python and Git before the first model run
 
-Keep `PYTHONDONTWRITEBYTECODE=1` and a run-local Python cache prefix in the runner. Add `GIT_CEILING_DIRECTORIES=<run-root>` or stage model runs outside any ancestor repository. Preflight both boundaries before qualification.
+Keep `PYTHONDONTWRITEBYTECODE=1` and a run-local Python cache prefix in the runner. Prohibit Git in model runs by default. If a future case genuinely requires Git, preflight a complete boundary that keeps repository metadata, HOME/XDG configuration, global configuration, system configuration, and includes inside the run root or disables them explicitly. Staging outside a worktree alone is insufficient.
 
 The bytecode failure consumed four authoring sessions. A correct infrastructure preflight should catch this class before creator output exists.
 
@@ -130,7 +130,7 @@ Future commitments must include every script that can affect qualification, elig
 
 ### P1. Reserve repeats for cost-only decisions
 
-The eligible deck case tied on observable utility and was separated only by one-run token cost. The meeting artifacts show the opposite directional cost result, but that pair is diagnostic because one authoring trace is ineligible. Cost is stochastic enough that a single run should not support a confident product ranking.
+The raw deck scores tied on observable utility and ToolboxMD used fewer tokens, while the raw meeting artifacts point in the opposite cost direction. Neither case retains an eligible pair, so neither direction is a benchmark result. Cost is stochastic enough that even a valid single run should not support a confident product ranking.
 
 For the next benchmark:
 

@@ -47,7 +47,7 @@ A case qualifies when:
 
 Then install each generated skill through the normal discovery path and issue a natural prompt. Do not name the skill, its path, `SKILL.md`, or an invocation command. Count activation only when the event trace shows the full target `SKILL.md` loaded before output creation. Test one or more related near misses and audit that no target skill loaded.
 
-In the v2 creator benchmark, the meeting no-skill arm passed 2 of 8 critical checks and the status-deck arm passed 7 of 8. Both generated treatments then reached 7 of 8 and 8 of 8 respectively. All four positive runs loaded their target skill, while none of four exposed target skills loaded for the near misses. A later trace-audit correction made one scored meeting authoring pipeline ineligible, so only the deck pair supports creator comparison. The same re-audit also marked one previously discarded authoring stream ineligible, without affecting the decision. The retained activation observations still show why no-skill qualification and trace-backed loading are more informative than asking whether an agent can produce a plausible artifact.
+In the v2 creator benchmark, the meeting no-skill arm passed 2 of 8 critical checks and the status-deck arm passed 7 of 8. Both generated treatments then reached 7 of 8 and 8 of 8 respectively. All four positive runs loaded their target skill, while none of four exposed target skills loaded for the near misses. A later trace-audit correction found Git execution without proof of read isolation in six scored streams, leaving zero eligible paired comparisons. The retained activation observations are diagnostic only, but they still show why future valid runs should use no-skill qualification and trace-backed loading rather than ask whether an agent can produce a plausible artifact.
 
 ## Guard model attribution
 
@@ -83,6 +83,8 @@ In the invalid medium attempt, a broad search read global memory, a previous low
 Filesystem isolation is stronger than prose alone. Put allowed inputs in a run-local tree and keep sibling runs, graders, private maps, and reports outside it. Retain a transcript audit as a second line of defense.
 
 Do not allow parent-relative operands merely because their suffix resembles an allowed directory. Resolve them only from a command cwd explicitly recorded in the event, and require the resolved path to remain inside the run root. If cwd is absent, outside the root, or changed inside an opaque shell command, mark the run ineligible rather than infer safety from command output. The corrected v2 creator audit rejected one retained authoring trace containing `find ..` and parent-relative validator paths because the event schema did not record cwd.
+
+Reject Git execution by default. Commands such as `git status`, `git diff`, and `git ls-files` may read repository metadata plus system, global, or included configuration outside the run root even when stdout is empty or their pathspec is scoped below the run root. Staging outside every worktree closes only the repository-discovery path. A case that genuinely requires Git must preflight and record a complete boundary for repository metadata, HOME/XDG configuration, global configuration, system configuration, and includes. Audit actual command invocation, including shell wrappers and substitutions, rather than output names. Quoted examples passed to `echo` or `printf` are not executions.
 
 ## Separate four score layers
 
@@ -139,7 +141,7 @@ Do not repair the candidate output by hand. Do not delete the failed attempt. Bo
 
 One run per configuration can rank that sample; it cannot estimate variance. Use one-run comparisons for directional screening, especially when score gaps are large. Use replicated runs when selecting a production default, when scores are close, or when stochastic behavior is material.
 
-When two treatments tie on observable utility and one-run cost is the only separator, spend the next budget on a paired repeat of that case before opening a reserve case. In the corrected v2 creator benchmark, only the deck pair remained eligible and cost favored ToolboxMD once. The meeting artifacts point in the opposite cost direction but are diagnostic because one authoring trace is ineligible. Neither observation is a stable cost ranking.
+When two treatments tie on observable utility and one-run cost is the only separator, spend the next budget on a paired repeat of that case before opening a reserve case. In the corrected v2 creator benchmark, the raw deck costs favored ToolboxMD once and the raw meeting costs pointed in the opposite direction, but neither case retained an eligible pair. Both observations are diagnostic and neither supports a cost ranking.
 
 Report:
 
@@ -183,6 +185,7 @@ Karpathy-wiki's real acceptance exposed an unsupported operator-level Codex opti
 - [ ] Related near misses do not load the target skill.
 - [ ] Model cannot delegate to another model or agentic CLI.
 - [ ] Run cannot read memory, siblings, graders, or prior output.
+- [ ] Run does not execute Git without trace-backed isolation of repository and configuration reads.
 - [ ] Candidate identity map is outside the blind-review tree.
 - [ ] Authored output is graded before raw evidence.
 - [ ] Held-out retrieval questions are scored individually.

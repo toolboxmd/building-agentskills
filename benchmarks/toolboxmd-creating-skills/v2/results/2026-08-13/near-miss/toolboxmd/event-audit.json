@@ -21,6 +21,11 @@
     "observed": false,
     "ancestorWorktreeNamesObserved": false
   },
+  "gitExecution": {
+    "observed": false,
+    "commandCount": 0,
+    "readIsolationProven": null
+  },
   "usage": {
     "inputTokens": 9040,
     "cachedInputTokens": 6912,

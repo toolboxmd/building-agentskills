@@ -3,7 +3,8 @@
   "mode": "authoring",
   "eligible": false,
   "reasons": [
-    "absolute filesystem path outside run root observed"
+    "absolute filesystem path outside run root observed",
+    "Git command executed without proof of read isolation from repository and configuration metadata"
   ],
   "warnings": [],
   "eventCount": 64,
@@ -37,6 +38,11 @@
   "gitStatus": {
     "observed": false,
     "ancestorWorktreeNamesObserved": false
+  },
+  "gitExecution": {
+    "observed": true,
+    "commandCount": 1,
+    "readIsolationProven": false
   },
   "usage": {
     "inputTokens": 502397,

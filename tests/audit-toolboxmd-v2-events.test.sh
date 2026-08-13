@@ -118,6 +118,101 @@ const result = JSON.parse(process.argv[2]);
 if (!result.eligible || result.reasons.includes("parent-directory traversal observed")) process.exit(1);
 NODE
 
+git_run="$test_tmp/ancestor-repo/run"
+mkdir -p "$test_tmp/ancestor-repo/.git" "$git_run/output"
+node - "$test_tmp/git-commands" <<'NODE'
+const fs = require("node:fs");
+const path = require("node:path");
+const output = process.argv[2];
+fs.mkdirSync(output, { recursive: true });
+const commands = [
+  ["status-empty", "git status --short"],
+  ["status-scoped", "git status --short -- output"],
+  ["ls-files", "git ls-files --error-unmatch output/SKILL.md"],
+  ["diff-scoped", "git diff --stat -- output"],
+  ["shell-wrapper", "/bin/zsh -lc 'git status --short'"],
+  ["command-substitution", "printf '%s\\n' \"$(git status --short)\""],
+  ["backtick-substitution", "printf '%s\\n' `git status --short`"],
+  ["process-substitution", "cat <(git status --short)"],
+  ["env-options", "env -i git status --short"],
+  ["nice-options", "nice -n 5 git status --short"],
+  ["nested-prefixes", "env -i nice -n 5 command git status --short"],
+  ["heredoc-wrapper-tail", `/bin/zsh -lc "python3 - <<'PY'
+print('git status')
+PY
+git status --short"`],
+];
+const safeCommands = [
+  ["safe-non-git", "find output -type f -print"],
+  ["safe-echo", "printf '%s\\n' 'git status'; echo 'git diff -- output'; echo git status"],
+  ["safe-substitution-text", "printf '%s\\n' '$(git status)' '`git diff`' '<(git ls-files)'; echo \"$(printf '%s' 'git status')\"; echo \"<(git diff)\"; echo $((git + 1))"],
+  ["safe-prefix-operands", "env -i echo git status; nice -n 5 echo git diff; command -v git"],
+  ["safe-heredoc-text", `python3 - <<'PY'
+print('git status')
+PY`],
+];
+const usage = { type: "turn.completed", usage: { input_tokens: 10, cached_input_tokens: 0, output_tokens: 1 } };
+for (const [name, command] of [...commands, ...safeCommands]) {
+  const event = {
+    type: "item.completed",
+    item: { type: "command_execution", command, aggregated_output: "", exit_code: 0, status: "completed" },
+  };
+  fs.writeFileSync(path.join(output, `${name}.jsonl`), `${JSON.stringify(event)}\n${JSON.stringify(usage)}\n`);
+}
+NODE
+for git_name in status-empty status-scoped ls-files diff-scoped shell-wrapper command-substitution backtick-substitution process-substitution env-options nice-options nested-prefixes heredoc-wrapper-tail; do
+  set +e
+  git_result=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
+    "$test_tmp/git-commands/$git_name.jsonl" "$git_run" near-miss none)
+  status=$?
+  set -e
+  [[ $status -eq 1 ]] || { echo "FAIL: $git_name should reject Git without read-isolation proof" >&2; exit 1; }
+  node - "$git_result" <<'NODE'
+const result = JSON.parse(process.argv[2]);
+const reason = "Git command executed without proof of read isolation from repository and configuration metadata";
+if (result.eligible || !result.reasons.includes(reason)) process.exit(1);
+if (!result.gitExecution.observed || result.gitExecution.readIsolationProven !== false) process.exit(1);
+if (result.gitExecution.commandCount !== 1) process.exit(1);
+NODE
+done
+for safe_name in safe-non-git safe-echo safe-substitution-text safe-prefix-operands safe-heredoc-text; do
+  safe_git_text=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
+    "$test_tmp/git-commands/$safe_name.jsonl" "$git_run" near-miss none)
+  node - "$safe_git_text" <<'NODE'
+const result = JSON.parse(process.argv[2]);
+if (!result.eligible) process.exit(1);
+if (result.gitExecution.observed || result.gitExecution.readIsolationProven !== null) process.exit(1);
+NODE
+done
+own_git_run="$test_tmp/ancestor-repo/own-repo"
+mkdir -p "$own_git_run/.git"
+set +e
+own_git=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
+  "$test_tmp/git-commands/status-empty.jsonl" "$own_git_run" near-miss none)
+status=$?
+set -e
+[[ $status -eq 1 ]] || { echo "FAIL: own repository must not bypass Git read isolation" >&2; exit 1; }
+node - "$own_git" <<'NODE'
+const result = JSON.parse(process.argv[2]);
+if (result.eligible || !result.gitExecution.observed || result.gitExecution.readIsolationProven !== false) process.exit(1);
+NODE
+
+gitfile_run="$test_tmp/worktree-gitfile-run"
+mkdir -p "$gitfile_run"
+printf '%s\n' "gitdir: $test_tmp/external-git-metadata" > "$gitfile_run/.git"
+set +e
+gitfile_result=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
+  "$test_tmp/git-commands/status-empty.jsonl" "$gitfile_run" near-miss none)
+status=$?
+set -e
+[[ $status -eq 1 ]] || { echo "FAIL: worktree gitfile should reject outside Git metadata" >&2; exit 1; }
+node - "$gitfile_result" <<'NODE'
+const result = JSON.parse(process.argv[2]);
+const reason = "Git command executed without proof of read isolation from repository and configuration metadata";
+if (result.eligible || !result.reasons.includes(reason)) process.exit(1);
+if (!result.gitExecution.observed || result.gitExecution.readIsolationProven !== false) process.exit(1);
+NODE
+
 node - "$test_tmp/run" "$test_tmp/recorded-cwd.jsonl" <<'NODE'
 const fs = require("node:fs");
 const path = require("node:path");

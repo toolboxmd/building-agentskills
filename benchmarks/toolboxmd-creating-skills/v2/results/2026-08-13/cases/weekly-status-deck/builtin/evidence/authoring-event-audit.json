@@ -1,8 +1,10 @@
 {
   "schemaVersion": 2,
   "mode": "authoring",
-  "eligible": true,
-  "reasons": [],
+  "eligible": false,
+  "reasons": [
+    "Git command executed without proof of read isolation from repository and configuration metadata"
+  ],
   "warnings": [],
   "eventCount": 33,
   "commandCount": 7,
@@ -35,6 +37,11 @@
   "gitStatus": {
     "observed": true,
     "ancestorWorktreeNamesObserved": false
+  },
+  "gitExecution": {
+    "observed": true,
+    "commandCount": 1,
+    "readIsolationProven": false
   },
   "usage": {
     "inputTokens": 268189,

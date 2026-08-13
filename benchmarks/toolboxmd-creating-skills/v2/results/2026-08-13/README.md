@@ -8,10 +8,10 @@ The current built-in creator remains the default because the challenger did not 
 
 | Case | No-skill qualification | Built-in | ToolboxMD | Operational outcome |
 |---|---:|---:|---:|---|
-| `meeting-followups` | 2/8 critical checks | 7/8, loaded, 18,550 runtime tokens | 7/8, loaded, 21,609 runtime tokens | Not scored: ToolboxMD authoring trace is ineligible |
-| `weekly-status-deck` | 7/8 critical checks | 8/8, loaded, 30,228 runtime tokens | 8/8, loaded, 23,982 runtime tokens | ToolboxMD cost tie-break, low confidence |
+| `meeting-followups` | 2/8 critical checks | 7/8, loaded, 18,550 runtime tokens | 7/8, loaded, 21,609 runtime tokens | Not scored: ToolboxMD pipeline is ineligible |
+| `weekly-status-deck` | 7/8 critical checks | 8/8, loaded, 30,228 runtime tokens | 8/8, loaded, 23,982 runtime tokens | Not scored: both pipelines are ineligible |
 
-Both near-miss sessions were clean. None of the four installed target skills loaded for general advice prompts. Four positive target loads were also observed, but the meeting-followups ToolboxMD load belongs to a pipeline whose authoring trace is ineligible and therefore cannot support a creator comparison.
+Both near-miss sessions were clean. None of the four installed target skills loaded for general advice prompts. Four positive target loads were also observed. These activation observations are diagnostic only because no case retains two eligible treatment pipelines.
 
 The reserve case did not run. After four authoring attempts were discarded for the Python bytecode boundary failure, only one session remained below the 17-session hard limit. The reserve required five sessions. Running it would have violated the precommitted budget.
 
@@ -19,7 +19,7 @@ The reserve case did not run. After four authoring attempts were discarded for t
 
 ### Downstream quality
 
-There is no eligible observed quality winner. The meeting outputs are byte-identical across treatments, but that pair is diagnostic only because one authoring run is ineligible. Both eligible deck outputs pass all eight assertions and differ only in harmless template whitespace and title-slide phrasing.
+There is no eligible observed quality winner. The meeting outputs are byte-identical across treatments, but that pair is diagnostic because the ToolboxMD authoring and downstream streams are ineligible. Both deck outputs pass all eight assertions and differ only in harmless template whitespace and title-slide phrasing, but both deck pipelines are ineligible.
 
 The one failed meeting assertion is shared. Both treatments preserved terminal periods from the source action text, while the exact CSV fixture expected those periods to disappear. The source contract never required punctuation removal. The raw 7/8 grades remain unchanged, but this check is non-diagnostic and must not be presented as a creator regression.
 
@@ -32,7 +32,7 @@ The retained ToolboxMD packages contain substantially shorter descriptions and s
 | Meeting | 533 characters | 376 characters | -29.5% | Both loaded | Neither loaded |
 | Deck | 554 characters | 337 characters | -39.2% | Both loaded | Neither loaded |
 
-The eligible deck comparison supports the 39.2% reduction as a ToolboxMD strength for the always-listed context layer. The meeting reduction is diagnostic only. One positive and one related near miss per skill are still too small to prove a general description-optimization advantage.
+The 29.5% and 39.2% reductions are retained package measurements, not eligible comparative evidence. They motivate a compact-description hypothesis for the next candidate, but they do not establish a ToolboxMD strength or prove a general description-optimization advantage.
 
 ### Package size and authoring behavior
 
@@ -52,13 +52,13 @@ ToolboxMD authoring was slower in both cases: 345 versus 309 seconds for meeting
 The repeated-use evidence is limited:
 
 - Meeting, diagnostic only: ToolboxMD used 16.5% more uncached input plus output tokens and six more commands. Both outputs were identical.
-- Deck: ToolboxMD used 20.7% fewer uncached input plus output tokens, despite one additional command. Both outputs passed fully.
+- Deck, diagnostic only: ToolboxMD used 20.7% fewer uncached input plus output tokens, despite one additional command. Both outputs passed fully.
 
-Because each treatment ran once per case, the eligible deck cost win has low confidence. It is a frozen operational tie-break, not a variance-backed performance claim.
+Neither directional cost difference supports a winner because neither case retains an eligible pair. The numbers remain useful for sizing a future repeat, not for ranking creators.
 
 ## Product conclusion
 
-`toolboxmd-creating-skills` remains a viable product candidate, but this benchmark cannot establish it as a better default than the built-in creator. Its strongest eligible property is compact, precise activation metadata in the deck case. Its inspectable packages also show a tendency to convert proportional testing and delivery discipline into larger packages and longer authoring runs without observed downstream quality improvement.
+`toolboxmd-creating-skills` remains a product candidate, but this benchmark cannot establish it as a better default than the built-in creator. Its inspectable packages suggest compact activation metadata alongside larger packages and longer authoring runs, but those differences are diagnostic hypotheses rather than eligible comparative findings.
 
 The next candidate should preserve the description pattern and validation discipline while removing default package bloat, undefined working-directory assumptions, and unconditional Git delivery checks. The evidence-to-change map is in [recommendations.md](recommendations.md).
 
@@ -69,7 +69,7 @@ The next candidate should preserve the description pattern and validation discip
 - Reasoning effort: `medium`
 - Same model, prompt, source files, sandbox, and runner configuration across treatments
 - Positive prompts did not name a skill or `SKILL.md`
-- Four of four positive runs loaded the full target `SKILL.md` before output creation, but only the two deck pipelines form an eligible pair
+- Four of four positive runs loaded the full target `SKILL.md` before output creation, but three positive streams are ineligible and no paired comparison remains eligible
 - Zero false-positive loads in two aggregate near-miss sessions
 - Network probe blocked with curl exit code 6
 - Plugins, apps, memories, bundled skills, web search, and nested delegation disabled
@@ -79,9 +79,9 @@ The next candidate should preserve the description pattern and validation discip
 
 The first authoring batch was discarded before downstream use because both built-in runs created Python bytecode under the protected creator tree. The corrected runner disabled bytecode writes and repeated all four authoring arms symmetrically. The exact failed-attempt hashes are retained in `discarded-authoring/failure.json`.
 
-A post-result correction removed the event auditor's unsafe suffix exception for parent-relative paths, added detection for bare `..` operands, and rejects literal POSIX and Windows absolute filesystem operands outside the run root. Wrapper payloads and heredoc code are audited recursively. All 17 retained streams were re-audited without another model session. The ToolboxMD meeting-followups authoring trace is now ineligible: it used `find ..` and parent-relative validator paths, while the event schema recorded no command cwd from which the auditor could prove those operands stayed inside the run root. The generated package and downstream result remain inspectable, but they cannot determine a case winner. One previously discarded built-in authoring stream also became ineligible because `/usr/bin/python3` appeared as a loop operand; this does not affect any scored pipeline or the verdict.
+A post-result correction removed the event auditor's unsafe suffix exception for parent-relative paths, added detection for bare `..` operands, and rejects literal POSIX and Windows absolute filesystem operands outside the run root. Wrapper payloads and heredoc code are audited recursively. The auditor now also rejects an executed Git command unless the trace proves read isolation from repository plus system and global configuration metadata. Empty output and path scoping do not make `git status`, `git diff`, or `git ls-files` safe because Git may still discover metadata outside the run root.
 
-Two ToolboxMD authoring traces also recorded a `git status` warning. The weekly-status-deck trace listed ancestor-worktree names without reading their contents. The meeting-followups trace is already excluded by the stricter traversal rule.
+All 17 retained streams were re-audited without another model session. Ten are ineligible: six scored authoring or downstream streams and four discarded authoring streams. No case retains an eligible pair. The generated packages, downstream outputs, grades, and raw traces remain inspectable diagnostic evidence, but they cannot determine a creator or cost winner.
 
 The protocol commitment did not include the supporting grader and event-audit scripts. Those tools were implemented and tested before the scored downstream runs, and `manifest.json` records their at-result hashes. The evidence does not independently prove that every supporting script stayed byte-identical across the whole execution. Future runs must include every scoring and eligibility tool in the pre-run commitment.
 
@@ -89,4 +89,4 @@ The tracked result retains every JSONL stream, stderr file, and run-metadata rec
 
 ## Claim boundary
 
-This is one eligible paired comparison on Codex CLI 0.147.0 with `gpt-5.6-sol` at medium reasoning, plus diagnostic artifacts from an ineligible meeting-followups ToolboxMD authoring pipeline. It does not estimate variance, establish cross-provider behavior, rank all skill creators, or support a meeting-followups winner. The valid conclusion is narrow: the benchmark is inconclusive, ToolboxMD should not be promoted from this candidate, and the bounded evidence supports the changes in `recommendations.md`.
+This result contains zero eligible paired creator comparisons on Codex CLI 0.147.0 with `gpt-5.6-sol` at medium reasoning. Retained scores, package measurements, activation observations, and costs are diagnostic raw evidence only. The valid conclusion is narrow: the benchmark is inconclusive, it supports no creator or cost winner, ToolboxMD should not be promoted from this candidate, and the observed failure modes motivate the changes in `recommendations.md`.

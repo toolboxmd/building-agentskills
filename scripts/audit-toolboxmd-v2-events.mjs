@@ -40,6 +40,7 @@ const commandEvents = [];
 const observedSkillPaths = new Set();
 const skillOutputs = new Map();
 const networkCommands = [];
+const gitCommandEvents = [];
 const warnings = [];
 let gitStatusObserved = false;
 let gitStatusOutsideNamesObserved = false;
@@ -99,12 +100,153 @@ function changesWorkingDirectory(command) {
 
 function shellTokens(command) {
   const tokens = [];
-  const pattern = /"((?:\\.|[^"\\])*)"|'([^']*)'|(&&|\|\||[;|])|([^\s"';&|]+)/g;
+  const pattern = /"((?:\\.|[^"\\])*)"|'([^']*)'|(&&|\|\||[;|\n])|([^\s"';&|]+)/g;
   for (const match of command.matchAll(pattern)) {
     const value = match[1] ?? match[2] ?? match[3] ?? match[4];
     tokens.push({ value, index: match.index ?? 0 });
   }
   return tokens;
+}
+
+function commandTokens(command) {
+  const tokens = [];
+  let value = "";
+  let start = null;
+  let quote = null;
+  const flush = () => {
+    if (start !== null) tokens.push({ value, index: start });
+    value = "";
+    start = null;
+  };
+
+  for (let index = 0; index < command.length; index += 1) {
+    const character = command[index];
+    if (quote !== null) {
+      if (character === quote) quote = null;
+      else if (quote === '"' && character === "\\" && index + 1 < command.length) value += command[index += 1];
+      else value += character;
+      continue;
+    }
+    if (character === "'" || character === '"') {
+      if (start === null) start = index;
+      quote = character;
+    } else if (character === "\\" && index + 1 < command.length) {
+      if (start === null) start = index;
+      value += command[index += 1];
+    } else if (character === "\n") {
+      flush();
+      tokens.push({ value: "\n", index });
+    } else if (/\s/.test(character)) {
+      flush();
+    } else if (/[;|&]/.test(character)) {
+      flush();
+      const doubled = command[index + 1] === character && /[|&]/.test(character);
+      tokens.push({ value: doubled ? `${character}${character}` : character, index });
+      if (doubled) index += 1;
+    } else {
+      if (start === null) start = index;
+      value += character;
+    }
+  }
+  flush();
+  return tokens;
+}
+
+function parenthesizedPayload(command, openIndex) {
+  let depth = 1;
+  let quote = null;
+  for (let index = openIndex + 1; index < command.length; index += 1) {
+    const character = command[index];
+    if (quote === "'") {
+      if (character === "'") quote = null;
+      continue;
+    }
+    if (quote === '"') {
+      if (character === '"') quote = null;
+      else if (character === "\\") index += 1;
+      continue;
+    }
+    if (character === "\\") {
+      index += 1;
+      continue;
+    }
+    if (character === "'" || character === '"') {
+      quote = character;
+      continue;
+    }
+    if (character === "`") {
+      for (index += 1; index < command.length; index += 1) {
+        if (command[index] === "\\") index += 1;
+        else if (command[index] === "`") break;
+      }
+      continue;
+    }
+    if (character === "(") depth += 1;
+    else if (character === ")") {
+      depth -= 1;
+      if (depth === 0) {
+        return { payload: command.slice(openIndex + 1, index), endIndex: index };
+      }
+    }
+  }
+  return null;
+}
+
+function backtickPayload(command, openIndex) {
+  for (let index = openIndex + 1; index < command.length; index += 1) {
+    if (command[index] === "\\") index += 1;
+    else if (command[index] === "`") {
+      return { payload: command.slice(openIndex + 1, index), endIndex: index };
+    }
+  }
+  return null;
+}
+
+function shellSubstitutionPayloads(command) {
+  const payloads = [];
+  let quote = null;
+  for (let index = 0; index < command.length; index += 1) {
+    const character = command[index];
+    if (quote === "'") {
+      if (character === "'") quote = null;
+      continue;
+    }
+    if (character === "\\") {
+      index += 1;
+      continue;
+    }
+    if (character === "'" && quote === null) {
+      quote = character;
+      continue;
+    }
+    if (character === '"') {
+      quote = quote === '"' ? null : '"';
+      continue;
+    }
+
+    const commandSubstitution = character === "$" && command[index + 1] === "(";
+    const arithmeticSubstitution = commandSubstitution && command[index + 2] === "(";
+    const processSubstitution = quote === null
+      && (character === "<" || character === ">")
+      && command[index + 1] === "(";
+    if (commandSubstitution || processSubstitution) {
+      const parsed = parenthesizedPayload(command, index + 1);
+      if (parsed !== null) {
+        if (arithmeticSubstitution) payloads.push(...shellSubstitutionPayloads(parsed.payload));
+        else payloads.push(parsed.payload);
+        index = parsed.endIndex;
+      }
+      continue;
+    }
+    if (character === "`") {
+      const parsed = backtickPayload(command, index);
+      if (parsed !== null) {
+        payloads.push(parsed.payload);
+        index = parsed.endIndex;
+      }
+    }
+  }
+  return payloads;
 }
 
 function splitHeredocs(command) {
@@ -118,6 +260,7 @@ function splitHeredocs(command) {
         bodies.push(body.join("\n"));
         body = [];
         delimiter = null;
+        shell.push(line);
       } else {
         body.push(line);
       }
@@ -146,7 +289,115 @@ function isUrl(value) {
 function isExecutablePosition(tokens, index) {
   if (index === 0) return true;
   const previous = tokens[index - 1]?.value ?? "";
-  return /^(?:&&|\|\||\||;|then|do|elif|else|if|while|until|!)$/.test(previous);
+  return /^(?:&&|\|\||\||;|\n|then|do|elif|else|if|while|until|!)$/.test(previous);
+}
+
+function commandSegmentStart(tokens, index) {
+  let start = 0;
+  for (let cursor = index - 1; cursor >= 0; cursor -= 1) {
+    if (/^(?:&&|\|\||\||;|\n)$/.test(tokens[cursor].value)) {
+      start = cursor + 1;
+      break;
+    }
+  }
+  while (["!", "if", "then", "do", "elif", "else", "while", "until"].includes(tokens[start]?.value)) start += 1;
+  return start;
+}
+
+function commandInvocationIndex(tokens, candidateIndex) {
+  let cursor = commandSegmentStart(tokens, candidateIndex);
+  while (/^[A-Za-z_][A-Za-z0-9_]*=.*/.test(tokens[cursor]?.value ?? "")) cursor += 1;
+
+  for (let depth = 0; depth < 8 && cursor < tokens.length; depth += 1) {
+    const wrapperIndex = cursor;
+    const wrapper = shellBasename(tokens[cursor].value);
+    if (wrapper === "command") {
+      cursor += 1;
+      let lookupOnly = false;
+      while (cursor < tokens.length && tokens[cursor].value.startsWith("-")) {
+        const option = tokens[cursor].value;
+        cursor += 1;
+        if (option === "--") break;
+        if (/^-[^-]*[vV]/.test(option)) lookupOnly = true;
+      }
+      if (lookupOnly || cursor >= tokens.length) return wrapperIndex;
+      continue;
+    }
+    if (wrapper === "env") {
+      cursor += 1;
+      let terminalOption = false;
+      while (cursor < tokens.length) {
+        const option = tokens[cursor].value;
+        if (option === "--") {
+          cursor += 1;
+          break;
+        }
+        if (/^[A-Za-z_][A-Za-z0-9_]*=.*/.test(option)) {
+          cursor += 1;
+          continue;
+        }
+        if (!option.startsWith("-") || option === "-") break;
+        cursor += 1;
+        if (["--help", "--version"].includes(option)) terminalOption = true;
+        if (["-u", "--unset", "-C", "--chdir", "-S", "--split-string", "-a", "--argv0"].includes(option)) cursor += 1;
+      }
+      if (terminalOption || cursor >= tokens.length) return wrapperIndex;
+      continue;
+    }
+    if (wrapper === "nice") {
+      cursor += 1;
+      let terminalOption = false;
+      while (cursor < tokens.length && tokens[cursor].value.startsWith("-")) {
+        const option = tokens[cursor].value;
+        cursor += 1;
+        if (option === "--") break;
+        if (["--help", "--version"].includes(option)) terminalOption = true;
+        if (["-n", "--adjustment"].includes(option)) cursor += 1;
+      }
+      if (terminalOption || cursor >= tokens.length) return wrapperIndex;
+      continue;
+    }
+    if (wrapper === "nohup") {
+      cursor += 1;
+      if (tokens[cursor]?.value === "--") cursor += 1;
+      else if (tokens[cursor]?.value?.startsWith("-")) return wrapperIndex;
+      if (cursor >= tokens.length) return wrapperIndex;
+      continue;
+    }
+    return cursor;
+  }
+  return cursor;
+}
+
+function isCommandInvocationPosition(tokens, index) {
+  return commandInvocationIndex(tokens, index) === index;
+}
+
+function executedGitCommands(command, depth = 0) {
+  if (depth > 3) return [];
+  const observed = [];
+  const heredoc = splitHeredocs(command);
+  const wrapperTokens = commandTokens(heredoc.shell);
+
+  for (let index = 0; index < wrapperTokens.length; index += 1) {
+    if (!isCommandInvocationPosition(wrapperTokens, index)) continue;
+    if (!new Set(["sh", "bash", "zsh", "dash", "ksh"]).has(shellBasename(wrapperTokens[index].value))) continue;
+    const optionIndex = index + 1;
+    const payloadIndex = index + 2;
+    if (!/^-+[A-Za-z]*c[A-Za-z]*$/.test(wrapperTokens[optionIndex]?.value ?? "") || wrapperTokens[payloadIndex] === undefined) continue;
+    observed.push(...executedGitCommands(wrapperTokens[payloadIndex].value, depth + 1));
+  }
+
+  for (const payload of shellSubstitutionPayloads(heredoc.shell)) {
+    observed.push(...executedGitCommands(payload, depth + 1));
+  }
+
+  const tokens = commandTokens(heredoc.shell);
+  for (let index = 0; index < tokens.length; index += 1) {
+    if (shellBasename(tokens[index].value) !== "git") continue;
+    if (isCommandInvocationPosition(tokens, index)) observed.push(tokens[index].value);
+  }
+  return observed;
 }
 
 function looksLikeLiteralPath(value) {
@@ -278,6 +529,12 @@ for (let index = 0; index < lines.length; index += 1) {
     if (mode !== "preflight") reasons.push("network-capable command observed");
   }
 
+  const gitCommands = executedGitCommands(command);
+  if (gitCommands.length > 0) {
+    gitCommandEvents.push({ command, exitCode: item.exit_code ?? null });
+    reasons.push("Git command executed without proof of read isolation from repository and configuration metadata");
+  }
+
   const commandCwd = recordedCommandCwd(item);
   if (commandCwd !== null && !isInsideRunRoot(commandCwd)) {
     reasons.push("command working directory outside run root observed");
@@ -401,6 +658,11 @@ const result = {
   gitStatus: {
     observed: gitStatusObserved,
     ancestorWorktreeNamesObserved: gitStatusOutsideNamesObserved,
+  },
+  gitExecution: {
+    observed: gitCommandEvents.length > 0,
+    commandCount: gitCommandEvents.length,
+    readIsolationProven: gitCommandEvents.length > 0 ? false : null,
   },
   usage,
 };

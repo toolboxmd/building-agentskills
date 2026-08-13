@@ -6,9 +6,9 @@
 - **Configuration:** Codex CLI 0.147.0, `gpt-5.6-sol`, medium reasoning
 - **Evidence:** [Condensed machine-readable manifest](/case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json)
 
-The corrected v2 benchmark found no eligible downstream quality winner. Both creators produced skills that triggered naturally and completed the declared daily-use tasks at the same deterministic quality, but a stricter post-result command audit made the ToolboxMD meeting-followups authoring trace ineligible. Only the status-deck pair remains eligible, where ToolboxMD won on a low-confidence one-run cost tie-break. The frozen ToolboxMD candidate therefore remains evidence, not the recommended default.
+The corrected v2 benchmark contains no eligible paired creator comparison. The retained outputs show equal deterministic scores within each case, but a stricter post-result command audit found Git execution without proof of read isolation in six scored streams. Both case comparisons are ineligible, so the scores, activation observations, package differences, and costs are diagnostic only. The frozen ToolboxMD candidate remains evidence, not the recommended default.
 
-The retained artifacts still expose useful product differences. The eligible deck pair supports a much shorter ToolboxMD activation description with no observed trigger regression, while the packages also show larger activated cores, larger packages, and longer authoring runs. Meeting differences remain diagnostic rather than comparative evidence.
+The retained artifacts still expose hypotheses worth retesting. ToolboxMD produced shorter activation descriptions, larger activated cores, larger packages, and longer authoring runs. None of those differences is eligible comparative evidence in this benchmark.
 
 ## Why v2 was needed
 
@@ -40,30 +40,30 @@ Marp Markdown was deliberate. It tested a common presentation workflow without a
 
 | Case | No skill | Built-in | ToolboxMD | Frozen outcome |
 |---|---:|---:|---:|---|
-| Meeting follow-ups | 2/8 | 7/8, 18,550 runtime tokens | 7/8, 21,609 runtime tokens | Not scored: ToolboxMD authoring trace is ineligible |
-| Weekly status deck | 7/8 | 8/8, 30,228 runtime tokens | 8/8, 23,982 runtime tokens | ToolboxMD cost tie-break, low confidence |
+| Meeting follow-ups | 2/8 | 7/8, 18,550 runtime tokens | 7/8, 21,609 runtime tokens | Not scored: ToolboxMD pipeline is ineligible |
+| Weekly status deck | 7/8 | 8/8, 30,228 runtime tokens | 8/8, 23,982 runtime tokens | Not scored: both pipelines are ineligible |
 
-All four positive runs loaded the full target `SKILL.md` before writing output. Two aggregate near-miss sessions exposed four generated target skills to related general-advice prompts. None loaded. Those observations remain inspectable, but only the two status-deck pipelines form an eligible creator pair.
+All four positive runs loaded the full target `SKILL.md` before writing output. Two aggregate near-miss sessions exposed four generated target skills to related general-advice prompts. None loaded. Those observations remain inspectable, but three positive streams are ineligible and no paired comparison remains eligible.
 
-The frozen decision rule required ToolboxMD to win both primary cases with no critical regression, or win a deciding reserve. The meeting pair became unavailable after re-audit. The reserve required five more sessions, but only one remained under the 17-session hard limit after a symmetric infrastructure retry. It was not opened.
+The frozen decision rule required ToolboxMD to win both primary cases with no critical regression, or win a deciding reserve. Both primary pairs are unavailable after re-audit. The reserve required five more sessions, but only one remained under the 17-session hard limit after a symmetric infrastructure retry. It was not opened.
 
 The operational verdict is inconclusive. The built-in creator remains the current default because the challenger did not clear its promotion gate, not because this experiment proved general built-in superiority.
 
-## Direct creator comparison
+## Diagnostic creator measurements
 
-### ToolboxMD's demonstrated strength
+### Compact-description hypothesis
 
-ToolboxMD produced descriptions that were 29.5% shorter for meeting follow-ups and 39.2% shorter for the status deck. Both positive prompts still triggered, and all tested near misses stayed inactive. Only the 39.2% deck comparison belongs to an eligible paired pipeline; the meeting reduction is diagnostic.
+ToolboxMD produced descriptions that were 29.5% shorter for meeting follow-ups and 39.2% shorter for the status deck. All four positive traces loaded their target, and all tested near misses stayed inactive. No paired pipeline remains eligible, so these measurements motivate a compact-description hypothesis but do not demonstrate a ToolboxMD advantage.
 
-This is useful evidence for a compact activation contract: capability, concrete intents, and close exclusions without duplicating the workflow in always-listed metadata. The eligible sample is too small to claim a general optimization advantage, but compact activation metadata is still the clearest property worth preserving.
+The next candidate should preserve the compact activation pattern, capability, concrete intents, and close exclusions without duplicating the workflow in always-listed metadata, then retest it in a clean benchmark. This run cannot establish a general optimization advantage.
 
-### ToolboxMD's demonstrated cost
+### Package and authoring measurements
 
 ToolboxMD's `SKILL.md` files were 11.6% and 14.1% larger. Its full packages were 29.7% and 53.9% larger. It also took longer to author both skills.
 
-The extra files were mainly eval artifacts, focused script tests, and more explicit boundary prose. They did not create a measured downstream quality advantage here. Comparative and repeated eval ownership should move to `toolboxmd-benchmarking-skills`; package-local tests should remain only when a bundled deterministic mechanism justifies them.
+The extra files were mainly eval artifacts, focused script tests, and more explicit boundary prose. The raw scores show no downstream quality difference, but the ineligible pipelines prevent an attributable comparison. Comparative and repeated eval ownership should move to `toolboxmd-benchmarking-skills`; package-local tests should remain only when a bundled deterministic mechanism justifies them.
 
-All four target skills immediately loaded their single reference. This is retained trace evidence about the packages, though only the deck pair is eligible for creator comparison. Required-on-every-run references therefore belonged to activated context, even though a file-count view might call them progressive disclosure.
+All four target skills immediately loaded their single reference. This is retained diagnostic trace evidence about the packages, not an eligible creator comparison. Required-on-every-run references still belonged to activated context, even though a file-count view might call them progressive disclosure.
 
 ### Runtime command portability
 
@@ -75,13 +75,15 @@ The next creator must emit current-directory-independent commands or an explicit
 
 The original event auditor removed parent-relative operands from consideration when their suffix started with a familiar run-local directory name. That could accept a path starting with two parent hops and ending in creator/SKILL.md from the run root even though it resolves outside the run root. It also missed a bare parent operand such as `find ..`.
 
-The corrected auditor permits a parent-relative operand only when the event records an in-root command cwd and resolving the operand from that cwd remains inside the run root. It does not infer cwd from command output or later success. It also rejects literal POSIX and Windows absolute filesystem operands outside the run root, including operands inside shell-wrapper payloads and heredoc code. All 17 retained streams were re-audited without running another model session. ToolboxMD meeting-followups authoring became ineligible because it used `find ..` and parent-relative validator paths while its events did not record cwd. Some validator paths likely ran from the generated skill directory, but the trace cannot prove that boundary, so the comparison is excluded conservatively. One previously discarded built-in authoring stream also became ineligible because `/usr/bin/python3` appeared as a loop operand; this has no effect on the scored comparison.
+The corrected auditor permits a parent-relative operand only when the event records an in-root command cwd and resolving the operand from that cwd remains inside the run root. It does not infer cwd from command output or later success. It also rejects literal POSIX and Windows absolute filesystem operands outside the run root, including operands inside shell-wrapper payloads and heredoc code.
 
-The package, downstream output, grades, and raw events remain retained as inspectable failure evidence. The correction changes the verdict from mixed to inconclusive but does not change the release action: do not promote ToolboxMD.
+The final correction also rejects an executed Git command unless the trace proves read isolation from repository plus system and global configuration metadata. `git status`, `git diff`, and `git ls-files` may still read outside metadata when stdout is empty or operands are scoped below `output/`. The focused command parser recognizes the direct, shell-wrapper, substitution, and prefix forms covered by retained traces and regression fixtures without treating strings passed to `echo` or `printf` as commands.
+
+All 17 retained streams were re-audited without running another model session. Ten are ineligible: six scored authoring or downstream streams and four discarded authoring streams. No case retains an eligible pair. The package, downstream output, grades, and raw events remain retained as inspectable failure evidence. The verdict stays inconclusive and the release action remains: do not promote ToolboxMD.
 
 ### Conditional delivery behavior
 
-The frozen ToolboxMD creator asks every handoff to distinguish validated, tested, committed, and pushed state. In disposable package-only authoring runs, that encouraged unscoped `git status` calls. Two traces listed names from the ancestor worktree. The weekly trace did not expose outside file contents, another treatment, or grader data; the meeting trace is independently ineligible because its parent-relative operands lack a recorded cwd.
+The frozen ToolboxMD creator asks every handoff to distinguish validated, tested, committed, and pushed state. In disposable package-only authoring runs, that encouraged unscoped `git status` calls. Built-in and downstream streams also used scoped Git commands. Under the frozen read-isolation rule, all of these commands are ineligible because the traces proved neither in-root repository metadata nor isolation from system, global, and included Git configuration.
 
 Validation and testing should always be reported. Git inspection, commit, and push reporting should be conditional on a Git destination and an explicit repository-delivery request.
 
@@ -93,7 +95,7 @@ Protocol revision 2 disabled bytecode writes, redirected any Python cache under 
 
 This exposed two harness requirements:
 
-- isolate Python bytecode and Git repository discovery before the first model run;
+- isolate Python bytecode and prohibit Git unless complete read isolation is preflighted before the first model run;
 - give infrastructure repair a small explicit allowance separate from the semantic decision budget.
 
 The pre-run commitment also omitted hashes for the supporting grader and event-audit scripts. Their at-result hashes and outputs are retained, but that is weaker than a pre-run commitment. Future runs must freeze every tool that can affect qualification, eligibility, score, cost, retention, or decision.
@@ -122,14 +124,15 @@ No change is made to an active ToolboxMD creator in this ship because the reposi
 - Repeat a paired case when cost alone decides it before spending the budget on another case.
 - Freeze the complete scoring and eligibility toolchain.
 - Reject parent-relative reads unless a recorded command cwd proves the resolved path remains inside the run root.
+- Reject Git execution unless the trace proves repository and configuration reads remain isolated.
 - Preserve invalid attempts and report neutral amendments without mixing them into scores.
 
 These additions are incorporated into [Benchmark integrity for agent skills](/docs/06-testing/benchmark-integrity).
 
 ## Limitations
 
-- Each treatment ran once per case, so cost differences are directional.
-- Only one daily-use family retains an eligible paired comparison, so no general creator ranking is possible.
+- Each treatment ran once per case, and all cost differences are diagnostic because no paired comparison remains eligible.
+- Zero daily-use families retain an eligible paired comparison, so no creator or cost ranking is possible.
 - The result covers Codex CLI 0.147.0 and one model-effort configuration only.
 - Trigger precision was observed on one positive and one related near miss per generated skill.
 - The reserve spreadsheet case was frozen but not executed.

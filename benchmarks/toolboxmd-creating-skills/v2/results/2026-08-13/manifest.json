@@ -9,20 +9,22 @@
     "toolboxmdCandidateDisposition": "retained_as_unpromoted_benchmark_artifact",
     "preferredCreatorUnchanged": true,
     "publicSuperiorityClaimAllowed": false,
-    "reason": "A stricter post-result command audit made the ToolboxMD meeting-followups authoring run ineligible because its event schema did not record the command working directories needed to prove that parent-relative operands stayed inside the run root. Weekly-status-deck remains an eligible paired comparison and favored ToolboxMD only on one-run cost after equal utility. One eligible pair cannot satisfy the frozen two-win rule, and the reserve could not fit the 17-session hard limit."
+    "reason": "A stricter post-result command audit found unisolated Git execution in six scored event streams. The retained traces prove neither in-root repository metadata nor isolation from system and global Git configuration. No case retains an eligible paired pipeline, so all creator scores, package differences, activation observations, and costs are diagnostic only. The reserve could not fit the 17-session hard limit."
   },
-  "claimBoundary": "One eligible paired comparison on Codex CLI 0.147.0 with gpt-5.6-sol at medium reasoning, plus diagnostic artifacts from an ineligible meeting-followups ToolboxMD authoring pipeline. The result does not estimate variance, establish cross-provider behavior, rank skill creators generally, or support a meeting-followups creator winner.",
+  "claimBoundary": "Zero eligible paired creator comparisons on Codex CLI 0.147.0 with gpt-5.6-sol at medium reasoning. Retained scores, package measurements, activation observations, and costs are diagnostic raw evidence only. The result does not support a case winner, a cost winner, a general creator ranking, a variance estimate, or cross-provider behavior.",
   "acceptance": {
     "primaryCasesQualified": 2,
     "primaryCasesRequired": 2,
-    "eligiblePairedCases": 1,
-    "ineligibleAuthoringRuns": 1,
+    "eligiblePairedCases": 0,
+    "ineligibleAuthoringRuns": 3,
+    "ineligiblePositiveRuns": 3,
+    "ineligibleScoredStreams": 6,
     "positiveTargetLoads": 4,
     "positiveRuns": 4,
     "nearMissTargetLoads": 0,
     "nearMissExposedTargetSkills": 4,
     "builtinCaseWins": 0,
-    "toolboxmdCaseWins": 1,
+    "toolboxmdCaseWins": 0,
     "winsRequiredForRecommendation": 2,
     "reserveUsed": false,
     "reserveSessionsRequired": 5,
@@ -79,13 +81,14 @@
   "cases": {
     "meeting-followups": {
       "comparisonEligible": false,
-      "ineligibilityReason": "The ToolboxMD authoring trace contains bare and path-qualified parent-relative operands, but command cwd is absent from the event schema, so the audit cannot prove that those reads stayed inside the run root.",
+      "ineligibilityReason": "The ToolboxMD authoring and downstream traces ran Git commands without proving read isolation from repository and configuration metadata. The authoring trace also contains parent-relative operands without a recorded command cwd.",
       "observableUtility": "diagnostic_tie_not_scored",
       "outputsByteIdentical": true,
       "sharedNonDiagnosticFailure": "Both actions.csv files preserved source terminal periods while the under-specified exact fixture omitted them.",
-      "finalOutcome": "inconclusive_ineligible_toolboxmd_authoring",
+      "finalOutcome": "inconclusive_no_eligible_pair",
       "builtin": {
         "authoringEligible": true,
+        "downstreamEligible": true,
         "pipelineEligible": true,
         "packageSha256": "9f715024c2f0af89f964360eee9e0ea576142c9e4a3fbf194b63475b277446ac",
         "packageFiles": 4,
@@ -104,6 +107,7 @@
       },
       "toolboxmd": {
         "authoringEligible": false,
+        "downstreamEligible": false,
         "pipelineEligible": false,
         "packageSha256": "6f738c66e2aa13c9e1f8e69aa019a5c1e82451d22e28c9da6a21be53affa102c",
         "packageFiles": 4,
@@ -122,14 +126,16 @@
       }
     },
     "weekly-status-deck": {
-      "comparisonEligible": true,
-      "observableUtility": "tie_full_pass",
+      "comparisonEligible": false,
+      "ineligibilityReason": "Both treatments ran Git commands during authoring and downstream execution without proving read isolation from repository and configuration metadata.",
+      "observableUtility": "diagnostic_tie_not_scored",
       "outputsByteIdentical": false,
       "outputDifference": "Harmless template whitespace and title-slide reporting-range phrasing; both passed 8 of 8 checks.",
-      "finalOutcome": "toolboxmd_cost_tiebreak_low_confidence",
+      "finalOutcome": "inconclusive_no_eligible_pair",
       "builtin": {
-        "authoringEligible": true,
-        "pipelineEligible": true,
+        "authoringEligible": false,
+        "downstreamEligible": false,
+        "pipelineEligible": false,
         "packageSha256": "97416c354724a671b3f094794e9549a52b27188066cd106e6c5990a92742624f",
         "packageFiles": 5,
         "packageBytes": 12689,
@@ -146,8 +152,9 @@
         "outputSha256": "c55b4fb1f93a3b4772b969c2467f2e9ff342167eaf623f4bf624e93d42f56b02"
       },
       "toolboxmd": {
-        "authoringEligible": true,
-        "pipelineEligible": true,
+        "authoringEligible": false,
+        "downstreamEligible": false,
+        "pipelineEligible": false,
         "packageSha256": "8d85b408c77c0c8f625f1c6d5cc574482ccae1e8efa7dc1e79a5828735eb9ea0",
         "packageFiles": 7,
         "packageBytes": 19530,
@@ -166,6 +173,7 @@
     }
   },
   "triggerPrecision": {
+    "evidenceStatus": "diagnostic_raw_observation",
     "builtin": {
       "positiveLoads": 2,
       "positiveRuns": 2,
@@ -193,13 +201,13 @@
   "protocolNotes": [
     "The first four authoring attempts were discarded as one batch before downstream use because both built-in attempts wrote Python bytecode below the protected creator tree.",
     "Protocol revision 2 disabled Python bytecode writes and repeated all four authoring arms symmetrically without changing cases, prompts, treatments, grader, model, or decision rule.",
-    "A post-result audit correction removed the suffix-based exception for parent-relative paths. The trace must now record an in-root command cwd before such an operand can be proven safe. It also rejects literal POSIX and Windows absolute filesystem operands outside the run root, including operands inside shell-wrapper payloads and heredoc code.",
-    "All 17 retained event streams were re-audited without running another model session. The ToolboxMD meeting-followups authoring stream became ineligible; its generated package and downstream result remain inspectable diagnostic evidence but cannot determine a case winner. One previously discarded built-in authoring stream was also marked ineligible because an absolute path appeared as a loop operand, with no effect on the scored comparison.",
+    "A post-result audit correction removed the suffix-based exception for parent-relative paths. The trace must now record an in-root command cwd before such an operand can be proven safe. It rejects literal POSIX and Windows absolute filesystem operands outside the run root, including operands inside shell-wrapper payloads and heredoc code. It also rejects executed Git commands unless the trace proves read isolation from repository plus system and global configuration metadata, regardless of command output or path scoping.",
+    "All 17 retained event streams were re-audited without running another model session. Ten streams are ineligible, including six of the eight scored authoring and downstream streams. No case retains an eligible paired pipeline, so all case scores and cost differences are diagnostic only.",
     "The protocol commitment omitted the supporting grader and event-audit scripts. They were implemented and tested before scored downstream runs, and their at-result hashes are recorded below, but the commitment alone cannot prove that every supporting tool stayed byte-identical throughout execution.",
-    "Two ToolboxMD authoring traces listed ancestor-worktree names through git status. The meeting-followups trace is independently ineligible for unprovable parent-relative operands; the weekly-status-deck warning did not expose outside file contents, sibling results, treatment output, or grader content.",
+    "The retained streams executed git status, git diff, or git ls-files while their run roots were nested below the benchmark worktree and without an isolated Git configuration environment. Empty output and path-scoped operands do not make those reads safe because Git may still discover repository, system, global, or included configuration metadata outside the run root.",
     "The shared meeting punctuation mismatch is retained in raw grades but treated as non-diagnostic because the source contract did not specify punctuation removal.",
     "The reserve was frozen but not opened because it required five sessions and only one remained under the hard limit.",
-    "Blind review was not run because it cannot repair an ineligible trace and the remaining eligible deck differences were fully characterized by deterministic utility and cost evidence."
+    "Blind review was not run because it cannot repair ineligible traces and no eligible paired comparison remains."
   ],
   "harnessAtResult": {
     "scripts/run-isolated-codex-v2.sh": "462f9533dade77a722dc24abccd92ae3132b29129f8f0be17c47424b86bc2580",
@@ -212,19 +220,29 @@
   },
   "postResultAuditCorrection": {
     "recordedOn": "2026-08-13",
-    "auditorSha256": "ac487d578d3573a68174b08a225ad05af21ca8b9489249f65d74205adf5cdf08",
+    "auditorSha256": "e38ef4219de02a1056d20c87500bbf3478408f04b40fc796a8c12a49ec027d1d",
     "retainedStreamsReaudited": 17,
     "modelSessionsAdded": 0,
+    "ineligibleStreamCount": 10,
+    "scoredPipelineExclusions": 3,
     "ineligibleStreams": [
       "cases/meeting-followups/toolboxmd/evidence/authoring-events.jsonl",
-      "discarded-authoring/meeting-followups/builtin/events.jsonl"
+      "cases/meeting-followups/toolboxmd/evidence/downstream-events.jsonl",
+      "cases/weekly-status-deck/builtin/evidence/authoring-events.jsonl",
+      "cases/weekly-status-deck/builtin/evidence/downstream-events.jsonl",
+      "cases/weekly-status-deck/toolboxmd/evidence/authoring-events.jsonl",
+      "cases/weekly-status-deck/toolboxmd/evidence/downstream-events.jsonl",
+      "discarded-authoring/meeting-followups/builtin/events.jsonl",
+      "discarded-authoring/meeting-followups/toolboxmd/events.jsonl",
+      "discarded-authoring/weekly-status-deck/builtin/events.jsonl",
+      "discarded-authoring/weekly-status-deck/toolboxmd/events.jsonl"
     ]
   },
   "retainedEvidence": {
-    "retentionManifestSha256": "f738db7453a80ccc27d1dbd7f33e18f0bbe3190708255804ea01eb72b28b1b19",
+    "retentionManifestSha256": "e4f3d7ef74ae7346db6828d4c3cf6c204df4f8229b198d1f6220e298bf4d3612",
     "sessionUsageSha256": "99df094f3389dbec01c94d0b7f3733647f03b4821d18ef3ea5144ebec1d804e4",
     "discardedAuthoringFailureSha256": "172f8e043b6d879bba3728ee0543b7f56d726eec5a06d5035a36bd588875d992"
   },
   "recommendations": "recommendations.md",
-  "interpretationLimit": "No general creator winner was established. Only weekly-status-deck remains an eligible paired comparison, and its ToolboxMD advantage is a one-run cost tie-break after equal utility. Meeting-followups artifacts are diagnostic only."
+  "interpretationLimit": "No eligible paired creator comparison remains. All retained case scores, package measurements, activation observations, and costs are diagnostic only and cannot support a creator or cost winner."
 }

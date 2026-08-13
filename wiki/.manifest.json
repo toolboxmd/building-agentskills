@@ -1,11 +1,11 @@
 {
   "raw/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md": {
-    "copied_at": "2026-08-13T16:09:22Z",
-    "last_ingested": "2026-08-13T16:09:22Z",
+    "copied_at": "2026-08-13T17:01:43Z",
+    "last_ingested": "2026-08-13T17:01:43Z",
     "origin": "/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md",
     "referenced_by": [
       "concepts/benchmark-integrity-for-agent-skills.md"
     ],
-    "sha256": "ca564569974ff828f0d243c869cb899d7c2782dc9d83d8861865692cb27934c0"
+    "sha256": "8c5973990a20f1036d596aff273df33e826aba9c2e8dd4709ded0b7f6a804beb"
   }
 }
