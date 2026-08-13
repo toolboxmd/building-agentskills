@@ -22,8 +22,10 @@ for path in "${required[@]}"; do
   fi
 done
 
-if [[ -e "$root/skills/toolboxmd-creating-skills" ]]; then
-  echo "FAIL: an unpromoted candidate is present in the active skills tree" >&2
+active_candidate="$root/skills/toolboxmd-creating-skills"
+vnext_freeze="$root/benchmarks/toolboxmd-creating-skills/vnext/manifest.json"
+if [[ -e "$active_candidate" && ! -f "$vnext_freeze" ]]; then
+  echo "FAIL: an active creator needs an independent vNext freeze" >&2
   exit 1
 fi
 
@@ -39,6 +41,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const [repositoryRoot, resultRoot] = process.argv.slice(2);
+const activeCandidatePath = path.join(repositoryRoot, "skills", "toolboxmd-creating-skills");
+const vnextFreezePath = path.join(repositoryRoot, "benchmarks", "toolboxmd-creating-skills", "vnext", "manifest.json");
 
 function readJson(relative) {
   return JSON.parse(fs.readFileSync(path.join(resultRoot, relative), "utf8"));
@@ -99,6 +103,14 @@ assert(manifest.acceptance.positiveTargetLoads === 4, "all positive runs must lo
 assert(manifest.acceptance.nearMissTargetLoads === 0, "near-miss runs must not load target skills");
 assert(manifest.acceptance.reserveUsed === false, "reserve must remain unopened");
 assert(manifest.acceptance.sessionsRemainingUnderHardLimit === 1, "hard-limit accounting changed");
+if (fs.existsSync(activeCandidatePath)) {
+  assert(fs.existsSync(vnextFreezePath), "active creator lacks its vNext freeze");
+  const active = treeManifest(activeCandidatePath);
+  const vnext = JSON.parse(fs.readFileSync(vnextFreezePath, "utf8"));
+  assert(active.aggregateSha256 === vnext.package.aggregateSha256, "active creator differs from vNext freeze");
+  assert(active.aggregateSha256 !== manifest.freezes.toolboxmdCreatorSha256, "unpromoted v2 treatment was restored to the active path");
+  assert(vnext.claimBoundary.superiorityClaimAllowed === false && vnext.claimBoundary.promotionClaimAllowed === false, "vNext overstates the v2 result");
+}
 
 const condensed = JSON.parse(fs.readFileSync(
   path.join(repositoryRoot, "case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json"),

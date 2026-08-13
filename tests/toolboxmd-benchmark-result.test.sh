@@ -19,8 +19,10 @@ do
   [[ -f "$required" ]] || { echo "FAIL: missing ${required#"$root/"}" >&2; exit 1; }
 done
 
-if [[ -e "$root/skills/toolboxmd-creating-skills" ]]; then
-  echo "FAIL: failed candidate must not remain in the active skills directory" >&2
+active_candidate="$root/skills/toolboxmd-creating-skills"
+vnext_freeze="$root/benchmarks/toolboxmd-creating-skills/vnext/manifest.json"
+if [[ -e "$active_candidate" && ! -f "$vnext_freeze" ]]; then
+  echo "FAIL: an active creator needs an independent vNext freeze" >&2
   exit 1
 fi
 
@@ -35,6 +37,8 @@ const sealedManifest = JSON.parse(fs.readFileSync(path.join(benchmarkRoot, "seal
 const manifestPath = path.join(resultRoot, "manifest.json");
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 const evidence = JSON.parse(fs.readFileSync(evidencePath, "utf8"));
+const activeCandidatePath = path.join(repositoryRoot, "skills", "toolboxmd-creating-skills");
+const vnextFreezePath = path.join(repositoryRoot, "benchmarks", "toolboxmd-creating-skills", "vnext", "manifest.json");
 
 function assert(condition, message) {
   if (!condition) {
@@ -164,7 +168,14 @@ const auditorSha256 = crypto.createHash("sha256").update(fs.readFileSync(auditor
 assert(manifest.retainedArtifactHashes.genericEventAuditorSha256 === auditorSha256, "generic event-auditor hash changed");
 assert(evidence.evidence.generic_event_auditor_sha256 === auditorSha256, "case-study auditor hash changed");
 
-assert(!fs.existsSync(path.join(repositoryRoot, "skills", "toolboxmd-creating-skills")), "active candidate unexpectedly exists");
+if (fs.existsSync(activeCandidatePath)) {
+  assert(fs.existsSync(vnextFreezePath), "active creator lacks its vNext freeze");
+  const active = treeManifest(activeCandidatePath);
+  const vnext = JSON.parse(fs.readFileSync(vnextFreezePath, "utf8"));
+  assert(active.aggregateSha256 === vnext.package.aggregateSha256, "active creator differs from vNext freeze");
+  assert(active.aggregateSha256 !== candidate.aggregateSha256, "failed v1 candidate was restored to the active path");
+  assert(vnext.claimBoundary.superiorityClaimAllowed === false && vnext.claimBoundary.promotionClaimAllowed === false, "vNext overstates the v1 result");
+}
 NODE
 
 echo "PASS: v1 ToolboxMD evidence remains preserved, ineligible, and non-promoted"

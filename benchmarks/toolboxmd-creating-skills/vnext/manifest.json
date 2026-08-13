@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "toolboxmd-creating-skills-vnext-2026-08-13",
+  "recordedOn": "2026-08-13",
+  "source": {
+    "parentCommit": "e07502f2ced07917acdc8d7d3f8e5ad6f9301595",
+    "v1ResultManifest": {
+      "path": "benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/manifest.json",
+      "sha256": "ad35da1d92f2d750c3c95ccf55d826cf2fe6c5ca185b5399edc74fdb071a4ea6",
+      "eligibleCreatorComparisons": 0
+    },
+    "v2ResultManifest": {
+      "path": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/manifest.json",
+      "sha256": "8fbbefc402bd7ff5d3be98d9080e35fa46c92177395889c41ab2d123e96af23d",
+      "eligibleCreatorComparisons": 0
+    },
+    "diagnosticRecommendations": {
+      "path": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/recommendations.md",
+      "sha256": "5a37de766e6b6a96b8b7f0f69b42aa2cef3f44b9d02f28e7db2a9e073fdfaa0b"
+    }
+  },
+  "claimBoundary": {
+    "purpose": "A product candidate responding to diagnostic failure patterns retained in v2, not to an eligible creator win.",
+    "newModelSessions": 0,
+    "deterministicRegressionOnly": true,
+    "superiorityClaimAllowed": false,
+    "promotionClaimAllowed": false,
+    "knownCases": [
+      "meeting-followups",
+      "weekly-status-deck"
+    ]
+  },
+  "creatorBudgets": {
+    "descriptionCharactersMaximum": 300,
+    "skillMdLinesMaximum": 150,
+    "skillMdBytesMaximum": 10500,
+    "fileCountMaximum": 3,
+    "packageBytesMaximum": 24000,
+    "referenceFileCountMaximum": 0,
+    "evalFileCountMaximum": 0,
+    "scriptFileCount": 1
+  },
+  "package": {
+    "path": "skills/toolboxmd-creating-skills",
+    "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
+    "aggregateSha256": "e76c24dda94e6228cdad895b3fc0abe89c22558bbdce7c11c9d062f66cd5212f",
+    "fileCount": 3,
+    "packageBytes": 23496,
+    "referenceFileCount": 0,
+    "scriptFileCount": 1,
+    "evalFileCount": 0,
+    "skillMd": {
+      "bytes": 6353,
+      "lines": 114,
+      "descriptionCharacters": 278
+    },
+    "files": [
+      {
+        "path": "SKILL.md",
+        "bytes": 6353,
+        "sha256": "a7881821051f5361d677506f884d3201144b7b316d5eaed757910d7dc63f2d2b"
+      },
+      {
+        "path": "agents/openai.yaml",
+        "bytes": 216,
+        "sha256": "681fec1eaaf543fa748fa9fb0b387c59e5a2d23b8e428c7575d3b9a3e0bece7d"
+      },
+      {
+        "path": "scripts/validate_skill.py",
+        "bytes": 16927,
+        "sha256": "cf265b2e02859524812ec01ba0fcc194c83bf02c22fb512c11301b486d1b16ab"
+      }
+    ]
+  },
+  "regressionContract": {
+    "test": "tests/toolboxmd-creating-skills-vnext.test.sh",
+    "proves": [
+      "the frozen product package and exact creator budgets reproduce",
+      "the validator runs from outside the package without Python bytecode writes",
+      "bare working-directory-relative script examples fail under warnings-as-errors",
+      "explicit skill-directory script examples pass",
+      "default reference and eval baggage and unconditional Git inspection are absent",
+      "the retained meeting-followups and weekly-status-deck path and baggage patterns are detected",
+      "retained creator inputs remain byte-identical"
+    ],
+    "doesNotProve": [
+      "implicit skill activation",
+      "semantic downstream utility",
+      "creator superiority",
+      "promotion readiness"
+    ]
+  }
+}

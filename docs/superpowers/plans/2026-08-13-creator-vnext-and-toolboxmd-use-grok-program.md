@@ -1,6 +1,6 @@
 ---
 title: Creator vNext and toolboxmd-use-grok program
-status: APPROVED, STEP 1 IN PROGRESS
+status: APPROVED, STEPS 1-3 COMPLETE
 date: 2026-08-13
 owner: lukemaj
 scope: building-agentskills product and evidence workflow
@@ -75,6 +75,13 @@ Current request evidence:
   `https://github.com/toolboxmd/building-agentskills/pull/1#issuecomment-5282336595`
 - reviewed target HEAD: `9ebbd06603e74bee7729eb7d2c956ace670ae8e3`
 
+Completion evidence, 2026-08-13:
+
+- final reviewed parent HEAD: `e07502f2ced07917acdc8d7d3f8e5ad6f9301595`;
+- corrected v1 and v2 each retain zero eligible creator comparisons;
+- checks passed and no actionable current-HEAD review thread remained;
+- pull request 1 remains unmerged pending explicit user approval.
+
 ## Step 2: build `toolboxmd-creating-skills` vNext
 
 Create a new frozen creator candidate on a stacked branch. Implement only the
@@ -97,6 +104,18 @@ changes supported by benchmark v2:
 Do not rewrite the retained creator snapshot. The result is a new candidate
 with its own hash and package inspection.
 
+Completion evidence, 2026-08-13:
+
+- product: `skills/toolboxmd-creating-skills/`;
+- exact package: three files, 23,496 bytes, aggregate SHA-256
+  `e76c24dda94e6228cdad895b3fc0abe89c22558bbdce7c11c9d062f66cd5212f`;
+- activated core: 114 lines and 6,353 bytes, with a 278-character
+  description, zero references, zero evals, and one read-only validator;
+- freeze and claim boundary:
+  `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
+- the delta answers diagnostic failure patterns only. It supports no creator
+  superiority or promotion claim.
+
 ## Step 3: run a cheap deterministic regression check
 
 Before any new comparative model run, replay the known meeting-followups and
@@ -115,6 +134,17 @@ Check mechanically that vNext:
 This step answers only whether the observed problems were fixed without a
 known regression. It is not a new superiority benchmark. Stop and repair the
 candidate if this gate fails.
+
+Completion evidence, 2026-08-13:
+
+- `tests/toolboxmd-creating-skills-vnext.test.sh` passes from an external
+  working directory;
+- the test reproduces the package freeze and budgets, checks exit codes 0/1/2,
+  blocks fragile bare script paths, accepts the explicit `<skill-dir>`
+  contract, detects the retained meeting and deck baggage patterns, disables
+  Python bytecode writes, and proves retained creator inputs were not mutated;
+- zero model sessions were run, so this is a deterministic regression screen,
+  not a new creator comparison.
 
 ## Step 4: build and verify `toolboxmd-use-grok`
 
