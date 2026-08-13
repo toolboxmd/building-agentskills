@@ -97,6 +97,137 @@ function changesWorkingDirectory(command) {
   return /(?:^|[\s;&|()])(?:builtin\s+)?cd(?=$|[\s;&|()])/.test(command);
 }
 
+function shellTokens(command) {
+  const tokens = [];
+  const pattern = /"((?:\\.|[^"\\])*)"|'([^']*)'|(&&|\|\||[;|])|([^\s"';&|]+)/g;
+  for (const match of command.matchAll(pattern)) {
+    const value = match[1] ?? match[2] ?? match[3] ?? match[4];
+    tokens.push({ value, index: match.index ?? 0 });
+  }
+  return tokens;
+}
+
+function splitHeredocs(command) {
+  const shell = [];
+  const bodies = [];
+  let delimiter = null;
+  let body = [];
+  for (const line of command.split("\n")) {
+    if (delimiter !== null) {
+      if (line.trim() === delimiter) {
+        bodies.push(body.join("\n"));
+        body = [];
+        delimiter = null;
+      } else {
+        body.push(line);
+      }
+      continue;
+    }
+    shell.push(line);
+    const match = line.match(/<<-?\s*(?:'([^']+)'|"([^"]+)"|\\?([A-Za-z_][A-Za-z0-9_]*))/);
+    if (match) delimiter = match[1] ?? match[2] ?? match[3];
+  }
+  if (body.length > 0) bodies.push(body.join("\n"));
+  return { shell: shell.join("\n"), bodies };
+}
+
+function isWindowsAbsolutePath(value) {
+  return /^[A-Za-z]:[\\/]/.test(value) || /^\\\\[^\\/]+[\\/][^\\/]+/.test(value);
+}
+
+function isAbsoluteFilesystemPath(value) {
+  return path.posix.isAbsolute(value) || isWindowsAbsolutePath(value);
+}
+
+function isUrl(value) {
+  return /^[A-Za-z][A-Za-z0-9+.-]*:\/\//.test(value);
+}
+
+function isExecutablePosition(tokens, index) {
+  if (index === 0) return true;
+  const previous = tokens[index - 1]?.value ?? "";
+  return /^(?:&&|\|\||\||;|then|do|elif|else|if|while|until|!)$/.test(previous);
+}
+
+function looksLikeLiteralPath(value) {
+  if (/[$`{}*?\[\]|^]/.test(value)) return false;
+  if (path.posix.isAbsolute(value)) return value !== "/" && !/[\\\s]/.test(value);
+  if (isWindowsAbsolutePath(value)) return !/[\s]/.test(value);
+  return true;
+}
+
+function shellBasename(value) {
+  return value.replace(/\\/g, "/").split("/").pop()?.toLowerCase() ?? "";
+}
+
+function heredocAbsoluteFilesystemOperands(body) {
+  const operands = [];
+  const quoted = /(['"])((?:\\.|(?!\1).)*)\1/gs;
+  for (const match of body.matchAll(quoted)) {
+    const value = match[2];
+    if (!isAbsoluteFilesystemPath(value) || !looksLikeLiteralPath(value)) continue;
+    const remainder = body.slice(match.index + match[0].length).trimStart();
+    if ((value.includes("|") || value.endsWith("/")) && !/^(?:\)|\]|\}|,|\.\w+\s*\()/.test(remainder)) continue;
+    operands.push(value);
+  }
+  return operands;
+}
+
+function literalAbsoluteFilesystemOperands(command, depth = 0) {
+  if (depth > 2) return [];
+  const heredoc = splitHeredocs(command);
+  const tokens = shellTokens(heredoc.shell);
+  const operands = heredoc.bodies.flatMap(heredocAbsoluteFilesystemOperands);
+  const nestedPayloadIndexes = new Set();
+
+  for (let index = 0; index < tokens.length; index += 1) {
+    if (!isExecutablePosition(tokens, index)) continue;
+    if (!new Set(["sh", "bash", "zsh", "dash", "ksh"]).has(shellBasename(tokens[index].value))) continue;
+    const optionIndex = index + 1;
+    const payloadIndex = index + 2;
+    if (!/^-+[A-Za-z]*c[A-Za-z]*$/.test(tokens[optionIndex]?.value ?? "") || tokens[payloadIndex] === undefined) continue;
+    nestedPayloadIndexes.add(payloadIndex);
+    operands.push(...literalAbsoluteFilesystemOperands(tokens[payloadIndex].value, depth + 1));
+  }
+
+  for (let index = 0; index < tokens.length; index += 1) {
+    const rawToken = tokens[index].value;
+    if (nestedPayloadIndexes.has(index)) continue;
+    const token = tokens[index].value.replace(/^[()]+|[(),;]+$/g, "");
+    const candidates = [];
+    if (token.startsWith("file://")) candidates.push(token.slice("file://".length));
+    else if (!isUrl(token)) {
+      if (isAbsoluteFilesystemPath(token)) candidates.push(token);
+      if (token.includes("=")) {
+        const value = token.slice(token.indexOf("=") + 1);
+        if (isAbsoluteFilesystemPath(value)) candidates.push(value);
+      }
+      const redirect = token.match(/^\d*(?:>>?|<<?)(\/.+|[A-Za-z]:[\\/].+)$/);
+      if (redirect) candidates.push(redirect[1]);
+    }
+
+    for (const value of [...new Set(candidates)]) {
+      if (!looksLikeLiteralPath(value)) continue;
+      if (value === token && isExecutablePosition(tokens, index)) continue;
+      if (value === "/dev/null" && /(?:^|\s)(?:\d*(?:>>?|<<?)|&>)\s*\/?dev\/null(?=\s|$|[;&|)])/.test(command)) continue;
+      operands.push(value);
+    }
+  }
+  return operands;
+}
+
+function absoluteOperandInsideRunRoot(operand) {
+  if (path.posix.isAbsolute(operand)) return isInsideRunRoot(path.resolve(operand));
+  if (isWindowsAbsolutePath(operand)) {
+    if (process.platform !== "win32") return false;
+    const resolved = path.win32.resolve(operand);
+    const root = path.win32.resolve(runRoot);
+    return resolved.toLowerCase() === root.toLowerCase()
+      || resolved.toLowerCase().startsWith(`${root.toLowerCase()}${path.win32.sep}`);
+  }
+  return false;
+}
+
 function isOutputMutation(event, index) {
   const item = event.item;
   if (!item) return false;
@@ -171,13 +302,9 @@ for (let index = 0; index < lines.length; index += 1) {
     }
   }
 
-  const absoluteUserPaths = command.match(/\/Users\/[A-Za-z0-9._-]+(?:\/[A-Za-z0-9._~+\/-]+)+/g) ?? [];
-  for (const rawPath of absoluteUserPaths) {
-    const candidate = rawPath.replace(/[),;:]+$/, "");
-    if (candidate !== runRoot && !candidate.startsWith(`${runRoot}${path.sep}`)) {
-      reasons.push("absolute user path outside run root observed");
-      break;
-    }
+  const absoluteFilesystemOperands = literalAbsoluteFilesystemOperands(command);
+  if (absoluteFilesystemOperands.some(operand => !absoluteOperandInsideRunRoot(operand))) {
+    reasons.push("absolute filesystem path outside run root observed");
   }
 
   for (const relative of commandSkillPaths(command)) {

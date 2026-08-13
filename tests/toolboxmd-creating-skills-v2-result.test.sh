@@ -109,6 +109,8 @@ assert(condensed.benchmark.toolboxmd_candidate_recommended === false, "condensed
 assert(condensed.evidence.result_manifest === "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/manifest.json", "condensed result path changed");
 assert(sha256File(path.join(resultRoot, "manifest.json")) === condensed.evidence.result_manifest_sha256, "condensed result hash changed");
 assert(condensed.evidence.retention_manifest_sha256 === manifest.retainedEvidence.retentionManifestSha256, "condensed retention hash changed");
+assert(condensed.post_result_audit_correction.ineligible_stream_count === 2, "condensed corrected ineligible stream count changed");
+assert(condensed.post_result_audit_correction.scored_pipeline_exclusions === 1, "condensed corrected scored exclusion count changed");
 
 const preflightEvent = readJson("preflight/event-audit.json");
 const preflightBoundary = readJson("preflight/boundary-audit.json");
@@ -246,10 +248,17 @@ function findEventAudits(directory) {
 findEventAudits(resultRoot);
 assert(eventAudits.length === 17, `expected 17 corrected event audits, found ${eventAudits.length}`);
 const ineligibleAudits = eventAudits.filter(file => JSON.parse(fs.readFileSync(file, "utf8")).eligible === false);
-assert(ineligibleAudits.length === 1, `expected one ineligible corrected event audit, found ${ineligibleAudits.length}`);
-assert(path.relative(resultRoot, ineligibleAudits[0]).split(path.sep).join("/") === "cases/meeting-followups/toolboxmd/evidence/authoring-event-audit.json", "unexpected corrected ineligible stream");
+assert(ineligibleAudits.length === 2, `expected two ineligible corrected event audits, found ${ineligibleAudits.length}`);
+assert(JSON.stringify(ineligibleAudits.map(file => path.relative(resultRoot, file).split(path.sep).join("/")).sort()) === JSON.stringify([
+  "cases/meeting-followups/toolboxmd/evidence/authoring-event-audit.json",
+  "discarded-authoring/meeting-followups/builtin/event-audit.json",
+]), "unexpected corrected ineligible streams");
 assert(manifest.postResultAuditCorrection.retainedStreamsReaudited === 17, "corrected audit stream count changed");
 assert(manifest.postResultAuditCorrection.modelSessionsAdded === 0, "audit correction must not add model sessions");
+assert(JSON.stringify(manifest.postResultAuditCorrection.ineligibleStreams) === JSON.stringify([
+  "cases/meeting-followups/toolboxmd/evidence/authoring-events.jsonl",
+  "discarded-authoring/meeting-followups/builtin/events.jsonl",
+]), "corrected manifest ineligible stream list changed");
 
 const retained = readJson("retention-manifest.json");
 const aggregateLines = [];

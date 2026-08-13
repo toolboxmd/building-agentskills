@@ -108,7 +108,7 @@ This is a targeted trigger test, not a twenty-query optimization campaign for ev
 
 Never allow a parent-relative operand merely because its suffix resembles `creator/`, `authoring-sources/`, `output/`, `knowledge/`, or `workspace/`. Resolve it only when the event records an in-root command cwd and the resolved path stays inside the run root. Treat bare `..`, missing cwd, an outside cwd, and commands that change cwd internally as ineligible when the trace cannot prove the effective location.
 
-The corrected auditor made one retained ToolboxMD authoring stream ineligible. Preserve that stream as a failure and keep the overall verdict inconclusive. Future preflight should verify that the harness records cwd before a protocol permits any parent-relative command.
+The corrected auditor made one scored ToolboxMD authoring stream ineligible and also flagged one previously discarded built-in stream. Preserve both as inspectable failures and keep the overall verdict inconclusive. Future preflight should verify that the harness records cwd before a protocol permits any parent-relative command, and should reject literal absolute filesystem operands outside the run root.
 
 ### P0. Isolate Python and Git before the first model run
 

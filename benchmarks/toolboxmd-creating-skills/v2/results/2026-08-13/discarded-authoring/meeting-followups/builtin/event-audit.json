@@ -1,8 +1,10 @@
 {
   "schemaVersion": 2,
   "mode": "authoring",
-  "eligible": true,
-  "reasons": [],
+  "eligible": false,
+  "reasons": [
+    "absolute filesystem path outside run root observed"
+  ],
   "warnings": [],
   "eventCount": 64,
   "commandCount": 21,

@@ -193,8 +193,8 @@
   "protocolNotes": [
     "The first four authoring attempts were discarded as one batch before downstream use because both built-in attempts wrote Python bytecode below the protected creator tree.",
     "Protocol revision 2 disabled Python bytecode writes and repeated all four authoring arms symmetrically without changing cases, prompts, treatments, grader, model, or decision rule.",
-    "A post-result audit correction removed the suffix-based exception for parent-relative paths. The trace must now record an in-root command cwd before such an operand can be proven safe.",
-    "All 17 retained event streams were re-audited without running another model session. The ToolboxMD meeting-followups authoring stream became ineligible; its generated package and downstream result remain inspectable diagnostic evidence but cannot determine a case winner.",
+    "A post-result audit correction removed the suffix-based exception for parent-relative paths. The trace must now record an in-root command cwd before such an operand can be proven safe. It also rejects literal POSIX and Windows absolute filesystem operands outside the run root, including operands inside shell-wrapper payloads and heredoc code.",
+    "All 17 retained event streams were re-audited without running another model session. The ToolboxMD meeting-followups authoring stream became ineligible; its generated package and downstream result remain inspectable diagnostic evidence but cannot determine a case winner. One previously discarded built-in authoring stream was also marked ineligible because an absolute path appeared as a loop operand, with no effect on the scored comparison.",
     "The protocol commitment omitted the supporting grader and event-audit scripts. They were implemented and tested before scored downstream runs, and their at-result hashes are recorded below, but the commitment alone cannot prove that every supporting tool stayed byte-identical throughout execution.",
     "Two ToolboxMD authoring traces listed ancestor-worktree names through git status. The meeting-followups trace is independently ineligible for unprovable parent-relative operands; the weekly-status-deck warning did not expose outside file contents, sibling results, treatment output, or grader content.",
     "The shared meeting punctuation mismatch is retained in raw grades but treated as non-diagnostic because the source contract did not specify punctuation removal.",
@@ -212,15 +212,16 @@
   },
   "postResultAuditCorrection": {
     "recordedOn": "2026-08-13",
-    "auditorSha256": "efe47e58783a6947d790d27fdbf27a8b2612d68d1cea549a492b20cee173d3e2",
+    "auditorSha256": "ac487d578d3573a68174b08a225ad05af21ca8b9489249f65d74205adf5cdf08",
     "retainedStreamsReaudited": 17,
     "modelSessionsAdded": 0,
     "ineligibleStreams": [
-      "cases/meeting-followups/toolboxmd/evidence/authoring-events.jsonl"
+      "cases/meeting-followups/toolboxmd/evidence/authoring-events.jsonl",
+      "discarded-authoring/meeting-followups/builtin/events.jsonl"
     ]
   },
   "retainedEvidence": {
-    "retentionManifestSha256": "1dfa871aa116b9a1173c30e5a14d5bce0f8919d266d54706b6ad18c696933dbc",
+    "retentionManifestSha256": "f738db7453a80ccc27d1dbd7f33e18f0bbe3190708255804ea01eb72b28b1b19",
     "sessionUsageSha256": "99df094f3389dbec01c94d0b7f3733647f03b4821d18ef3ea5144ebec1d804e4",
     "discardedAuthoringFailureSha256": "172f8e043b6d879bba3728ee0543b7f56d726eec5a06d5035a36bd588875d992"
   },

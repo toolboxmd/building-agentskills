@@ -143,6 +143,58 @@ const result = JSON.parse(process.argv[2]);
 if (!result.eligible || result.reasons.includes("parent-directory traversal observed")) process.exit(1);
 NODE
 
+mkdir -p "$test_tmp/absolute-paths"
+node - "$test_tmp/run" "$test_tmp/absolute-paths" <<'NODE'
+const fs = require("node:fs");
+const path = require("node:path");
+const [runRoot, output] = process.argv.slice(2);
+const commands = [
+  ["safe-wrapper", "/bin/zsh -lc 'sed -n 1p workspace/input.md 2>/dev/null'"],
+  ["safe-in-root", `/bin/zsh -lc 'sed -n 1p "${path.join(runRoot, "workspace/input.md")}"'`],
+  ["safe-executable-after-semicolon", "/bin/zsh -lc 'printf ready; /usr/bin/python3 -V'"],
+  ["outside-etc", "/bin/zsh -lc 'sed -n 1p /etc/passwd'"],
+  ["outside-workspace", "/bin/zsh -lc 'cat /workspace/sibling/grader.json'"],
+  ["outside-tmp", "/bin/zsh -lc 'cat /tmp/benchmark-secret'"],
+  ["outside-windows", "/bin/zsh -lc 'cat C:\\\\bench\\\\grader.json'"],
+  ["outside-assignment", "/bin/zsh -lc 'INPUT=/etc/passwd; sed -n 1p \"$INPUT\"'"],
+  ["outside-executable-loop", "/bin/zsh -lc 'for candidate in python3 /usr/bin/python3; do command -v \"$candidate\"; done'"],
+  ["outside-data-loop", "/bin/zsh -lc 'for f in /etc/passwd; do cat \"$f\"; done'"],
+  ["outside-after-semicolon", "/bin/zsh -lc 'printf ready; /usr/bin/python3 /tmp/secret.py'"],
+  ["outside-heredoc", "/bin/zsh -lc \"python3 - <<'PY'\\nopen('/etc/passwd').read()\\nPY\""],
+  ["url-not-path", "/bin/zsh -lc 'printf %s https://example.com/reference'"],
+  ["regex-not-path", "/bin/zsh -lc \"rg '/Users/|/home/' workspace\""],
+  ["heredoc-regex-not-path", "/bin/zsh -lc \"python3 - <<'PY'\\nimport re\\nre.compile(r'/Users/|/home/')\\nPY\""],
+];
+const usage = { type: "turn.completed", usage: { input_tokens: 10, cached_input_tokens: 0, output_tokens: 1 } };
+for (const [name, command] of commands) {
+  const event = {
+    type: "item.completed",
+    item: { type: "command_execution", command, cwd: runRoot, aggregated_output: "", exit_code: 0, status: "completed" },
+  };
+  fs.writeFileSync(path.join(output, `${name}.jsonl`), `${JSON.stringify(event)}\n${JSON.stringify(usage)}\n`);
+}
+NODE
+for safe_name in safe-wrapper safe-in-root safe-executable-after-semicolon url-not-path regex-not-path heredoc-regex-not-path; do
+  safe_absolute=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
+    "$test_tmp/absolute-paths/$safe_name.jsonl" "$test_tmp/run" near-miss none)
+  node - "$safe_absolute" <<'NODE'
+const result = JSON.parse(process.argv[2]);
+if (!result.eligible || result.reasons.includes("absolute filesystem path outside run root observed")) process.exit(1);
+NODE
+done
+for outside_name in outside-etc outside-workspace outside-tmp outside-windows outside-assignment outside-executable-loop outside-data-loop outside-after-semicolon outside-heredoc; do
+  set +e
+  outside_absolute=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
+    "$test_tmp/absolute-paths/$outside_name.jsonl" "$test_tmp/run" near-miss none)
+  status=$?
+  set -e
+  [[ $status -eq 1 ]] || { echo "FAIL: $outside_name absolute path should fail" >&2; exit 1; }
+  node - "$outside_absolute" <<'NODE'
+const result = JSON.parse(process.argv[2]);
+if (result.eligible || !result.reasons.includes("absolute filesystem path outside run root observed")) process.exit(1);
+NODE
+done
+
 positive=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
   "$test_tmp/positive.jsonl" "$test_tmp/run" positive .agents/skills/demo-target/SKILL.md)
 node - "$positive" <<'NODE'

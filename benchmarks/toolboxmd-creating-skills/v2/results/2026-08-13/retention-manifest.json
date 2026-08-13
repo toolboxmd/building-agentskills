@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "recordedOn": "2026-08-13",
   "excludesSelf": true,
-  "aggregateSha256": "84916562fe59b8ea5f2dfe57cf48a155540396055efb1729601c9d9e3b614106",
+  "aggregateSha256": "7f8bb5bb5cbeb061cac55311f5e4f60e152df6595663887eb6cedbd42f78c957",
   "files": [
     {
       "path": "cases/meeting-followups/builtin/downstream-output/actions.csv",
@@ -526,8 +526,8 @@
     },
     {
       "path": "discarded-authoring/meeting-followups/builtin/event-audit.json",
-      "bytes": 997,
-      "sha256": "0472e554a987f3858a3b5a89a0c2a0fea39aec747cd33e7d5d09d99e71383ff5"
+      "bytes": 1058,
+      "sha256": "ed575048e5d3c58f588daf991e52afe1fdc9ef7783cbb4dc8961cb3dbfafedbf"
     },
     {
       "path": "discarded-authoring/meeting-followups/builtin/events.jsonl",

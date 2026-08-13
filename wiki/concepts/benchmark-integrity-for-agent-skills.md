@@ -9,14 +9,14 @@ related:
   - /concepts/provider-neutral-skill-runtime.md
 related_files: [docs/06-testing/benchmark-integrity.md, case-studies/evidence/2026-08-11-karpathy-wiki-ingest-benchmark.json, case-studies/evidence/2026-08-12-toolboxmd-creating-skills-benchmark.json, benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/manifest.json, case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md, case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json]
 created: "2026-08-11T00:00:00Z"
-updated: "2026-08-13T13:42:43Z"
+updated: "2026-08-13T16:09:22Z"
 quality:
   accuracy: 5
   completeness: 5
   signal: 5
   interlinking: 4
   overall: 4.75
-  rated_at: "2026-08-13T13:42:43Z"
+  rated_at: "2026-08-13T16:09:22Z"
   rated_by: ingester
 ---
 
@@ -60,16 +60,18 @@ The v2 causal question has two linked stages. First, hold the authoring task, mo
 
 ## v2 final result (2026-08-13)
 
-The v2 daily-use benchmark ran under Codex CLI 0.147.0 with `gpt-5.6-sol` at medium reasoning and ended mixed, 1 to 1. Neither creator showed better downstream quality, so the frozen ToolboxMD candidate is not promoted. The built-in creator stays the default only because the challenger did not clear the predeclared two-win gate — this does not establish general built-in superiority.
+The v2 daily-use benchmark ran under Codex CLI 0.147.0 with `gpt-5.6-sol` at medium reasoning. A stricter post-result trace audit changed the verdict from mixed, 1 to 1, to inconclusive. The ToolboxMD meeting-followups authoring stream used parent-relative operands without a recorded command cwd, so the audit could not prove that those reads stayed inside the run root. That pipeline is ineligible and its meeting package and downstream result are diagnostic only. The frozen ToolboxMD candidate is not promoted, and no general creator winner was established.
 
-Both qualifying cases (no-skill run failed at least one critical check) showed the two creators produce equivalent downstream correctness. Meeting follow-ups: no-skill passed 2/8 critical checks; both creator-produced skills passed 7/8 with byte-identical output, missing only on an under-specified fixture (punctuation normalization was never in the private contract). Weekly status deck: no-skill passed 7/8; both generated skills passed 8/8, differing only in harmless whitespace. Each case was decided only by one-run token cost, a low-confidence tie-break: built-in won meeting follow-ups (18,550 vs 21,609 runtime tokens), ToolboxMD won the status deck (23,982 vs 30,228). All four natural positive prompts loaded the full target `SKILL.md` before output creation; zero of four related near-miss prompts triggered it.
+Both no-skill runs still qualified their case. Meeting follow-ups passed 2/8 critical checks without a skill; the two retained generated packages then passed 7/8 and produced byte-identical output, but the comparison cannot determine a winner because the ToolboxMD authoring pipeline is ineligible. Weekly status deck is the only eligible pair: no-skill passed 7/8, both generated skills passed 8/8, and ToolboxMD used 23,982 versus 30,228 runtime tokens. This is a low-confidence one-run cost tie-break after equal utility, not a general ranking. All four natural positive prompts loaded the full target `SKILL.md` before output creation and zero of four related near-miss prompts triggered it, but only the deck pair contributes to the creator comparison.
 
-ToolboxMD's demonstrated strength is compact activation metadata — descriptions 29.5% and 39.2% shorter with no observed trigger regression. Its demonstrated cost: `SKILL.md` 11.6%/14.1% larger, full packages 29.7%/53.9% larger, and longer authoring time in both cases. Default eval artifacts and delivery checks added cost without a measured downstream-quality gain in this sample.
+The eligible deck pair supports compact ToolboxMD activation metadata: its description was 39.2% shorter with no observed trigger regression. The meeting description's 29.5% reduction is diagnostic only. The retained packages also show larger `SKILL.md` files, larger packages, and longer authoring time, but meeting differences cannot be used as comparative evidence.
 
 Product changes for the next ToolboxMD creator candidate: preserve the compact-description pattern; emit current-directory-independent script commands (observed traces needed `.agents/skills/<name>/scripts/...` repair); move comparative/repeated eval ownership to `toolboxmd-benchmarking-skills`; count always-read references as activated core, not progressive disclosure; make Git delivery checks conditional on an explicit repository-delivery request; enforce a measured artifact-deletion pass before freezing. It must ship as a new frozen candidate, not a mutation of the retained v1 snapshot.
 
 Infrastructure note: the first four authoring attempts were discarded before downstream use because both built-in attempts wrote Python bytecode under the protected creator tree; protocol revision 2 disabled bytecode writes and repeated all four arms symmetrically. The reserve spreadsheet case did not run — it needed five more sessions and only one remained under the 17-session ceiling. Sixteen decision sessions used 728,273 uncached-input-plus-output runtime tokens over 2,759 cumulative seconds.
 
-Known limitation carried forward: supporting grader and event-audit scripts were not hashed in the pre-run protocol commitment. Their at-result hashes and retained outputs are inspectable, but the commitment alone cannot prove every supporting tool stayed byte-identical during execution — a gap for the next benchmark's tool-freeze scope. See [case study](../../case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md) and [evidence manifest](../../case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json).
+The corrected auditor now rejects literal POSIX and Windows absolute filesystem operands outside the run root, including those inside quoted shell-wrapper payloads and heredoc code. Direct command executables, URLs, regex literals, and `/dev/null` redirection remain distinguished from data-path reads. Re-auditing all 17 retained streams added one ineligible discarded built-in attempt because `/usr/bin/python3` appeared as a loop operand, but no additional scored pipeline was excluded.
+
+Known limitation carried forward: supporting grader and event-audit scripts were not hashed in the pre-run protocol commitment. Their at-result hashes and retained outputs are inspectable, but the commitment alone cannot prove every supporting tool stayed byte-identical during execution. See [case study](../../case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md) and [evidence manifest](../../case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json).
 
 See also [[provider-neutral-skill-runtime]].
