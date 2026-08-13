@@ -31,7 +31,7 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-eval-files 0 \
   --max-script-files 1 \
   "$package")"
-[[ "$human_output" == *"METRICS: description_chars=240 skill_lines=72 skill_bytes=3656 files=3 package_bytes=25994 references=0 evals=0 scripts=1"* ]]
+[[ "$human_output" == *"METRICS: description_chars=240 skill_lines=72 skill_bytes=3656 files=3 package_bytes=26454 references=0 evals=0 scripts=1"* ]]
 [[ "$human_output" == *"PASS: portable skill package validation succeeded"* ]]
 
 cd "$test_tmp"
@@ -111,6 +111,29 @@ dependencies:
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/sidecar-fixture" > "$test_tmp/sidecar.json"
 
+make_fixture "$test_tmp/minimal-sidecar-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/minimal-sidecar-fixture/agents"
+cat > "$test_tmp/minimal-sidecar-fixture/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Minimal Sidecar"
+  short_description: "Validate a minimal Codex sidecar"
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/minimal-sidecar-fixture" > "$test_tmp/minimal-sidecar.json"
+
+make_fixture "$test_tmp/bad-prompt-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/bad-prompt-fixture/agents"
+cat > "$test_tmp/bad-prompt-fixture/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Bad Prompt"
+  short_description: "Reject a stale default prompt value"
+  default_prompt: "Run the fixture. Then summarize it."
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/bad-prompt-fixture" > "$test_tmp/bad-prompt.json"
+bad_prompt_exit=$?
+set -e
+[[ $bad_prompt_exit -eq 1 ]]
+
 make_fixture "$test_tmp/missing-icon-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 mkdir -p "$test_tmp/missing-icon-fixture/agents"
 cat > "$test_tmp/missing-icon-fixture/agents/openai.yaml" <<'EOF'
@@ -140,6 +163,33 @@ mkdir -p "$test_tmp/titled-link-fixture/references"
 printf '# Guide\n' > "$test_tmp/titled-link-fixture/references/guide.md"
 printf '\n[Guide](references/guide.md "Read the guide")\n' >> "$test_tmp/titled-link-fixture/SKILL.md"
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/titled-link-fixture" > "$test_tmp/titled-link.json"
+
+make_fixture "$test_tmp/reference-link-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/reference-link-fixture/references"
+printf '# Guide\n' > "$test_tmp/reference-link-fixture/references/guide.md"
+cat >> "$test_tmp/reference-link-fixture/SKILL.md" <<'EOF'
+
+[Guide][guide]
+
+[guide]: <references/guide.md> "Read the guide"
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/reference-link-fixture" > "$test_tmp/reference-link.json"
+
+make_fixture "$test_tmp/missing-reference-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\n[unused]: missing.md "Missing guide"\n' >> "$test_tmp/missing-reference-fixture/SKILL.md"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/missing-reference-fixture" > "$test_tmp/missing-reference.json"
+missing_reference_exit=$?
+set -e
+[[ $missing_reference_exit -eq 1 ]]
+
+make_fixture "$test_tmp/escaping-reference-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\n[escape]: <../outside.md> (Escape)\n' >> "$test_tmp/escaping-reference-fixture/SKILL.md"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/escaping-reference-fixture" > "$test_tmp/escaping-reference.json"
+escaping_reference_exit=$?
+set -e
+[[ $escaping_reference_exit -eq 1 ]]
 
 for reserved in claude-helper anthropic-helper; do
   make_fixture "$test_tmp/$reserved" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
@@ -294,7 +344,11 @@ cat >> "$test_tmp/code-links-fixture/SKILL.md" <<'EOF'
 
 ```markdown
 [Fenced example](fenced-missing.md)
+
+[fenced]: fenced-definition-missing.md
 ```
+
+`[inline]: inline-definition-missing.md`
 
 [Real link](real-missing.md)
 EOF
@@ -316,6 +370,22 @@ for name in workspace-path root-path; do
   set -e
   [[ $local_path_exit -eq 1 ]]
 done
+
+make_fixture "$test_tmp/node-helper-path" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+cat > "$test_tmp/node-helper-path/scripts/run.js" <<'EOF'
+const input = "/workspace/alice/input.json";
+console.log(input);
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/node-helper-path" > "$test_tmp/node-helper-path.json"
+node_helper_exit=$?
+set -e
+[[ $node_helper_exit -eq 1 ]]
+
+make_fixture "$test_tmp/binary-asset" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/binary-asset/assets"
+printf '\377\376/workspace/alice/input.json\000' > "$test_tmp/binary-asset/assets/logo.png"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/binary-asset" > "$test_tmp/binary-asset.json"
 
 make_fixture "$test_tmp/web-root-link" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 printf '\n[App route](/workspace/app) and [remote docs](https://example.com/root/docs).\n' >> "$test_tmp/web-root-link/SKILL.md"
@@ -344,9 +414,14 @@ const product = JSON.parse(fs.readFileSync(path.join(temporary, "product.json"))
 const bare = JSON.parse(fs.readFileSync(path.join(temporary, "bare.json")));
 const portable = JSON.parse(fs.readFileSync(path.join(temporary, "portable.json")));
 const sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "sidecar.json")));
+const minimalSidecar = JSON.parse(fs.readFileSync(path.join(temporary, "minimal-sidecar.json")));
+const badPrompt = JSON.parse(fs.readFileSync(path.join(temporary, "bad-prompt.json")));
 const missingIcon = JSON.parse(fs.readFileSync(path.join(temporary, "missing-icon.json")));
 const missingInterface = JSON.parse(fs.readFileSync(path.join(temporary, "missing-interface.json")));
 const titledLink = JSON.parse(fs.readFileSync(path.join(temporary, "titled-link.json")));
+const referenceLink = JSON.parse(fs.readFileSync(path.join(temporary, "reference-link.json")));
+const missingReference = JSON.parse(fs.readFileSync(path.join(temporary, "missing-reference.json")));
+const escapingReference = JSON.parse(fs.readFileSync(path.join(temporary, "escaping-reference.json")));
 const reserved = ["claude-helper", "anthropic-helper"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const listDescription = JSON.parse(fs.readFileSync(path.join(temporary, "list-description.json")));
 const quotedDescription = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-description.json")));
@@ -362,6 +437,8 @@ const unsupportedMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "uns
 const nonStringMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "non-string-metadata.json")));
 const codeLinks = JSON.parse(fs.readFileSync(path.join(temporary, "code-links.json")));
 const localPaths = ["workspace-path", "root-path"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const nodeHelper = JSON.parse(fs.readFileSync(path.join(temporary, "node-helper-path.json")));
+const binaryAsset = JSON.parse(fs.readFileSync(path.join(temporary, "binary-asset.json")));
 const webRootLink = JSON.parse(fs.readFileSync(path.join(temporary, "web-root-link.json")));
 const meeting = JSON.parse(fs.readFileSync(path.join(temporary, "meeting.json")));
 const deck = JSON.parse(fs.readFileSync(path.join(temporary, "deck.json")));
@@ -382,6 +459,8 @@ assert(freeze.claimBoundary.superiorityClaimAllowed === false, "freeze must forb
 assert(freeze.claimBoundary.promotionClaimAllowed === false, "freeze must forbid a promotion claim");
 assert(freeze.creatorBudgets.packageBytesMaximum === 28000, "reviewed package cap changed");
 assert(freeze.budgetRevision.deterministicExecutableDeltaBytes === 2256, "executable review delta changed");
+assert(freeze.budgetRevision.laterDeterministicExecutableDeltaBytes === 460, "later executable review delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 2716, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -402,16 +481,21 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 25994, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 26454, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
 assert(bare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all bare interpreter examples must be detected");
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
 assert(sidecar.status === "pass" && sidecar.errorCount === 0, "official nested sidecar must pass");
+assert(minimalSidecar.status === "pass" && minimalSidecar.errorCount === 0, "default_prompt must remain optional");
+assert(badPrompt.issues.some(item => item.code === "OPENAI_DEFAULT_PROMPT"), "default_prompt must be validated when present");
 assert(missingIcon.issues.some(item => item.code === "OPENAI_ICON"), "declared icon paths must resolve inside the package");
-assert(missingInterface.issues.filter(item => item.code === "OPENAI_MISSING").length === 2, "required interface fields must remain enforced");
+assert(missingInterface.issues.filter(item => item.code === "OPENAI_MISSING").length === 1, "required interface fields must remain enforced");
 assert(titledLink.status === "pass" && titledLink.errorCount === 0, "valid local link with optional title must pass");
+assert(referenceLink.status === "pass" && referenceLink.errorCount === 0, "valid reference definition must pass");
+assert(missingReference.issues.some(item => item.code === "BROKEN_LINK"), "missing reference destination must fail");
+assert(escapingReference.issues.some(item => item.code === "LINK_ESCAPE"), "escaping reference destination must fail");
 assert(reserved.every(result => result.status === "fail" && result.issues.some(item => item.code === "NAME_RESERVED")), "reserved provider names must fail");
 assert(listDescription.status === "fail" && listDescription.issues.some(item => item.code === "FRONTMATTER_TYPE"), "unquoted collection description must fail");
 assert(quotedDescription.status === "pass", "quoted collection-looking description must remain a string");
@@ -426,6 +510,8 @@ assert(nonStringMetadata.status === "fail" && nonStringMetadata.issues.some(item
 const brokenLinks = codeLinks.issues.filter(item => item.code === "BROKEN_LINK");
 assert(brokenLinks.length === 1 && brokenLinks[0].message.includes("real-missing.md"), "code links must be ignored while a real broken link fails");
 assert(localPaths.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "common container-local roots must fail");
+assert(nodeHelper.status === "fail" && nodeHelper.issues.some(item => item.code === "LOCAL_PATH"), "Node helpers must be scanned for local paths");
+assert(binaryAsset.status === "pass" && !binaryAsset.issues.some(item => item.code === "UTF8"), "binary assets must not be decoded as declared text");
 assert(webRootLink.issues.some(item => item.code === "ROOT_LINK") && !webRootLink.issues.some(item => item.code === "LOCAL_PATH"), "web links must not be mistaken for workstation paths");
 for (const [name, result, expectedEvals] of [["meeting", meeting, 1], ["deck", deck, 2]]) {
   assert(result.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), `${name}: retained bare script pattern not detected`);

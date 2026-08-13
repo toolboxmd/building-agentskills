@@ -45,6 +45,9 @@
     "currentPackageBytesMaximum": 28000,
     "deterministicExecutableDeltaBytes": 2256,
     "reason": "Exact-HEAD review required the current documented metadata.hermes.config shape and quote-aware YAML comment correctness.",
+    "laterDeterministicExecutableDeltaBytes": 460,
+    "laterReason": "A later exact-HEAD review required optional default_prompt, all-decodable-file local-path scanning, and single-line CommonMark reference-definition destinations.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 2716,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -58,9 +61,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "061631aca74379b26b19db7efba5e0495972e2309da9250865d12364318b30d1",
+    "aggregateSha256": "da8f2451fe0ace1714fad3b589f3983a7003516b7c19864366ca7b1ae9eb86c3",
     "fileCount": 3,
-    "packageBytes": 25994,
+    "packageBytes": 26454,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -82,8 +85,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 22122,
-        "sha256": "f2ec7572dcd5110b6a4259d880791ac21f0811ef8f4084f8de7971b27e6266d2"
+        "bytes": 22582,
+        "sha256": "0e4b23d4b7af70eebe6a8aac1772f2d4ba162c7edccd3926659da2d9b3f055af"
       }
     ]
   },
@@ -94,14 +97,16 @@
       "the validator runs from outside the package without Python bytecode writes",
       "bare working-directory-relative script examples fail under warnings-as-errors",
       "explicit skill-directory script examples pass",
-      "the supported Codex sidecar sections parse while required interface fields remain enforced",
+      "the supported Codex sidecar sections parse, display_name and short_description remain required, and default_prompt is optional but validated when present",
       "valid Markdown links with optional titles pass",
+      "single-line CommonMark reference-definition destinations support angle brackets and optional titles while missing and escaping targets fail",
       "skill names containing reserved provider strings fail",
       "string-valued frontmatter rejects obvious unquoted collections and scalars while quoted lookalikes remain strings",
       "trailing YAML comments do not hide non-string values while quoted hashes and block scalars remain content",
       "the documented metadata.hermes.config shape passes while unsupported nesting and non-string leaves fail",
       "Markdown links inside code are ignored while a real broken link is detected",
       "common container-local paths in Markdown prose are detected",
+      "local paths in any UTF-8-decodable package file are detected while undecodable binary assets are skipped",
       "root-relative and remote web links are not misclassified as workstation paths",
       "default reference and eval baggage and unconditional Git inspection are absent",
       "the retained meeting-followups and weekly-status-deck path and baggage patterns are detected",

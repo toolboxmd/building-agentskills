@@ -20,6 +20,9 @@ NON_STRING_RE = re.compile(r"(?i)(?:\[.*\]|\{.*\}|true|false|null|~|[-+]?(?:\d+(
 LINK_RE = re.compile(
     r'''!?\[[^\]]*\]\(\s*(<[^>\n]*>|[^\s)]+)(?:\s+(?:"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|\((?:\\.|[^)])*\)))?\s*\)'''
 )
+REFERENCE_DEFINITION_RE = re.compile(
+    r'''(?m)^ {0,3}\[[^\]\n]+\]:[ \t]*(<[^>\n]*>|[^\s<>]+)(?:[ \t]+(?:"(?:\\.|[^"\n])*"|'(?:\\.|[^'\n])*'|\((?:\\.|[^)\n])*\)))?[ \t]*$'''
+)
 OPENAI_FIELD_RE = re.compile(r'^([a-z_]+):\s*("(?:[^"\\]|\\.)*")$')
 OPENAI_INTERFACE_FIELDS = {"display_name", "short_description", "icon_small", "icon_large", "brand_color", "default_prompt"}
 OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
@@ -34,6 +37,10 @@ LOCAL_PATH_RE = re.compile(
     rf"[A-Za-z]:\\{'Users'}\\)[^\s'\"`]+"
 )
 PROCESS_NAMES = {"README.md", "CHANGELOG.md", "STATUS.md", "DESIGN.md", "NOTES.md"}
+TEXT_SUFFIXES = {
+    ".md", ".yaml", ".yml", ".json", ".py", ".sh", ".bash",
+    ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".rb", ".ps1",
+}
 
 
 class InspectionError(Exception):
@@ -210,45 +217,50 @@ def markdown_without_code(text: str) -> str:
 
 
 def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None:
-    readable_suffixes = {".md", ".yaml", ".yml", ".json", ".py", ".sh", ".bash"}
+    resolved_root = root.resolve()
+
+    def validate_destination(raw: str, relative: str, parent: Path) -> None:
+        if raw.startswith("<"):
+            raw = raw[1:-1]
+        parsed = urlsplit(raw)
+        if parsed.scheme or raw.startswith(("#", "mailto:")):
+            return
+        if raw.startswith("/"):
+            problems.append(issue("ROOT_LINK", relative, f"root-relative link: {raw}"))
+            return
+        target_text = unquote(parsed.path)
+        if not target_text:
+            return
+        target = (parent / target_text).resolve()
+        if not target.is_relative_to(resolved_root):
+            problems.append(issue("LINK_ESCAPE", relative, f"link escapes package: {raw}"))
+        elif not target.exists():
+            problems.append(issue("BROKEN_LINK", relative, f"missing link target: {raw}"))
+
     for path in sorted(item for item in root.rglob("*") if item.is_file() and not item.is_symlink()):
-        if path.suffix.lower() not in readable_suffixes:
-            continue
         relative = path.relative_to(root).as_posix()
         try:
             content = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
-            problems.append(issue("UTF8", relative, "text file is not UTF-8"))
+            if path.suffix.lower() in TEXT_SUFFIXES:
+                problems.append(issue("UTF8", relative, "text file is not UTF-8"))
             continue
         searchable = "\n".join(line for line in content.splitlines() if not line.startswith("#!"))
         path_searchable = searchable
         if path.suffix.lower() == ".md":
-            path_searchable = LINK_RE.sub(
-                lambda match: match.group(0).replace(match.group(1), "") if match.group(1).lstrip("<").startswith("/") else match.group(0),
-                searchable,
-            )
+            for pattern in (LINK_RE, REFERENCE_DEFINITION_RE):
+                path_searchable = pattern.sub(
+                    lambda match: match.group(0).replace(match.group(1), "") if match.group(1).lstrip("<").startswith("/") else match.group(0),
+                    path_searchable,
+                )
         if LOCAL_PATH_RE.search(path_searchable):
             problems.append(issue("LOCAL_PATH", relative, "workstation path"))
         if path.suffix.lower() != ".md":
             continue
-        for match in LINK_RE.finditer(markdown_without_code(content)):
-            raw = match.group(1)
-            if raw.startswith("<"):
-                raw = raw[1:-1]
-            parsed = urlsplit(raw)
-            if parsed.scheme or raw.startswith(("#", "mailto:")):
-                continue
-            if raw.startswith("/"):
-                problems.append(issue("ROOT_LINK", relative, f"root-relative link: {raw}"))
-                continue
-            target_text = unquote(parsed.path)
-            if not target_text:
-                continue
-            target = (path.parent / target_text).resolve()
-            if not target.is_relative_to(root.resolve()):
-                problems.append(issue("LINK_ESCAPE", relative, f"link escapes package: {raw}"))
-            elif not target.exists():
-                problems.append(issue("BROKEN_LINK", relative, f"missing link target: {raw}"))
+        markdown = markdown_without_code(content)
+        for pattern in (LINK_RE, REFERENCE_DEFINITION_RE):
+            for match in pattern.finditer(markdown):
+                validate_destination(match.group(1), relative, path.parent)
         for line_number, line in enumerate(content.splitlines(), 1):
             if FRAGILE_SCRIPT_RE.search(line):
                 problems.append(issue("FRAGILE_SCRIPT_PATH", relative, f"line {line_number} uses task-relative scripts/", "warning"))
@@ -313,7 +325,7 @@ def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> N
             fail("OPENAI_DUPLICATE", f"duplicate field: {key}")
             continue
         target[key] = scalar(raw)
-    for key in {"display_name", "short_description", "default_prompt"} - values.keys():
+    for key in {"display_name", "short_description"} - values.keys():
         fail("OPENAI_MISSING", f"missing {key}")
     short = values.get("short_description", "")
     if short and not 25 <= len(short) <= 64:

@@ -27,3 +27,7 @@ deterministic executable validator code for the currently documented
 `metadata.hermes.config` shape and quote-aware YAML comment correctness.
 Description, activated-core, file, reference, eval, and script budgets did not
 change. This is not a claim of lower total package cost.
+
+A later exact-HEAD review added 460 executable-only bytes within the same cap
+for optional `default_prompt`, all-decodable-file local-path scanning, and
+single-line CommonMark reference-definition destinations.
