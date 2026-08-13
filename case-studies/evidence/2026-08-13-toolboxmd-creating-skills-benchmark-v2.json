@@ -125,7 +125,7 @@
   },
   "evidence": {
     "result_manifest": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/manifest.json",
-    "result_manifest_sha256": "2b1c3f978019c3e92cdcd5e0b551e036f3412debf8e3a824359c810b870c804f",
+    "result_manifest_sha256": "abb82941e13be6a2946b878a46e3393efc1e4d997c38fa610363f41c121f59a0",
     "result_readme": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/README.md",
     "recommendations": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/recommendations.md",
     "retention_manifest_sha256": "e4f3d7ef74ae7346db6828d4c3cf6c204df4f8229b198d1f6220e298bf4d3612",

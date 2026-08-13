@@ -412,16 +412,72 @@ function shellBasename(value) {
 }
 
 function heredocAbsoluteFilesystemOperands(body) {
-  const operands = [];
+  return quotedAbsoluteFilesystemLiterals(body).map(literal => literal.value);
+}
+
+function quotedAbsoluteFilesystemLiterals(body) {
+  const literals = [];
   const quoted = /(['"])((?:\\.|(?!\1).)*)\1/gs;
   for (const match of body.matchAll(quoted)) {
     const value = match[2];
     if (!isAbsoluteFilesystemPath(value) || !looksLikeLiteralPath(value)) continue;
     const remainder = body.slice(match.index + match[0].length).trimStart();
     if ((value.includes("|") || value.endsWith("/")) && !/^(?:\)|\]|\}|,|\.\w+\s*\()/.test(remainder)) continue;
-    operands.push(value);
+    literals.push({ value, index: match.index, endIndex: match.index + match[0].length });
   }
-  return operands;
+  return literals;
+}
+
+function interpreterInlineCodeOptions(executable) {
+  if (/^python(?:3(?:\.\d+)*)?$/.test(executable)) return { short: "-c", long: [] };
+  if (executable === "node") return { short: "-e", long: ["--eval"] };
+  if (["ruby", "perl"].includes(executable)) return { short: "-e", long: [] };
+  if (executable === "php") return { short: "-r", long: [] };
+  return null;
+}
+
+function inlineInterpreterCodePayloads(command, depth = 0) {
+  if (depth > 3) return [];
+  const payloads = [];
+  const heredoc = splitHeredocs(command);
+  const tokens = commandTokens(heredoc.shell);
+
+  for (let index = 0; index < tokens.length; index += 1) {
+    if (!isCommandInvocationPosition(tokens, index)) continue;
+    if (!new Set(["sh", "bash", "zsh", "dash", "ksh"]).has(shellBasename(tokens[index].value))) continue;
+    const optionIndex = index + 1;
+    const payloadIndex = index + 2;
+    if (!/^-+[A-Za-z]*c[A-Za-z]*$/.test(tokens[optionIndex]?.value ?? "") || tokens[payloadIndex] === undefined) continue;
+    payloads.push(...inlineInterpreterCodePayloads(tokens[payloadIndex].value, depth + 1));
+  }
+
+  for (const payload of shellSubstitutionPayloads(heredoc.shell)) {
+    payloads.push(...inlineInterpreterCodePayloads(payload, depth + 1));
+  }
+
+  for (let index = 0; index < tokens.length; index += 1) {
+    if (!isCommandInvocationPosition(tokens, index)) continue;
+    const options = interpreterInlineCodeOptions(shellBasename(tokens[index].value));
+    if (options === null) continue;
+    for (let cursor = index + 1; cursor < tokens.length; cursor += 1) {
+      const value = tokens[cursor].value;
+      if (/^(?:&&|\|\||\||;|\n)$/.test(value) || value === "--") break;
+      if (value === options.short || options.long.includes(value)) {
+        if (tokens[cursor + 1] !== undefined) payloads.push(tokens[cursor + 1].value);
+        break;
+      }
+      const long = options.long.find(option => value.startsWith(`${option}=`));
+      if (long !== undefined) {
+        payloads.push(value.slice(long.length + 1));
+        break;
+      }
+      if (value.startsWith(options.short) && value.length > options.short.length) {
+        payloads.push(value.slice(options.short.length));
+        break;
+      }
+    }
+  }
+  return payloads;
 }
 
 function literalAbsoluteFilesystemOperands(command, depth = 0) {
@@ -429,6 +485,10 @@ function literalAbsoluteFilesystemOperands(command, depth = 0) {
   const heredoc = splitHeredocs(command);
   const tokens = shellTokens(heredoc.shell);
   const operands = heredoc.bodies.flatMap(heredocAbsoluteFilesystemOperands);
+  // Inline interpreter code is opaque here. Conservatively treat every literal
+  // absolute path as an operand rather than infer whether the program reads it.
+  operands.push(...inlineInterpreterCodePayloads(heredoc.shell)
+    .flatMap(payload => quotedAbsoluteFilesystemLiterals(payload).map(literal => literal.value)));
   const nestedPayloadIndexes = new Set();
 
   for (let index = 0; index < tokens.length; index += 1) {
@@ -464,7 +524,7 @@ function literalAbsoluteFilesystemOperands(command, depth = 0) {
       operands.push(value);
     }
   }
-  return operands;
+  return [...new Set(operands)];
 }
 
 function absoluteOperandInsideRunRoot(operand) {

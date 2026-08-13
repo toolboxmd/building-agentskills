@@ -246,6 +246,8 @@ const [runRoot, output] = process.argv.slice(2);
 const commands = [
   ["safe-wrapper", "/bin/zsh -lc 'sed -n 1p workspace/input.md 2>/dev/null'"],
   ["safe-in-root", `/bin/zsh -lc 'sed -n 1p "${path.join(runRoot, "workspace/input.md")}"'`],
+  ["safe-inline-in-root", `python3 -c 'open("${path.join(runRoot, "workspace/input.md")}").read()'`],
+  ["safe-inline-regex", "python3 -c 'import re; re.compile(r\"/Users/|/home/\")'"],
   ["safe-executable-after-semicolon", "/bin/zsh -lc 'printf ready; /usr/bin/python3 -V'"],
   ["outside-etc", "/bin/zsh -lc 'sed -n 1p /etc/passwd'"],
   ["outside-workspace", "/bin/zsh -lc 'cat /workspace/sibling/grader.json'"],
@@ -256,6 +258,17 @@ const commands = [
   ["outside-data-loop", "/bin/zsh -lc 'for f in /etc/passwd; do cat \"$f\"; done'"],
   ["outside-after-semicolon", "/bin/zsh -lc 'printf ready; /usr/bin/python3 /tmp/secret.py'"],
   ["outside-heredoc", "/bin/zsh -lc \"python3 - <<'PY'\\nopen('/etc/passwd').read()\\nPY\""],
+  ["outside-inline-python", "python3 -c 'print(open(\"/etc/passwd\").read())'"],
+  ["outside-inline-print-conservative", "python3 -c 'print(\"/etc/passwd\")'"],
+  ["outside-inline-python-wrapper", "/bin/zsh -lc \"python3 -c 'open(\\\"/etc/passwd\\\").read()'\""],
+  ["outside-inline-python-prefix", "command env -i python3 -c 'open(\"/etc/passwd\").read()'"],
+  ["outside-inline-python-option", "python3 -W ignore -c 'open(\"/etc/passwd\").read()'"],
+  ["outside-inline-python-windows", "python3 -c 'open(r\"C:\\\\bench\\\\grader.json\").read()'"],
+  ["outside-inline-pathlib", "python3 -c 'from pathlib import Path; Path(\"/etc/passwd\").read_text()'"],
+  ["outside-inline-node", "node --eval 'require(\"fs\").readFileSync(\"/etc/passwd\", \"utf8\")'"],
+  ["outside-inline-ruby", "ruby -e 'File.read(\"/etc/passwd\")'"],
+  ["outside-inline-perl", "perl -e 'open(\"/etc/passwd\")'"],
+  ["outside-inline-php", "php -r 'file_get_contents(\"/etc/passwd\");'"],
   ["url-not-path", "/bin/zsh -lc 'printf %s https://example.com/reference'"],
   ["regex-not-path", "/bin/zsh -lc \"rg '/Users/|/home/' workspace\""],
   ["heredoc-regex-not-path", "/bin/zsh -lc \"python3 - <<'PY'\\nimport re\\nre.compile(r'/Users/|/home/')\\nPY\""],
@@ -269,7 +282,7 @@ for (const [name, command] of commands) {
   fs.writeFileSync(path.join(output, `${name}.jsonl`), `${JSON.stringify(event)}\n${JSON.stringify(usage)}\n`);
 }
 NODE
-for safe_name in safe-wrapper safe-in-root safe-executable-after-semicolon url-not-path regex-not-path heredoc-regex-not-path; do
+for safe_name in safe-wrapper safe-in-root safe-inline-in-root safe-inline-regex safe-executable-after-semicolon url-not-path regex-not-path heredoc-regex-not-path; do
   safe_absolute=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
     "$test_tmp/absolute-paths/$safe_name.jsonl" "$test_tmp/run" near-miss none)
   node - "$safe_absolute" <<'NODE'
@@ -277,7 +290,7 @@ const result = JSON.parse(process.argv[2]);
 if (!result.eligible || result.reasons.includes("absolute filesystem path outside run root observed")) process.exit(1);
 NODE
 done
-for outside_name in outside-etc outside-workspace outside-tmp outside-windows outside-assignment outside-executable-loop outside-data-loop outside-after-semicolon outside-heredoc; do
+for outside_name in outside-etc outside-workspace outside-tmp outside-windows outside-assignment outside-executable-loop outside-data-loop outside-after-semicolon outside-heredoc outside-inline-python outside-inline-print-conservative outside-inline-python-wrapper outside-inline-python-prefix outside-inline-python-option outside-inline-python-windows outside-inline-pathlib outside-inline-node outside-inline-ruby outside-inline-perl outside-inline-php; do
   set +e
   outside_absolute=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
     "$test_tmp/absolute-paths/$outside_name.jsonl" "$test_tmp/run" near-miss none)
