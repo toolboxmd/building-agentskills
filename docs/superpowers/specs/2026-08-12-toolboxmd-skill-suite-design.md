@@ -1,6 +1,6 @@
 ---
 title: ToolboxMD skill suite and first creator benchmark
-status: EXECUTED, BENCHMARK FAILED
+status: EXECUTED, BENCHMARK INCONCLUSIVE AFTER EVIDENCE CORRECTION
 date: 2026-08-12
 owner: lukemaj
 scope: building-agentskills general repository
@@ -17,7 +17,7 @@ related:
 
 ## Execution result
 
-Tranche 1 reached its benchmark gate on 2026-08-12 and stopped. The frozen creator candidate passed all three mechanical and deterministic cases but recorded no valid blind wins. It was retained as benchmark evidence and removed from the active skill path. The updater, benchmark skill, watcher, and automation remain unimplemented.
+Tranche 1 reached its benchmark gate on 2026-08-12 and stopped. A later isolation-evidence correction made all 15 retained command-bearing model streams ineligible, leaving zero eligible creator comparisons. The frozen creator candidate remains retained evidence and outside the active skill path because it did not clear its promotion gate. The recorded deterministic scores and blind judgments are diagnostic only. The updater, benchmark skill, watcher, and automation remain unimplemented.
 
 ## Outcome
 

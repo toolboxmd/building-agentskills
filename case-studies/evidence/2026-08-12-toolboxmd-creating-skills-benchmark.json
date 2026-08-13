@@ -1,41 +1,55 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "recorded_at": "2026-08-12",
+  "corrected_at": "2026-08-13",
   "benchmark": {
     "id": "toolboxmd-creating-skills-v1",
-    "decision": "fail",
+    "decision": "inconclusive",
     "candidate_recommended": false,
-    "claim_boundary": "One directional comparison of a frozen ToolboxMD candidate against the Codex 0.147.0 built-in creator for three declared skill archetypes on gpt-5.6-sol at medium reasoning effort.",
+    "preferred_creator_unchanged": true,
+    "claim_boundary": "Zero eligible creator comparisons. All 15 retained compact model-event audits record command execution without independently verifiable environment, filesystem, and network isolation evidence. Scores, judgments, package observations, usage, and costs are diagnostic only.",
     "acceptance": {
-      "candidate_mechanical_passes": 3,
-      "candidate_blind_wins": 0,
-      "required_blind_wins": 2,
-      "baseline_blind_wins": 1,
-      "ties": 1,
-      "invalid_cases": 1,
-      "passed": false
+      "eligible_creator_comparisons": 0,
+      "eligible_candidate_blind_wins": 0,
+      "eligible_baseline_blind_wins": 0,
+      "eligible_ties": 0,
+      "required_candidate_blind_wins": 2,
+      "passed": false,
+      "original_frozen_scoring": {
+        "claim_status": "diagnostic_only_after_isolation_correction",
+        "candidate_mechanical_passes": 3,
+        "candidate_blind_wins": 0,
+        "baseline_blind_wins": 1,
+        "ties": 1,
+        "invalid_cases": 1,
+        "passed": false
+      }
     },
     "cases": [
       {
         "case_id": "webhook-triage",
-        "deterministic": "both downstream outputs passed 21/21 checks",
-        "semantic": "valid tie at 20/20",
-        "final_outcome": "tie"
+        "diagnostic_deterministic_observation": "both downstream outputs recorded 21/21 checks",
+        "diagnostic_semantic_observation": "the frozen judge recorded a 20/20 tie",
+        "eligible_outcome": null,
+        "final_outcome": "ineligible"
       },
       {
         "case_id": "csv-sanitizer",
-        "deterministic": "both downstream outputs passed 20/20 checks",
-        "semantic": "invalid before review because frozen baseline bytecode leaked treatment identity",
-        "final_outcome": "invalid"
+        "diagnostic_deterministic_observation": "both downstream outputs recorded 20/20 checks",
+        "diagnostic_semantic_observation": "the pair was already excluded because frozen baseline bytecode leaked treatment identity",
+        "eligible_outcome": null,
+        "final_outcome": "ineligible"
       },
       {
         "case_id": "release-evidence",
-        "deterministic": "both downstream outputs passed 26/26 checks",
-        "semantic": "baseline won 20/17 with medium confidence",
-        "final_outcome": "baseline_win"
+        "diagnostic_deterministic_observation": "both downstream outputs recorded 26/26 checks",
+        "diagnostic_semantic_observation": "the frozen judge recorded a 20/17 preference for the built-in package",
+        "eligible_outcome": null,
+        "final_outcome": "ineligible"
       }
     ],
     "usage": {
+      "claim_status": "diagnostic_only_after_isolation_correction",
       "benchmark_sessions_including_one_replay": 14,
       "cumulative_duration_seconds": 1744,
       "input_tokens": 2064691,
@@ -43,15 +57,35 @@
       "output_tokens": 73053
     },
     "candidate_authoring_usage": {
+      "claim_status": "diagnostic_only_after_isolation_correction",
       "input_tokens": 2226537,
       "cached_input_tokens": 2093312,
       "output_tokens": 20379
     },
-    "interpretation_limit": "The result does not estimate variance or rank models, providers, or all skill types. It supports only keeping this candidate out of the preferred and distributed skill path."
+    "interpretation_limit": "No creator comparison remains eligible. The retained evidence supports only the conservative release action not to promote the candidate; it does not establish a tie, case winner, quality winner, cost winner, trigger behavior, variance estimate, or cross-provider behavior."
+  },
+  "post_result_evidence_correction": {
+    "retained_compact_event_audits": 15,
+    "command_bearing_compact_event_audits": 15,
+    "ineligible_compact_event_audits": 15,
+    "eligible_compact_event_audits": 0,
+    "raw_model_event_jsonl_retained": false,
+    "exact_command_reaudit_possible": false,
+    "independently_verifiable_isolation_evidence_present": false,
+    "model_sessions_added": 0,
+    "preflight_strict_isolation_eligible": false,
+    "basis": "The correction uses each compact audit's retained commandCount and the absence of a trust-bearing isolation artifact. It does not reconstruct or claim to re-audit missing raw commands."
   },
   "evidence": {
     "result_manifest": "benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/manifest.json",
-    "result_manifest_sha256": "9175a507b65fe26c895b51417af9fb6ce180b36698fff8caf9e98b2738c0c396",
+    "pre_correction_result_manifest_sha256": "9175a507b65fe26c895b51417af9fb6ce180b36698fff8caf9e98b2738c0c396",
+    "result_manifest_sha256": "ad35da1d92f2d750c3c95ccf55d826cf2fe6c5ca185b5399edc74fdb071a4ea6",
+    "pre_correction_cases_evidence_tree_sha256": "840bd98e7215419f8c743f4a8f83dd68153f2d7a48e3bcad42b1f6cc05c8cd90",
+    "cases_evidence_tree_sha256": "e88c2431afcae9f8fa1b1871092af5be9b89ef589b745dab097d21d2b9b12546",
+    "pre_correction_blind_evidence_tree_sha256": "61bd52a65bddb0be455ec9170d623c31bc6251b7e43ad71499b995761f46a7cc",
+    "blind_evidence_tree_sha256": "33e1e6cffb4231859f66084e31cc5b8a85bbb5f2c1ece88a3dc63b5e17800946",
+    "pre_correction_generic_event_auditor_sha256": "00ade0543c1b19faccc6956a34618901e0b77c57f3b7a9201c700c00d834d321",
+    "generic_event_auditor_sha256": "5bf691ef38047e06881280386e8bdc543463e9a0c8e3070c1766b21e3ac5ed66",
     "public_contract_sha256": "f8803e19d32ae469d804bc5168446b438d3452ed4ab5e01e899951e6abe7ef6e",
     "baseline_package_sha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c",
     "candidate_package_sha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",

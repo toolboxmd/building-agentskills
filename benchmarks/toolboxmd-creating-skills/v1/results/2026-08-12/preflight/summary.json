@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "benchmarkId": "toolboxmd-creating-skills-v1",
   "codexCliVersion": "0.147.0",
   "implicitSkillsVisible": [],
@@ -10,5 +10,12 @@
     "result": "Could not resolve host: example.com",
     "blocked": true
   },
-  "proofType": "behavioral preflight with the same fresh-home isolation settings used by benchmark runs"
+  "proofType": "behavioral preflight with the same fresh-home isolation settings used by benchmark runs",
+  "eligibilityCorrection": {
+    "appliedOn": "2026-08-13",
+    "strictIsolationEligible": false,
+    "status": "not_independently_verified",
+    "reason": "A failed DNS probe and fresh-home configuration do not independently establish a sanitized environment, filesystem read and write confinement, or syscall-level network enforcement. No model-event JSONL or trust-bearing enforcement artifact is retained for this preflight.",
+    "modelSessionsAdded": 0
+  }
 }

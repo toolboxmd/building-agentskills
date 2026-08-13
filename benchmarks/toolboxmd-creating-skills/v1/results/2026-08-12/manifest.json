@@ -1,29 +1,55 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "benchmarkId": "toolboxmd-creating-skills-v1",
   "recordedOn": "2026-08-12",
   "decision": {
-    "status": "fail",
+    "status": "inconclusive",
     "candidateRecommended": false,
     "candidateDisposition": "quarantined_as_benchmark_artifact",
     "preferredCreatorUnchanged": true,
-    "publicDoctrineChanged": false,
-    "reason": "The candidate recorded zero valid blind wins; the frozen acceptance rule required at least two."
+    "creatorRecommendationChanged": false,
+    "benchmarkIntegrityDoctrineChanged": true,
+    "reason": "No eligible creator comparison remains after all 15 retained command-bearing compact event audits were reclassified for missing trust-bearing isolation evidence. The candidate did not clear its promotion gate, but the result does not establish a better creator."
   },
   "acceptance": {
     "candidatePackageValidated": true,
-    "candidateCriticalMechanicalPasses": 3,
+    "diagnosticCandidateCriticalMechanicalPasses": 3,
     "requiredCandidateCriticalMechanicalPasses": 3,
-    "candidateBlindWins": 0,
+    "eligibleCandidateBlindWins": 0,
     "requiredBlindWins": 2,
-    "baselineBlindWins": 1,
-    "blindTies": 1,
-    "blindInvalidCases": 1,
-    "candidateCriticalRegression": false,
+    "eligibleBaselineBlindWins": 0,
+    "eligibleBlindTies": 0,
+    "eligibleCreatorComparisons": 0,
+    "ineligibleCreatorComparisons": 3,
+    "diagnosticCandidateCriticalRegression": false,
     "manualRepairUsed": false,
-    "passed": false
+    "passed": false,
+    "originalFrozenScoring": {
+      "claimStatus": "diagnostic_only_after_isolation_correction",
+      "candidateBlindWins": 0,
+      "baselineBlindWins": 1,
+      "blindTies": 1,
+      "blindInvalidCases": 1,
+      "passed": false
+    }
   },
-  "claimBoundary": "One directional comparison for three declared skill archetypes under one frozen Codex configuration. The failed result supports only keeping this candidate out of the preferred and distributed skill path.",
+  "claimBoundary": "Zero eligible creator comparisons. Fifteen retained compact event audits record command execution without independently verifiable environment, filesystem, and network isolation evidence. Raw scores, judgments, package observations, usage, and cost are diagnostic only. The result supports only keeping the unqualified candidate out of the preferred and distributed skill path.",
+  "postResultEvidenceCorrection": {
+    "appliedOn": "2026-08-13",
+    "retainedCompactEventAuditCount": 15,
+    "commandBearingCompactEventAuditCount": 15,
+    "ineligibleCompactEventAuditCount": 15,
+    "eligibleCompactEventAuditCount": 0,
+    "rawModelEventJsonlRetained": false,
+    "exactCommandReauditPossible": false,
+    "independentlyVerifiableIsolationEvidencePresent": false,
+    "modelSessionsAdded": 0,
+    "basis": "Each retained compact audit records commandCount greater than zero. No audit or separate retained artifact establishes a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement. The correction does not reconstruct commands that are absent from the repository.",
+    "preflight": {
+      "strictIsolationEligible": false,
+      "reason": "The failed DNS probe and fresh-home settings are behavioral observations, not independent enforcement evidence. No preflight model-event JSONL or trust-bearing artifact is retained."
+    }
+  },
   "freezes": {
     "publicContractTreeSha256": "f8803e19d32ae469d804bc5168446b438d3452ed4ab5e01e899951e6abe7ef6e",
     "baselinePackageSha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c",
@@ -40,18 +66,21 @@
     "ignoreUserConfig": true,
     "ignoreRules": true,
     "implicitSkillsVisible": [],
-    "nestedDelegationObserved": false
+    "nestedDelegationObserved": false,
+    "strictIsolationIndependentlyVerified": false
   },
   "candidateAuthoring": {
     "benchmarkContractsVisible": false,
     "implicitSkillsVisible": [],
-    "eventAuditEligible": true,
+    "eventAuditEligible": false,
+    "eventAuditEligibilityBasis": "Retained commandCount is 168 and no trust-bearing isolation evidence is recorded; raw events are unavailable for exact command re-audit.",
     "inputTokens": 2226537,
     "cachedInputTokens": 2093312,
     "outputTokens": 20379,
     "snapshot": "candidate/toolboxmd-creating-skills"
   },
   "sessionUsage": {
+    "claimStatus": "diagnostic_only_after_isolation_correction",
     "authoring": {
       "sessions": 6,
       "cumulativeDurationSeconds": 1229,
@@ -91,28 +120,34 @@
         "builtin": "fail_outside_output_bytecode",
         "toolboxmd": "pass"
       },
+      "authoringBoundaryClaimStatus": "diagnostic_only_ineligible_streams",
       "downstreamDeterministic": {
         "builtin": "21/21",
         "toolboxmd": "21/21"
       },
+      "downstreamDeterministicClaimStatus": "diagnostic_only_ineligible_streams",
       "blindMapping": {
         "A": "toolboxmd",
         "B": "builtin"
       },
       "initialBlindReview": {
-        "valid": true,
-        "verdict": "tie",
+        "validUnderFrozenRubric": true,
+        "evidenceEligible": false,
+        "diagnosticVerdict": "tie",
         "confidence": "high",
         "A": 20,
         "B": 20
       },
       "replay": {
         "used": true,
-        "valid": false,
+        "validUnderFrozenRubric": false,
+        "evidenceEligible": false,
         "proposedVerdict": "A",
         "reasonInvalid": "The proposed win had no two-point score advantage and no scored downstream-utility advantage under the frozen clear-win rule."
       },
-      "finalOutcome": "tie"
+      "eligibleOutcome": null,
+      "diagnosticOriginalOutcome": "tie",
+      "finalOutcome": "ineligible"
     },
     "csv-sanitizer": {
       "packages": {
@@ -123,19 +158,24 @@
         "builtin": "fail_outside_output_bytecode",
         "toolboxmd": "pass"
       },
+      "authoringBoundaryClaimStatus": "diagnostic_only_ineligible_streams",
       "downstreamDeterministic": {
         "builtin": "20/20",
         "toolboxmd": "20/20"
       },
+      "downstreamDeterministicClaimStatus": "diagnostic_only_ineligible_streams",
       "blindMapping": {
         "A": "toolboxmd",
         "B": "builtin"
       },
       "blindReview": {
-        "valid": false,
+        "validUnderFrozenRubric": false,
+        "evidenceEligible": false,
         "reason": "Baseline-generated bytecode embedded an absolute source path containing workspace and treatment identity. The pair was preserved without redaction and excluded before judging."
       },
-      "finalOutcome": "invalid"
+      "eligibleOutcome": null,
+      "diagnosticOriginalOutcome": "invalid_identity_leak",
+      "finalOutcome": "ineligible"
     },
     "release-evidence": {
       "packages": {
@@ -146,23 +186,28 @@
         "builtin": "pass",
         "toolboxmd": "pass"
       },
+      "authoringBoundaryClaimStatus": "diagnostic_only_ineligible_streams",
       "downstreamDeterministic": {
         "builtin": "26/26",
         "toolboxmd": "26/26"
       },
+      "downstreamDeterministicClaimStatus": "diagnostic_only_ineligible_streams",
       "blindMapping": {
         "A": "builtin",
         "B": "toolboxmd"
       },
       "blindReview": {
-        "valid": true,
-        "verdict": "A",
+        "validUnderFrozenRubric": true,
+        "evidenceEligible": false,
+        "diagnosticVerdict": "A",
         "confidence": "medium",
         "A": 20,
         "B": 17,
-        "winner": "builtin"
+        "diagnosticWinner": "builtin"
       },
-      "finalOutcome": "baseline_win"
+      "eligibleOutcome": null,
+      "diagnosticOriginalOutcome": "baseline_win",
+      "finalOutcome": "ineligible"
     }
   },
   "protocolNotes": [
@@ -170,17 +215,25 @@
     "The command audit was narrowed with regression tests after it falsely treated allowed in-root ancestor paths and a literal path-detection regex as contamination.",
     "The deterministic grader was corrected symmetrically to accept consistent Markdown heading levels and to distinguish a negated forbidden retry phrase from affirmative retry guidance.",
     "The CSV blind pair was invalidated before judging because exact package bytes leaked treatment identity. No artifact was redacted or repaired.",
-    "The initial judge did not receive neutral deterministic gate results. The one allowed replay supplied them for webhook-triage, but its proposed win failed the frozen verdict validator. The valid initial tie remains final."
+    "The initial judge did not receive neutral deterministic gate results. The one allowed replay supplied them for webhook-triage, but its proposed win failed the frozen verdict validator. Both judgments are now diagnostic because their retained command-bearing event audits lack trust-bearing isolation evidence.",
+    "A 2026-08-13 post-result correction reclassified all 15 retained compact event audits without adding model sessions. Raw event JSONL was not retained, so no exact commands were reconstructed or re-audited.",
+    "The frozen commitments file retains the original benchmarkDecision value fail_not_recommended as historical protocol evidence. This corrected manifest supersedes that result claim with an inconclusive evidence classification while preserving the same no-promotion release action."
   ],
   "retainedArtifactHashes": {
     "sealedCasesTreeSha256": "efc67049d715cb69bbfcad04441a4a9d162ba11f3a22ef3328c543bf6da837a2",
     "candidateTreeSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",
-    "casesEvidenceTreeSha256": "840bd98e7215419f8c743f4a8f83dd68153f2d7a48e3bcad42b1f6cc05c8cd90",
-    "blindEvidenceTreeSha256": "61bd52a65bddb0be455ec9170d623c31bc6251b7e43ad71499b995761f46a7cc",
+    "preCorrectionCasesEvidenceTreeSha256": "840bd98e7215419f8c743f4a8f83dd68153f2d7a48e3bcad42b1f6cc05c8cd90",
+    "preCorrectionBlindEvidenceTreeSha256": "61bd52a65bddb0be455ec9170d623c31bc6251b7e43ad71499b995761f46a7cc",
+    "casesEvidenceTreeSha256": "e88c2431afcae9f8fa1b1871092af5be9b89ef589b745dab097d21d2b9b12546",
+    "blindEvidenceTreeSha256": "33e1e6cffb4231859f66084e31cc5b8a85bbb5f2c1ece88a3dc63b5e17800946",
+    "candidateAuthoringEventAuditSha256": "0fc5f15f2cbc4ad7b8b1c65ec2ea265dae2723088303cccee47a162898ef2cdf",
+    "preflightSummarySha256": "0d9afd933af390ed8d55c6fa88c78041c28428c53fb64660124db07c468a1aef",
+    "preCorrectionGenericEventAuditorSha256": "00ade0543c1b19faccc6956a34618901e0b77c57f3b7a9201c700c00d834d321",
+    "genericEventAuditorSha256": "5bf691ef38047e06881280386e8bdc543463e9a0c8e3070c1766b21e3ac5ed66",
     "initialJudgmentSha256": "3be1cab6bbe7106fcad42ad0f92e7fa55c4f41f95352d40dc0095e3ebfdbd3d4",
     "initialJudgmentValidationSha256": "f3a1ba7c26ee2ff8839b73b62d8e9bd8f01a687db8c467dfa408e92fb53c423b",
     "replayJudgmentSha256": "baa253f01a7b6f81b24f4720afa2e269baea41647c122605bf1dcf48c7cdb2b7",
     "replayValidationSha256": "636c80ece06e65dd3ab994e93aa067275441e8869eda6a3d129e53df429f4674"
   },
-  "interpretationLimit": "This is a one-run directional screen, not a variance estimate. It does not rank models, providers, or all skill archetypes."
+  "interpretationLimit": "No creator comparison remains eligible. The retained scores, semantic judgments, usage, and costs are diagnostic only. The evidence does not rank either creator, estimate variance, or establish model, provider, or skill-archetype behavior."
 }

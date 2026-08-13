@@ -1,6 +1,6 @@
 ---
 title: ToolboxMD creator and first benchmark implementation plan
-status: EXECUTED, STOPPED AT FAILED BENCHMARK GATE
+status: EXECUTED, STOPPED AT BENCHMARK GATE; RESULT LATER CORRECTED TO INCONCLUSIVE
 date: 2026-08-12
 owner: lukemaj
 design: docs/superpowers/specs/2026-08-12-toolboxmd-skill-suite-design.md
@@ -13,7 +13,7 @@ execution_result: benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/man
 
 ## Execution result
 
-Executed on 2026-08-12. The design gate passed, the creator candidate and benchmark harness were implemented, and the directional benchmark failed its two-win acceptance rule. The candidate remains only as a retained result artifact. No updater, reusable benchmarking skill, watcher, scheduler, public recommendation, or loader change was implemented.
+Executed on 2026-08-12. The design gate passed, the creator candidate and benchmark harness were implemented, and execution stopped at the promotion gate. A later post-result isolation-evidence correction made all 15 retained command-bearing model streams ineligible, so the comparison is inconclusive rather than evidence of a tie or built-in win. The candidate remains only as a retained result artifact because it did not clear the promotion gate. No updater, reusable benchmarking skill, watcher, scheduler, public recommendation, or loader change was implemented.
 
 ## Goal
 

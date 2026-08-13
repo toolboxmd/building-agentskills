@@ -19,6 +19,7 @@ if (!fs.existsSync(runRoot) || !fs.statSync(runRoot).isDirectory()) fail(`run ro
 
 const reasons = [];
 const commands = [];
+let commandExecutionEventCount = 0;
 const usage = {
   inputTokens: null,
   cachedInputTokens: null,
@@ -42,6 +43,7 @@ for (let index = 0; index < lines.length; index += 1) {
   }
 
   const item = event.item;
+  if (item?.type === "command_execution") commandExecutionEventCount += 1;
   if (!item || item.type !== "command_execution" || typeof item.command !== "string") continue;
 
   const command = item.command;
@@ -71,13 +73,23 @@ for (let index = 0; index < lines.length; index += 1) {
   }
 }
 
+if (commandExecutionEventCount > 0) {
+  reasons.push("command execution lacks recorded trusted filesystem, environment, and network isolation evidence");
+}
+
 const uniqueReasons = [...new Set(reasons)];
 const result = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   eligible: uniqueReasons.length === 0,
   reasons: uniqueReasons,
   eventCount: lines.length,
   commandCount: commands.length,
+  commandExecutionEventCount,
+  isolationEvidence: {
+    required: commandExecutionEventCount > 0,
+    status: commandExecutionEventCount > 0 ? "not_recorded" : "not_required",
+    trusted: false,
+  },
   usage,
 };
 

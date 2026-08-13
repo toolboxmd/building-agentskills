@@ -86,13 +86,15 @@ For strict eligibility, command text is not proof of isolation. Any stream conta
 
 Keep detailed command heuristics for diagnosis. Parent traversal, absolute paths, Git, environment expansion, shell wrappers, and interpreter payloads explain concrete risks and help improve the harness, but parser completeness is not the eligibility trust boundary.
 
-The v2 event auditor exposes this boundary in output schema version 3. Invoke it as:
+Both retained-trace auditors now apply this repository-wide boundary. The generic auditor emits schema version 2 for future v1-shaped traces; invoke it as `node scripts/audit-codex-events.mjs <events.jsonl> <run-root>`. The v2 auditor emits schema version 3; invoke it as:
 
 ```text
 node scripts/audit-toolboxmd-v2-events.mjs <events.jsonl> <run-root> <mode> <expected-skill-relative-path|none>
 ```
 
 `commandCount` retains the completed-command telemetry used by the historical result. `commandExecutionEventCount` counts every command event, including started or incomplete events. `isolationEvidence.required` becomes true when that second count is nonzero. The historical auditor reports `status: not_recorded` and `trusted: false` in that state; a zero-command stream reports `status: not_required`. This version has no flag that can self-assert trust. Adding an independently verified evidence channel is future harness work.
+
+The v1 result retains only 15 compact event audits, not the corresponding raw model-event JSONL. Every compact audit records `commandCount > 0`, and no separate retained artifact establishes the required controls. A post-result correction therefore marks all 15 streams ineligible without reconstructing or claiming to re-audit their exact commands. The original compact reasons and usage remain historical diagnostic evidence. The behavioral preflight, including a failed DNS probe, is also ineligible as strict-isolation proof. V1 now supports zero eligible blind comparisons; its recorded tie and built-in preference are diagnostic only.
 
 Do not allow parent-relative operands merely because their suffix resembles an allowed directory. Resolve them only from a command cwd explicitly recorded in the event, and require the resolved path to remain inside the run root. If cwd is absent, outside the root, or changed inside an opaque shell command, mark the run ineligible rather than infer safety from command output. The corrected v2 creator audit rejected one retained authoring trace containing `find ..` and parent-relative validator paths because the event schema did not record cwd.
 

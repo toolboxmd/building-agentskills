@@ -12,7 +12,9 @@ The retained artifacts still expose hypotheses worth retesting. ToolboxMD produc
 
 ## Why v2 was needed
 
-The first creator benchmark used specialized production-oriented tasks. Downstream prompts named generated skill paths, so it did not test whether natural user language activated the skill. It also lacked a no-skill arm, making it impossible to distinguish creator value from tasks the model could solve unaided. One blind replay was invalidated by identity-bearing Python bytecode.
+The first creator benchmark used specialized production-oriented tasks. Downstream prompts named generated skill paths, so it did not test whether natural user language activated the skill. It also lacked a no-skill arm, making it impossible to distinguish creator value from tasks the model could solve unaided. One blind pair was invalidated by identity-bearing Python bytecode.
+
+A later post-result correction also made all 15 retained v1 model streams ineligible. Every compact event audit records command execution, none records trust-bearing isolation evidence, and the raw model-event JSONL files are not retained. Its deterministic scores and blind judgments, including the recorded tie and built-in preference, are diagnostic only. V1 therefore supports no eligible creator comparison and keeps the candidate unpromoted only because it did not clear its promotion gate.
 
 V2 changed the causal question. It held the model, effort, source material, ordinary workspace, prompt, sandbox, and runner constant, then varied only the creator used to author the target skill. Each generated skill was installed through normal Codex discovery. Positive prompts did not name a skill, `SKILL.md`, or an invocation command. Event traces, rather than model self-report, proved whether the full target skill loaded before output creation.
 

@@ -1,9 +1,22 @@
 {
-  "schemaVersion": 1,
-  "eligible": true,
+  "schemaVersion": 2,
+  "eligible": false,
   "reasons": [],
   "eventCount": 19,
   "commandCount": 10,
+  "eligibilityCorrection": {
+    "appliedOn": "2026-08-13",
+    "originalSchemaVersion": 1,
+    "originalEligible": true,
+    "basis": "The retained compact audit records commandCount greater than zero, but no independently verifiable environment, filesystem, or network isolation evidence. Raw model-event JSONL is not retained, so exact commands were not re-audited.",
+    "rawEventsRetained": false,
+    "modelSessionsAdded": 0
+  },
+  "isolationEvidence": {
+    "required": true,
+    "status": "not_recorded",
+    "trusted": false
+  },
   "usage": {
     "inputTokens": 43940,
     "cachedInputTokens": 16896,

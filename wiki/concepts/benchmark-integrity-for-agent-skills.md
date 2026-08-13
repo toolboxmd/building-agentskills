@@ -9,14 +9,14 @@ related:
   - /concepts/provider-neutral-skill-runtime.md
 related_files: [docs/06-testing/benchmark-integrity.md, case-studies/evidence/2026-08-11-karpathy-wiki-ingest-benchmark.json, case-studies/evidence/2026-08-12-toolboxmd-creating-skills-benchmark.json, benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/manifest.json, case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md, case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json]
 created: "2026-08-11T00:00:00Z"
-updated: "2026-08-13T17:01:43Z"
+updated: "2026-08-13T18:18:46Z"
 quality:
   accuracy: 5
   completeness: 5
   signal: 5
   interlinking: 4
   overall: 4.75
-  rated_at: "2026-08-13T17:01:43Z"
+  rated_at: "2026-08-13T18:18:46Z"
   rated_by: ingester
 ---
 
@@ -40,13 +40,13 @@ An agent benchmark is valid only when the requested model produced the output in
 
 The 2026-08-11 karpathy-wiki benchmark invalidated one attempt for nested Claude delegation and another for cross-run reads. The strongest valid Spark sample passed 19/21 deterministic assertions but scored 69/100 semantically, demonstrating why runtime correctness and retrieval utility are separate.
 
-The 2026-08-12 creator benchmark reached the same boundary from another direction. The ToolboxMD candidate generated three packages that passed every held-out deterministic check, but it recorded no valid blind wins: one tie, one baseline win, and one pair invalidated by identity-bearing Python bytecode. The candidate was retained as evidence and removed from the active skill path.
+The 2026-08-12 creator benchmark reached the same boundary from another direction, but its raw model-event JSONL was not retained. All 15 compact event audits record command execution and none has independently verifiable environment, filesystem, and network isolation evidence. A post-result correction therefore made all 15 streams and all three creator comparisons ineligible without reconstructing missing commands. The deterministic checks and blind judgments, including a recorded tie and built-in preference, remain diagnostic only. The candidate stays outside the active skill path because it did not clear its promotion gate, not because v1 established a better creator.
 
-That screen used 14 benchmark sessions and 2,064,691 input tokens, of which 1,611,264 were cached, plus 73,053 output tokens. The cost is evidence for a leaner next protocol: use cheap mechanical gates first, make later semantic runs conditional, and spend a tie-breaker case only when it can change the decision. This is a proposed v2 direction, not a variance-backed rule.
+That screen recorded 14 benchmark sessions and 2,064,691 input tokens, of which 1,611,264 were cached, plus 73,053 output tokens. Those measurements are diagnostic, not eligible comparative cost evidence. They motivated a leaner next protocol: use cheap mechanical gates first, make later semantic runs conditional, and spend a tie-breaker case only when it can change the decision. This is a protocol hypothesis, not a variance-backed rule.
 
 ## v2 causal design (2026-08-13)
 
-The project replaced the v1 production-oriented benchmark with a lean daily-use benchmark that measures the behavior users actually need from a skill creator. V1's result stands only as directional evidence for its three declared cases: it did not test implicit triggering, it gave downstream agents explicit paths to generated `SKILL.md` files, it lacked a no-skill qualification arm, and one blind-review replay was contaminated by treatment identity. V1 therefore does not establish that a frozen ToolboxMD creator is generally worse than a built-in creator.
+The project replaced the v1 production-oriented benchmark with a lean daily-use benchmark that measures the behavior users actually need from a skill creator. V1 retains diagnostic artifacts for its three declared cases, but zero eligible comparisons: it did not test implicit triggering, it gave downstream agents explicit paths to generated `SKILL.md` files, it lacked a no-skill qualification arm, one pair leaked treatment identity, and every retained compact event audit lacks trust-bearing isolation evidence. V1 therefore does not establish that either creator is better.
 
 The v2 causal question has two linked stages. First, hold the authoring task, model, reasoning effort, tools, source material, and downstream task constant while changing only the creator package used to author a target skill. Second, install each generated target skill through normal discovery and issue a natural task prompt that does not name the skill, its path, or its workflow. A positive run counts as triggered only when the event trace shows the full generated `SKILL.md` was loaded — agent self-report is not sufficient.
 
@@ -71,6 +71,8 @@ Product changes for the next ToolboxMD creator candidate: preserve the compact-d
 Infrastructure note: the first four authoring attempts were discarded before downstream use because both built-in attempts wrote Python bytecode under the protected creator tree; protocol revision 2 disabled bytecode writes and repeated all four arms symmetrically. The reserve spreadsheet case did not run — it needed five more sessions and only one remained under the 17-session ceiling. Sixteen decision sessions used 728,273 uncached-input-plus-output runtime tokens over 2,759 cumulative seconds.
 
 The corrected auditor uses one trust boundary: any `command_execution` event, including a started or incomplete event, requires a separate independently verifiable harness or enforcement artifact for environment sanitization, filesystem read and write confinement, and syscall-level network enforcement. Historical JSONL records none. Detailed checks for parent traversal, literal paths, Git, environment expansion, shell wrappers, and interpreter payloads remain diagnostic reasons, but parser completeness is not proof of strict isolation. Re-auditing all 17 retained streams made 15 ineligible with zero model sessions added. Only the two zero-command near-miss streams remain narrowly eligible. A future command-bearing benchmark must add the trust-bearing evidence channel before it can qualify.
+
+The same invariant applies to v1. Its 15 compact audit records all contain positive command counts and no trusted evidence, so all are ineligible. Because their raw model-event JSONL was not retained, the correction does not claim an exact-command re-audit. It preserves the original compact reasons, usage, judgments, grades, generated skills, and outputs as diagnostic history while withdrawing eligible tie, winner, quality, cost, and trigger claims.
 
 Known limitation carried forward: supporting grader and event-audit scripts were not hashed in the pre-run protocol commitment. Their at-result hashes and retained outputs are inspectable, but the commitment alone cannot prove every supporting tool stayed byte-identical during execution. See [case study](../../case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md) and [evidence manifest](../../case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json).
 
