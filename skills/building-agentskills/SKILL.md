@@ -121,7 +121,7 @@ The seed case study. The v2.2 ship retrospective, written for the public audienc
 The provider-neutral runtime and benchmark-integrity case study, including invalid-attempt lessons and real-harness acceptance.
 
 ### `case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md`
-The daily-use creator comparison, including no-skill qualification, natural implicit triggering, direct package and cost comparison, a mixed release decision, and evidence-backed changes for the next ToolboxMD creator.
+The daily-use creator comparison, including no-skill qualification, natural implicit triggering, direct package and cost evidence, an inconclusive release decision after stricter trace re-audit, and evidence-backed changes for the next ToolboxMD creator.
 
 ### `examples/minimal-skill/SKILL.md`
 A working ~30-line SKILL.md the quickstart references. Copy as a starting point.

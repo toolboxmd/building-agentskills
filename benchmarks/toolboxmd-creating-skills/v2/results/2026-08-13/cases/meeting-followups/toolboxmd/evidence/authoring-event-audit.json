@@ -1,8 +1,10 @@
 {
   "schemaVersion": 2,
   "mode": "authoring",
-  "eligible": true,
-  "reasons": [],
+  "eligible": false,
+  "reasons": [
+    "parent-directory traversal observed"
+  ],
   "warnings": [
     "git status exposed names from an ancestor worktree without reading file contents"
   ],

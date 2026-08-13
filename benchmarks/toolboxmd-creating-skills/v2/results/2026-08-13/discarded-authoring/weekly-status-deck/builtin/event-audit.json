@@ -3,6 +3,9 @@
   "mode": "authoring",
   "eligible": true,
   "reasons": [],
+  "warnings": [
+    "git status exposed names from an ancestor worktree without reading file contents"
+  ],
   "eventCount": 43,
   "commandCount": 14,
   "turnCompleted": true,
@@ -30,6 +33,10 @@
     "attemptCount": 0,
     "blocked": false,
     "exitCodes": []
+  },
+  "gitStatus": {
+    "observed": true,
+    "ancestorWorktreeNamesObserved": true
   },
   "usage": {
     "inputTokens": 304004,

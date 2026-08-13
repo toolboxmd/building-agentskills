@@ -3,6 +3,7 @@
   "mode": "noskill",
   "eligible": true,
   "reasons": [],
+  "warnings": [],
   "eventCount": 16,
   "commandCount": 4,
   "turnCompleted": true,
@@ -15,6 +16,10 @@
     "attemptCount": 0,
     "blocked": false,
     "exitCodes": []
+  },
+  "gitStatus": {
+    "observed": false,
+    "ancestorWorktreeNamesObserved": false
   },
   "usage": {
     "inputTokens": 57293,

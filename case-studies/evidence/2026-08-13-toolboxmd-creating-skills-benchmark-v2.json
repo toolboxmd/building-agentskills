@@ -3,11 +3,11 @@
   "recorded_at": "2026-08-13",
   "benchmark": {
     "id": "toolboxmd-creating-skills-v2",
-    "decision": "mixed",
+    "decision": "inconclusive",
     "recommended_creator": null,
     "toolboxmd_candidate_recommended": false,
     "current_default_unchanged": true,
-    "claim_boundary": "One-run operational comparison of two frozen creators on two daily-use skill families under Codex CLI 0.147.0 and gpt-5.6-sol at medium reasoning. It does not estimate variance, establish cross-provider behavior, or rank skill creators generally.",
+    "claim_boundary": "One eligible paired comparison under Codex CLI 0.147.0 and gpt-5.6-sol at medium reasoning, plus diagnostic artifacts from an ineligible meeting-followups ToolboxMD authoring pipeline. It does not estimate variance, establish cross-provider behavior, rank skill creators generally, or support a meeting-followups creator winner.",
     "configuration": {
       "codex_cli_version": "0.147.0",
       "model": "gpt-5.6-sol",
@@ -23,11 +23,13 @@
     },
     "acceptance": {
       "primary_cases_qualified": 2,
+      "eligible_paired_cases": 1,
+      "ineligible_authoring_runs": 1,
       "positive_target_loads": 4,
       "positive_runs": 4,
       "near_miss_target_loads": 0,
       "near_miss_exposed_target_skills": 4,
-      "builtin_case_wins": 1,
+      "builtin_case_wins": 0,
       "toolboxmd_case_wins": 1,
       "wins_required_to_promote_toolboxmd": 2,
       "toolboxmd_promotion_gate_passed": false,
@@ -36,6 +38,8 @@
     "cases": [
       {
         "case_id": "meeting-followups",
+        "comparison_eligible": false,
+        "ineligibility_reason": "The ToolboxMD authoring trace used parent-relative operands without a command cwd in the event schema, so the audit cannot prove those reads stayed inside the run root.",
         "no_skill_critical_passes": 2,
         "no_skill_critical_checks": 8,
         "builtin_critical_passes": 7,
@@ -43,12 +47,13 @@
         "outputs_byte_identical": true,
         "builtin_runtime_tokens": 18550,
         "toolboxmd_runtime_tokens": 21609,
-        "observable_utility": "tie",
-        "final_outcome": "builtin_cost_tiebreak_low_confidence",
+        "observable_utility": "diagnostic_tie_not_scored",
+        "final_outcome": "inconclusive_ineligible_toolboxmd_authoring",
         "shared_non_diagnostic_failure": "Both outputs preserved source terminal periods while the under-specified exact fixture omitted them."
       },
       {
         "case_id": "weekly-status-deck",
+        "comparison_eligible": true,
         "no_skill_critical_passes": 7,
         "no_skill_critical_checks": 8,
         "builtin_critical_passes": 8,
@@ -88,7 +93,7 @@
       "output_tokens": 115376,
       "runtime_tokens": 728273
     },
-    "interpretation_limit": "No downstream quality winner was observed. The per-case cost tie-breaks have low confidence because each treatment ran once per case."
+    "interpretation_limit": "No downstream quality winner was observed. Only weekly-status-deck remains an eligible paired comparison, and its ToolboxMD advantage is a one-run cost tie-break after equal utility. Meeting-followups artifacts are diagnostic only."
   },
   "invalid_attempts": {
     "count": 4,
@@ -96,17 +101,24 @@
     "failure": "Both initial built-in authoring runs wrote Python bytecode under the protected creator tree. The full four-run authoring batch was discarded before downstream use.",
     "accepted_amendment": "Protocol revision 2 disabled Python bytecode writes, redirected the cache under the run root, and repeated all four authoring arms symmetrically without changing cases, prompts, treatments, grader, model, or decision rule."
   },
+  "post_result_audit_correction": {
+    "ineligible_stream_count": 1,
+    "stream": "cases/meeting-followups/toolboxmd/evidence/authoring-events.jsonl",
+    "failure": "Parent-relative operands cannot be proven in-root because the retained event schema does not record command cwd.",
+    "retained_streams_reaudited": 17,
+    "model_sessions_added": 0
+  },
   "evidence": {
     "result_manifest": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/manifest.json",
-    "result_manifest_sha256": "608271a4898db103d0acc6049e3ce9a705837d64095c9135e9c91573e7c8cef9",
+    "result_manifest_sha256": "abc36a4e0e45d1adc9de06fa98a9e899ae3ce0bc8a4461cac8a9a7ce8ac275db",
     "result_readme": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/README.md",
     "recommendations": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/recommendations.md",
-    "retention_manifest_sha256": "cf919104953fe50598c6c6d38f43a59b36ed2bd0d55be1975ac7acbefa222ece",
+    "retention_manifest_sha256": "1dfa871aa116b9a1173c30e5a14d5bce0f8919d266d54706b6ad18c696933dbc",
     "session_usage_sha256": "99df094f3389dbec01c94d0b7f3733647f03b4821d18ef3ea5144ebec1d804e4",
     "discarded_authoring_failure_sha256": "172f8e043b6d879bba3728ee0543b7f56d726eec5a06d5035a36bd588875d992",
     "cases_sha256": "f5c0d2d74a42063c15f4fd4b4b8871522fcb53623d5188d58d957cbd4d846d87",
     "builtin_creator_sha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c",
     "toolboxmd_creator_sha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7"
   },
-  "known_protocol_limit": "The pre-run protocol commitment omitted the supporting grader and event-audit scripts. Their at-result hashes and retained outputs are inspectable, but the commitment alone cannot prove that every supporting tool stayed byte-identical throughout execution."
+  "known_protocol_limit": "The pre-run protocol commitment omitted the supporting grader and event-audit scripts. Their at-result hashes and retained outputs are inspectable, but the commitment alone cannot prove that every supporting tool stayed byte-identical throughout execution. The retained Codex JSONL also omits command cwd, so parent-relative operands in one authoring trace cannot be located reliably after the fact."
 }

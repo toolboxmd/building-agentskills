@@ -3,6 +3,7 @@
   "mode": "authoring",
   "eligible": true,
   "reasons": [],
+  "warnings": [],
   "eventCount": 64,
   "commandCount": 21,
   "turnCompleted": true,
@@ -30,6 +31,10 @@
     "attemptCount": 0,
     "blocked": false,
     "exitCodes": []
+  },
+  "gitStatus": {
+    "observed": false,
+    "ancestorWorktreeNamesObserved": false
   },
   "usage": {
     "inputTokens": 502397,

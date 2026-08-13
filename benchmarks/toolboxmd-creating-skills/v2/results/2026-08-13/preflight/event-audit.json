@@ -3,6 +3,7 @@
   "mode": "preflight",
   "eligible": true,
   "reasons": [],
+  "warnings": [],
   "eventCount": 10,
   "commandCount": 2,
   "turnCompleted": true,
@@ -28,6 +29,10 @@
     "exitCodes": [
       6
     ]
+  },
+  "gitStatus": {
+    "observed": false,
+    "ancestorWorktreeNamesObserved": false
   },
   "usage": {
     "inputTokens": 27358,

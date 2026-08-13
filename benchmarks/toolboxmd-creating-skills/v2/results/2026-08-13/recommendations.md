@@ -2,7 +2,7 @@
 
 ## Release recommendation
 
-Do not promote the frozen ToolboxMD candidate. Keep it as an inspectable product candidate and use the built-in creator as the current default until a simplified ToolboxMD revision wins a new benchmark or demonstrates a clear capability the built-in creator lacks.
+Do not promote the frozen ToolboxMD candidate. The corrected benchmark is inconclusive because only one primary case retains an eligible paired pipeline. Keep ToolboxMD as an inspectable product candidate and use the built-in creator as the current default until a simplified revision wins a new benchmark or demonstrates a clear capability the built-in creator lacks.
 
 Do not rewrite the frozen candidate in place. Build the next candidate from these changes, freeze it, and compare it against both the current ToolboxMD snapshot and the built-in baseline.
 
@@ -10,7 +10,7 @@ Do not rewrite the frozen candidate in place. Build the next candidate from thes
 
 ### 1. Compact activation contracts
 
-Keep the current description pattern: capability, concrete intents, and close exclusions without a workflow summary. It produced descriptions 29.5% and 39.2% shorter than the built-in creator while matching both positive loads and avoiding every tested near miss.
+Keep the current description pattern: capability, concrete intents, and close exclusions without a workflow summary. The eligible deck pair produced a ToolboxMD description 39.2% shorter than the built-in creator while both positive loads occurred and neither treatment loaded on the near miss. The retained meeting artifacts show a 29.5% reduction, but that comparison is diagnostic because the ToolboxMD authoring trace is ineligible.
 
 Acceptance for the next candidate:
 
@@ -27,7 +27,7 @@ Keep the boundary between semantic review and mechanical validation. The Toolbox
 
 ### 3. Portable package defaults
 
-Keep optional platform sidecars optional. ToolboxMD omitted `agents/openai.yaml`, yet both target skills were discovered and triggered correctly through portable frontmatter.
+Keep optional platform sidecars optional. ToolboxMD omitted `agents/openai.yaml`, yet the eligible deck target and the diagnostic meeting target were both discovered through portable frontmatter.
 
 ## Change the ToolboxMD creator
 
@@ -76,7 +76,7 @@ If a short reference is required on every invocation, either inline the load-bea
 
 ### P1. Make Git delivery checks conditional
 
-The frozen creator requires a handoff that states validated, tested, committed, and pushed separately. Two eligible ToolboxMD authoring sessions responded by running unscoped `git status`, which exposed names from the ancestor benchmark worktree. No file contents or hidden grader data were read, but the checks added work and weakened isolation.
+The frozen creator requires a handoff that states validated, tested, committed, and pushed separately. Two ToolboxMD authoring sessions responded by running unscoped `git status`, which exposed names from the ancestor benchmark worktree. The meeting session is independently ineligible because its parent-relative operands lack a recorded cwd. No outside file contents or hidden grader data were observed in the weekly session, but the checks added work and weakened isolation.
 
 Change the handoff rule:
 
@@ -104,6 +104,12 @@ This is a targeted trigger test, not a twenty-query optimization campaign for ev
 
 ## Change the repository and benchmark harness
 
+### P0. Require path proof, not a trusted suffix
+
+Never allow a parent-relative operand merely because its suffix resembles `creator/`, `authoring-sources/`, `output/`, `knowledge/`, or `workspace/`. Resolve it only when the event records an in-root command cwd and the resolved path stays inside the run root. Treat bare `..`, missing cwd, an outside cwd, and commands that change cwd internally as ineligible when the trace cannot prove the effective location.
+
+The corrected auditor made one retained ToolboxMD authoring stream ineligible. Preserve that stream as a failure and keep the overall verdict inconclusive. Future preflight should verify that the harness records cwd before a protocol permits any parent-relative command.
+
 ### P0. Isolate Python and Git before the first model run
 
 Keep `PYTHONDONTWRITEBYTECODE=1` and a run-local Python cache prefix in the runner. Add `GIT_CEILING_DIRECTORIES=<run-root>` or stage model runs outside any ancestor repository. Preflight both boundaries before qualification.
@@ -124,7 +130,7 @@ Future commitments must include every script that can affect qualification, elig
 
 ### P1. Reserve repeats for cost-only decisions
 
-Both cases tied on observable utility and were separated only by one-run token cost in opposite directions. Cost is stochastic enough that a single run should not support a confident product ranking.
+The eligible deck case tied on observable utility and was separated only by one-run token cost. The meeting artifacts show the opposite directional cost result, but that pair is diagnostic because one authoring trace is ineligible. Cost is stochastic enough that a single run should not support a confident product ranking.
 
 For the next benchmark:
 

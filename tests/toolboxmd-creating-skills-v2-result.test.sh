@@ -83,14 +83,16 @@ function treeManifest(root) {
 const manifest = readJson("manifest.json");
 assert(manifest.schemaVersion === 2, "unexpected result schema");
 assert(manifest.benchmarkId === "toolboxmd-creating-skills-v2", "unexpected benchmark ID");
-assert(manifest.decision.status === "mixed", "result must remain mixed");
+assert(manifest.decision.status === "inconclusive", "corrected result must remain inconclusive");
 assert(manifest.decision.recommendedCreator === null, "a general creator recommendation is not supported");
 assert(manifest.decision.toolboxmdCandidateRecommended === false, "ToolboxMD candidate must remain unpromoted");
 assert(manifest.decision.publicSuperiorityClaimAllowed === false, "superiority claim must remain forbidden");
-assert(manifest.acceptance.builtinCaseWins === 1, "built-in win count changed");
+assert(manifest.acceptance.builtinCaseWins === 0, "built-in win count changed");
 assert(manifest.acceptance.toolboxmdCaseWins === 1, "ToolboxMD win count changed");
 assert(manifest.acceptance.toolboxmdPromotionGatePassed === false, "ToolboxMD promotion gate changed");
 assert(manifest.acceptance.primaryCasesQualified === 2, "both primary cases must be qualified");
+assert(manifest.acceptance.eligiblePairedCases === 1, "exactly one paired case must remain eligible");
+assert(manifest.acceptance.ineligibleAuthoringRuns === 1, "exactly one corrected authoring run must be ineligible");
 assert(manifest.acceptance.positiveTargetLoads === 4, "all positive runs must load their target skill");
 assert(manifest.acceptance.nearMissTargetLoads === 0, "near-miss runs must not load target skills");
 assert(manifest.acceptance.reserveUsed === false, "reserve must remain unopened");
@@ -169,7 +171,16 @@ for (const [caseId, caseExpected] of Object.entries(expected)) {
     assert(event.expectedSkillLoad?.beforeFirstOutputMutation === true, `${caseId}/${treatment}: skill loaded too late`);
     assert(event.observedSkillLoads.length === 1, `${caseId}/${treatment}: unexpected downstream skill load`);
     assert(boundary.reasons.length === 0, `${caseId}/${treatment}: downstream boundary violation`);
-    assert(authoringEvent.eligible === true && authoringBoundary.eligible === true, `${caseId}/${treatment}: authoring run is ineligible`);
+    const correctedIneligible = caseId === "meeting-followups" && treatment === "toolboxmd";
+    assert(authoringEvent.eligible === !correctedIneligible, `${caseId}/${treatment}: corrected authoring eligibility changed`);
+    assert(authoringBoundary.eligible === true, `${caseId}/${treatment}: authoring write boundary changed`);
+    if (correctedIneligible) {
+      assert(authoringEvent.reasons.includes("parent-directory traversal observed"), "meeting/toolboxmd: traversal reason missing");
+      assert(manifest.cases[caseId].comparisonEligible === false, "meeting comparison must remain excluded");
+      assert(manifest.cases[caseId][treatment].pipelineEligible === false, "meeting ToolboxMD pipeline must remain excluded");
+    } else {
+      assert(manifest.cases[caseId][treatment].pipelineEligible === true, `${caseId}/${treatment}: pipeline eligibility changed`);
+    }
     assert(authoringEvent.expectedSkillLoad?.fullContentObserved === true, `${caseId}/${treatment}: creator package was not fully loaded`);
     assert(grade.criticalPassCount === caseExpected.passes[treatment], `${caseId}/${treatment}: critical score changed`);
     assert(inspection.aggregateSha256 === caseExpected.packageHashes[treatment], `${caseId}/${treatment}: recorded package hash changed`);
@@ -224,6 +235,22 @@ assert(sha256File(path.join(resultRoot, "session-usage.json")) === manifest.reta
 assert(sha256File(path.join(resultRoot, "discarded-authoring/failure.json")) === manifest.retainedEvidence.discardedAuthoringFailureSha256, "discarded evidence hash changed");
 assert(sha256File(path.join(resultRoot, "retention-manifest.json")) === manifest.retainedEvidence.retentionManifestSha256, "retention manifest hash changed");
 
+const eventAudits = [];
+function findEventAudits(directory) {
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const absolute = path.join(directory, entry.name);
+    if (entry.isDirectory()) findEventAudits(absolute);
+    else if (entry.isFile() && entry.name.endsWith("event-audit.json")) eventAudits.push(absolute);
+  }
+}
+findEventAudits(resultRoot);
+assert(eventAudits.length === 17, `expected 17 corrected event audits, found ${eventAudits.length}`);
+const ineligibleAudits = eventAudits.filter(file => JSON.parse(fs.readFileSync(file, "utf8")).eligible === false);
+assert(ineligibleAudits.length === 1, `expected one ineligible corrected event audit, found ${ineligibleAudits.length}`);
+assert(path.relative(resultRoot, ineligibleAudits[0]).split(path.sep).join("/") === "cases/meeting-followups/toolboxmd/evidence/authoring-event-audit.json", "unexpected corrected ineligible stream");
+assert(manifest.postResultAuditCorrection.retainedStreamsReaudited === 17, "corrected audit stream count changed");
+assert(manifest.postResultAuditCorrection.modelSessionsAdded === 0, "audit correction must not add model sessions");
+
 const retained = readJson("retention-manifest.json");
 const aggregateLines = [];
 for (const expectedFile of retained.files) {
@@ -237,8 +264,10 @@ for (const expectedFile of retained.files) {
 assert(crypto.createHash("sha256").update(aggregateLines.join("")).digest("hex") === retained.aggregateSha256, "retention aggregate changed");
 
 for (const [relative, expectedHash] of Object.entries(manifest.harnessAtResult)) {
+  if (relative === "scripts/audit-toolboxmd-v2-events.mjs") continue;
   assert(sha256File(path.join(repositoryRoot, relative)) === expectedHash, `at-result harness hash changed: ${relative}`);
 }
+assert(sha256File(path.join(repositoryRoot, "scripts/audit-toolboxmd-v2-events.mjs")) === manifest.postResultAuditCorrection.auditorSha256, "corrected auditor hash changed");
 NODE
 
 echo "PASS: ToolboxMD creator benchmark v2 result is internally consistent"

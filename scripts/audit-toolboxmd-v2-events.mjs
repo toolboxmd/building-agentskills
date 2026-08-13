@@ -68,6 +68,35 @@ function commandSkillPaths(command) {
   return [...paths];
 }
 
+function isInsideRunRoot(candidate) {
+  return candidate === runRoot || candidate.startsWith(`${runRoot}${path.sep}`);
+}
+
+function parentRelativeOperands(command) {
+  const operands = [];
+  const pattern = /(?:^|[\s"'(=,:;|&<>])([^\s"'(),:;|&<>]+)(?=$|[\s"'),:;|&<>])/g;
+  for (const match of command.matchAll(pattern)) {
+    const operand = match[1];
+    if (operand.split("/").includes("..")) operands.push(operand);
+  }
+  return operands;
+}
+
+function canResolveLiterally(operand) {
+  return !/[$`~{}*?]/.test(operand);
+}
+
+function recordedCommandCwd(item) {
+  if (typeof item.cwd !== "string" || item.cwd.trim().length === 0) return null;
+  return path.isAbsolute(item.cwd)
+    ? path.resolve(item.cwd)
+    : path.resolve(runRoot, item.cwd);
+}
+
+function changesWorkingDirectory(command) {
+  return /(?:^|[\s;&|()])(?:builtin\s+)?cd(?=$|[\s;&|()])/.test(command);
+}
+
 function isOutputMutation(event, index) {
   const item = event.item;
   if (!item) return false;
@@ -118,11 +147,20 @@ for (let index = 0; index < lines.length; index += 1) {
     if (mode !== "preflight") reasons.push("network-capable command observed");
   }
 
-  const commandWithoutAllowedRunTargets = command.replace(
-    /(?:\.\.\/)+(?:creator|authoring-sources|output|knowledge|workspace)(?:\/[A-Za-z0-9._~+\/-]*)?/g,
-    "<allowed-run-target>",
-  );
-  if (/(^|[\s"'(])\.\.\//.test(commandWithoutAllowedRunTargets)) reasons.push("parent-directory traversal observed");
+  const commandCwd = recordedCommandCwd(item);
+  if (commandCwd !== null && !isInsideRunRoot(commandCwd)) {
+    reasons.push("command working directory outside run root observed");
+  }
+
+  const parentOperands = parentRelativeOperands(command);
+  if (parentOperands.length > 0) {
+    const cwdIsUsable = commandCwd !== null
+      && isInsideRunRoot(commandCwd)
+      && !changesWorkingDirectory(command);
+    const allStayInside = cwdIsUsable
+      && parentOperands.every(operand => canResolveLiterally(operand) && isInsideRunRoot(path.resolve(commandCwd, operand)));
+    if (!allStayInside) reasons.push("parent-directory traversal observed");
+  }
 
   if (/\bgit\s+status\b/i.test(command)) {
     gitStatusObserved = true;

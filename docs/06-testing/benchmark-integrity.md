@@ -47,7 +47,7 @@ A case qualifies when:
 
 Then install each generated skill through the normal discovery path and issue a natural prompt. Do not name the skill, its path, `SKILL.md`, or an invocation command. Count activation only when the event trace shows the full target `SKILL.md` loaded before output creation. Test one or more related near misses and audit that no target skill loaded.
 
-In the v2 creator benchmark, the meeting no-skill arm passed 2 of 8 critical checks and the status-deck arm passed 7 of 8. Both generated treatments then reached 7 of 8 and 8 of 8 respectively. All four positive runs loaded their target skill, while none of four exposed target skills loaded for the near misses. This isolates procedural value more directly than asking whether an agent can produce a plausible artifact.
+In the v2 creator benchmark, the meeting no-skill arm passed 2 of 8 critical checks and the status-deck arm passed 7 of 8. Both generated treatments then reached 7 of 8 and 8 of 8 respectively. All four positive runs loaded their target skill, while none of four exposed target skills loaded for the near misses. A later trace-audit correction made one meeting authoring pipeline ineligible, so only the deck pair supports creator comparison. The retained activation observations still show why no-skill qualification and trace-backed loading are more informative than asking whether an agent can produce a plausible artifact.
 
 ## Guard model attribution
 
@@ -81,6 +81,8 @@ Block or audit reads of:
 In the invalid medium attempt, a broad search read global memory, a previous low run, and deterministic grader source before the first wiki write. The run was independent in name only. This is cross-run read leakage, and it invalidates the attempt even if the final answer looks original.
 
 Filesystem isolation is stronger than prose alone. Put allowed inputs in a run-local tree and keep sibling runs, graders, private maps, and reports outside it. Retain a transcript audit as a second line of defense.
+
+Do not allow parent-relative operands merely because their suffix resembles an allowed directory. Resolve them only from a command cwd explicitly recorded in the event, and require the resolved path to remain inside the run root. If cwd is absent, outside the root, or changed inside an opaque shell command, mark the run ineligible rather than infer safety from command output. The corrected v2 creator audit rejected one retained authoring trace containing `find ..` and parent-relative validator paths because the event schema did not record cwd.
 
 ## Separate four score layers
 
@@ -137,7 +139,7 @@ Do not repair the candidate output by hand. Do not delete the failed attempt. Bo
 
 One run per configuration can rank that sample; it cannot estimate variance. Use one-run comparisons for directional screening, especially when score gaps are large. Use replicated runs when selecting a production default, when scores are close, or when stochastic behavior is material.
 
-When two treatments tie on observable utility and one-run cost is the only separator, spend the next budget on a paired repeat of that case before opening a reserve case. In the v2 creator benchmark, cost favored the built-in creator for one case and ToolboxMD for the other. That 1 to 1 split is an operational result, not a stable cost ranking.
+When two treatments tie on observable utility and one-run cost is the only separator, spend the next budget on a paired repeat of that case before opening a reserve case. In the corrected v2 creator benchmark, only the deck pair remained eligible and cost favored ToolboxMD once. The meeting artifacts point in the opposite cost direction but are diagnostic because one authoring trace is ineligible. Neither observation is a stable cost ranking.
 
 Report:
 
@@ -193,7 +195,7 @@ Karpathy-wiki's real acceptance exposed an unsupported operator-level Codex opti
 ## Evidence
 
 - [Provider-aware ingest benchmark manifest](/case-studies/evidence/2026-08-11-karpathy-wiki-ingest-benchmark.json) records the scores, exclusions, hashes, and interpretation limit.
-- [ToolboxMD creator benchmark v2 manifest](/case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json) records no-skill qualification, implicit loading, the mixed result, costs, invalid attempts, and claim boundary.
+- [ToolboxMD creator benchmark v2 manifest](/case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json) records no-skill qualification, implicit loading, the corrected inconclusive result, costs, invalid attempts, and claim boundary.
 - [`877e659`](https://github.com/toolboxmd/karpathy-wiki/commit/877e659) is the subsequent provider-aware runtime ship.
 - [Codex Spark acceptance](https://github.com/toolboxmd/karpathy-wiki/blob/877e659/tests/acceptance/dispatcher/2026-08-11-codex-spark-medium.md) separates adapter/lifecycle qualification from semantic model selection.
 
