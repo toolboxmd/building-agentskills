@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only canonical ToolboxMD skill package checker."""
+"""Read-only canonical ToolboxMD package checker."""
 
 from __future__ import annotations
 
@@ -122,64 +122,82 @@ def normalize_shell_continuations(text: str) -> str:
 def parse_metadata(
     lines: list[str], index: int, problems: list[dict[str, str]], allow_hermes: bool
 ) -> tuple[dict[str, object], int]:
+    def fail(code: str, message: str) -> None:
+        problems.append(issue(code, "SKILL.md", message))
+
     mapping: dict[str, object] = {}
     hermes = config = False
     entry_active = False
-    required: set[str] = set()
-    entry_keys: set[str] = set()
+    entry_fields: set[str] = set()
     while index < len(lines) and (not lines[index].strip() or lines[index].lstrip().startswith("#") or lines[index].startswith((" ", "\t"))):
         line = lines[index]
         index += 1
         if not line.strip() or line.lstrip().startswith("#"):
             continue
         if "\t" in line[: len(line) - len(line.lstrip())]:
-            problems.append(issue("FRONTMATTER_INDENT", "SKILL.md", "metadata uses tab indentation"))
+            fail("FRONTMATTER_INDENT", "metadata uses tab indentation")
             continue
         indent = len(line) - len(line.lstrip(" "))
         field = without_comment(line.strip())
-        mapping_match = re.fullmatch(r"(?!- )([^:]+):\s*(.*)", field)
-        sequence_match = re.fullmatch(r"- ([^:]+):\s*(.*)", field)
+        mapping_match = re.fullmatch(r'("(?:\\.|[^"\\])*"|[a-z]+):\s*(.*)', field)
+        sequence_match = re.fullmatch(r"- (key):\s*(.*)", field)
         match = sequence_match or mapping_match
         key, raw = match.groups() if match else ("", "")
         value = without_comment(raw)
-        if indent == 2 and mapping_match and key == "hermes" and not value and "hermes" not in mapping and allow_hermes:
-            hermes, config = True, False
-            mapping[key] = {}
-        elif indent == 2 and mapping_match and value and key not in mapping:
-            mapping[key] = parse_string(value, f"metadata.{key}", problems)
-        elif indent == 2 and mapping_match and key in mapping:
-            problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate metadata key: {key}"))
+        if indent == 2 and mapping_match and key == "hermes":
+            if value or not allow_hermes:
+                fail("METADATA_SHAPE", "Hermes metadata requires --allow-hermes-metadata" if not allow_hermes else "Hermes metadata needs a nested config")
+            elif key in mapping:
+                fail("FRONTMATTER_DUPLICATE", f"duplicate metadata key: {key}")
+            else:
+                hermes, config = True, False
+                mapping[key] = {}
+        elif indent == 2 and field.startswith("- "):
+            fail("METADATA_SHAPE", "portable metadata needs a mapping")
+        elif indent == 2:
+            try:
+                portable_key = canonical_scalar(key) if mapping_match else None
+            except ValueError:
+                portable_key = None
+            if portable_key is None:
+                fail("METADATA_KEY", "portable metadata keys need JSON double quotes")
+            elif portable_key in mapping:
+                fail("FRONTMATTER_DUPLICATE", f"duplicate metadata key: {portable_key}")
+            elif not value:
+                fail("METADATA_SHAPE", "portable metadata needs a string value")
+            else:
+                mapping[portable_key] = parse_string(value, f"metadata.{portable_key}", problems)
         elif indent == 4 and hermes and mapping_match and key == "config" and not value and not config:
             config = True
         elif config and sequence_match and indent == 6:
-            if entry_active and "description" not in required:
-                problems.append(issue("METADATA_SHAPE", "SKILL.md", "Hermes entry needs description"))
-            required = set()
-            entry_keys = set()
+            if entry_active and "description" not in entry_fields:
+                fail("METADATA_SHAPE", "Hermes entry needs description")
+            entry_fields = set()
             entry_active = key == "key" and bool(value)
             if not entry_active:
-                problems.append(issue("METADATA_SHAPE", "SKILL.md", "Hermes entry must start with - key"))
+                fail("METADATA_SHAPE", "Hermes entry must start with - key")
             else:
-                required.add(key)
-                entry_keys.add(key)
+                entry_fields.add(key)
                 parse_string(value, f"metadata.hermes.config.{key}", problems)
         elif config and entry_active and mapping_match and indent == 8 and key in {"description", "default", "prompt"} and value:
-            if key in entry_keys:
-                problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate Hermes field: {key}"))
-            entry_keys.add(key)
-            required.add(key)
+            if key in entry_fields:
+                fail("FRONTMATTER_DUPLICATE", f"duplicate Hermes field: {key}")
+            entry_fields.add(key)
             parse_string(value, f"metadata.hermes.config.{key}", problems)
         else:
-            message = "Hermes metadata requires --allow-hermes-metadata" if key == "hermes" and not allow_hermes else "unsupported nesting"
-            problems.append(issue("METADATA_SHAPE", "SKILL.md", message))
-    if hermes and (not config or not entry_active or "description" not in required):
-        problems.append(issue("METADATA_SHAPE", "SKILL.md", "Hermes config needs key + description"))
+            fail("METADATA_SHAPE", "unsupported nesting")
+    if hermes and (not config or not entry_active or "description" not in entry_fields):
+        fail("METADATA_SHAPE", "Hermes config needs key + description")
     return mapping, index
 
 
 def parse_frontmatter(lines: list[str], allow_hermes: bool) -> tuple[dict[str, object], list[dict[str, str]]]:
     data: dict[str, object] = {}
     problems: list[dict[str, str]] = []
+
+    def fail(code: str, message: str) -> None:
+        problems.append(issue(code, "SKILL.md", message))
+
     index = 0
     while index < len(lines):
         line = lines[index]
@@ -187,25 +205,25 @@ def parse_frontmatter(lines: list[str], allow_hermes: bool) -> tuple[dict[str, o
             index += 1
             continue
         if line.startswith((" ", "\t")):
-            problems.append(issue("FRONTMATTER_INDENT", "SKILL.md", f"indent at line {index + 2}"))
+            fail("FRONTMATTER_INDENT", f"indent at line {index + 2}")
             index += 1
             continue
         match = re.match(r"^([A-Za-z0-9_-]+):(?:\s*(.*))?$", line)
         if not match:
-            problems.append(issue("FRONTMATTER_PARSE", "SKILL.md", f"unparsed line {index + 2}"))
+            fail("FRONTMATTER_PARSE", f"unparsed line {index + 2}")
             index += 1
             continue
         key, raw_value = match.group(1), without_comment(match.group(2) or "")
         if key in data:
-            problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate: {key}"))
+            fail("FRONTMATTER_DUPLICATE", f"duplicate: {key}")
         if BLOCK_SCALAR_RE.fullmatch(raw_value):
-            problems.append(issue("FRONTMATTER_STYLE", "SKILL.md", f"{key} must use a canonical one-line scalar"))
+            fail("FRONTMATTER_STYLE", f"{key} must use a canonical one-line scalar")
             data[key] = "" if key != "metadata" else {}
             index += 1
             continue
         if key == "metadata":
             if raw_value:
-                problems.append(issue("METADATA_SHAPE", "SKILL.md", "metadata needs a mapping"))
+                fail("METADATA_SHAPE", "metadata needs a mapping")
                 data[key] = {}
                 index += 1
                 continue
@@ -502,28 +520,31 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
     files, file_problems = collect_files(root)
     problems.extend(file_problems)
 
+    def fail(code: str, message: str) -> None:
+        problems.append(issue(code, "SKILL.md", message))
+
     unknown = sorted(set(metadata) - PORTABLE_FIELDS)
     if unknown:
-        problems.append(issue("FRONTMATTER_PORTABILITY", "SKILL.md", f"non-portable: {', '.join(unknown)}"))
+        fail("FRONTMATTER_PORTABILITY", f"non-portable: {', '.join(unknown)}")
     name = metadata.get("name")
     if not isinstance(name, str) or not name:
-        problems.append(issue("NAME_REQUIRED", "SKILL.md", "name is required"))
+        fail("NAME_REQUIRED", "name is required")
         name = ""
     elif len(name) > 64 or not NAME_RE.fullmatch(name):
-        problems.append(issue("NAME_FORMAT", "SKILL.md", "lowercase kebab-case, max 64 chars"))
+        fail("NAME_FORMAT", "lowercase kebab-case, max 64 chars")
     elif any(reserved in name for reserved in ("anthropic", "claude")):
-        problems.append(issue("NAME_RESERVED", "SKILL.md", "reserved anthropic/claude text"))
+        fail("NAME_RESERVED", "reserved anthropic/claude text")
     if name and name != root.name:
-        problems.append(issue("NAME_DIRECTORY", "SKILL.md", f"name {name!r} differs from directory {root.name!r}"))
+        fail("NAME_DIRECTORY", f"name {name!r} differs from directory {root.name!r}")
     description = metadata.get("description")
     if not isinstance(description, str) or not description.strip():
-        problems.append(issue("DESCRIPTION_REQUIRED", "SKILL.md", "description is required"))
+        fail("DESCRIPTION_REQUIRED", "description is required")
         description = ""
     compatibility = metadata.get("compatibility")
     if isinstance(compatibility, str) and len(compatibility) > 500:
-        problems.append(issue("COMPATIBILITY_BUDGET", "SKILL.md", "compatibility > 500 chars"))
+        fail("COMPATIBILITY_BUDGET", "compatibility > 500 chars")
     if not body.strip():
-        problems.append(issue("BODY_EMPTY", "SKILL.md", "empty body"))
+        fail("BODY_EMPTY", "empty body")
 
     validate_links_and_paths(root, problems)
     validate_sidecar(root, name, problems)

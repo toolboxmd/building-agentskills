@@ -61,15 +61,16 @@ Hermes extension source: [Hermes Agent, Creating Skills](https://github.com/Nous
 The Agent Skills specification permits ordinary YAML string forms. The active
 `toolboxmd-creating-skills` candidate deliberately emits a smaller canonical
 form: `name` is the exact unquoted directory slug, while every other portable
-string and every portable `metadata` value is a one-line JSON double-quoted
-string. This is a deterministic generation and checking policy, not an added
-Agent Skills requirement. It prevents YAML implicit typing of values such as
-dates, hexadecimal numbers, booleans, and nulls.
+string and every user-defined portable `metadata` key and value is a one-line
+JSON double-quoted string. This is a deterministic generation and checking
+policy, not an added Agent Skills requirement. It prevents YAML implicit
+typing of keys or values such as dates, hexadecimal numbers, booleans, and
+nulls.
 
 For an explicitly Hermes-targeted package, the same policy applies to the
-vendor extension: each config item starts with `- key: "..."`, and every child
-value is JSON double-quoted. Pass `--allow-hermes-metadata` to the ToolboxMD
-checker only for that target.
+vendor extension: fixed schema field names remain unquoted, each config item
+starts with `- key: "..."`, and every user-provided value is JSON double-quoted.
+Pass `--allow-hermes-metadata` to the ToolboxMD checker only for that target.
 
 ## Claude Code extensions
 

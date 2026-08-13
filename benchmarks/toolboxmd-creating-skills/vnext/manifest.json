@@ -55,7 +55,9 @@
     "sequenceAndCommandReviewReason": "Exact-HEAD review required active sequence-item state for canonical Hermes config and separator-bounded same-line fragile script detection.",
     "quoteOnlyCanonicalExecutableDeltaBytes": -312,
     "quoteOnlyCanonicalReason": "Exact-HEAD review replaced partial implicit-YAML classification with JSON-double-quoted generated strings, mapping-only portable metadata, and parity-aware shell-continuation normalization.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10137,
+    "portableMetadataKeyExecutableDeltaBytes": 273,
+    "portableMetadataKeyReason": "Exact-HEAD review required JSON-double-quoted user-defined portable metadata keys so YAML cannot implicitly type boolean, date, or numeric-looking keys.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10410,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -69,22 +71,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "76c390e816a01f9bee553f0f2dbce6c433f8e86386f3f1749eeb7871b7bb3a6d",
+    "aggregateSha256": "502162af79561e0ac45bfa8b584ab235cc17a4df461c1547cfbf0ccb2623184e",
     "fileCount": 3,
-    "packageBytes": 34952,
+    "packageBytes": 35196,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4733,
+      "bytes": 4704,
       "lines": 77,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4733,
-        "sha256": "ae7bf905fc8c90e97f9543d07c865fe4f7bb20efeafef630a23d4ad77148679c"
+        "bytes": 4704,
+        "sha256": "7bda018a332876061ed250caebecae84f9af618306f122bfc18620da3b8b0f44"
       },
       {
         "path": "agents/openai.yaml",
@@ -93,8 +95,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 30003,
-        "sha256": "73eeac10bf9d0de3ca027929d86dd816d72637011f6039ee5e740c690431f4f0"
+        "bytes": 30276,
+        "sha256": "2eecd8817c7881a5f77ffdb9dbf4c0ea630298e488bb77c337dd482939a97b32"
       }
     ]
   },
@@ -111,7 +113,7 @@
       "skill names containing reserved provider strings fail",
       "name is the sole unquoted scalar while all other top-level strings require one-line JSON double quotes",
       "the quote-only contract rejects plain prose, dates, hexadecimal, octal, collections, booleans, nulls, numbers, special floats, single quotes, block scalars, tags, nested scalar syntax, and invalid quotes without partial implicit-YAML classification",
-      "portable metadata is a double-quoted string-to-string mapping with no sequence markers, while explicit Hermes mode requires double-quoted key-led sequence items with descriptions",
+      "portable metadata uses JSON-double-quoted user-defined keys and values with no sequence markers, while explicit Hermes mode keeps fixed schema fields unquoted and requires double-quoted user-provided values",
       "canonical Markdown links ignore code and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",

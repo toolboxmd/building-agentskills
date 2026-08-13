@@ -37,14 +37,17 @@ correction then removed 312 executable bytes by deleting partial implicit-YAML
 classification while adding mapping-only metadata and parity-aware handling of
 shell line continuations. Only an odd terminal backslash run joins the next
 physical line. The cumulative executable delta from the pre-revision freeze is
-10,137 bytes.
+10,137 bytes. A follow-up metadata-key correction added 273 executable bytes
+to require JSON-double-quoted user-defined portable keys and brought the
+cumulative delta to 10,410 bytes after a bounded deletion pass consolidated
+duplicate diagnostic paths without dropping contract fixtures.
 
 Canonical subset v2 leaves only the exact `name` slug unquoted. Every other
-top-level string and every portable metadata value uses one-line JSON double
-quotes, and portable metadata is mapping-only. The exact
+top-level string and every user-defined portable metadata key and value uses a
+one-line JSON double-quoted string, and portable metadata is mapping-only. The exact
 `metadata.hermes.config` vendor extension is enabled only by
 `--allow-hermes-metadata` for an explicitly Hermes-targeted package, with
-double-quoted key-led entries. The
+fixed unquoted schema field names and double-quoted user-provided values. The
 checker reports its canonical coverage, Python-AST-only script-syntax
 coverage, and the availability/result of `skills-ref validate`; the frozen
 host recorded `not_available`, and no install or network fallback is used.
@@ -58,6 +61,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 34,952 bytes: 4,733 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 30,003-byte read-only checker. The executable is not
+The frozen package is 35,196 bytes: 4,704 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 30,276-byte read-only checker. The executable is not
 loaded as activated core.

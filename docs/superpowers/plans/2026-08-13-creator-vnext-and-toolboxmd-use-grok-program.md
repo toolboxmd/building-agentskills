@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 34,952 bytes, aggregate SHA-256
-  `76c390e816a01f9bee553f0f2dbce6c433f8e86386f3f1749eeb7871b7bb3a6d`;
-- activated core: 77 lines and 4,733 bytes, with a 240-character
+- exact package: three files, 35,196 bytes, aggregate SHA-256
+  `502162af79561e0ac45bfa8b584ab235cc17a4df461c1547cfbf0ccb2623184e`;
+- activated core: 77 lines and 4,704 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -137,8 +137,13 @@ Completion evidence, updated 2026-08-14:
   generated string form, mapping-only portable metadata, and parity-aware shell
   continuation normalization. The current cumulative executable delta is
   10,137 bytes;
+- a follow-up exact-HEAD correction added 273 executable bytes to require
+  JSON-double-quoted user-defined portable metadata keys. The current
+  cumulative executable delta is 10,410 bytes after consolidating duplicate
+  diagnostic paths without dropping contract fixtures;
 - canonical subset v2 leaves only `name` unquoted. Every other top-level
-  string and every portable metadata value uses one-line JSON double quotes.
+  string and every user-defined portable metadata key and value uses one-line
+  JSON double quotes.
   The `metadata.hermes.config` vendor extension requires
   `--allow-hermes-metadata` and double-quoted key-led entries for an explicitly
   Hermes-targeted package;
@@ -181,7 +186,7 @@ Completion evidence, updated 2026-08-14:
   prevents trailing comments from hiding quoting errors, rejects block scalars,
   accepts the exact Hermes config extension only in explicit extension mode
   with double-quoted key-led sequence items and required descriptions, and
-  rejects sequence markers in portable metadata,
+  rejects sequence markers and unquoted user-defined keys in portable metadata,
   ignores link syntax inside Markdown code, validates canonical single-line
   reference destinations, warns when complex Markdown requires official
   coverage, detects POSIX, container, Windows, file URI, and shebang-local
