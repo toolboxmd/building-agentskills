@@ -53,7 +53,9 @@
     "latestExactHeadReviewReason": "Exact-HEAD review required YAML special-float classification and dot-relative fragile script-path detection.",
     "sequenceAndCommandReviewExecutableDeltaBytes": 353,
     "sequenceAndCommandReviewReason": "Exact-HEAD review required active sequence-item state for canonical Hermes config and separator-bounded same-line fragile script detection.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10449,
+    "quoteOnlyCanonicalExecutableDeltaBytes": -312,
+    "quoteOnlyCanonicalReason": "Exact-HEAD review replaced partial implicit-YAML classification with JSON-double-quoted generated strings, mapping-only portable metadata, and parity-aware shell-continuation normalization.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10137,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -67,22 +69,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "2a8b01969a0c1ec08160a44459cb794e77d9c2b269bd3e9d60303cb2ccff322f",
+    "aggregateSha256": "76c390e816a01f9bee553f0f2dbce6c433f8e86386f3f1749eeb7871b7bb3a6d",
     "fileCount": 3,
-    "packageBytes": 35148,
+    "packageBytes": 34952,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4617,
+      "bytes": 4733,
       "lines": 77,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4617,
-        "sha256": "b89e40249bdf961003e0a8c604eac4768e41517af503ce629aa812d11f2da322"
+        "bytes": 4733,
+        "sha256": "ae7bf905fc8c90e97f9543d07c865fe4f7bb20efeafef630a23d4ad77148679c"
       },
       {
         "path": "agents/openai.yaml",
@@ -91,8 +93,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 30315,
-        "sha256": "e1c88d72a971c78f6d14d2b3de40fec8870413bedc5694a3881c1e9e4a30d650"
+        "bytes": 30003,
+        "sha256": "73eeac10bf9d0de3ca027929d86dd816d72637011f6039ee5e740c690431f4f0"
       }
     ]
   },
@@ -101,21 +103,22 @@
     "proves": [
       "the frozen product package and exact creator budgets reproduce",
       "the validator runs from outside the package without Python bytecode writes",
-      "bare, dot-relative, and option-bearing working-directory script examples fail without crossing command separators",
+      "bare, dot-relative, option-bearing, and odd-backslash shell-line-continued working-directory script examples fail without joining even-backslash or ordinary newlines or crossing command separators",
       "explicit skill-directory script examples pass",
       "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, required and bounded interface strings, assets-only icon paths, optional default_prompt, policy, and current tool dependencies",
       "valid Markdown links with optional titles pass",
       "single-line CommonMark reference-definition destinations support angle brackets and optional titles while missing and escaping targets fail",
       "skill names containing reserved provider strings fail",
-      "string-valued frontmatter rejects obvious unquoted collections and scalars while quoted lookalikes remain strings",
-      "canonical one-line frontmatter handles trailing comments and quoted hashes while rejecting block scalars, typed and special-float scalars, reserved YAML indicators, tags, nested scalar syntax, and invalid quotes",
-      "portable-core mode requires string-to-string metadata while explicit Hermes mode requires each config sequence item to start with key and contain description",
+      "name is the sole unquoted scalar while all other top-level strings require one-line JSON double quotes",
+      "the quote-only contract rejects plain prose, dates, hexadecimal, octal, collections, booleans, nulls, numbers, special floats, single quotes, block scalars, tags, nested scalar syntax, and invalid quotes without partial implicit-YAML classification",
+      "portable metadata is a double-quoted string-to-string mapping with no sequence markers, while explicit Hermes mode requires double-quoted key-led sequence items with descriptions",
       "canonical Markdown links ignore code and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",
       "Python helper syntax is checked through AST while non-Python helpers receive an explicit unchecked-syntax warning",
       "an already-installed skills-ref is called without a shell using exact validate argv and a bounded timeout, with pass, invalid, unexpected, timeout, unavailable, and unattested external-behavior states reported separately",
       "root-relative and remote web links are not misclassified as workstation paths",
+      "the real copyable minimal-skill example passes the canonical checker under an explicit package budget",
       "default reference and eval baggage and unconditional Git inspection are absent",
       "the retained meeting-followups and weekly-status-deck path and baggage patterns are detected",
       "retained creator inputs remain byte-identical"

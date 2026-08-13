@@ -17,9 +17,8 @@ from urllib.parse import unquote, urlsplit
 
 
 PORTABLE_FIELDS = {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
-STRING_FIELDS = PORTABLE_FIELDS - {"metadata"}
+STRING_FIELDS = PORTABLE_FIELDS - {"metadata", "name"}
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-NON_STRING_RE = re.compile(r"(?i)(?:\[.*\]|\{.*\}|true|false|null|~|[-+]?\.(?:inf|nan)|[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?)")
 BLOCK_SCALAR_RE = re.compile(r"[|>](?:[1-9][+-]?|[+-][1-9]?|[+-]?)")
 LINK_RE = re.compile(
     r'''!?\[[^\]]*\]\(\s*(<[^>\n]*>|[^\s)]+)(?:\s+(?:"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|\((?:\\.|[^)])*\)))?\s*\)'''
@@ -35,6 +34,7 @@ FRAGILE_SCRIPT_RE = re.compile(
     r"\b(?:python(?:3(?:\.\d+)?)?|node|bash|sh|ruby)\b"
     r"[^\r\n;&|]*?[ \t]+[\"']?(?:\./)?scripts/"
 )
+SHELL_CONTINUATION_RE = re.compile(r"(\\+)(?:\r\n|\n)[ \t]*")
 ROOT_NAMES = ("Users", "home", "workspace", "root")
 POSIX_ROOTS = "|".join(re.escape(f"/{name}/") for name in ROOT_NAMES)
 LOCAL_PATH_RE = re.compile(
@@ -71,32 +71,15 @@ def split_frontmatter(text: str) -> tuple[list[str], str]:
 
 def canonical_scalar(raw: str) -> str:
     value = raw.strip()
-    if not value:
-        return ""
-    if value.startswith('"'):
-        if not value.endswith('"'):
-            raise ValueError("unterminated double-quoted string")
-        try:
-            parsed = json.loads(value)
-        except (json.JSONDecodeError, TypeError) as exc:
-            raise ValueError("invalid double-quoted string") from exc
-        if not isinstance(parsed, str):
-            raise ValueError("value is not a string")
-        return parsed
-    if value.startswith("'"):
-        if not value.endswith("'"):
-            raise ValueError("unterminated single-quoted string")
-        inner = value[1:-1]
-        if "'" in inner.replace("''", ""):
-            raise ValueError("invalid single-quoted string")
-        return inner.replace("''", "'")
-    if value.endswith(("'", '"')):
-        raise ValueError("mismatched quote")
-    if NON_STRING_RE.fullmatch(value):
-        raise TypeError("value is not a string")
-    if value[0] in "-?:,[]{}&*!|>%@`" or re.search(r":(?:\s|$)", value):
-        raise ValueError("noncanonical plain string")
-    return value
+    if len(value) < 2 or not value.startswith('"') or not value.endswith('"'):
+        raise ValueError("canonical strings must use JSON double quotes")
+    try:
+        parsed = json.loads(value)
+    except (json.JSONDecodeError, TypeError) as exc:
+        raise ValueError("invalid double-quoted string") from exc
+    if not isinstance(parsed, str):
+        raise ValueError("value is not a string")
+    return parsed
 
 
 def without_comment(raw: str) -> str:
@@ -123,11 +106,17 @@ def without_comment(raw: str) -> str:
 def parse_string(raw: str, field: str, problems: list[dict[str, str]]) -> str:
     try:
         return canonical_scalar(raw)
-    except TypeError:
-        problems.append(issue("FRONTMATTER_TYPE", "SKILL.md", f"{field} must be a string"))
     except ValueError:
-        problems.append(issue("FRONTMATTER_STRING", "SKILL.md", f"{field} is not a canonical one-line string"))
+        problems.append(issue("FRONTMATTER_STRING", "SKILL.md", f"{field} must be a JSON double-quoted one-line string"))
     return ""
+
+
+def normalize_shell_continuations(text: str) -> str:
+    def replace(match: re.Match[str]) -> str:
+        backslashes = match.group(1)
+        return backslashes[:-1] + " " if len(backslashes) % 2 else match.group(0)
+
+    return SHELL_CONTINUATION_RE.sub(replace, text)
 
 
 def parse_metadata(
@@ -148,19 +137,21 @@ def parse_metadata(
             continue
         indent = len(line) - len(line.lstrip(" "))
         field = without_comment(line.strip())
-        match = re.fullmatch(r"(?:- )?([^:]+):\s*(.*)", field)
+        mapping_match = re.fullmatch(r"(?!- )([^:]+):\s*(.*)", field)
+        sequence_match = re.fullmatch(r"- ([^:]+):\s*(.*)", field)
+        match = sequence_match or mapping_match
         key, raw = match.groups() if match else ("", "")
         value = without_comment(raw)
-        if indent == 2 and key == "hermes" and not value and "hermes" not in mapping and allow_hermes:
+        if indent == 2 and mapping_match and key == "hermes" and not value and "hermes" not in mapping and allow_hermes:
             hermes, config = True, False
             mapping[key] = {}
-        elif indent == 2 and match and value and key not in mapping:
+        elif indent == 2 and mapping_match and value and key not in mapping:
             mapping[key] = parse_string(value, f"metadata.{key}", problems)
-        elif indent == 2 and key in mapping:
+        elif indent == 2 and mapping_match and key in mapping:
             problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate metadata key: {key}"))
-        elif indent == 4 and hermes and key == "config" and not value and not config:
+        elif indent == 4 and hermes and mapping_match and key == "config" and not value and not config:
             config = True
-        elif config and match and indent == 6 and field.startswith("- "):
+        elif config and sequence_match and indent == 6:
             if entry_active and "description" not in required:
                 problems.append(issue("METADATA_SHAPE", "SKILL.md", "Hermes entry needs description"))
             required = set()
@@ -172,7 +163,7 @@ def parse_metadata(
                 required.add(key)
                 entry_keys.add(key)
                 parse_string(value, f"metadata.hermes.config.{key}", problems)
-        elif config and entry_active and match and indent == 8 and key in {"description", "default", "prompt"} and value:
+        elif config and entry_active and mapping_match and indent == 8 and key in {"description", "default", "prompt"} and value:
             if key in entry_keys:
                 problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate Hermes field: {key}"))
             entry_keys.add(key)
@@ -324,7 +315,8 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         residual = re.sub(r"(?<!!)\[[^]\n]+\]\[[^]\n]+\]", "", residual)
         if not unsupported_markdown and ("](" in residual or "][" in residual):
             problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "nested Markdown link shape needs an official validator", "warning"))
-        for line_number, line in enumerate(content.splitlines(), 1):
+        command_text = normalize_shell_continuations(content)
+        for line_number, line in enumerate(command_text.splitlines(), 1):
             if FRAGILE_SCRIPT_RE.search(line):
                 problems.append(issue("FRAGILE_SCRIPT_PATH", relative, f"line {line_number} uses task-relative scripts/", "warning"))
 
@@ -574,7 +566,7 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
         "schemaVersion": 1,
         "status": "fail" if failed else "pass",
         "coverage": {
-            "canonicalSubset": "toolboxmd-portable-core-v1",
+            "canonicalSubset": "toolboxmd-portable-core-v2",
             "enabledExtensions": ["hermes-metadata"] if args.allow_hermes_metadata else [],
             "markdown": "canonical inline links and single-line reference definitions",
             "scriptSyntax": "Python .py files via AST; other helper syntax unchecked",

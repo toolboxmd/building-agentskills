@@ -44,9 +44,9 @@ Format constraints:
   metadata:
     hermes:
       config:
-        - key: wiki.path
-          description: Path to main wiki directory
-          default: ~/wiki
+        - key: "wiki.path"
+          description: "Path to main wiki directory"
+          default: "~/wiki"
   ```
 
 Hermes extension source: [Hermes Agent, Creating Skills](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/developer-guide/creating-skills.md#config-settings-configyaml).
@@ -55,6 +55,21 @@ Hermes extension source: [Hermes Agent, Creating Skills](https://github.com/Nous
 
 - Per spec, marked experimental. Avoid for cross-platform; not honored uniformly.
 - Claude Code's `allowed-tools` is more developed and lives in the extensions column.
+
+### ToolboxMD generated form
+
+The Agent Skills specification permits ordinary YAML string forms. The active
+`toolboxmd-creating-skills` candidate deliberately emits a smaller canonical
+form: `name` is the exact unquoted directory slug, while every other portable
+string and every portable `metadata` value is a one-line JSON double-quoted
+string. This is a deterministic generation and checking policy, not an added
+Agent Skills requirement. It prevents YAML implicit typing of values such as
+dates, hexadecimal numbers, booleans, and nulls.
+
+For an explicitly Hermes-targeted package, the same policy applies to the
+vendor extension: each config item starts with `- key: "..."`, and every child
+value is JSON double-quoted. Pass `--allow-hermes-metadata` to the ToolboxMD
+checker only for that target.
 
 ## Claude Code extensions
 
@@ -117,6 +132,10 @@ metadata:
 ```
 
 Source: [v2.2 SKILL.md lines 1–19](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L1-L19). The `name` and `description` are portable core. The nested `metadata.hermes` block is a Hermes extension and must not be presented as string-to-string Agent Skills metadata.
+
+This pinned historical example uses YAML block and plain scalars. A new package
+created by the active ToolboxMD candidate uses the narrower double-quoted form
+described above.
 
 ## Auditing your frontmatter
 

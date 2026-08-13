@@ -41,9 +41,9 @@ Record job and value, triggers and close near misses, inputs and outputs, observ
 
 Start with `SKILL.md`. Add only evidenced support: always-needed rules inline; conditional knowledge in `references/`; repeated deterministic work or gates in `scripts/`; output inputs in `assets/`; sidecars for a stated target. Keep comparative evals outside. Add package tests only for a bundled script or distribution contract. Never add speculative directories.
 
-Use canonical one-line string fields in portable frontmatter, with string-to-string `metadata` and matching directory and `name`. Describe capability, triggers, and exclusions, not workflow. Keep decisions, evidence, three answers, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
+Use the exact unquoted directory slug only for `name`. Write every other top-level string and every portable `metadata` value as a one-line JSON double-quoted string. Describe capability, triggers, and exclusions, not workflow. Keep decisions, evidence, three answers, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
 
-Only for an explicitly Hermes-targeted package, use the documented `metadata.hermes.config` vendor extension and pass `--allow-hermes-metadata`. Do not describe nested Hermes metadata as portable core.
+Only for an explicitly Hermes-targeted package, use the documented `metadata.hermes.config` vendor extension and pass `--allow-hermes-metadata`. Start each config item with `- key: "..."` and double-quote every child value. Do not describe nested Hermes metadata as portable core.
 
 ### 5. Make scripts portable
 

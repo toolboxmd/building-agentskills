@@ -6,6 +6,7 @@ root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 package="$root/skills/toolboxmd-creating-skills"
 validator="$package/scripts/validate_skill.py"
 freeze="$root/benchmarks/toolboxmd-creating-skills/vnext/manifest.json"
+minimal_example="$root/examples/minimal-skill"
 test_tmp="$(mktemp -d "${TMPDIR:-/tmp}/toolboxmd-creator-vnext.XXXXXX")"
 trap 'rm -rf "$test_tmp"' EXIT
 
@@ -36,7 +37,7 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-eval-files 0 \
   --max-script-files 1 \
   "$package")"
-[[ "$human_output" == *"COVERAGE: canonical=toolboxmd-portable-core-v1 extensions=none script_syntax=python-ast-only official_skills_ref=not_available official_external_attested=false"* ]]
+[[ "$human_output" == *"COVERAGE: canonical=toolboxmd-portable-core-v2 extensions=none script_syntax=python-ast-only official_skills_ref=not_available official_external_attested=false"* ]]
 [[ "$human_output" == *"PASS: canonical ToolboxMD package checks succeeded"* ]]
 
 cd "$test_tmp"
@@ -52,6 +53,17 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json \
   --max-script-files 1 \
   "$package" > "$test_tmp/product.json"
 
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors \
+  --max-description-chars 400 \
+  --max-skill-lines 60 \
+  --max-skill-bytes 2500 \
+  --max-files 1 \
+  --max-package-bytes 2500 \
+  --max-reference-files 0 \
+  --max-eval-files 0 \
+  --max-script-files 0 \
+  "$minimal_example" > "$test_tmp/minimal-example.json"
+
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" "$test_tmp/missing" > "$test_tmp/missing.out" 2>&1
 missing_exit=$?
@@ -66,7 +78,7 @@ make_fixture() {
   cat > "$directory/SKILL.md" <<EOF
 ---
 name: $(basename "$directory")
-description: Run a deterministic fixture when testing installed script path examples.
+description: "Run a deterministic fixture when testing installed script path examples."
 ---
 
 # Fixture
@@ -100,8 +112,33 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$
 option_bare_exit=$?
 set -e
 
-make_fixture "$test_tmp/separator-safe-fixture" $'python3 -X dev; scripts/run.py\nnode --require loader & ./scripts/run.js\nbash --init-file profile | scripts/run.sh\nsh -o errexit && ./scripts/run.sh\nruby -I lib; scripts/run.py\nUse scripts/run.py before python3.'
+make_fixture "$test_tmp/separator-safe-fixture" $'python3 -X dev; scripts/run.py\nnode --require loader & ./scripts/run.js\nbash --init-file profile | scripts/run.sh\nsh -o errexit && ./scripts/run.sh\nruby -I lib; scripts/run.py\nUse scripts/run.py before python3.\npython3 -B\nscripts/run.py'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/separator-safe-fixture" > "$test_tmp/separator-safe.json"
+
+make_fixture "$test_tmp/continued-bare-fixture" $'python3 -B \\\n  scripts/run.py\nnode --trace-warnings \\\r\n  ./scripts/run.js'
+cat >> "$test_tmp/continued-bare-fixture/SKILL.md" <<'EOF'
+
+```bash
+ruby -I lib \\\
+  scripts/run.py
+```
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/continued-bare-fixture" > "$test_tmp/continued-bare.json"
+continued_bare_exit=$?
+set -e
+
+make_fixture "$test_tmp/even-backslash-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+cat >> "$test_tmp/even-backslash-fixture/SKILL.md" <<'EOF'
+
+```bash
+python3 -B \\
+  scripts/run.py
+node \\\\
+  ./scripts/run.js
+```
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/even-backslash-fixture" > "$test_tmp/even-backslash.json"
 
 make_fixture "$test_tmp/portable-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/portable-fixture" > "$test_tmp/portable.json"
@@ -363,6 +400,108 @@ description: "[one, two]"
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/quoted-description" > "$test_tmp/quoted-description.json"
 
+mkdir -p "$test_tmp/unquoted-date-description" "$test_tmp/quoted-name" "$test_tmp/portable-metadata-sequence" "$test_tmp/portable-hermes-sequence" "$test_tmp/hermes-config-sequence" "$test_tmp/hermes-child-sequence" "$test_tmp/unquoted-portable-metadata"
+cat > "$test_tmp/unquoted-date-description/SKILL.md" <<'EOF'
+---
+name: unquoted-date-description
+description: 2026-08-13
+---
+
+# Unquoted date
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/unquoted-date-description" > "$test_tmp/unquoted-date-description.json"
+unquoted_date_exit=$?
+set -e
+cat > "$test_tmp/quoted-name/SKILL.md" <<'EOF'
+---
+name: "quoted-name"
+description: "Reject a quoted name in the canonical generated subset."
+---
+
+# Quoted name
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/quoted-name" > "$test_tmp/quoted-name.json"
+quoted_name_exit=$?
+set -e
+[[ $quoted_name_exit -eq 1 ]]
+cat > "$test_tmp/portable-metadata-sequence/SKILL.md" <<'EOF'
+---
+name: portable-metadata-sequence
+description: "Reject a sequence where portable metadata requires a mapping."
+metadata:
+  - owner: "toolboxmd"
+---
+
+# Portable metadata sequence
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/portable-metadata-sequence" > "$test_tmp/portable-metadata-sequence.json"
+portable_metadata_sequence_exit=$?
+set -e
+cat > "$test_tmp/portable-hermes-sequence/SKILL.md" <<'EOF'
+---
+name: portable-hermes-sequence
+description: "Reject a sequence marker at the Hermes metadata level."
+metadata:
+  - hermes:
+    config:
+      - key: "wiki.path"
+        description: "Path to the main wiki"
+---
+
+# Portable Hermes sequence
+EOF
+cat > "$test_tmp/hermes-config-sequence/SKILL.md" <<'EOF'
+---
+name: hermes-config-sequence
+description: "Reject a sequence marker before the Hermes config mapping."
+metadata:
+  hermes:
+    - config:
+      - key: "wiki.path"
+        description: "Path to the main wiki"
+---
+
+# Hermes config sequence
+EOF
+cat > "$test_tmp/hermes-child-sequence/SKILL.md" <<'EOF'
+---
+name: hermes-child-sequence
+description: "Reject a sequence marker on a Hermes child field."
+metadata:
+  hermes:
+    config:
+      - key: "wiki.path"
+        - description: "Path to the main wiki"
+---
+
+# Hermes child sequence
+EOF
+cat > "$test_tmp/unquoted-portable-metadata/SKILL.md" <<'EOF'
+---
+name: unquoted-portable-metadata
+description: "Reject an unquoted portable metadata value."
+metadata:
+  owner: toolboxmd
+---
+
+# Unquoted portable metadata
+EOF
+for name in portable-hermes-sequence hermes-config-sequence hermes-child-sequence; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --allow-hermes-metadata "$test_tmp/$name" > "$test_tmp/$name.json"
+  metadata_sequence_exit=$?
+  set -e
+  [[ $metadata_sequence_exit -eq 1 ]]
+done
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/unquoted-portable-metadata" > "$test_tmp/unquoted-portable-metadata.json"
+unquoted_portable_metadata_exit=$?
+set -e
+[[ $unquoted_portable_metadata_exit -eq 1 ]]
+
 mkdir -p "$test_tmp/doubled-quote-budget"
 {
   printf '%s\n' '---' 'name: doubled-quote-budget'
@@ -375,7 +514,7 @@ doubled_quote_exit=$?
 set -e
 [[ $doubled_quote_exit -eq 1 ]]
 
-scalar_cases=(boolean true null null numeric 123.5 nan .nan positive-inf +.INF negative-nan -.NaN)
+scalar_cases=(ordinary 'ordinary prose' date 2026-08-13 hex 0x2A octal 0o52 boolean true null null numeric 123.5 nan .nan positive-inf +.INF negative-nan -.NaN)
 for ((index = 0; index < ${#scalar_cases[@]}; index += 2)); do
   label="${scalar_cases[$index]}"
   raw="${scalar_cases[$((index + 1))]}"
@@ -454,7 +593,7 @@ done
 cat > "$test_tmp/metadata-block-literal/SKILL.md" <<'EOF'
 ---
 name: metadata-block-literal
-description: Reject scalar metadata.
+description: "Reject scalar metadata."
 metadata: | # metadata must be a mapping
   author: toolboxmd
 ---
@@ -464,7 +603,7 @@ EOF
 cat > "$test_tmp/metadata-block-folded/SKILL.md" <<'EOF'
 ---
 name: metadata-block-folded
-description: Reject folded scalar metadata.
+description: "Reject folded scalar metadata."
 metadata: >-
   author: toolboxmd
 ---
@@ -516,17 +655,17 @@ mkdir -p "$test_tmp/hermes-metadata" "$test_tmp/hermes-mapping" "$test_tmp/herme
 cat > "$test_tmp/hermes-metadata/SKILL.md" <<'EOF'
 ---
 name: hermes-metadata
-description: Validate documented Hermes configuration metadata.
+description: "Validate documented Hermes configuration metadata."
 metadata:
-  author: toolboxmd
+  author: "toolboxmd"
   hermes:
     config:
-      - key: wiki.path
-        description: Path to the main wiki
+      - key: "wiki.path"
+        description: "Path to the main wiki"
         default: "~/wiki"
-      - key: wiki.mode
-        description: Wiki mode
-        default: project
+      - key: "wiki.mode"
+        description: "Wiki mode"
+        default: "project"
         prompt: "Choose a wiki mode"
 ---
 
@@ -541,12 +680,12 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --allow-hermes-metadata
 cat > "$test_tmp/hermes-mapping/SKILL.md" <<'EOF'
 ---
 name: hermes-mapping
-description: Reject a mapping where Hermes requires a config sequence.
+description: "Reject a mapping where Hermes requires a config sequence."
 metadata:
   hermes:
     config:
-        key: wiki.path
-        description: Path to the main wiki
+        key: "wiki.path"
+        description: "Path to the main wiki"
 ---
 
 # Hermes mapping
@@ -558,12 +697,12 @@ set -e
 cat > "$test_tmp/hermes-bad-list-start/SKILL.md" <<'EOF'
 ---
 name: hermes-bad-list-start
-description: Reject a Hermes config item that does not start with key.
+description: "Reject a Hermes config item that does not start with key."
 metadata:
   hermes:
     config:
-      - description: Path to the main wiki
-        key: wiki.path
+      - description: "Path to the main wiki"
+        key: "wiki.path"
 ---
 
 # Hermes bad list start
@@ -575,12 +714,12 @@ set -e
 cat > "$test_tmp/unsupported-metadata/SKILL.md" <<'EOF'
 ---
 name: unsupported-metadata
-description: Reject an unsupported nested metadata extension.
+description: "Reject an unsupported nested metadata extension."
 metadata:
   other:
     config:
-      - key: path
-        description: A path
+      - key: "path"
+        description: "A path"
 ---
 
 # Unsupported metadata
@@ -593,12 +732,12 @@ set -e
 cat > "$test_tmp/non-string-metadata/SKILL.md" <<'EOF'
 ---
 name: non-string-metadata
-description: Reject a non-string Hermes configuration value.
+description: "Reject a non-string Hermes configuration value."
 metadata:
   hermes:
     config:
-      - key: wiki.enabled
-        description: Enable the wiki
+      - key: "wiki.enabled"
+        description: "Enable the wiki"
         default: false # must remain typed
 ---
 
@@ -778,10 +917,13 @@ const path = require("node:path");
 const [root, freezePath, temporary] = process.argv.slice(2);
 const freeze = JSON.parse(fs.readFileSync(freezePath));
 const product = JSON.parse(fs.readFileSync(path.join(temporary, "product.json")));
+const minimalExample = JSON.parse(fs.readFileSync(path.join(temporary, "minimal-example.json")));
 const bare = JSON.parse(fs.readFileSync(path.join(temporary, "bare.json")));
 const dotBare = JSON.parse(fs.readFileSync(path.join(temporary, "dot-bare.json")));
 const optionBare = JSON.parse(fs.readFileSync(path.join(temporary, "option-bare.json")));
 const separatorSafe = JSON.parse(fs.readFileSync(path.join(temporary, "separator-safe.json")));
+const continuedBare = JSON.parse(fs.readFileSync(path.join(temporary, "continued-bare.json")));
+const evenBackslash = JSON.parse(fs.readFileSync(path.join(temporary, "even-backslash.json")));
 const portable = JSON.parse(fs.readFileSync(path.join(temporary, "portable.json")));
 const official = ["pass", "fail", "unexpected", "timeout"].map(mode => JSON.parse(fs.readFileSync(path.join(temporary, `skills-ref-${mode}.json`))));
 const sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "sidecar.json")));
@@ -798,7 +940,12 @@ const escapingReference = JSON.parse(fs.readFileSync(path.join(temporary, "escap
 const reserved = ["claude-helper", "anthropic-helper"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const listDescription = JSON.parse(fs.readFileSync(path.join(temporary, "list-description.json")));
 const quotedDescription = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-description.json")));
-const scalarKinds = ["boolean", "null", "numeric", "nan", "positive-inf", "negative-nan"];
+const unquotedDateDescription = JSON.parse(fs.readFileSync(path.join(temporary, "unquoted-date-description.json")));
+const quotedName = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-name.json")));
+const portableMetadataSequence = JSON.parse(fs.readFileSync(path.join(temporary, "portable-metadata-sequence.json")));
+const metadataSequenceLevels = ["portable-hermes-sequence", "hermes-config-sequence", "hermes-child-sequence"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const unquotedPortableMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "unquoted-portable-metadata.json")));
+const scalarKinds = ["ordinary", "date", "hex", "octal", "boolean", "null", "numeric", "nan", "positive-inf", "negative-nan"];
 const unquotedScalars = scalarKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `unquoted-${name}-description.json`))));
 const quotedScalars = scalarKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `quoted-${name}-description.json`))));
 const commentKinds = ["collection", "boolean", "null", "numeric"];
@@ -852,7 +999,8 @@ assert(freeze.budgetRevision.laterDeterministicExecutableDeltaBytes === 460, "la
 assert(freeze.budgetRevision.holisticReviewExecutableDeltaBytes === 7353, "holistic review delta changed");
 assert(freeze.budgetRevision.latestExactHeadReviewExecutableDeltaBytes === 27, "latest executable review delta changed");
 assert(freeze.budgetRevision.sequenceAndCommandReviewExecutableDeltaBytes === 353, "sequence and command review delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 10449, "current executable delta changed");
+assert(freeze.budgetRevision.quoteOnlyCanonicalExecutableDeltaBytes === -312, "quote-only canonical executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 10137, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -861,6 +1009,8 @@ for (const source of [freeze.source.v1ResultManifest, freeze.source.v2ResultMani
 }
 
 assert(product.status === "pass" && product.errorCount === 0 && product.warningCount === 0, "product validation failed");
+assert(minimalExample.status === "pass" && minimalExample.metrics.fileCount === 1 && minimalExample.metrics.referenceFileCount === 0 && minimalExample.metrics.scriptFileCount === 0, "real minimal example must pass canonical budgets");
+assert(product.coverage.canonicalSubset === "toolboxmd-portable-core-v2", "canonical subset version changed");
 assert(product.aggregateSha256 === freeze.package.aggregateSha256, "package aggregate differs from freeze");
 assert(product.files.length === freeze.package.files.length, "per-file package count changed");
 for (const actual of product.files) {
@@ -873,7 +1023,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 35148, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 34952, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -893,23 +1043,30 @@ assert(referenceLink.status === "pass" && referenceLink.errorCount === 0, "valid
 assert(missingReference.issues.some(item => item.code === "BROKEN_LINK"), "missing reference destination must fail");
 assert(escapingReference.issues.some(item => item.code === "LINK_ESCAPE"), "escaping reference destination must fail");
 assert(reserved.every(result => result.status === "fail" && result.issues.some(item => item.code === "NAME_RESERVED")), "reserved provider names must fail");
-assert(listDescription.status === "fail" && listDescription.issues.some(item => item.code === "FRONTMATTER_TYPE"), "unquoted collection description must fail");
+assert(listDescription.status === "fail" && listDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted collection description must fail");
 assert(quotedDescription.status === "pass", "quoted collection-looking description must remain a string");
-assert(unquotedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_TYPE")), "obvious unquoted non-string scalars must fail");
+assert(unquotedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_STRING")), "all unquoted description scalars must fail");
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
 assert(dotBare.status === "fail", "dot-relative script fixture must fail under warnings-as-errors");
 assert(dotBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all dot-relative interpreter examples must be detected");
 assert(optionBare.status === "fail" && optionBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "option operands must not hide fragile script paths");
 assert(separatorSafe.status === "pass" && separatorSafe.warningCount === 0, "fragile script detection must not cross command separators or reverse direction");
+assert(continuedBare.status === "fail" && continuedBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3, "one and three backslashes across LF or CRLF must preserve continuation detection");
+assert(evenBackslash.status === "pass" && evenBackslash.warningCount === 0, "two and four backslashes must not join ordinary newlines");
+assert(unquotedDateDescription.status === "fail" && unquotedDateDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted dates must fail the canonical string contract");
+assert(quotedName.status === "fail" && quotedName.issues.some(item => item.code === "NAME_FORMAT"), "name must remain an unquoted slug");
+assert(portableMetadataSequence.status === "fail" && portableMetadataSequence.issues.some(item => item.code === "METADATA_SHAPE"), "portable metadata sequences must fail");
+assert(metadataSequenceLevels.every(result => result.status === "fail" && result.issues.some(item => item.code === "METADATA_SHAPE")), "sequence markers must remain confined to Hermes config entries");
+assert(unquotedPortableMetadata.status === "fail" && unquotedPortableMetadata.issues.some(item => item.code === "FRONTMATTER_STRING"), "portable metadata values must use JSON double quotes");
 assert(hermesInvalidSequences.every(result => result.status === "fail" && result.issues.some(item => item.code === "METADATA_SHAPE")), "Hermes config entries must start with a sequence key");
-assert(commentedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_TYPE")), "trailing comments must not hide non-string scalars");
+assert(commentedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_STRING")), "trailing comments must not hide unquoted scalars");
 assert(quotedHash.status === "pass", "hashes inside quoted strings must remain content");
 assert(blockDescription.status === "fail" && blockDescription.issues.some(item => item.code === "FRONTMATTER_STYLE"), "block frontmatter must be rejected as noncanonical");
-assert(doubledQuote.status === "fail" && doubledQuote.issues.some(item => item.code === "DESCRIPTION_BUDGET"), "single-quoted apostrophes must not undercount budget");
+assert(doubledQuote.status === "fail" && doubledQuote.issues.some(item => item.code === "FRONTMATTER_STRING"), "single-quoted strings must fail the canonical contract");
 assert(hermesDefault.status === "fail", "portable-core mode must reject nested Hermes metadata");
 assert(hermesMetadata.status === "pass" && hermesMetadata.coverage.enabledExtensions.includes("hermes-metadata"), "explicit Hermes extension mode must pass");
 assert(unsupportedMetadata.status === "fail" && unsupportedMetadata.issues.some(item => item.code === "METADATA_SHAPE"), "unsupported nested metadata must fail");
-assert(nonStringMetadata.status === "fail" && nonStringMetadata.issues.some(item => item.code === "FRONTMATTER_TYPE"), "Hermes config values must remain strings");
+assert(nonStringMetadata.status === "fail" && nonStringMetadata.issues.some(item => item.code === "FRONTMATTER_STRING"), "Hermes config values must use JSON double quotes");
 const brokenLinks = codeLinks.issues.filter(item => item.code === "BROKEN_LINK");
 assert(brokenLinks.length === 1 && brokenLinks[0].message.includes("real-missing.md"), "code links must be ignored while a real broken link fails");
 assert(markdownBoundaries.status === "pass", "escaped, indented-code, and protocol-relative Markdown boundaries changed");

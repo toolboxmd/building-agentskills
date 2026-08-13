@@ -32,12 +32,19 @@ package-policy checker, not a general YAML or CommonMark validator. A later
 two-finding exact-HEAD pass added 27 executable bytes for YAML special-float
 classification and dot-relative script commands. A subsequent two-finding pass
 added 353 executable bytes for exact Hermes sequence state and a
-separator-bounded same-line command detector. The cumulative executable delta
-from the pre-revision freeze is 10,449 bytes.
+separator-bounded same-line command detector. The quote-only canonical
+correction then removed 312 executable bytes by deleting partial implicit-YAML
+classification while adding mapping-only metadata and parity-aware handling of
+shell line continuations. Only an odd terminal backslash run joins the next
+physical line. The cumulative executable delta from the pre-revision freeze is
+10,137 bytes.
 
-Portable-core mode now requires string-to-string metadata. The exact
+Canonical subset v2 leaves only the exact `name` slug unquoted. Every other
+top-level string and every portable metadata value uses one-line JSON double
+quotes, and portable metadata is mapping-only. The exact
 `metadata.hermes.config` vendor extension is enabled only by
-`--allow-hermes-metadata` for an explicitly Hermes-targeted package. The
+`--allow-hermes-metadata` for an explicitly Hermes-targeted package, with
+double-quoted key-led entries. The
 checker reports its canonical coverage, Python-AST-only script-syntax
 coverage, and the availability/result of `skills-ref validate`; the frozen
 host recorded `not_available`, and no install or network fallback is used.
@@ -51,6 +58,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 35,148 bytes: 4,617 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 30,315-byte read-only checker. The executable is not
+The frozen package is 34,952 bytes: 4,733 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 30,003-byte read-only checker. The executable is not
 loaded as activated core.

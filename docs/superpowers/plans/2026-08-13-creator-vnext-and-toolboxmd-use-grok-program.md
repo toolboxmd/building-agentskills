@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 35,148 bytes, aggregate SHA-256
-  `2a8b01969a0c1ec08160a44459cb794e77d9c2b269bd3e9d60303cb2ccff322f`;
-- activated core: 77 lines and 4,617 bytes, with a 240-character
+- exact package: three files, 34,952 bytes, aggregate SHA-256
+  `76c390e816a01f9bee553f0f2dbce6c433f8e86386f3f1749eeb7871b7bb3a6d`;
+- activated core: 77 lines and 4,733 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -131,10 +131,17 @@ Completion evidence, updated 2026-08-14:
   cumulative executable delta became 10,096 bytes;
 - a subsequent two-finding pass added 353 executable-only bytes for exact
   Hermes sequence-item state and separator-bounded same-line command
-  detection. The current cumulative executable delta is 10,449 bytes;
-- portable-core mode requires string-to-string metadata. The exact
-  `metadata.hermes.config` vendor extension requires
-  `--allow-hermes-metadata` for an explicitly Hermes-targeted package;
+  detection. The cumulative executable delta became 10,449 bytes;
+- the quote-only canonical correction removed 312 executable bytes by
+  replacing partial implicit-YAML classification with one JSON-double-quoted
+  generated string form, mapping-only portable metadata, and parity-aware shell
+  continuation normalization. The current cumulative executable delta is
+  10,137 bytes;
+- canonical subset v2 leaves only `name` unquoted. Every other top-level
+  string and every portable metadata value uses one-line JSON double quotes.
+  The `metadata.hermes.config` vendor extension requires
+  `--allow-hermes-metadata` and double-quoted key-led entries for an explicitly
+  Hermes-targeted package;
 - vNext retains a smaller activated core and fewer distributed files/artifacts
   than retained v1, but claims no lower total package bytes, eligible creator
   advantage, superiority, or promotion readiness;
@@ -163,14 +170,18 @@ Completion evidence, updated 2026-08-14:
 - `tests/toolboxmd-creating-skills-vnext.test.sh` passes from an external
   working directory;
 - the test reproduces the package freeze and budgets, checks exit codes 0/1/2,
-  blocks fragile bare, dot-relative, and option-bearing script paths without
-  crossing command separators, accepts the explicit `<skill-dir>` contract,
+  blocks fragile bare, dot-relative, option-bearing, and odd-backslash
+  shell-line-continued script paths without joining even-backslash or ordinary
+  newlines or crossing command separators,
+  validates the real copyable minimal-skill example under explicit budgets,
+  accepts the explicit `<skill-dir>` contract,
   accepts supported Codex sidecar sections and titled local links, rejects
-  reserved provider names and obvious unquoted non-string frontmatter
-  including YAML special floats,
-  prevents trailing comments from hiding YAML types, rejects block scalars,
+  reserved provider names, single-quoted values, and every unquoted non-name
+  string including prose, dates, hexadecimal, octal, and YAML typed scalars,
+  prevents trailing comments from hiding quoting errors, rejects block scalars,
   accepts the exact Hermes config extension only in explicit extension mode
-  with key-led sequence items and required descriptions,
+  with double-quoted key-led sequence items and required descriptions, and
+  rejects sequence markers in portable metadata,
   ignores link syntax inside Markdown code, validates canonical single-line
   reference destinations, warns when complex Markdown requires official
   coverage, detects POSIX, container, Windows, file URI, and shebang-local
