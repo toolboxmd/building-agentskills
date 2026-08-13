@@ -183,6 +183,31 @@ The acceptance suite must test whether denying `MCPTool(*)` blocks both direct
 MCP tools and always-on MCP meta-tools. If it does not, automatic review remains
 disabled until a stronger configuration boundary exists.
 
+For the isolated process, set every supported Cursor and Claude compatibility
+surface to false:
+
+```text
+GROK_CURSOR_SKILLS_ENABLED=false
+GROK_CURSOR_RULES_ENABLED=false
+GROK_CURSOR_AGENTS_ENABLED=false
+GROK_CURSOR_MCPS_ENABLED=false
+GROK_CURSOR_HOOKS_ENABLED=false
+GROK_CURSOR_SESSIONS_ENABLED=false
+GROK_CLAUDE_SKILLS_ENABLED=false
+GROK_CLAUDE_RULES_ENABLED=false
+GROK_CLAUDE_AGENTS_ENABLED=false
+GROK_CLAUDE_MCPS_ENABLED=false
+GROK_CLAUDE_HOOKS_ENABLED=false
+GROK_CLAUDE_SESSIONS_ENABLED=false
+```
+
+Those switches do not disable native `.grok`, native `.agents`, or generic
+project instruction files. The staged review directory and effective-config
+preflight remain mandatory. A dedicated `GROK_HOME` also moves `auth.json`.
+Authenticate that stable profile once with `grok login`, or pass an existing
+`XAI_API_KEY` through the process environment. Do not copy credentials into
+ephemeral directories or retain them in repository evidence.
+
 ### Automatic-review safety contract
 
 - Review is read-only and uses a fresh session.
@@ -196,6 +221,9 @@ disabled until a stronger configuration boundary exists.
   terminates the complete child process tree.
 - Prefer JSON Schema output with `additionalProperties: false`; retain raw
   stdout and a parse error when structured parsing fails.
+- Accept both the documented JSON envelope's `structured_output` value and a
+  direct schema-shaped object. Freeze the observed Grok Build 1.0.3 behavior in
+  the real acceptance evidence.
 - Do not use `--always-approve` or `--yolo` for automatic review.
 - Run at most one automatic consultation per normalized plan hash.
 - Tell Grok not to invoke Codex, Claude, Grok, or another agentic CLI.
