@@ -1,0 +1,883 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-08-13",
+  "excludesSelf": true,
+  "aggregateSha256": "ba16c5de5aaa49c74fca8d370bcf803787988d0c20daa691eae91ed76f7d34c8",
+  "files": [
+    {
+      "path": "cases/meeting-followups/builtin/downstream-output/actions.csv",
+      "bytes": 333,
+      "sha256": "eea0065d20086bac17274d162222f8ec8aaccbc51e755b3ca3bf3659c2168d2a"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/downstream-output/follow-up.md",
+      "bytes": 512,
+      "sha256": "dcf4c05dc4da41edd8b06dee96c188366b812b0291fe8db28f15960dff179771"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/downstream-output/qa.json",
+      "bytes": 322,
+      "sha256": "b7ccb738d6955045dff32bff28003d461ea858ddf794f1c9fd48ee80bbb5b96d"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/authoring-boundary-audit.json",
+      "bytes": 361,
+      "sha256": "0e639a764310e229b3eb2438745e3b2d5bac187d32390323ac72f822c85ea97f"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/authoring-event-audit.json",
+      "bytes": 997,
+      "sha256": "0bc90b04dfd90cbd5621e799373741b201a287ee6de4315fe00307016a66f95b"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/authoring-events.jsonl",
+      "bytes": 63372,
+      "sha256": "8f738bc8ea5962da2ce999b27582689528339aeaf9fc2234cf949d9f1ee30490"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/authoring-final-message.txt",
+      "bytes": 716,
+      "sha256": "e924337f3f544a5895a7276141f1f002246bd1894822aaa0ebed9521632ee50f"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/authoring-input-manifest.json",
+      "bytes": 2208,
+      "sha256": "6fc96f3fac839b34413e64b11f29e75d86fbd9309461fefdc7cdfbf7806e7e4c"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/authoring-package-inspection.json",
+      "bytes": 980,
+      "sha256": "044a9ffb21d2b344b933acc637099a9d0d1ced0af92c4058cf85d723124dcc3d"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/authoring-package-validation.txt",
+      "bytes": 145,
+      "sha256": "8148b2e6733fca6fede64dbe171b383a8b43d6895f6a3be5f0f97623afd35056"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/authoring-run-metadata.json",
+      "bytes": 1127,
+      "sha256": "01ee9fbeb60766ad268b087178d9cb690881801f7f48d4f9aab43be313549386"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/authoring-stderr.txt",
+      "bytes": 885,
+      "sha256": "cde3e7e3d8267ad18dafcb0ea94dde9f5bcedeccec1052c845a2377a36e285da"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/downstream-boundary-audit.json",
+      "bytes": 216,
+      "sha256": "47b90a5d6d93a0dd7a6a0950d8d2fc904c69764fb917453b0518149b2050a342"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/downstream-event-audit.json",
+      "bytes": 943,
+      "sha256": "d1effc42f537de0377b96e9512f8052037380351015a1514650b08460307aa74"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/downstream-events.jsonl",
+      "bytes": 12400,
+      "sha256": "42783a67d52a37764eafc3ccf8ef9259c09408bf46acecf86d73a1cee3af314b"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/downstream-final-message.txt",
+      "bytes": 670,
+      "sha256": "dedbe5869ce20c4b4455734732f242fe6a73260945cc896c58d088690c921e36"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/downstream-grade.json",
+      "bytes": 1679,
+      "sha256": "098c29c98592f15710512acd92d01fdb7b89591849f559c98b8c7489445e5fb2"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/downstream-input-manifest.json",
+      "bytes": 1602,
+      "sha256": "f857d2067eb497f357dc4561126b91480f6346c8634dcd232de088a6c3530c09"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/downstream-output-manifest.json",
+      "bytes": 649,
+      "sha256": "775a642a7464b8fa65a9f81da44d917b2d38342d12fd9b9bad8425ba833d4368"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/downstream-run-metadata.json",
+      "bytes": 1120,
+      "sha256": "80f0229a9820621b963e5c221499db429e2f681d0a66fba442cc034c93919d4c"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/evidence/downstream-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/skill/SKILL.md",
+      "bytes": 2141,
+      "sha256": "55d66d4614500ce5fcacc2fd91ee62622161520c082d5ca4845de86acc9ccd1a"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/skill/agents/openai.yaml",
+      "bytes": 238,
+      "sha256": "4c346d7a36b3713604714177a406e79ce6b34601064272b574fb543fd66766c9"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/skill/references/deliverable-contract.md",
+      "bytes": 3284,
+      "sha256": "2fc30a1069f00344fb2cd2007cccaa6b9520326c5ffdaa0976832310b71e91b4"
+    },
+    {
+      "path": "cases/meeting-followups/builtin/skill/scripts/validate_outputs.py",
+      "bytes": 9498,
+      "sha256": "93a9adfd7a5e4ab2c74a2e02bba04655d90e50dedee6d331118ce6f15710b2fd"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/downstream-output/actions.csv",
+      "bytes": 333,
+      "sha256": "eea0065d20086bac17274d162222f8ec8aaccbc51e755b3ca3bf3659c2168d2a"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/downstream-output/follow-up.md",
+      "bytes": 512,
+      "sha256": "dcf4c05dc4da41edd8b06dee96c188366b812b0291fe8db28f15960dff179771"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/downstream-output/qa.json",
+      "bytes": 322,
+      "sha256": "b7ccb738d6955045dff32bff28003d461ea858ddf794f1c9fd48ee80bbb5b96d"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/authoring-boundary-audit.json",
+      "bytes": 356,
+      "sha256": "3e21298db0df4878b61bce1dba526007aac9c3d63f11ccd60de8b116592f66d0"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/authoring-event-audit.json",
+      "bytes": 986,
+      "sha256": "789071a00f2dcfe95ac1519a5dd00b629d040a0d1e318dafd09cd42f010bb41a"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/authoring-events.jsonl",
+      "bytes": 74454,
+      "sha256": "832928248b52c9e929ea11e6f3cb8b536623cfe426d0411e9688624cf65cefda"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/authoring-final-message.txt",
+      "bytes": 2062,
+      "sha256": "ad6b382015017cfa308e30a017a61a9233e18dedc9ac5556ec99c5591041ea86"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/authoring-input-manifest.json",
+      "bytes": 1710,
+      "sha256": "2540b0917431c98c96d7ddf01d10e5e37c8ae1fb2fee96092794a78a997db448"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/authoring-package-inspection.json",
+      "bytes": 978,
+      "sha256": "f61ca1cee22bcf6991a2bb6ea38e8d0977ba1f48f47945fbf14126fbaf349aac"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/authoring-package-validation.txt",
+      "bytes": 147,
+      "sha256": "41e32f0d96cafd542ee9fcbcd731d188000a6e1300b60ecea886627eebf4099d"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/authoring-run-metadata.json",
+      "bytes": 1133,
+      "sha256": "9833da24dc372f9ff5fd4b8e18f410213f31bf8e91e7b459c202459fe423110c"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/authoring-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/downstream-boundary-audit.json",
+      "bytes": 216,
+      "sha256": "47b90a5d6d93a0dd7a6a0950d8d2fc904c69764fb917453b0518149b2050a342"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/downstream-event-audit.json",
+      "bytes": 943,
+      "sha256": "48ee6d3c6efabe2140364f654d5f26a89a5fdfe91b2fafdfddf0d0a2cd985eb1"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/downstream-events.jsonl",
+      "bytes": 28074,
+      "sha256": "5d547c23a9c55bb3446fea7bfc1b077d0377476fda1ad96041a3b22ee6b2e122"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/downstream-final-message.txt",
+      "bytes": 713,
+      "sha256": "a932aeab076884412cd1cf2346b44376405fc6c95cbde90bacd66110fee272ad"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/downstream-grade.json",
+      "bytes": 1679,
+      "sha256": "098c29c98592f15710512acd92d01fdb7b89591849f559c98b8c7489445e5fb2"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/downstream-input-manifest.json",
+      "bytes": 1600,
+      "sha256": "f6f375c4b7e7b5de689be443e402604be9628d5de4e38e0a7cdc793ef5b2f2d8"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/downstream-output-manifest.json",
+      "bytes": 649,
+      "sha256": "775a642a7464b8fa65a9f81da44d917b2d38342d12fd9b9bad8425ba833d4368"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/downstream-run-metadata.json",
+      "bytes": 1126,
+      "sha256": "f3a2db2d00e53eafa38807bc2b5c6d4444d2caed0788b7a859fade8cb988c635"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/evidence/downstream-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/skill/SKILL.md",
+      "bytes": 2390,
+      "sha256": "c7195e6c5e1eda5d0bae6b1680f70e5cb418b0b4486980f23bf9002280e0555d"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/skill/evals/evals.json",
+      "bytes": 2408,
+      "sha256": "cf1cd99bf1209899eb3384d37736627ef86737d6ce203c1e5dd874aa192e28eb"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/skill/references/follow-up-contract.md",
+      "bytes": 2601,
+      "sha256": "1ed7d97303edd2c2365e154dc5a1735a0ca1f8788c34050e5d8cb01f0796dfc4"
+    },
+    {
+      "path": "cases/meeting-followups/toolboxmd/skill/scripts/validate_outputs.py",
+      "bytes": 12265,
+      "sha256": "725ec9445d8db041b4536fd6c27d5900d45e4e2b3e00673301f95f0631bb80fd"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/downstream-output/deck-check.json",
+      "bytes": 396,
+      "sha256": "e8be578c11c72b3a64a7ade4a4f64ecdee3bfe22c316729f7ff019d04e9a1a9e"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/downstream-output/status-deck.md",
+      "bytes": 897,
+      "sha256": "05ed59f6d5eee1e777627c2df9d7e694f3805ab7a6c39c52072775d55655e4ab"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/authoring-boundary-audit.json",
+      "bytes": 422,
+      "sha256": "3c44ada89d4b68be3015638861c62e8dfe8499c2d790987d52b9164811ce92d1"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/authoring-event-audit.json",
+      "bytes": 995,
+      "sha256": "f1ef149a56438422f90036544c463d268a94752202133e7f5a972911e3f062b0"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/authoring-events.jsonl",
+      "bytes": 55765,
+      "sha256": "7f5d24adf2f821f4cc5893fda3fbaaa9846ad7ec045768156ae3d1a971508e47"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/authoring-final-message.txt",
+      "bytes": 945,
+      "sha256": "6a2f51a026e15574491d44b13363d9691f81d315da96ab27c892bed56e107dd2"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/authoring-input-manifest.json",
+      "bytes": 2210,
+      "sha256": "819cc00f1f634f6fdc6bcdf29ac30af5164f091d1159eddb67447efd0755c609"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/authoring-package-inspection.json",
+      "bytes": 1137,
+      "sha256": "2cf9466847c365d919cc6ed9abaaf5119e46b3227d4530b350dd06cb47339798"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/authoring-package-validation.txt",
+      "bytes": 147,
+      "sha256": "f80a8dda63ddceded9a1516aacf7032e8b50a9e7bf4280581ea186041b7d40e8"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/authoring-run-metadata.json",
+      "bytes": 1130,
+      "sha256": "5e98f2bac1700cfdd03e20065ee79598a122cad668178233cc6dc5fc7121f0a2"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/authoring-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/downstream-boundary-audit.json",
+      "bytes": 200,
+      "sha256": "04359b7585fe14fd6209da688119649fe4b7760e8a24db3ef28041b05f0a2354"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/downstream-event-audit.json",
+      "bytes": 944,
+      "sha256": "8f5aff5adf545bd82f9523442525bcb55d779d099b3c1410efaa872f84d945ca"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/downstream-events.jsonl",
+      "bytes": 14646,
+      "sha256": "368e3469d09261592ff0f7bb411dd187e7a780a15ac74c294a01695cbd65d6af"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/downstream-final-message.txt",
+      "bytes": 527,
+      "sha256": "2e2f07319792f2e72c7f21d60a468293e06558712fbed02576520b0d0125705b"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/downstream-grade.json",
+      "bytes": 1774,
+      "sha256": "1b24808d26ad9ee4f2bbcf696b40c8d03180bf07832cf05c5a964e4c96e3978c"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/downstream-input-manifest.json",
+      "bytes": 1638,
+      "sha256": "b9e0bfc4f62afd89f458721d1fb8c1d49241d54032a0eeffe89655efbe87a784"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/downstream-output-manifest.json",
+      "bytes": 514,
+      "sha256": "d37544774319e7ef8285bddf5e9799545a51cbc03c50bb3ab2660c0c760260d0"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/downstream-run-metadata.json",
+      "bytes": 1123,
+      "sha256": "fd8616b3d722dd02100a74d58d4b78d0d57ff0575c1353ae9fef77f075d526d1"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/evidence/downstream-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/skill/SKILL.md",
+      "bytes": 2714,
+      "sha256": "1ee879e318982fcdf52a4bd7517dae3e1892e190a22746ce3443ce1627b7245e"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/skill/agents/openai.yaml",
+      "bytes": 227,
+      "sha256": "5b60ebe07893d52837496ab377db4532ff7388d610ac6fd5f2243f2dbad3281d"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/skill/assets/status-deck-template.md",
+      "bytes": 308,
+      "sha256": "ba48591faf17716868e375e170ca7cbc543d8c988724c7624797aff7c19ac688"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/skill/references/deck-conventions.md",
+      "bytes": 3350,
+      "sha256": "adf8fdc37a2f40dff3576ac59fb84e88c7097c7d7e854c6925a6e5f6d3878896"
+    },
+    {
+      "path": "cases/weekly-status-deck/builtin/skill/scripts/validate_deck.py",
+      "bytes": 6090,
+      "sha256": "b75672e65caffad3e2eda1631ac84395fddde0792838094b1e8e0f9ca26839fb"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/downstream-output/deck-check.json",
+      "bytes": 396,
+      "sha256": "e8be578c11c72b3a64a7ade4a4f64ecdee3bfe22c316729f7ff019d04e9a1a9e"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/downstream-output/status-deck.md",
+      "bytes": 875,
+      "sha256": "8db16bfb9052b36e7e828bca837bf39ffd8c7414b0e4d3655b2ca24fbe71dc17"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/authoring-boundary-audit.json",
+      "bytes": 541,
+      "sha256": "8fe0c9b0ef5d42f8700c6ee51dcd2183def9b887dc21a95c3816b735396f71b0"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/authoring-event-audit.json",
+      "bytes": 1085,
+      "sha256": "eb94735817b06e4879502d40c9e128fc74b28c3cd81524628f82b035ce6c968b"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/authoring-events.jsonl",
+      "bytes": 80885,
+      "sha256": "554abcc08589c66e1615e4ce534351d76680f58953aee3ee0e59b47f4235b961"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/authoring-final-message.txt",
+      "bytes": 1355,
+      "sha256": "859c5c93d2aba5efe1a3462e6540f1a70b3096f9c31488f0ff9b269544e6986e"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/authoring-input-manifest.json",
+      "bytes": 1712,
+      "sha256": "ff6e9692e337a8fb4e801c847307099a68a7bfc5601bb498ba16ed7be6b2b9bb"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/authoring-package-inspection.json",
+      "bytes": 1460,
+      "sha256": "138b33cc29e47515dbaa01f924e5c45b5e29db06922daa300cf385316bddb7f2"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/authoring-package-validation.txt",
+      "bytes": 149,
+      "sha256": "c5234dcb35fd9b5c6c70c91d689d73e4093a310e23cb5532a595c4281808bd75"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/authoring-run-metadata.json",
+      "bytes": 1136,
+      "sha256": "614397fb6a04f5764f747075af50712e7001463ac33a59600bf0e2fcde23580e"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/authoring-stderr.txt",
+      "bytes": 3084,
+      "sha256": "7879700dc007bd6019c294d5333a2cd311fef9d32a0852b214395d3f831e4be7"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/downstream-boundary-audit.json",
+      "bytes": 201,
+      "sha256": "caaa66ccd4526331e378939d55a5a38f562bae6e98ec93b031454a2962ce7456"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/downstream-event-audit.json",
+      "bytes": 945,
+      "sha256": "7ea1ca4293e5087f918ee14bb35f9085324bec8efad7fc604a9e677e55892a63"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/downstream-events.jsonl",
+      "bytes": 16514,
+      "sha256": "51b95afe7854e8202f1952d674da32da31f5ebf5ec958c8cc5f56e817e73097c"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/downstream-final-message.txt",
+      "bytes": 527,
+      "sha256": "611ee15f58c760293d46d9e76a4e02c502afb6758218aed3e0a1e1f8739b65f7"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/downstream-grade.json",
+      "bytes": 1774,
+      "sha256": "1b24808d26ad9ee4f2bbcf696b40c8d03180bf07832cf05c5a964e4c96e3978c"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/downstream-input-manifest.json",
+      "bytes": 2029,
+      "sha256": "5a0d07511dbd3880ba3c5bcb590f03e4f3124a9e4d428f1683afe3a91ec95e2b"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/downstream-output-manifest.json",
+      "bytes": 514,
+      "sha256": "0cf94f27c93705b5aadf97df1a6ec7ba7c08177f9745df898655b83e72cc3b72"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/downstream-run-metadata.json",
+      "bytes": 1129,
+      "sha256": "83546728e9a0e195814caa6b3e24ad3df79954a122f2a359972593cfaf65c4f1"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/evidence/downstream-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/skill/SKILL.md",
+      "bytes": 3097,
+      "sha256": "f45ed1ef7267a5c0e4c47ffbc785744503ea653e36a10855379b0f9ab33a5970"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/skill/assets/status-deck-template.md",
+      "bytes": 274,
+      "sha256": "fa483c3c7c967f53ff2c7585a797663b0abe0e90e84943661be12bc4340eeed7"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/skill/evals/downstream-smoke.md",
+      "bytes": 1599,
+      "sha256": "e2111f5f412689f90e100c1c79dd984fed3fdc066a327edfc08b3b60e8de6778"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/skill/evals/evals.json",
+      "bytes": 2793,
+      "sha256": "2d6504a89fab4281f3c254e2fe06b49e26052b77dbfacd586a905d7d15831d6b"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/skill/references/deck-conventions.md",
+      "bytes": 3170,
+      "sha256": "23dfa8063e22248f44db30ba6a9d8ed46755e4dc6e810160a733e6ac17b78532"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/skill/scripts/test_validate_deck.py",
+      "bytes": 3590,
+      "sha256": "5f50a1eb2ef0334d02e852685243c8b993236eabd205029e13889f7083ee8716"
+    },
+    {
+      "path": "cases/weekly-status-deck/toolboxmd/skill/scripts/validate_deck.py",
+      "bytes": 5007,
+      "sha256": "f5e6843c20e05456e450e52385bedecd8365e6c4a319a5dd83a32396ad107c82"
+    },
+    {
+      "path": "discarded-authoring/failure.json",
+      "bytes": 2504,
+      "sha256": "172f8e043b6d879bba3728ee0543b7f56d726eec5a06d5035a36bd588875d992"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/builtin/boundary-audit.json",
+      "bytes": 531,
+      "sha256": "fa2396f665c5bec568cf7b97fcf5b4a44b06b9b8fd328dfa3f0342ad5594b686"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/builtin/event-audit.json",
+      "bytes": 891,
+      "sha256": "c9a446ed3d90ecb30095a12f7ed2923e8d0936fef72af16e152b58ae23a275f9"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/builtin/events.jsonl",
+      "bytes": 70171,
+      "sha256": "2a7221765b15df1698b6c118f17e710ee7b34d26cf001302a6453ca6cd6c2c4a"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/builtin/final-message.txt",
+      "bytes": 756,
+      "sha256": "081d8a97de129befb7f2fec609de54dfb12e238853601d7c3742dab86e9172c6"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/builtin/input-manifest.json",
+      "bytes": 2208,
+      "sha256": "6fc96f3fac839b34413e64b11f29e75d86fbd9309461fefdc7cdfbf7806e7e4c"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/builtin/run-metadata.json",
+      "bytes": 809,
+      "sha256": "5637a378479717020574676f2ec56d41b53a0a01a01a96b4174a01b54770e282"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/builtin/stderr.txt",
+      "bytes": 636,
+      "sha256": "2aa16e08a26f90f4e49f99fd28e66ba984cb681915d19d71cf53230eeb19af77"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/toolboxmd/boundary-audit.json",
+      "bytes": 412,
+      "sha256": "77fdebd6eeb694a26a21d844bf920725e18a725b2078c83edfbcef1c6f218c9f"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/toolboxmd/event-audit.json",
+      "bytes": 890,
+      "sha256": "70f02259eca86365385bb258f4372fba3163728fda1fb5fbae5097f05dccc600"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/toolboxmd/events.jsonl",
+      "bytes": 102780,
+      "sha256": "b534fa33baf27e9ff7bcd996bee925b5bda94134675312e5fda2988970fc986c"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/toolboxmd/final-message.txt",
+      "bytes": 1484,
+      "sha256": "08e44f544dc95a7160d09c6419ba61a2b1612f24127b3a305d3f3f4f91874eb8"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/toolboxmd/input-manifest.json",
+      "bytes": 1710,
+      "sha256": "2540b0917431c98c96d7ddf01d10e5e37c8ae1fb2fee96092794a78a997db448"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/toolboxmd/run-metadata.json",
+      "bytes": 813,
+      "sha256": "aa4cdbfbf97ad7e0ae242da3653f9b3ab84d56017d3570f8316140ae40715175"
+    },
+    {
+      "path": "discarded-authoring/meeting-followups/toolboxmd/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/builtin/boundary-audit.json",
+      "bytes": 602,
+      "sha256": "bae5e60b81d2fe265f6497613e44977d20a4ccdc890c3926ed7a31a515bae9b1"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/builtin/event-audit.json",
+      "bytes": 891,
+      "sha256": "cab69bb554fae8dfbdaaba35f52a15adfb203e4940e6517a7714d64c95b034a3"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/builtin/events.jsonl",
+      "bytes": 57430,
+      "sha256": "10700e53a30c14eb0b80e41e07db94e53f40a8a6096c77bbfe4ebd13ffb24399"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/builtin/final-message.txt",
+      "bytes": 773,
+      "sha256": "9407eedfb0ff99bc661be36d29855e97390cfc11bd73f9c7968e24b786cbed70"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/builtin/input-manifest.json",
+      "bytes": 2210,
+      "sha256": "819cc00f1f634f6fdc6bcdf29ac30af5164f091d1159eddb67447efd0755c609"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/builtin/run-metadata.json",
+      "bytes": 811,
+      "sha256": "f03309231af954b28d539e0c5748baa4bedba581625f2cc869e93c483fff6303"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/builtin/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/toolboxmd/boundary-audit.json",
+      "bytes": 478,
+      "sha256": "02981229337ec922a19dd8e1f55cddb1deb5134642ac0b2a5bd277290630b94d"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/toolboxmd/event-audit.json",
+      "bytes": 892,
+      "sha256": "3b628009523aab144b72896a7344bc70b2d6b2c0369c64dc600ce618a5fb8cac"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/toolboxmd/events.jsonl",
+      "bytes": 68974,
+      "sha256": "8b75ebbc82b7782f9d5afef3506eb79ca0b7a54d6e696f555c09a32495c16e54"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/toolboxmd/final-message.txt",
+      "bytes": 1246,
+      "sha256": "d5da80a22e59dc997a3bca5de1f84e193fd9e4e47cfa2e10baadf463b087cb9f"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/toolboxmd/input-manifest.json",
+      "bytes": 1712,
+      "sha256": "ff6e9692e337a8fb4e801c847307099a68a7bfc5601bb498ba16ed7be6b2b9bb"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/toolboxmd/run-metadata.json",
+      "bytes": 815,
+      "sha256": "d51158c0117b04f93e4adb4f1e927f8542fb9c3cb2072e0df77b05d09a7e0842"
+    },
+    {
+      "path": "discarded-authoring/weekly-status-deck/toolboxmd/stderr.txt",
+      "bytes": 4711,
+      "sha256": "5acd1c8161c6e3829b9c1a0bd8885587eef80f3362b9dc4dd107e5cbcd33949c"
+    },
+    {
+      "path": "near-miss/builtin/boundary-audit.json",
+      "bytes": 140,
+      "sha256": "bc2f6a823b66df77ced503199f1f27edc9d22585ab16e4ec89feed92387e5d0c"
+    },
+    {
+      "path": "near-miss/builtin/event-audit.json",
+      "bytes": 656,
+      "sha256": "16934337a5123f82f46f3d2ae90cb8905e1f7f910cf698aab6c427a3eb693f4b"
+    },
+    {
+      "path": "near-miss/builtin/events.jsonl",
+      "bytes": 680,
+      "sha256": "f6354b5ed8b05da0e332199348c98c627cf0e4f865113d63150b29af7cf05356"
+    },
+    {
+      "path": "near-miss/builtin/final-message.txt",
+      "bytes": 339,
+      "sha256": "90d15daaf6a345b73d5d59236ba55303a0f2b7547f14fc1f9043c1d7efd3dc66"
+    },
+    {
+      "path": "near-miss/builtin/input-manifest.json",
+      "bytes": 2069,
+      "sha256": "92b19a0ce5c537db4e5038d301053fa9392bfebdcd8beae6dda4ad51a3fec043"
+    },
+    {
+      "path": "near-miss/builtin/run-metadata.json",
+      "bytes": 1062,
+      "sha256": "62e93910a24db852530a4359a877b7bcb136b084ab33c4319021d1554aee30fd"
+    },
+    {
+      "path": "near-miss/builtin/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "near-miss/toolboxmd/boundary-audit.json",
+      "bytes": 140,
+      "sha256": "d72487eea76b93a13103c0111434248af3509f110b9199022e1deaad2fb75708"
+    },
+    {
+      "path": "near-miss/toolboxmd/event-audit.json",
+      "bytes": 659,
+      "sha256": "b7c3d952d643732ca64fafe481ad69a319af104170dba8a120df776d9864d685"
+    },
+    {
+      "path": "near-miss/toolboxmd/events.jsonl",
+      "bytes": 621,
+      "sha256": "d76ad2c308239b976d25b91b3425b1ccedcb4f899c776506837600b2d358ff25"
+    },
+    {
+      "path": "near-miss/toolboxmd/final-message.txt",
+      "bytes": 277,
+      "sha256": "1945224750b05bc7f0a3765120434c9e41a7cae3d356cb40727b0e1a48149da9"
+    },
+    {
+      "path": "near-miss/toolboxmd/input-manifest.json",
+      "bytes": 2458,
+      "sha256": "83cabf5d211d1232749b21a8519e49b85b58053bb8e26bc895efbfe9e899ff10"
+    },
+    {
+      "path": "near-miss/toolboxmd/run-metadata.json",
+      "bytes": 1068,
+      "sha256": "f34e63489efc78321343c58dc7e6560eeb157ac5ac3b7aa35d340c0f491ec403"
+    },
+    {
+      "path": "near-miss/toolboxmd/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "preflight/boundary-audit.json",
+      "bytes": 139,
+      "sha256": "bf6e5f80e74780a7d7774251a0a8cc2a8f39dfeab56e9544f61487fb36913996"
+    },
+    {
+      "path": "preflight/event-audit.json",
+      "bytes": 860,
+      "sha256": "0cd2d939ca6b786ad3f59642c8758ff37704fd661e4b6d42744aedb7d28c06fc"
+    },
+    {
+      "path": "preflight/events.jsonl",
+      "bytes": 2657,
+      "sha256": "d91d281660b6ba4b2997f11e0eb8ff6b6f5a1e050eef74e29739865cdcd58c7c"
+    },
+    {
+      "path": "preflight/final-message.txt",
+      "bytes": 33,
+      "sha256": "6c11af3d11087618788b82333682a1abf09e49c2769bbc4674588e094e46d73a"
+    },
+    {
+      "path": "preflight/input-manifest.json",
+      "bytes": 537,
+      "sha256": "5c3b4e00dcab4ccfc18476163654e8a7493d42f55cea65a7c7e4092bd18acc6a"
+    },
+    {
+      "path": "preflight/run-metadata.json",
+      "bytes": 1033,
+      "sha256": "2b3ab13bd307a81861a7c44b831957180feada8176ecbb2a03953a42bb596dcc"
+    },
+    {
+      "path": "preflight/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "qualification/meeting-followups/evidence/boundary-audit.json",
+      "bytes": 210,
+      "sha256": "a9b41015ef13c8f20d23a6bef27f6f577a73d26cee02d03d59c59ad9823ff761"
+    },
+    {
+      "path": "qualification/meeting-followups/evidence/event-audit.json",
+      "bytes": 555,
+      "sha256": "c202be0b90128792f6b2219927199d7f3452eb33055342c2ffadca08bb1d3644"
+    },
+    {
+      "path": "qualification/meeting-followups/evidence/events.jsonl",
+      "bytes": 5894,
+      "sha256": "35414767eccbbf176a9fc99dcca3f6e328621c735218d1526f402e0db6e40381"
+    },
+    {
+      "path": "qualification/meeting-followups/evidence/final-message.txt",
+      "bytes": 512,
+      "sha256": "235a48a142cdc2e1594f080075e4c338207135d448631867d8e364925d645d8f"
+    },
+    {
+      "path": "qualification/meeting-followups/evidence/grade.json",
+      "bytes": 2280,
+      "sha256": "e2b611358d1c7f8b967bedcf115be89011a1869552af07a07494d24e763d673d"
+    },
+    {
+      "path": "qualification/meeting-followups/evidence/input-manifest.json",
+      "bytes": 844,
+      "sha256": "9902d1aa04a302699c0a81fc111a75a2820cc9dffab8fb3fc5bad3c21e88ecdc"
+    },
+    {
+      "path": "qualification/meeting-followups/evidence/output-manifest.json",
+      "bytes": 416,
+      "sha256": "8004fdb6cc262f75ad622f2ba04a5320c25b3dfcd1578bfef684e967b627fc27"
+    },
+    {
+      "path": "qualification/meeting-followups/evidence/run-metadata.json",
+      "bytes": 790,
+      "sha256": "3ae4b3c7a479f51d66b4fcd27421e7b3c18ffcb37bf303332cdb6c3eaa164523"
+    },
+    {
+      "path": "qualification/meeting-followups/evidence/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "qualification/meeting-followups/output/actions.csv",
+      "bytes": 340,
+      "sha256": "41fe6f5a322fd133003dd651e71bc23b5e86b1edba025ea6c41a7ddd2119a2ab"
+    },
+    {
+      "path": "qualification/meeting-followups/output/team-follow-up-2026-08-13.md",
+      "bytes": 651,
+      "sha256": "f528f8e5fdd67f9852ddd3aa9a9ebd66ccbce9fdc506d034b4be76c7b0257b9f"
+    },
+    {
+      "path": "qualification/weekly-status-deck/evidence/boundary-audit.json",
+      "bytes": 200,
+      "sha256": "8c233f2a11f4069c85b91c27c1d6d2d9a77b0b6cac86fab5a36b2dbd0415229c"
+    },
+    {
+      "path": "qualification/weekly-status-deck/evidence/event-audit.json",
+      "bytes": 555,
+      "sha256": "52688b8e4fb847da063856199c68a85bf7cdde976e611454f68f1648318c0afb"
+    },
+    {
+      "path": "qualification/weekly-status-deck/evidence/events.jsonl",
+      "bytes": 11005,
+      "sha256": "5517ebe6aa06c28df2248c26fd658ff2f54d7f6d8681ad8b5a8b2507d181051f"
+    },
+    {
+      "path": "qualification/weekly-status-deck/evidence/final-message.txt",
+      "bytes": 500,
+      "sha256": "ce241c4ba4d20984c59e1954c63fb75619e8221f8fe1dd9b5b1ab144f4005057"
+    },
+    {
+      "path": "qualification/weekly-status-deck/evidence/grade.json",
+      "bytes": 2165,
+      "sha256": "2b52b60ae9c925920755253e8f6c83f105e31033f44dcb671cd7f981361d3b50"
+    },
+    {
+      "path": "qualification/weekly-status-deck/evidence/input-manifest.json",
+      "bytes": 685,
+      "sha256": "c459d1207a99475956b2efa37c6abd6894b5e6b59dc940a56369b2a807448e62"
+    },
+    {
+      "path": "qualification/weekly-status-deck/evidence/output-manifest.json",
+      "bytes": 406,
+      "sha256": "780d3ee2dae82861731b1dd5608fe74efdbfbef3b02a8858af9a8b788e95f3f8"
+    },
+    {
+      "path": "qualification/weekly-status-deck/evidence/run-metadata.json",
+      "bytes": 792,
+      "sha256": "7b29baa9d8bc2980e5b292596f437086c29763936401fb9a4e0ca0e8d9898cd2"
+    },
+    {
+      "path": "qualification/weekly-status-deck/evidence/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "qualification/weekly-status-deck/output/deck-check.json",
+      "bytes": 420,
+      "sha256": "571106fbf7ecfc4e88fc5dd9411798b4445bd9a7e5ed466a7b524d761a8ddf0a"
+    },
+    {
+      "path": "qualification/weekly-status-deck/output/status-deck.md",
+      "bytes": 959,
+      "sha256": "c40002f8bd0716d2c5e26bd24bef5d74f939539a1cf6e17f4a20df652af2410a"
+    },
+    {
+      "path": "session-usage.json",
+      "bytes": 8694,
+      "sha256": "99df094f3389dbec01c94d0b7f3733647f03b4821d18ef3ea5144ebec1d804e4"
+    }
+  ]
+}

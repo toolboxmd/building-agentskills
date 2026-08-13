@@ -1,0 +1,1 @@
+PASS: valid skill package: .benchmark-work/toolboxmd-creating-skills-v2/runs/authoring-r2/meeting-followups/builtin/run/output/meeting-followups

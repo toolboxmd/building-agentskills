@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 2,
+  "caseId": "meeting-followups",
+  "targetSkillName": "meeting-followups",
+  "criticalCheckIds": [
+    "follow-up-file",
+    "tracker-file",
+    "qa-file",
+    "follow-up-headings",
+    "follow-up-content",
+    "tracker-exact",
+    "tracker-no-idea",
+    "qa-exact"
+  ],
+  "checks": [
+    {
+      "id": "follow-up-file",
+      "type": "file-exists",
+      "path": "output/follow-up.md"
+    },
+    {
+      "id": "tracker-file",
+      "type": "file-exists",
+      "path": "output/actions.csv"
+    },
+    {
+      "id": "qa-file",
+      "type": "file-exists",
+      "path": "output/qa.json"
+    },
+    {
+      "id": "follow-up-headings",
+      "type": "markdown-headings-exact",
+      "path": "output/follow-up.md",
+      "headings": [
+        "Meeting follow-up",
+        "Decisions",
+        "Action items",
+        "Open questions",
+        "Deferred ideas"
+      ]
+    },
+    {
+      "id": "follow-up-content",
+      "type": "contains-all",
+      "path": "output/follow-up.md",
+      "caseSensitive": false,
+      "values": [
+        "Keep the onboarding checklist on one page",
+        "[M03]",
+        "Move the beta invite from 2026-08-17 to 2026-08-18",
+        "[M07]",
+        "@maya | due 2026-08-14 | Draft the revised onboarding checklist",
+        "[M05]",
+        "@leo | due TBD | Collect three customer onboarding quotes",
+        "[M06]",
+        "@nina | due 2026-08-13 | Update the beta invite copy and calendar",
+        "[M08]",
+        "Who owns localization sign-off",
+        "[M02]",
+        "Maybe add a live welcome call for every new account",
+        "[M04]"
+      ]
+    },
+    {
+      "id": "tracker-exact",
+      "type": "exact-text",
+      "path": "output/actions.csv",
+      "value": "action_id,owner,due_date,status,action,source\nM-260804-01,@oliver,2026-08-07,done,Send pilot recap,M12\nM-260811-01,@maya,2026-08-14,open,Draft the revised onboarding checklist,M05\nM-260811-02,@leo,TBD,open,Collect three customer onboarding quotes,M06\nM-260811-03,@nina,2026-08-13,open,Update the beta invite copy and calendar,M08\n"
+    },
+    {
+      "id": "tracker-no-idea",
+      "type": "not-contains",
+      "path": "output/actions.csv",
+      "caseSensitive": false,
+      "values": [
+        "live welcome call"
+      ]
+    },
+    {
+      "id": "qa-exact",
+      "type": "json-equals",
+      "path": "output/qa.json",
+      "value": {
+        "schema_version": 1,
+        "meeting_date": "2026-08-11",
+        "decision_count": 2,
+        "action_count": 3,
+        "open_question_count": 1,
+        "deferred_idea_count": 1,
+        "tracker_rows_added": 3,
+        "missing_due_dates": [
+          "M-260811-02"
+        ],
+        "checks": [
+          "source-citations",
+          "tracker-schema",
+          "no-idea-promotion"
+        ]
+      }
+    }
+  ]
+}

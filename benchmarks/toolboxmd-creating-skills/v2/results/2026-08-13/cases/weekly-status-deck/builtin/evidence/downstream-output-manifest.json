@@ -1,0 +1,16 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "c55b4fb1f93a3b4772b969c2467f2e9ff342167eaf623f4bf624e93d42f56b02",
+  "files": [
+    {
+      "path": "deck-check.json",
+      "bytes": 396,
+      "sha256": "e8be578c11c72b3a64a7ade4a4f64ecdee3bfe22c316729f7ff019d04e9a1a9e"
+    },
+    {
+      "path": "status-deck.md",
+      "bytes": 897,
+      "sha256": "05ed59f6d5eee1e777627c2df9d7e694f3805ab7a6c39c52072775d55655e4ab"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "aggregateSha256": "8d85b408c77c0c8f625f1c6d5cc574482ccae1e8efa7dc1e79a5828735eb9ea0",
+  "fileCount": 7,
+  "packageBytes": 19530,
+  "referenceFileCount": 1,
+  "scriptFileCount": 2,
+  "evalFileCount": 2,
+  "skillMd": {
+    "bytes": 3097,
+    "lines": 44,
+    "words": 439,
+    "descriptionCharacters": 337
+  },
+  "files": [
+    {
+      "path": "SKILL.md",
+      "bytes": 3097,
+      "sha256": "f45ed1ef7267a5c0e4c47ffbc785744503ea653e36a10855379b0f9ab33a5970"
+    },
+    {
+      "path": "assets/status-deck-template.md",
+      "bytes": 274,
+      "sha256": "fa483c3c7c967f53ff2c7585a797663b0abe0e90e84943661be12bc4340eeed7"
+    },
+    {
+      "path": "evals/downstream-smoke.md",
+      "bytes": 1599,
+      "sha256": "e2111f5f412689f90e100c1c79dd984fed3fdc066a327edfc08b3b60e8de6778"
+    },
+    {
+      "path": "evals/evals.json",
+      "bytes": 2793,
+      "sha256": "2d6504a89fab4281f3c254e2fe06b49e26052b77dbfacd586a905d7d15831d6b"
+    },
+    {
+      "path": "references/deck-conventions.md",
+      "bytes": 3170,
+      "sha256": "23dfa8063e22248f44db30ba6a9d8ed46755e4dc6e810160a733e6ac17b78532"
+    },
+    {
+      "path": "scripts/test_validate_deck.py",
+      "bytes": 3590,
+      "sha256": "5f50a1eb2ef0334d02e852685243c8b993236eabd205029e13889f7083ee8716"
+    },
+    {
+      "path": "scripts/validate_deck.py",
+      "bytes": 5007,
+      "sha256": "f5e6843c20e05456e450e52385bedecd8365e6c4a319a5dd83a32396ad107c82"
+    }
+  ]
+}

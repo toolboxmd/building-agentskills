@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "output",
+  "protectedFileCount": 12,
+  "newFiles": [
+    "output/weekly-status-deck/SKILL.md",
+    "output/weekly-status-deck/agents/openai.yaml",
+    "output/weekly-status-deck/assets/status-deck-template.md",
+    "output/weekly-status-deck/references/deck-conventions.md",
+    "output/weekly-status-deck/scripts/validate_deck.py"
+  ],
+  "reasons": []
+}

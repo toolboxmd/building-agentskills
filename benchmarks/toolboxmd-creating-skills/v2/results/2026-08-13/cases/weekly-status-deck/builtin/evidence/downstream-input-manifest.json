@@ -1,0 +1,46 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "825161cb992aa9dc55342135819021d4e6b468b8889902e4deb16e8991d96f7b",
+  "files": [
+    {
+      "path": ".agents/skills/weekly-status-deck/SKILL.md",
+      "bytes": 2714,
+      "sha256": "1ee879e318982fcdf52a4bd7517dae3e1892e190a22746ce3443ce1627b7245e"
+    },
+    {
+      "path": ".agents/skills/weekly-status-deck/agents/openai.yaml",
+      "bytes": 227,
+      "sha256": "5b60ebe07893d52837496ab377db4532ff7388d610ac6fd5f2243f2dbad3281d"
+    },
+    {
+      "path": ".agents/skills/weekly-status-deck/assets/status-deck-template.md",
+      "bytes": 308,
+      "sha256": "ba48591faf17716868e375e170ca7cbc543d8c988724c7624797aff7c19ac688"
+    },
+    {
+      "path": ".agents/skills/weekly-status-deck/references/deck-conventions.md",
+      "bytes": 3350,
+      "sha256": "adf8fdc37a2f40dff3576ac59fb84e88c7097c7d7e854c6925a6e5f6d3878896"
+    },
+    {
+      "path": ".agents/skills/weekly-status-deck/scripts/validate_deck.py",
+      "bytes": 6090,
+      "sha256": "b75672e65caffad3e2eda1631ac84395fddde0792838094b1e8e0f9ca26839fb"
+    },
+    {
+      "path": "knowledge/status-deck-contract.md",
+      "bytes": 2009,
+      "sha256": "9b519e17c9b9b16eb4221b8b069bea77568f470c617e49b91d8e98a67151cd6b"
+    },
+    {
+      "path": "task.md",
+      "bytes": 111,
+      "sha256": "1c03460e9a18cbc5713150ccfdbec7fa5b9d533772446be3f21ddaaac8944e32"
+    },
+    {
+      "path": "workspace/weekly-notes.md",
+      "bytes": 761,
+      "sha256": "bdd99bc40ddac87414b2f95d38dc9c55455373910a66fd34eade27af763c36ce"
+    }
+  ]
+}

@@ -1,2 +1,5 @@
 # Preserve exact generated benchmark bytes while retaining other whitespace checks.
 benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/** whitespace=-blank-at-eof
+benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/** whitespace=-blank-at-eof
+benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/qualification/meeting-followups/output/team-follow-up-2026-08-13.md whitespace=-trailing-space
+wiki/**/_index.md whitespace=-blank-at-eof

@@ -1,0 +1,56 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "5a02422a2631fc2aa6f6029ff9a635f4c7f0774bb9e174a64a0b408e91954cbd",
+  "files": [
+    {
+      "path": ".agents/skills/meeting-followups/SKILL.md",
+      "bytes": 2141,
+      "sha256": "55d66d4614500ce5fcacc2fd91ee62622161520c082d5ca4845de86acc9ccd1a"
+    },
+    {
+      "path": ".agents/skills/meeting-followups/agents/openai.yaml",
+      "bytes": 238,
+      "sha256": "4c346d7a36b3713604714177a406e79ce6b34601064272b574fb543fd66766c9"
+    },
+    {
+      "path": ".agents/skills/meeting-followups/references/deliverable-contract.md",
+      "bytes": 3284,
+      "sha256": "2fc30a1069f00344fb2cd2007cccaa6b9520326c5ffdaa0976832310b71e91b4"
+    },
+    {
+      "path": ".agents/skills/meeting-followups/scripts/validate_outputs.py",
+      "bytes": 9498,
+      "sha256": "93a9adfd7a5e4ab2c74a2e02bba04655d90e50dedee6d331118ce6f15710b2fd"
+    },
+    {
+      "path": ".agents/skills/weekly-status-deck/SKILL.md",
+      "bytes": 2714,
+      "sha256": "1ee879e318982fcdf52a4bd7517dae3e1892e190a22746ce3443ce1627b7245e"
+    },
+    {
+      "path": ".agents/skills/weekly-status-deck/agents/openai.yaml",
+      "bytes": 227,
+      "sha256": "5b60ebe07893d52837496ab377db4532ff7388d610ac6fd5f2243f2dbad3281d"
+    },
+    {
+      "path": ".agents/skills/weekly-status-deck/assets/status-deck-template.md",
+      "bytes": 308,
+      "sha256": "ba48591faf17716868e375e170ca7cbc543d8c988724c7624797aff7c19ac688"
+    },
+    {
+      "path": ".agents/skills/weekly-status-deck/references/deck-conventions.md",
+      "bytes": 3350,
+      "sha256": "adf8fdc37a2f40dff3576ac59fb84e88c7097c7d7e854c6925a6e5f6d3878896"
+    },
+    {
+      "path": ".agents/skills/weekly-status-deck/scripts/validate_deck.py",
+      "bytes": 6090,
+      "sha256": "b75672e65caffad3e2eda1631ac84395fddde0792838094b1e8e0f9ca26839fb"
+    },
+    {
+      "path": "task.md",
+      "bytes": 208,
+      "sha256": "014398ec6ff4489cd62319447eedb04cf476b1918f6e3a012d6042c84b24296c"
+    }
+  ]
+}

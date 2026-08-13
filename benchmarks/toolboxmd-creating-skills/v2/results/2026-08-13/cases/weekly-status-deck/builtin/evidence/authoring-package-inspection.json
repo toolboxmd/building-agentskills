@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "aggregateSha256": "97416c354724a671b3f094794e9549a52b27188066cd106e6c5990a92742624f",
+  "fileCount": 5,
+  "packageBytes": 12689,
+  "referenceFileCount": 1,
+  "scriptFileCount": 1,
+  "evalFileCount": 0,
+  "skillMd": {
+    "bytes": 2714,
+    "lines": 33,
+    "words": 387,
+    "descriptionCharacters": 554
+  },
+  "files": [
+    {
+      "path": "SKILL.md",
+      "bytes": 2714,
+      "sha256": "1ee879e318982fcdf52a4bd7517dae3e1892e190a22746ce3443ce1627b7245e"
+    },
+    {
+      "path": "agents/openai.yaml",
+      "bytes": 227,
+      "sha256": "5b60ebe07893d52837496ab377db4532ff7388d610ac6fd5f2243f2dbad3281d"
+    },
+    {
+      "path": "assets/status-deck-template.md",
+      "bytes": 308,
+      "sha256": "ba48591faf17716868e375e170ca7cbc543d8c988724c7624797aff7c19ac688"
+    },
+    {
+      "path": "references/deck-conventions.md",
+      "bytes": 3350,
+      "sha256": "adf8fdc37a2f40dff3576ac59fb84e88c7097c7d7e854c6925a6e5f6d3878896"
+    },
+    {
+      "path": "scripts/validate_deck.py",
+      "bytes": 6090,
+      "sha256": "b75672e65caffad3e2eda1631ac84395fddde0792838094b1e8e0f9ca26839fb"
+    }
+  ]
+}

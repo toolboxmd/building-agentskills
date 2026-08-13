@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 2,
+  "mode": "near-miss",
+  "eligible": true,
+  "reasons": [],
+  "warnings": [],
+  "eventCount": 4,
+  "commandCount": 0,
+  "turnCompleted": true,
+  "expectedSkillLoad": null,
+  "observedSkillLoads": [],
+  "falsePositiveSkillLoad": false,
+  "firstOutputMutationEventIndex": null,
+  "networkProbe": {
+    "observed": false,
+    "attemptCount": 0,
+    "blocked": false,
+    "exitCodes": []
+  },
+  "gitStatus": {
+    "observed": false,
+    "ancestorWorktreeNamesObserved": false
+  },
+  "usage": {
+    "inputTokens": 9089,
+    "cachedInputTokens": 0,
+    "uncachedInputTokens": 9089,
+    "outputTokens": 72,
+    "runtimeTokens": 9161
+  }
+}

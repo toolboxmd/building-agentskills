@@ -1,0 +1,3 @@
+1. Use a consistent agenda, assign clear owners to action items, and end with a brief recap of decisions and next steps.
+
+2. A scannable weekly status update uses consistent headings, short bullets, and clear labels for progress, risks, and priorities. Put the most important changes and decisions first, with supporting detail kept brief.

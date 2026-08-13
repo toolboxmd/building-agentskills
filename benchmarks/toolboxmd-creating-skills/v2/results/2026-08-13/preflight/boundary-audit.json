@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "output",
+  "protectedFileCount": 2,
+  "newFiles": [],
+  "reasons": []
+}

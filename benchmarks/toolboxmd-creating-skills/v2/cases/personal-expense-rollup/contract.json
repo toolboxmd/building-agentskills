@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 2,
+  "caseId": "personal-expense-rollup",
+  "targetSkillName": "personal-expense-rollup",
+  "criticalCheckIds": [
+    "tracker-file",
+    "review-file",
+    "qa-file",
+    "tracker-exact",
+    "review-headings",
+    "review-values",
+    "qa-exact"
+  ],
+  "checks": [
+    {
+      "id": "tracker-file",
+      "type": "file-exists",
+      "path": "output/expense-tracker.csv"
+    },
+    {
+      "id": "review-file",
+      "type": "file-exists",
+      "path": "output/monthly-review.md"
+    },
+    {
+      "id": "qa-file",
+      "type": "file-exists",
+      "path": "output/qa.json"
+    },
+    {
+      "id": "tracker-exact",
+      "type": "exact-text",
+      "path": "output/expense-tracker.csv",
+      "value": "date,transaction_id,merchant,category,amount_pln\n2026-08-01,old-001,BIEDRONKA*9821,Groceries,54.20\n2026-08-02,old-002,SPOTIFY,Subscriptions,23.99\n2026-08-03,new-101,PKP INTERCITY,Transport,79.00\n2026-08-03,new-102,APTEKA SOWA,Health,31.50\n2026-08-04,new-103,BIEDRONKA*7711,Groceries,42.30\n"
+    },
+    {
+      "id": "review-headings",
+      "type": "markdown-headings-exact",
+      "path": "output/monthly-review.md",
+      "headings": [
+        "August 2026 spending review",
+        "Total",
+        "By category",
+        "Processing notes"
+      ]
+    },
+    {
+      "id": "review-values",
+      "type": "contains-all",
+      "path": "output/monthly-review.md",
+      "caseSensitive": false,
+      "values": [
+        "230.99 PLN",
+        "Groceries: 96.50 PLN",
+        "Subscriptions: 23.99 PLN",
+        "Transport: 79.00 PLN",
+        "Health: 31.50 PLN",
+        "accepted: 3",
+        "duplicates skipped: 2",
+        "transfers excluded: 1"
+      ]
+    },
+    {
+      "id": "qa-exact",
+      "type": "json-equals",
+      "path": "output/qa.json",
+      "value": {
+        "schema_version": 1,
+        "month": "2026-08",
+        "input_rows": 6,
+        "accepted_rows": 3,
+        "duplicates_skipped": 2,
+        "transfers_excluded": 1,
+        "tracker_rows": 5,
+        "total_pln": 230.99,
+        "checks": [
+          "mapping",
+          "deduplication",
+          "transfer-exclusion",
+          "sort-order",
+          "totals"
+        ]
+      }
+    }
+  ]
+}

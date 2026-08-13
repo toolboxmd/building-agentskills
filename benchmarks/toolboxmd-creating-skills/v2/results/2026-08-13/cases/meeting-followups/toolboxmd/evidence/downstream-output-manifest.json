@@ -1,0 +1,21 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "6883e931fa86f1a0cf6221e635fd9235e58d0ca7f6d0d59e86ba65d890616589",
+  "files": [
+    {
+      "path": "actions.csv",
+      "bytes": 333,
+      "sha256": "eea0065d20086bac17274d162222f8ec8aaccbc51e755b3ca3bf3659c2168d2a"
+    },
+    {
+      "path": "follow-up.md",
+      "bytes": 512,
+      "sha256": "dcf4c05dc4da41edd8b06dee96c188366b812b0291fe8db28f15960dff179771"
+    },
+    {
+      "path": "qa.json",
+      "bytes": 322,
+      "sha256": "b7ccb738d6955045dff32bff28003d461ea858ddf794f1c9fd48ee80bbb5b96d"
+    }
+  ]
+}

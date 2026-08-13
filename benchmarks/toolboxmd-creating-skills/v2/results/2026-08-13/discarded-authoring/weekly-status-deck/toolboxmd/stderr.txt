@@ -1,0 +1,47 @@
+2026-08-13T12:58:54.484671Z ERROR codex_core::tools::router: error=exec_command failed for `/bin/zsh -lc "python3 - <<'PY'
+from importlib.util import module_from_spec, spec_from_file_location
+from pathlib import Path
+
+path = Path('output/weekly-status-deck/scripts/validate_deck.py')
+spec = spec_from_file_location('validate_deck', path)
+module = module_from_spec(spec)
+spec.loader.exec_module(module)
+valid = Path('.tmp/weekly-status-smoke/output/status-deck.md').read_text()
+notes_text = Path('.tmp/weekly-status-smoke/weekly-notes.md').read_text()
+notes_errors = []
+notes = module.parse_notes(notes_text, notes_errors)
+assert not notes_errors
+
+status_errors = []
+module.parse_deck(valid.replace('"'`DONE`'"', '"'`COMPLETE`'"', 1), status_errors)
+assert any('prescribed status' in error for error in status_errors), status_errors
+
+idea_text = valid.replace('[E5]', '[E7]')
+idea_errors = []
+idea_lines, _ = module.parse_deck(idea_text, idea_errors)
+idea_ids = module.validate_bullets(idea_lines, idea_errors)
+module.validate_against_notes(idea_lines, idea_ids, notes, idea_errors)
+assert any('[IDEA]' in error for error in idea_errors), idea_errors
+
+number_text = valid.replace('fell 8%', 'fell 9%')
+number_errors = []
+number_lines, _ = module.parse_deck(number_text, number_errors)
+number_ids = module.validate_bullets(number_lines, number_errors)
+module.validate_against_notes(number_lines, number_ids, notes, number_errors)
+assert any('numeric token' in error for error in number_errors), number_errors
+print('PASS: focused negative tests reject bad status, cited [IDEA], and unsupported number')
+PY
+rm -rf output/weekly-status-deck/scripts/__pycache__
+chmod +x output/weekly-status-deck/scripts/validate_deck.py
+rg --files . | sort
+python3 - <<'PY'
+from pathlib import Path
+import re
+text = Path('output/weekly-status-deck/SKILL.md').read_text()
+front = text.split('---', 2)[1]
+description = re.search(r'"'^description:'"\\s*(.*)"'$'"', front, re.M).group(1)
+print(f'description_chars={len(description)}')
+print(f'skill_lines={len(text.splitlines())}')
+PY
+git status --short"`: CreateProcess { message: "Rejected(\"`/bin/zsh -lc \\\"python3 - <<'PY'\\nfrom importlib.util import module_from_spec, spec_from_file_location\\nfrom pathlib import Path\\n\\npath = Path('output/weekly-status-deck/scripts/validate_deck.py')\\nspec = spec_from_file_location('validate_deck', path)\\nmodule = module_from_spec(spec)\\nspec.loader.exec_module(module)\\nvalid = Path('.tmp/weekly-status-smoke/output/status-deck.md').read_text()\\nnotes_text = Path('.tmp/weekly-status-smoke/weekly-notes.md').read_text()\\nnotes_errors = []\\nnotes = module.parse_notes(notes_text, notes_errors)\\nassert not notes_errors\\n\\nstatus_errors = []\\nmodule.parse_deck(valid.replace('\\\"'`DONE`'\\\"', '\\\"'`COMPLETE`'\\\"', 1), status_errors)\\nassert any('prescribed status' in error for error in status_errors), status_errors\\n\\nidea_text = valid.replace('[E5]', '[E7]')\\nidea_errors = []\\nidea_lines, _ = module.parse_deck(idea_text, idea_errors)\\nidea_ids = module.validate_bullets(idea_lines, idea_errors)\\nmodule.validate_against_notes(idea_lines, idea_ids, notes, idea_errors)\\nassert any('[IDEA]' in error for error in idea_errors), idea_errors\\n\\nnumber_text = valid.replace('fell 8%', 'fell 9%')\\nnumber_errors = []\\nnumber_lines, _ = module.parse_deck(number_text, number_errors)\\nnumber_ids = module.validate_bullets(number_lines, number_errors)\\nmodule.validate_against_notes(number_lines, number_ids, notes, number_errors)\\nassert any('numeric token' in error for error in number_errors), number_errors\\nprint('PASS: focused negative tests reject bad status, cited [IDEA], and unsupported number')\\nPY\\nrm -rf output/weekly-status-deck/scripts/__pycache__\\nchmod +x output/weekly-status-deck/scripts/validate_deck.py\\nrg --files . | sort\\npython3 - <<'PY'\\nfrom pathlib import Path\\nimport re\\ntext = Path('output/weekly-status-deck/SKILL.md').read_text()\\nfront = text.split('---', 2)[1]\\ndescription = re.search(r'\\\"'^description:'\\\"\\\\\\\\s*(.*)\\\"'$'\\\"', front, re.M).group(1)\\nprint(f'description_chars={len(description)}')\\nprint(f'skill_lines={len(text.splitlines())}')\\nPY\\ngit status --short\\\"` rejected: rm -f style commands are not permitted. Use a safer approach\")" }
+2026-08-13T12:59:22.659394Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read /Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring/weekly-status-deck/toolboxmd/run/output/weekly-status-deck/scripts/__pycache__/validate_deck.cpython-314.pyc: invalid utf-8 sequence of 1 bytes from index 9

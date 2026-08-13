@@ -30,6 +30,25 @@ Before the first scoring run, freeze and hash:
 
 Keep amendments narrow and explicit. Record the before/after prompt hash, reason, affected configurations, and whether earlier runs remain eligible. Do not silently edit a prompt midway and compare the resulting scores as if nothing changed.
 
+Freeze the complete measurement chain, not only the prompt and runner. Qualification graders, event auditors, boundary checks, cost extraction, retention scripts, and decision calculators can all change the result. Put every result-affecting tool in the pre-run commitment. An at-result hash is useful provenance, but it cannot independently prove that a tool stayed byte-identical during execution.
+
+The 2026-08-13 creator benchmark omitted supporting grader and event-audit scripts from its pre-run commitment. Their outputs and at-result hashes remain inspectable, so the narrow result is usable with that limitation. The omission must not become the next protocol's default.
+
+## Qualify whether the target skill adds value
+
+A creator benchmark is meaningful only when the generated skill changes downstream behavior. Before comparing creators, run the ordinary task with the same model, prompt, source files, tools, and workspace but without the target skill.
+
+A case qualifies when:
+
+- the model can complete the task mechanically;
+- it misses at least one critical private convention or procedural step;
+- the failure is not caused by a missing fact, unavailable tool, or impossible output;
+- the critical assertion is declared before either creator sees the case.
+
+Then install each generated skill through the normal discovery path and issue a natural prompt. Do not name the skill, its path, `SKILL.md`, or an invocation command. Count activation only when the event trace shows the full target `SKILL.md` loaded before output creation. Test one or more related near misses and audit that no target skill loaded.
+
+In the v2 creator benchmark, the meeting no-skill arm passed 2 of 8 critical checks and the status-deck arm passed 7 of 8. Both generated treatments then reached 7 of 8 and 8 of 8 respectively. All four positive runs loaded their target skill, while none of four exposed target skills loaded for the near misses. This isolates procedural value more directly than asking whether an agent can produce a plausible artifact.
+
 ## Guard model attribution
 
 The model under test must execute the task itself. This rule matters even when the frozen skill says “you are a Claude ingester” or a local config names a provider.
@@ -74,6 +93,8 @@ One total score hides different failure classes. Keep these layers separate:
 
 The karpathy-wiki medium run passed 19 of 21 deterministic assertions and scored 69/100 in blind semantic review. That gap is useful information: mechanical success did not make the wiki complete. All three candidates under-extracted the customer-research source, despite every case invocation exiting zero.
 
+Exact assertions need a complete normalization contract. The v2 meeting grader expected action text without terminal periods, but the source and case contract never required punctuation removal. Both treatments preserved the source punctuation and failed the same byte-exact check. Retain the raw failure, but classify it as benchmark evidence rather than creator evidence. When punctuation, whitespace, ordering, or serialization is not semantically relevant, grade parsed fields instead of unspecified bytes.
+
 ## Grade authored output before source evidence
 
 A knowledge-base benchmark should answer: “What can a future agent recover from the durable wiki?” Raw evidence must not rescue an under-authored page.
@@ -116,6 +137,8 @@ Do not repair the candidate output by hand. Do not delete the failed attempt. Bo
 
 One run per configuration can rank that sample; it cannot estimate variance. Use one-run comparisons for directional screening, especially when score gaps are large. Use replicated runs when selecting a production default, when scores are close, or when stochastic behavior is material.
 
+When two treatments tie on observable utility and one-run cost is the only separator, spend the next budget on a paired repeat of that case before opening a reserve case. In the v2 creator benchmark, cost favored the built-in creator for one case and ToolboxMD for the other. That 1 to 1 split is an operational result, not a stable cost ranking.
+
 Report:
 
 - number of independent runs per configuration;
@@ -152,7 +175,10 @@ Karpathy-wiki's real acceptance exposed an unsupported operator-level Codex opti
 ## Minimal checklist
 
 - [ ] Decision and claim boundary written before execution.
-- [ ] Skill, fixtures, cases, rubric, and prompt frozen and hashed.
+- [ ] Skill, fixtures, cases, rubric, prompt, graders, auditors, and decision tools frozen and hashed.
+- [ ] No-skill qualification proves each target skill has procedural value.
+- [ ] Natural positive prompts load the full target skill before output creation.
+- [ ] Related near misses do not load the target skill.
 - [ ] Model cannot delegate to another model or agentic CLI.
 - [ ] Run cannot read memory, siblings, graders, or prior output.
 - [ ] Candidate identity map is outside the blind-review tree.
@@ -167,7 +193,8 @@ Karpathy-wiki's real acceptance exposed an unsupported operator-level Codex opti
 ## Evidence
 
 - [Provider-aware ingest benchmark manifest](/case-studies/evidence/2026-08-11-karpathy-wiki-ingest-benchmark.json) records the scores, exclusions, hashes, and interpretation limit.
+- [ToolboxMD creator benchmark v2 manifest](/case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json) records no-skill qualification, implicit loading, the mixed result, costs, invalid attempts, and claim boundary.
 - [`877e659`](https://github.com/toolboxmd/karpathy-wiki/commit/877e659) is the subsequent provider-aware runtime ship.
 - [Codex Spark acceptance](https://github.com/toolboxmd/karpathy-wiki/blob/877e659/tests/acceptance/dispatcher/2026-08-11-codex-spark-medium.md) separates adapter/lifecycle qualification from semantic model selection.
 
-Cross-links: [Unit tests](/docs/06-testing/unit-tests), [Provider-neutral runtime](/docs/05-authoring/provider-neutral-runtime), [Provider-aware ingest case study](/case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest).
+Cross-links: [Unit tests](/docs/06-testing/unit-tests), [Provider-neutral runtime](/docs/05-authoring/provider-neutral-runtime), [Provider-aware ingest case study](/case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest), [ToolboxMD creator benchmark v2](/case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2).

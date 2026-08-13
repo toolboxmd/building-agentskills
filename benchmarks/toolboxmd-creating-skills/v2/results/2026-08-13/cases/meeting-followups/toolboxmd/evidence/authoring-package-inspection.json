@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "aggregateSha256": "6f738c66e2aa13c9e1f8e69aa019a5c1e82451d22e28c9da6a21be53affa102c",
+  "fileCount": 4,
+  "packageBytes": 19664,
+  "referenceFileCount": 1,
+  "scriptFileCount": 1,
+  "evalFileCount": 1,
+  "skillMd": {
+    "bytes": 2390,
+    "lines": 40,
+    "words": 338,
+    "descriptionCharacters": 376
+  },
+  "files": [
+    {
+      "path": "SKILL.md",
+      "bytes": 2390,
+      "sha256": "c7195e6c5e1eda5d0bae6b1680f70e5cb418b0b4486980f23bf9002280e0555d"
+    },
+    {
+      "path": "evals/evals.json",
+      "bytes": 2408,
+      "sha256": "cf1cd99bf1209899eb3384d37736627ef86737d6ce203c1e5dd874aa192e28eb"
+    },
+    {
+      "path": "references/follow-up-contract.md",
+      "bytes": 2601,
+      "sha256": "1ed7d97303edd2c2365e154dc5a1735a0ca1f8788c34050e5d8cb01f0796dfc4"
+    },
+    {
+      "path": "scripts/validate_outputs.py",
+      "bytes": 12265,
+      "sha256": "725ec9445d8db041b4536fd6c27d5900d45e4e2b3e00673301f95f0631bb80fd"
+    }
+  ]
+}

@@ -85,7 +85,7 @@ What to test in a skill. Script unit tests (TDD discipline), pressure scenarios 
 The TDD inversion. Two valid cases: regression-pin (test pins existing correct behavior) and mechanism-rehearsal (test rehearses an LLM-mechanism snippet). Plus the cases where the inversion is invalid.
 
 ### `docs/06-testing/benchmark-integrity.md`
-How to freeze agent benchmarks, guard attribution and read isolation, blind semantic review, grade held-out retrieval, preserve contaminated attempts, and separate semantic quality from deterministic runtime acceptance.
+How to qualify target-skill value without a skill, prove implicit activation from traces, freeze agent benchmarks, guard attribution and read isolation, grade deterministic or blind semantic evidence, preserve contaminated attempts, and separate semantic quality from deterministic runtime acceptance.
 
 ### `docs/07-mechanism-vs-decoration.md`
 The standalone deep dive. Sharpened framing of the rule. Three karpathy-wiki v2.2 wirings (index-size threshold, manifest origin contract, validator-blocks-commit). The `paths:` glob as activation gate in reverse.
@@ -119,6 +119,9 @@ The seed case study. The v2.2 ship retrospective, written for the public audienc
 
 ### `case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md`
 The provider-neutral runtime and benchmark-integrity case study, including invalid-attempt lessons and real-harness acceptance.
+
+### `case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md`
+The daily-use creator comparison, including no-skill qualification, natural implicit triggering, direct package and cost comparison, a mixed release decision, and evidence-backed changes for the next ToolboxMD creator.
 
 ### `examples/minimal-skill/SKILL.md`
 A working ~30-line SKILL.md the quickstart references. Copy as a starting point.

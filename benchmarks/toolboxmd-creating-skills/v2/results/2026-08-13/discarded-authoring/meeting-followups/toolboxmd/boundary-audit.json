@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "output",
+  "protectedFileCount": 9,
+  "newFiles": [
+    "output/meeting-followups/SKILL.md",
+    "output/meeting-followups/evals/downstream-smoke.md",
+    "output/meeting-followups/evals/evals.json",
+    "output/meeting-followups/references/output-contract.md",
+    "output/meeting-followups/scripts/validate_followup.py"
+  ],
+  "reasons": []
+}

@@ -1,0 +1,5 @@
+action_id,owner,due_date,status,action,source
+M-260804-01,@oliver,2026-08-07,done,Send pilot recap,M12
+M-260811-01,Maya Chen,2026-08-14,open,Draft the revised onboarding checklist,M05
+M-260811-02,Leo Park,,open,Collect three customer onboarding quotes,M06
+M-260811-03,Nina Gomez,2026-08-13,open,Update the beta invite copy and calendar,M08

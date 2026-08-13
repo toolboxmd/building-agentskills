@@ -1,0 +1,26 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "1475577cef49b6a2ade24ea271e6351628b458010acf2aa1524a4d685c467788",
+  "files": [
+    {
+      "path": "knowledge/team-follow-up-contract.md",
+      "bytes": 2294,
+      "sha256": "0ce55977b9d631fddec6b74616e293a07ed64e7f07dc51bd7861e6951fc600d6"
+    },
+    {
+      "path": "task.md",
+      "bytes": 139,
+      "sha256": "b8b0a20b24841f849de860f0f00abc7474094ee5cfb947bfcbb2182225a9980a"
+    },
+    {
+      "path": "workspace/actions.csv",
+      "bytes": 103,
+      "sha256": "09d40fe20a0c8b9cb3df8be54f573647695918f577349f6cdbee0a1ff738e5b9"
+    },
+    {
+      "path": "workspace/meeting-notes.md",
+      "bytes": 625,
+      "sha256": "79f99ff84535b0965647891833851fd7e8b5ffe0fcf6981645cc535af93f25bc"
+    }
+  ]
+}

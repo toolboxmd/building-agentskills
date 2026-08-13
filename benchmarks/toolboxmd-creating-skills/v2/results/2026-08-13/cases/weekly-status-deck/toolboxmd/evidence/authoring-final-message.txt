@@ -1,0 +1,20 @@
+Created the reusable skill at [output/weekly-status-deck/SKILL.md](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring-r2/weekly-status-deck/toolboxmd/run/output/weekly-status-deck/SKILL.md).
+
+It includes:
+
+- Exact private Marp template and five-slide order.
+- Prescribed status vocabulary and evidence/claim boundaries.
+- Deterministic deck and receipt validator with four focused tests.
+- Three evals, including the general-advice near miss.
+- Prepared downstream smoke check.
+- No dependency on another presentation skill.
+
+Design summary: an Agent Skill fits the reusable semantic classification work; both natural discovery and explicit invocation are supported. Mechanical invariants are enforced by the template and validator, while semantic claims require source review before receipt generation. The description is 337 characters and `SKILL.md` is 44 lines, with detailed conventions progressively disclosed.
+
+Status:
+
+- Validated: yes — bundled validator passed; syntax, JSON, internal links, and path hygiene passed.
+- Tested: partial — all four helper tests passed; model-based downstream smoke testing was not run because invoking another model or agent was prohibited.
+- Official validator: unavailable within the permitted run root.
+- Committed: no.
+- Pushed: no.

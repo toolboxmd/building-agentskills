@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 2,
+  "benchmarkId": "toolboxmd-creating-skills-v2",
+  "recordedOn": "2026-08-13",
+  "decision": {
+    "status": "mixed",
+    "recommendedCreator": null,
+    "toolboxmdCandidateRecommended": false,
+    "toolboxmdCandidateDisposition": "retained_as_unpromoted_benchmark_artifact",
+    "preferredCreatorUnchanged": true,
+    "publicSuperiorityClaimAllowed": false,
+    "reason": "Observable downstream utility tied in both primary cases. The frozen cost tie-break favored built-in for meeting-followups and ToolboxMD for weekly-status-deck, producing a 1 to 1 split. The reserve could not fit the 17-session hard limit after a four-run symmetric infrastructure retry."
+  },
+  "claimBoundary": "One-run operational comparison on Codex CLI 0.147.0 with gpt-5.6-sol at medium reasoning for two daily-use skill families. It does not estimate variance, establish cross-provider behavior, or rank skill creators generally.",
+  "acceptance": {
+    "primaryCasesQualified": 2,
+    "primaryCasesRequired": 2,
+    "positiveTargetLoads": 4,
+    "positiveRuns": 4,
+    "nearMissTargetLoads": 0,
+    "nearMissExposedTargetSkills": 4,
+    "builtinCaseWins": 1,
+    "toolboxmdCaseWins": 1,
+    "winsRequiredForRecommendation": 2,
+    "reserveUsed": false,
+    "reserveSessionsRequired": 5,
+    "sessionsRemainingUnderHardLimit": 1,
+    "toolboxmdPromotionGatePassed": false
+  },
+  "freezes": {
+    "protocolRevision": 2,
+    "protocolTreeSha256": "da1744ec7a2cc8efa5ae4c3511d5372dd82ed05af888aff9422aa1debf1ee45e",
+    "casesTreeSha256": "f5c0d2d74a42063c15f4fd4b4b8871522fcb53623d5188d58d957cbd4d846d87",
+    "builtinCreatorSha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c",
+    "toolboxmdCreatorSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7"
+  },
+  "configuration": {
+    "codexCliVersion": "0.147.0",
+    "model": "gpt-5.6-sol",
+    "modelReasoningEffort": "medium",
+    "sandbox": "workspace-write",
+    "networkAccess": false,
+    "ephemeral": true,
+    "ignoreUserConfig": true,
+    "ignoreRules": true,
+    "otherSkillsEnabled": false,
+    "pluginsEnabled": false,
+    "appsEnabled": false,
+    "memoriesEnabled": false,
+    "webSearchEnabled": false,
+    "nestedDelegationObserved": false,
+    "pythonBytecodeIsolation": true
+  },
+  "qualification": {
+    "meeting-followups": {
+      "qualified": true,
+      "criticalPasses": 2,
+      "criticalChecks": 8,
+      "failedCheckIds": [
+        "follow-up-file",
+        "qa-file",
+        "follow-up-headings",
+        "follow-up-content",
+        "tracker-exact",
+        "qa-exact"
+      ]
+    },
+    "weekly-status-deck": {
+      "qualified": true,
+      "criticalPasses": 7,
+      "criticalChecks": 8,
+      "failedCheckIds": [
+        "deck-check-exact"
+      ]
+    }
+  },
+  "cases": {
+    "meeting-followups": {
+      "observableUtility": "tie",
+      "outputsByteIdentical": true,
+      "sharedNonDiagnosticFailure": "Both actions.csv files preserved source terminal periods while the under-specified exact fixture omitted them.",
+      "finalOutcome": "builtin_cost_tiebreak_low_confidence",
+      "builtin": {
+        "packageSha256": "9f715024c2f0af89f964360eee9e0ea576142c9e4a3fbf194b63475b277446ac",
+        "packageFiles": 4,
+        "packageBytes": 15161,
+        "skillMdLines": 30,
+        "skillMdBytes": 2141,
+        "descriptionCharacters": 533,
+        "authoringRuntimeTokens": 105497,
+        "authoringDurationSeconds": 309,
+        "targetLoaded": true,
+        "criticalPasses": 7,
+        "criticalChecks": 8,
+        "downstreamRuntimeTokens": 18550,
+        "downstreamDurationSeconds": 45,
+        "outputSha256": "6883e931fa86f1a0cf6221e635fd9235e58d0ca7f6d0d59e86ba65d890616589"
+      },
+      "toolboxmd": {
+        "packageSha256": "6f738c66e2aa13c9e1f8e69aa019a5c1e82451d22e28c9da6a21be53affa102c",
+        "packageFiles": 4,
+        "packageBytes": 19664,
+        "skillMdLines": 40,
+        "skillMdBytes": 2390,
+        "descriptionCharacters": 376,
+        "authoringRuntimeTokens": 61954,
+        "authoringDurationSeconds": 345,
+        "targetLoaded": true,
+        "criticalPasses": 7,
+        "criticalChecks": 8,
+        "downstreamRuntimeTokens": 21609,
+        "downstreamDurationSeconds": 66,
+        "outputSha256": "6883e931fa86f1a0cf6221e635fd9235e58d0ca7f6d0d59e86ba65d890616589"
+      }
+    },
+    "weekly-status-deck": {
+      "observableUtility": "tie_full_pass",
+      "outputsByteIdentical": false,
+      "outputDifference": "Harmless template whitespace and title-slide reporting-range phrasing; both passed 8 of 8 checks.",
+      "finalOutcome": "toolboxmd_cost_tiebreak_low_confidence",
+      "builtin": {
+        "packageSha256": "97416c354724a671b3f094794e9549a52b27188066cd106e6c5990a92742624f",
+        "packageFiles": 5,
+        "packageBytes": 12689,
+        "skillMdLines": 33,
+        "skillMdBytes": 2714,
+        "descriptionCharacters": 554,
+        "authoringRuntimeTokens": 46581,
+        "authoringDurationSeconds": 236,
+        "targetLoaded": true,
+        "criticalPasses": 8,
+        "criticalChecks": 8,
+        "downstreamRuntimeTokens": 30228,
+        "downstreamDurationSeconds": 52,
+        "outputSha256": "c55b4fb1f93a3b4772b969c2467f2e9ff342167eaf623f4bf624e93d42f56b02"
+      },
+      "toolboxmd": {
+        "packageSha256": "8d85b408c77c0c8f625f1c6d5cc574482ccae1e8efa7dc1e79a5828735eb9ea0",
+        "packageFiles": 7,
+        "packageBytes": 19530,
+        "skillMdLines": 44,
+        "skillMdBytes": 3097,
+        "descriptionCharacters": 337,
+        "authoringRuntimeTokens": 73052,
+        "authoringDurationSeconds": 372,
+        "targetLoaded": true,
+        "criticalPasses": 8,
+        "criticalChecks": 8,
+        "downstreamRuntimeTokens": 23982,
+        "downstreamDurationSeconds": 58,
+        "outputSha256": "cc1723ac5ee52d0a931b57e872ac82a615798c9e5e2a1232cb4464323bea388b"
+      }
+    }
+  },
+  "triggerPrecision": {
+    "builtin": {
+      "positiveLoads": 2,
+      "positiveRuns": 2,
+      "nearMissLoads": 0,
+      "nearMissSkillsExposed": 2
+    },
+    "toolboxmd": {
+      "positiveLoads": 2,
+      "positiveRuns": 2,
+      "nearMissLoads": 0,
+      "nearMissSkillsExposed": 2
+    }
+  },
+  "sessionUsage": {
+    "decisionSessions": 16,
+    "hardMaximumSessions": 17,
+    "cumulativeDurationSeconds": 2759,
+    "inputTokens": 3784225,
+    "cachedInputTokens": 3171328,
+    "uncachedInputTokens": 612897,
+    "outputTokens": 115376,
+    "runtimeTokens": 728273,
+    "details": "session-usage.json"
+  },
+  "protocolNotes": [
+    "The first four authoring attempts were discarded as one batch before downstream use because both built-in attempts wrote Python bytecode below the protected creator tree.",
+    "Protocol revision 2 disabled Python bytecode writes and repeated all four authoring arms symmetrically without changing cases, prompts, treatments, grader, model, or decision rule.",
+    "The command audit was corrected to distinguish an in-root ../../creator path from an actual read outside the staged root.",
+    "The protocol commitment omitted the supporting grader and event-audit scripts. They were implemented and tested before scored downstream runs, and their at-result hashes are recorded below, but the commitment alone cannot prove that every supporting tool stayed byte-identical throughout execution.",
+    "Two ToolboxMD authoring traces listed ancestor-worktree names through git status. No outside file contents, sibling result, treatment output, or grader content was read. The warning did not determine a case result.",
+    "The shared meeting punctuation mismatch is retained in raw grades but treated as non-diagnostic because the source contract did not specify punctuation removal.",
+    "The reserve was frozen but not opened because it required five sessions and only one remained under the hard limit.",
+    "Blind review was not required because deterministic utility and trace evidence fully characterized the downstream differences."
+  ],
+  "harnessAtResult": {
+    "scripts/run-isolated-codex-v2.sh": "462f9533dade77a722dc24abccd92ae3132b29129f8f0be17c47424b86bc2580",
+    "scripts/stage-toolboxmd-benchmark-v2.mjs": "bdc46ffa1d8202bbe65793772f5ee9ec56e3d379f76569f50d002746342d3766",
+    "scripts/grade-toolboxmd-v2-case.mjs": "eb0c412aeffe788e2fa4d4c2366227bcf9b0d850107e72a4cc1faf5a23aa2e6d",
+    "scripts/audit-toolboxmd-v2-events.mjs": "e82e6e9dae182eed3645609de555a0aa3cf80809f08e79dba9ab864f5c628887",
+    "scripts/inspect-skill-package.mjs": "69fb83a103efac56e3c50c7fc2032d513da55d16b36e1dac13a978491a50c100",
+    "scripts/verify-run-boundary.mjs": "9077d49e1e53b5114ecb38ca5cb1fa203109d04f00785534a2b851ecb728de0c",
+    "scripts/retain-toolboxmd-v2-results.mjs": "97d2ca58bc07bd478c5b6179ccf64b533f10a14d2b8a96f5097bd4afc12399ff"
+  },
+  "retainedEvidence": {
+    "retentionManifestSha256": "cf919104953fe50598c6c6d38f43a59b36ed2bd0d55be1975ac7acbefa222ece",
+    "sessionUsageSha256": "99df094f3389dbec01c94d0b7f3733647f03b4821d18ef3ea5144ebec1d804e4",
+    "discardedAuthoringFailureSha256": "172f8e043b6d879bba3728ee0543b7f56d726eec5a06d5035a36bd588875d992"
+  },
+  "recommendations": "recommendations.md",
+  "interpretationLimit": "No general creator winner was established. Cost-only per-case outcomes have low confidence because each treatment ran once per case."
+}

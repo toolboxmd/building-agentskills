@@ -1,0 +1,12 @@
+Created the reusable [weekly-status-deck skill](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring-r2/weekly-status-deck/builtin/run/output/weekly-status-deck/SKILL.md).
+
+It includes:
+
+- Exact private Marp template and five-slide order
+- Status vocabulary, evidence rules, claim boundaries, and worked example
+- Precise positive trigger and general-advice near-miss boundary
+- Deterministic [deck validator](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring-r2/weekly-status-deck/builtin/run/output/weekly-status-deck/scripts/validate_deck.py)
+- Exact JSON validation-receipt generation
+- Matching UI metadata
+
+Validation passed for package structure, internal links, placeholders, source preservation, and the supplied worked-example deck/receipt round trip. No other model or agent was invoked.

@@ -1,0 +1,18 @@
+Created [weekly-status-deck](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring/weekly-status-deck/toolboxmd/run/output/weekly-status-deck/SKILL.md).
+
+The six-file package includes the private Marp template, detailed evidence conventions, deterministic deck/receipt validator, and three eval cases covering creation, update, and the general-advice near miss.
+
+Design summary:
+
+- Agent Skill chosen for reusable classification and claim-boundary judgment.
+- Natural or explicit invocation supported.
+- Mechanical invariants are enforced by the validator; semantic support requires source-by-source review.
+- Concise activation footprint: 400-character description and 49-line `SKILL.md`; detailed conventions load conditionally.
+
+Delivery state:
+
+- Validated: yes — package validator, JSON, exact tree, path, budget, and internal-link checks passed.
+- Tested: partial — representative deck passed; negative tests rejected invalid status, unsupported `[IDEA]`, and unsupported numbers. Agent-discovery testing was skipped because another model/agent was prohibited.
+- Official validator: not run — none was available within the run root.
+- Committed: no.
+- Pushed: no.

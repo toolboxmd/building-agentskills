@@ -1,0 +1,15 @@
+{
+  "aggregateSha256": "d8b82d651702286ddbc6be89eaebff5e6e165574109eb42b4ebecba955b4cd4a",
+  "files": [
+    {
+      "path": "actions.csv",
+      "bytes": 340,
+      "sha256": "41fe6f5a322fd133003dd651e71bc23b5e86b1edba025ea6c41a7ddd2119a2ab"
+    },
+    {
+      "path": "team-follow-up-2026-08-13.md",
+      "bytes": 651,
+      "sha256": "f528f8e5fdd67f9852ddd3aa9a9ebd66ccbce9fdc506d034b4be76c7b0257b9f"
+    }
+  ]
+}

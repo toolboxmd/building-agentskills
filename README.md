@@ -83,6 +83,7 @@ These three docs close the audience gap a layered repo would otherwise leave. Re
 
 - [`case-studies/2026-04-25-karpathy-wiki-v2.2.md`](case-studies/2026-04-25-karpathy-wiki-v2.2.md). The seed case study.
 - [`case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md`](case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md). Provider-neutral runtime and benchmark-integrity ship.
+- [`case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md`](case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md). Daily-use creator comparison with no-skill qualification and implicit triggering.
 - [`examples/minimal-skill/SKILL.md`](examples/minimal-skill/SKILL.md). A working ~30-line minimal skill.
 
 ### Loader skill

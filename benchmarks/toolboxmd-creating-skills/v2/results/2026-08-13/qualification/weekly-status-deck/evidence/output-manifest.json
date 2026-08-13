@@ -1,0 +1,15 @@
+{
+  "aggregateSha256": "4831d17bc652b92703e068ebe4854b184952747690ba9d473c1778acd8dc0515",
+  "files": [
+    {
+      "path": "deck-check.json",
+      "bytes": 420,
+      "sha256": "571106fbf7ecfc4e88fc5dd9411798b4445bd9a7e5ed466a7b524d761a8ddf0a"
+    },
+    {
+      "path": "status-deck.md",
+      "bytes": 959,
+      "sha256": "c40002f8bd0716d2c5e26bd24bef5d74f939539a1cf6e17f4a20df652af2410a"
+    }
+  ]
+}

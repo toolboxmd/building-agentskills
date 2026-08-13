@@ -66,7 +66,7 @@ In all three paths, the lesson must cite ship evidence (a commit, a failure mode
 
 The current corpus ships:
 
-- Two case studies (karpathy-wiki v2.2 and the provider-aware ingest ship).
+- Three case studies (karpathy-wiki v2.2, the provider-aware ingest ship, and the ToolboxMD creating-skills v2 benchmark).
 - The patterns those ships surfaced: decoration-vs-mechanism, prose-as-code, subagent reformatting, cross-script regression, spec arithmetic, TDD inversions, provider-neutral runtimes, and benchmark integrity.
 - The cross-platform reference frame (Claude Code, Codex, Gemini CLI, others).
 - The hero framework (the three-question framework).
@@ -82,4 +82,4 @@ Future ships can graduate repeated patterns once at least three independent ship
 - `LESSONS` itself (the v2.2 lessons report as the seed retrospective instance).
 - `LANDSCAPE` itself (the 2026-04 landscape audit as the seed quarterly-audit instance).
 
-Cross-links: [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2), [provider-aware ingest case study](/case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest), [Benchmark integrity](/docs/06-testing/benchmark-integrity).
+Cross-links: [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2), [provider-aware ingest case study](/case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest), [ToolboxMD creator benchmark v2](/case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2), [Benchmark integrity](/docs/06-testing/benchmark-integrity).

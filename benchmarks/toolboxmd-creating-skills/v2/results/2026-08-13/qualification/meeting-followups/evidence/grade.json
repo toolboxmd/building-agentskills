@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 2,
+  "caseId": "meeting-followups",
+  "passed": false,
+  "checkCount": 8,
+  "passedCheckCount": 2,
+  "failedCheckCount": 6,
+  "failedCheckIds": [
+    "follow-up-file",
+    "qa-file",
+    "follow-up-headings",
+    "follow-up-content",
+    "tracker-exact",
+    "qa-exact"
+  ],
+  "criticalCheckCount": 8,
+  "criticalPassCount": 2,
+  "criticalFailedCheckIds": [
+    "follow-up-file",
+    "qa-file",
+    "follow-up-headings",
+    "follow-up-content",
+    "tracker-exact",
+    "qa-exact"
+  ],
+  "checks": [
+    {
+      "id": "follow-up-file",
+      "type": "file-exists",
+      "critical": true,
+      "passed": false,
+      "detail": "output/follow-up.md is missing"
+    },
+    {
+      "id": "tracker-file",
+      "type": "file-exists",
+      "critical": true,
+      "passed": true,
+      "detail": "output/actions.csv exists"
+    },
+    {
+      "id": "qa-file",
+      "type": "file-exists",
+      "critical": true,
+      "passed": false,
+      "detail": "output/qa.json is missing"
+    },
+    {
+      "id": "follow-up-headings",
+      "type": "markdown-headings-exact",
+      "critical": true,
+      "passed": false,
+      "detail": "output/follow-up.md is missing"
+    },
+    {
+      "id": "follow-up-content",
+      "type": "contains-all",
+      "critical": true,
+      "passed": false,
+      "detail": "missing: [\"Keep the onboarding checklist on one page\",\"[M03]\",\"Move the beta invite from 2026-08-17 to 2026-08-18\",\"[M07]\",\"@maya | due 2026-08-14 | Draft the revised onboarding checklist\",\"[M05]\",\"@leo | due TBD | Collect three customer onboarding quotes\",\"[M06]\",\"@nina | due 2026-08-13 | Update the beta invite copy and calendar\",\"[M08]\",\"Who owns localization sign-off\",\"[M02]\",\"Maybe add a live welcome call for every new account\",\"[M04]\"]"
+    },
+    {
+      "id": "tracker-exact",
+      "type": "exact-text",
+      "critical": true,
+      "passed": false,
+      "detail": "text differs"
+    },
+    {
+      "id": "tracker-no-idea",
+      "type": "not-contains",
+      "critical": true,
+      "passed": true,
+      "detail": "no forbidden values present"
+    },
+    {
+      "id": "qa-exact",
+      "type": "json-equals",
+      "critical": true,
+      "passed": false,
+      "detail": "output/qa.json is missing"
+    }
+  ]
+}

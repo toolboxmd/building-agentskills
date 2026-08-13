@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 2,
+  "benchmarkId": "toolboxmd-creating-skills-v2",
+  "protocolRevision": 2,
+  "date": "2026-08-13",
+  "claimBoundary": "One-run operational comparison of two frozen creators on common daily-use cases under Codex CLI 0.147.0 and gpt-5.6-sol with medium reasoning.",
+  "caseRoles": {
+    "primary": [
+      "meeting-followups",
+      "weekly-status-deck"
+    ],
+    "reserve": [
+      "personal-expense-rollup"
+    ]
+  },
+  "targetSkills": {
+    "meeting-followups": "meeting-followups",
+    "weekly-status-deck": "weekly-status-deck",
+    "personal-expense-rollup": "personal-expense-rollup"
+  },
+  "treatments": {
+    "builtin": {
+      "label": "builtin",
+      "path": "../v1/baselines/codex-skill-creator-0.147.0/package",
+      "aggregateSha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c"
+    },
+    "toolboxmd": {
+      "label": "toolboxmd",
+      "path": "../v1/results/2026-08-12/candidate/toolboxmd-creating-skills",
+      "aggregateSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7"
+    }
+  },
+  "harness": {
+    "runnerPath": "scripts/run-isolated-codex-v2.sh",
+    "codexCliVersion": "0.147.0",
+    "model": "gpt-5.6-sol",
+    "modelReasoningEffort": "medium",
+    "sandbox": "workspace-write",
+    "networkAccess": false,
+    "ephemeral": true,
+    "ignoreUserConfig": true,
+    "ignoreRules": true,
+    "otherSkillsEnabled": false,
+    "implicitPositivePrompt": true,
+    "sameModelAcrossTreatments": true,
+    "noNestedDelegation": true,
+    "pythonBytecodeIsolation": true,
+    "pythonBytecodeWritesDisabled": true
+  },
+  "controls": {
+    "noSkillQualification": true,
+    "sameOrdinaryWorkspaceAcrossArms": true,
+    "traceProvesSkillLoad": true,
+    "agentSelfReportIsEvidence": false,
+    "generatedPackageRepairAllowed": false,
+    "blindReviewRequired": false,
+    "reserveFrozenBeforeTreatmentRuns": true
+  },
+  "qualification": {
+    "minimumCriticalFailuresWithoutSkill": 1,
+    "missingFactsAllowed": false,
+    "unavailableRequiredToolsAllowed": false,
+    "qualifyBeforeAuthoring": true
+  },
+  "runBudget": {
+    "cleanPathSessions": 12,
+    "hardMaximumSessions": 17,
+    "primaryNoSkill": 2,
+    "primaryAuthoring": 4,
+    "primaryPositive": 4,
+    "aggregateNearMiss": 2,
+    "reserveAdditional": 5,
+    "pairedRepeatAdditional": 2,
+    "contaminatedAttemptsCountTowardHardMaximum": true,
+    "reserveOnlyWhenDecisionIsMixed": true,
+    "repeatsOnlyWhenDecisionChanging": true,
+    "reserveAndRepeatMustFitHardMaximum": true
+  },
+  "decision": {
+    "toolboxmdPrimaryWinsRequired": 2,
+    "overallWinsRequired": 2,
+    "criticalRegressionsAllowed": 0,
+    "equalUtilityHigherRuntimeCostLoses": true,
+    "reserveTriggers": [
+      "primary-split",
+      "invalid-primary",
+      "primary-tie"
+    ],
+    "allowedVerdicts": [
+      "toolboxmd",
+      "builtin",
+      "mixed",
+      "inconclusive"
+    ]
+  },
+  "sourceSnapshots": {
+    "agentSkills": "69ef37e9424c0a7ea9dd2293b559e43ec8176379",
+    "anthropicSkills": "f17010c9bb483898c1d9c9f42dde2b3a98889434",
+    "openaiPlugins": "11c74d6ba24d3a6d48f54a194cd00ef3beea18f9",
+    "superpowers": "44c9b2d6e889982ac18c27d05a19fefe335194e1"
+  },
+  "independentAudit": {
+    "provider": "Grok Build",
+    "sessionId": "019ffb04-7efd-7333-aec2-778fdf65477f",
+    "verdict": "GO WITH CHANGES"
+  }
+}

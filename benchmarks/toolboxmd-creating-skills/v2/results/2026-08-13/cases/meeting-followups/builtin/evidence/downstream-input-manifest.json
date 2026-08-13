@@ -1,0 +1,46 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "bf2833642226075ce407cf9eb302a14c13c9734c07fd2deda85107023570f2a5",
+  "files": [
+    {
+      "path": ".agents/skills/meeting-followups/SKILL.md",
+      "bytes": 2141,
+      "sha256": "55d66d4614500ce5fcacc2fd91ee62622161520c082d5ca4845de86acc9ccd1a"
+    },
+    {
+      "path": ".agents/skills/meeting-followups/agents/openai.yaml",
+      "bytes": 238,
+      "sha256": "4c346d7a36b3713604714177a406e79ce6b34601064272b574fb543fd66766c9"
+    },
+    {
+      "path": ".agents/skills/meeting-followups/references/deliverable-contract.md",
+      "bytes": 3284,
+      "sha256": "2fc30a1069f00344fb2cd2007cccaa6b9520326c5ffdaa0976832310b71e91b4"
+    },
+    {
+      "path": ".agents/skills/meeting-followups/scripts/validate_outputs.py",
+      "bytes": 9498,
+      "sha256": "93a9adfd7a5e4ab2c74a2e02bba04655d90e50dedee6d331118ce6f15710b2fd"
+    },
+    {
+      "path": "knowledge/team-follow-up-contract.md",
+      "bytes": 2294,
+      "sha256": "0ce55977b9d631fddec6b74616e293a07ed64e7f07dc51bd7861e6951fc600d6"
+    },
+    {
+      "path": "task.md",
+      "bytes": 139,
+      "sha256": "b8b0a20b24841f849de860f0f00abc7474094ee5cfb947bfcbb2182225a9980a"
+    },
+    {
+      "path": "workspace/actions.csv",
+      "bytes": 103,
+      "sha256": "09d40fe20a0c8b9cb3df8be54f573647695918f577349f6cdbee0a1ff738e5b9"
+    },
+    {
+      "path": "workspace/meeting-notes.md",
+      "bytes": 625,
+      "sha256": "79f99ff84535b0965647891833851fd7e8b5ffe0fcf6981645cc535af93f25bc"
+    }
+  ]
+}

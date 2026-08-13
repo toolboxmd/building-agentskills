@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 2,
+  "mode": "positive",
+  "eligible": true,
+  "reasons": [],
+  "warnings": [],
+  "eventCount": 27,
+  "commandCount": 9,
+  "turnCompleted": true,
+  "expectedSkillLoad": {
+    "path": ".agents/skills/weekly-status-deck/SKILL.md",
+    "observed": true,
+    "fullContentObserved": true,
+    "eventIndex": 4,
+    "beforeFirstOutputMutation": true
+  },
+  "observedSkillLoads": [
+    {
+      "path": ".agents/skills/weekly-status-deck/SKILL.md",
+      "fullContentObserved": true
+    }
+  ],
+  "falsePositiveSkillLoad": false,
+  "firstOutputMutationEventIndex": 14,
+  "networkProbe": {
+    "observed": false,
+    "attemptCount": 0,
+    "blocked": false,
+    "exitCodes": []
+  },
+  "gitStatus": {
+    "observed": true,
+    "ancestorWorktreeNamesObserved": false
+  },
+  "usage": {
+    "inputTokens": 67067,
+    "cachedInputTokens": 38912,
+    "uncachedInputTokens": 28155,
+    "outputTokens": 2073,
+    "runtimeTokens": 30228
+  }
+}

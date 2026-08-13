@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "groups": {
+    "qualification": {
+      "sessions": 2,
+      "durationSeconds": 104,
+      "inputTokens": 117489,
+      "cachedInputTokens": 69632,
+      "uncachedInputTokens": 47857,
+      "outputTokens": 3683,
+      "runtimeTokens": 51540,
+      "runs": [
+        {
+          "run": "qualification/meeting-followups",
+          "durationSeconds": 42,
+          "inputTokens": 57293,
+          "cachedInputTokens": 34816,
+          "uncachedInputTokens": 22477,
+          "outputTokens": 1634,
+          "runtimeTokens": 24111,
+          "rawEvents": {
+            "bytes": 5894,
+            "sha256": "35414767eccbbf176a9fc99dcca3f6e328621c735218d1526f402e0db6e40381"
+          }
+        },
+        {
+          "run": "qualification/weekly-status-deck",
+          "durationSeconds": 62,
+          "inputTokens": 60196,
+          "cachedInputTokens": 34816,
+          "uncachedInputTokens": 25380,
+          "outputTokens": 2049,
+          "runtimeTokens": 27429,
+          "rawEvents": {
+            "bytes": 11005,
+            "sha256": "5517ebe6aa06c28df2248c26fd658ff2f54d7f6d8681ad8b5a8b2507d181051f"
+          }
+        }
+      ]
+    },
+    "authoringDiscarded": {
+      "sessions": 4,
+      "durationSeconds": 1159,
+      "inputTokens": 1720729,
+      "cachedInputTokens": 1486848,
+      "uncachedInputTokens": 233881,
+      "outputTokens": 50049,
+      "runtimeTokens": 283930,
+      "runs": [
+        {
+          "run": "runs/authoring/meeting-followups/builtin",
+          "durationSeconds": 291,
+          "inputTokens": 502397,
+          "cachedInputTokens": 457216,
+          "uncachedInputTokens": 45181,
+          "outputTokens": 11913,
+          "runtimeTokens": 57094,
+          "rawEvents": {
+            "bytes": 70171,
+            "sha256": "2a7221765b15df1698b6c118f17e710ee7b34d26cf001302a6453ca6cd6c2c4a"
+          }
+        },
+        {
+          "run": "runs/authoring/meeting-followups/toolboxmd",
+          "durationSeconds": 357,
+          "inputTokens": 518485,
+          "cachedInputTokens": 468224,
+          "uncachedInputTokens": 50261,
+          "outputTokens": 15271,
+          "runtimeTokens": 65532,
+          "rawEvents": {
+            "bytes": 102780,
+            "sha256": "b534fa33baf27e9ff7bcd996bee925b5bda94134675312e5fda2988970fc986c"
+          }
+        },
+        {
+          "run": "runs/authoring/weekly-status-deck/builtin",
+          "durationSeconds": 187,
+          "inputTokens": 304004,
+          "cachedInputTokens": 235264,
+          "uncachedInputTokens": 68740,
+          "outputTokens": 8375,
+          "runtimeTokens": 77115,
+          "rawEvents": {
+            "bytes": 57430,
+            "sha256": "10700e53a30c14eb0b80e41e07db94e53f40a8a6096c77bbfe4ebd13ffb24399"
+          }
+        },
+        {
+          "run": "runs/authoring/weekly-status-deck/toolboxmd",
+          "durationSeconds": 324,
+          "inputTokens": 395843,
+          "cachedInputTokens": 326144,
+          "uncachedInputTokens": 69699,
+          "outputTokens": 14490,
+          "runtimeTokens": 84189,
+          "rawEvents": {
+            "bytes": 68974,
+            "sha256": "8b75ebbc82b7782f9d5afef3506eb79ca0b7a54d6e696f555c09a32495c16e54"
+          }
+        }
+      ]
+    },
+    "authoringEligible": {
+      "sessions": 4,
+      "durationSeconds": 1262,
+      "inputTokens": 1620974,
+      "cachedInputTokens": 1387264,
+      "uncachedInputTokens": 233710,
+      "outputTokens": 53374,
+      "runtimeTokens": 287084,
+      "runs": [
+        {
+          "run": "runs/authoring-r2/meeting-followups/builtin",
+          "durationSeconds": 309,
+          "inputTokens": 362237,
+          "cachedInputTokens": 268800,
+          "uncachedInputTokens": 93437,
+          "outputTokens": 12060,
+          "runtimeTokens": 105497,
+          "rawEvents": {
+            "bytes": 63372,
+            "sha256": "8f738bc8ea5962da2ce999b27582689528339aeaf9fc2234cf949d9f1ee30490"
+          }
+        },
+        {
+          "run": "runs/authoring-r2/meeting-followups/toolboxmd",
+          "durationSeconds": 345,
+          "inputTokens": 588829,
+          "cachedInputTokens": 542208,
+          "uncachedInputTokens": 46621,
+          "outputTokens": 15333,
+          "runtimeTokens": 61954,
+          "rawEvents": {
+            "bytes": 74454,
+            "sha256": "832928248b52c9e929ea11e6f3cb8b536623cfe426d0411e9688624cf65cefda"
+          }
+        },
+        {
+          "run": "runs/authoring-r2/weekly-status-deck/builtin",
+          "durationSeconds": 236,
+          "inputTokens": 268189,
+          "cachedInputTokens": 232448,
+          "uncachedInputTokens": 35741,
+          "outputTokens": 10840,
+          "runtimeTokens": 46581,
+          "rawEvents": {
+            "bytes": 55765,
+            "sha256": "7f5d24adf2f821f4cc5893fda3fbaaa9846ad7ec045768156ae3d1a971508e47"
+          }
+        },
+        {
+          "run": "runs/authoring-r2/weekly-status-deck/toolboxmd",
+          "durationSeconds": 372,
+          "inputTokens": 401719,
+          "cachedInputTokens": 343808,
+          "uncachedInputTokens": 57911,
+          "outputTokens": 15141,
+          "runtimeTokens": 73052,
+          "rawEvents": {
+            "bytes": 80885,
+            "sha256": "554abcc08589c66e1615e4ce534351d76680f58953aee3ee0e59b47f4235b961"
+          }
+        }
+      ]
+    },
+    "downstream": {
+      "sessions": 4,
+      "durationSeconds": 221,
+      "inputTokens": 306904,
+      "cachedInputTokens": 220672,
+      "uncachedInputTokens": 86232,
+      "outputTokens": 8137,
+      "runtimeTokens": 94369,
+      "runs": [
+        {
+          "run": "runs/downstream/meeting-followups/builtin",
+          "durationSeconds": 45,
+          "inputTokens": 74783,
+          "cachedInputTokens": 57856,
+          "uncachedInputTokens": 16927,
+          "outputTokens": 1623,
+          "runtimeTokens": 18550,
+          "rawEvents": {
+            "bytes": 12400,
+            "sha256": "42783a67d52a37764eafc3ccf8ef9259c09408bf46acecf86d73a1cee3af314b"
+          }
+        },
+        {
+          "run": "runs/downstream/meeting-followups/toolboxmd",
+          "durationSeconds": 66,
+          "inputTokens": 86181,
+          "cachedInputTokens": 67072,
+          "uncachedInputTokens": 19109,
+          "outputTokens": 2500,
+          "runtimeTokens": 21609,
+          "rawEvents": {
+            "bytes": 28074,
+            "sha256": "5d547c23a9c55bb3446fea7bfc1b077d0377476fda1ad96041a3b22ee6b2e122"
+          }
+        },
+        {
+          "run": "runs/downstream/weekly-status-deck/builtin",
+          "durationSeconds": 52,
+          "inputTokens": 67067,
+          "cachedInputTokens": 38912,
+          "uncachedInputTokens": 28155,
+          "outputTokens": 2073,
+          "runtimeTokens": 30228,
+          "rawEvents": {
+            "bytes": 14646,
+            "sha256": "368e3469d09261592ff0f7bb411dd187e7a780a15ac74c294a01695cbd65d6af"
+          }
+        },
+        {
+          "run": "runs/downstream/weekly-status-deck/toolboxmd",
+          "durationSeconds": 58,
+          "inputTokens": 78873,
+          "cachedInputTokens": 56832,
+          "uncachedInputTokens": 22041,
+          "outputTokens": 1941,
+          "runtimeTokens": 23982,
+          "rawEvents": {
+            "bytes": 16514,
+            "sha256": "51b95afe7854e8202f1952d674da32da31f5ebf5ec958c8cc5f56e817e73097c"
+          }
+        }
+      ]
+    },
+    "nearMiss": {
+      "sessions": 2,
+      "durationSeconds": 13,
+      "inputTokens": 18129,
+      "cachedInputTokens": 6912,
+      "uncachedInputTokens": 11217,
+      "outputTokens": 133,
+      "runtimeTokens": 11350,
+      "runs": [
+        {
+          "run": "runs/near-miss/builtin",
+          "durationSeconds": 7,
+          "inputTokens": 9089,
+          "cachedInputTokens": 0,
+          "uncachedInputTokens": 9089,
+          "outputTokens": 72,
+          "runtimeTokens": 9161,
+          "rawEvents": {
+            "bytes": 680,
+            "sha256": "f6354b5ed8b05da0e332199348c98c627cf0e4f865113d63150b29af7cf05356"
+          }
+        },
+        {
+          "run": "runs/near-miss/toolboxmd",
+          "durationSeconds": 6,
+          "inputTokens": 9040,
+          "cachedInputTokens": 6912,
+          "uncachedInputTokens": 2128,
+          "outputTokens": 61,
+          "runtimeTokens": 2189,
+          "rawEvents": {
+            "bytes": 621,
+            "sha256": "d76ad2c308239b976d25b91b3425b1ccedcb4f899c776506837600b2d358ff25"
+          }
+        }
+      ]
+    }
+  },
+  "total": {
+    "sessions": 16,
+    "durationSeconds": 2759,
+    "inputTokens": 3784225,
+    "cachedInputTokens": 3171328,
+    "uncachedInputTokens": 612897,
+    "outputTokens": 115376,
+    "runtimeTokens": 728273
+  }
+}

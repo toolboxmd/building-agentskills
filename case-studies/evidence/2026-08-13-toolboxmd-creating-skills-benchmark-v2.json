@@ -1,0 +1,112 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13",
+  "benchmark": {
+    "id": "toolboxmd-creating-skills-v2",
+    "decision": "mixed",
+    "recommended_creator": null,
+    "toolboxmd_candidate_recommended": false,
+    "current_default_unchanged": true,
+    "claim_boundary": "One-run operational comparison of two frozen creators on two daily-use skill families under Codex CLI 0.147.0 and gpt-5.6-sol at medium reasoning. It does not estimate variance, establish cross-provider behavior, or rank skill creators generally.",
+    "configuration": {
+      "codex_cli_version": "0.147.0",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "same_model_across_treatments": true,
+      "network_access": false,
+      "other_skills_enabled": false,
+      "plugins_enabled": false,
+      "apps_enabled": false,
+      "memories_enabled": false,
+      "web_search_enabled": false,
+      "nested_delegation_observed": false
+    },
+    "acceptance": {
+      "primary_cases_qualified": 2,
+      "positive_target_loads": 4,
+      "positive_runs": 4,
+      "near_miss_target_loads": 0,
+      "near_miss_exposed_target_skills": 4,
+      "builtin_case_wins": 1,
+      "toolboxmd_case_wins": 1,
+      "wins_required_to_promote_toolboxmd": 2,
+      "toolboxmd_promotion_gate_passed": false,
+      "reserve_used": false
+    },
+    "cases": [
+      {
+        "case_id": "meeting-followups",
+        "no_skill_critical_passes": 2,
+        "no_skill_critical_checks": 8,
+        "builtin_critical_passes": 7,
+        "toolboxmd_critical_passes": 7,
+        "outputs_byte_identical": true,
+        "builtin_runtime_tokens": 18550,
+        "toolboxmd_runtime_tokens": 21609,
+        "observable_utility": "tie",
+        "final_outcome": "builtin_cost_tiebreak_low_confidence",
+        "shared_non_diagnostic_failure": "Both outputs preserved source terminal periods while the under-specified exact fixture omitted them."
+      },
+      {
+        "case_id": "weekly-status-deck",
+        "no_skill_critical_passes": 7,
+        "no_skill_critical_checks": 8,
+        "builtin_critical_passes": 8,
+        "toolboxmd_critical_passes": 8,
+        "outputs_byte_identical": false,
+        "builtin_runtime_tokens": 30228,
+        "toolboxmd_runtime_tokens": 23982,
+        "observable_utility": "tie_full_pass",
+        "final_outcome": "toolboxmd_cost_tiebreak_low_confidence",
+        "output_difference": "Harmless template whitespace and title-slide reporting-range phrasing."
+      }
+    ],
+    "creator_comparison": {
+      "toolboxmd_description_reduction_percent": {
+        "meeting_followups": 29.5,
+        "weekly_status_deck": 39.2
+      },
+      "toolboxmd_package_growth_percent": {
+        "meeting_followups": 29.7,
+        "weekly_status_deck": 53.9
+      },
+      "toolboxmd_skill_md_growth_percent": {
+        "meeting_followups": 11.6,
+        "weekly_status_deck": 14.1
+      },
+      "toolboxmd_authoring_slower_in_both_cases": true,
+      "consistent_authoring_token_advantage": false,
+      "consistent_downstream_token_advantage": false
+    },
+    "usage": {
+      "decision_sessions": 16,
+      "hard_maximum_sessions": 17,
+      "cumulative_duration_seconds": 2759,
+      "input_tokens": 3784225,
+      "cached_input_tokens": 3171328,
+      "uncached_input_tokens": 612897,
+      "output_tokens": 115376,
+      "runtime_tokens": 728273
+    },
+    "interpretation_limit": "No downstream quality winner was observed. The per-case cost tie-breaks have low confidence because each treatment ran once per case."
+  },
+  "invalid_attempts": {
+    "count": 4,
+    "status": "discarded_before_downstream_for_symmetric_runner_correction",
+    "failure": "Both initial built-in authoring runs wrote Python bytecode under the protected creator tree. The full four-run authoring batch was discarded before downstream use.",
+    "accepted_amendment": "Protocol revision 2 disabled Python bytecode writes, redirected the cache under the run root, and repeated all four authoring arms symmetrically without changing cases, prompts, treatments, grader, model, or decision rule."
+  },
+  "evidence": {
+    "result_manifest": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/manifest.json",
+    "result_manifest_sha256": "608271a4898db103d0acc6049e3ce9a705837d64095c9135e9c91573e7c8cef9",
+    "result_readme": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/README.md",
+    "recommendations": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/recommendations.md",
+    "retention_manifest_sha256": "cf919104953fe50598c6c6d38f43a59b36ed2bd0d55be1975ac7acbefa222ece",
+    "session_usage_sha256": "99df094f3389dbec01c94d0b7f3733647f03b4821d18ef3ea5144ebec1d804e4",
+    "discarded_authoring_failure_sha256": "172f8e043b6d879bba3728ee0543b7f56d726eec5a06d5035a36bd588875d992",
+    "cases_sha256": "f5c0d2d74a42063c15f4fd4b4b8871522fcb53623d5188d58d957cbd4d846d87",
+    "builtin_creator_sha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c",
+    "toolboxmd_creator_sha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7"
+  },
+  "known_protocol_limit": "The pre-run protocol commitment omitted the supporting grader and event-audit scripts. Their at-result hashes and retained outputs are inspectable, but the commitment alone cannot prove that every supporting tool stayed byte-identical throughout execution."
+}

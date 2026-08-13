@@ -1,3 +1,4 @@
 # Runtime state (per-machine, never commit)
 .locks/
 .ingest.log
+.wiki-config.local

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 2,
+  "mode": "preflight",
+  "eligible": true,
+  "reasons": [],
+  "eventCount": 10,
+  "commandCount": 2,
+  "turnCompleted": true,
+  "expectedSkillLoad": {
+    "path": ".agents/skills/cobalt-finch-preflight/SKILL.md",
+    "observed": true,
+    "fullContentObserved": true,
+    "eventIndex": 4,
+    "beforeFirstOutputMutation": true
+  },
+  "observedSkillLoads": [
+    {
+      "path": ".agents/skills/cobalt-finch-preflight/SKILL.md",
+      "fullContentObserved": true
+    }
+  ],
+  "falsePositiveSkillLoad": false,
+  "firstOutputMutationEventIndex": null,
+  "networkProbe": {
+    "observed": true,
+    "attemptCount": 1,
+    "blocked": true,
+    "exitCodes": [
+      6
+    ]
+  },
+  "usage": {
+    "inputTokens": 27358,
+    "cachedInputTokens": 16896,
+    "uncachedInputTokens": 10462,
+    "outputTokens": 334,
+    "runtimeTokens": 10796
+  }
+}

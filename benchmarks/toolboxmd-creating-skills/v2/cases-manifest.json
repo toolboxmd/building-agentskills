@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 2,
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "f5c0d2d74a42063c15f4fd4b4b8871522fcb53623d5188d58d957cbd4d846d87",
+  "files": [
+    {
+      "path": "meeting-followups/authoring-prompt.md",
+      "bytes": 908,
+      "sha256": "265da5fd9d56624f9f9910c902cbcce1ab6ad3ce032ab1654eb016d48266ed42"
+    },
+    {
+      "path": "meeting-followups/authoring-sources/examples/example-meeting.md",
+      "bytes": 470,
+      "sha256": "1674169c09dc09cff0129c9bf80e7c8103f8ed1c9a48e5fd0c3f8374bb868a32"
+    },
+    {
+      "path": "meeting-followups/authoring-sources/knowledge/team-follow-up-contract.md",
+      "bytes": 2294,
+      "sha256": "0ce55977b9d631fddec6b74616e293a07ed64e7f07dc51bd7861e6951fc600d6"
+    },
+    {
+      "path": "meeting-followups/contract.json",
+      "bytes": 2813,
+      "sha256": "b9d5c4808e7953b97fbed33e21bfd29547f75e23fa4235e954a473059f8beda1"
+    },
+    {
+      "path": "meeting-followups/downstream-prompt.md",
+      "bytes": 139,
+      "sha256": "b8b0a20b24841f849de860f0f00abc7474094ee5cfb947bfcbb2182225a9980a"
+    },
+    {
+      "path": "meeting-followups/downstream-workspace/knowledge/team-follow-up-contract.md",
+      "bytes": 2294,
+      "sha256": "0ce55977b9d631fddec6b74616e293a07ed64e7f07dc51bd7861e6951fc600d6"
+    },
+    {
+      "path": "meeting-followups/downstream-workspace/workspace/actions.csv",
+      "bytes": 103,
+      "sha256": "09d40fe20a0c8b9cb3df8be54f573647695918f577349f6cdbee0a1ff738e5b9"
+    },
+    {
+      "path": "meeting-followups/downstream-workspace/workspace/meeting-notes.md",
+      "bytes": 625,
+      "sha256": "79f99ff84535b0965647891833851fd7e8b5ffe0fcf6981645cc535af93f25bc"
+    },
+    {
+      "path": "meeting-followups/near-miss-prompt.md",
+      "bytes": 80,
+      "sha256": "3a10148afade738bdc5ef0045f14af2acc3c1a19a607d0db5b8fc59c6235e774"
+    },
+    {
+      "path": "personal-expense-rollup/authoring-prompt.md",
+      "bytes": 956,
+      "sha256": "3315939783e5000c1ee491940372572f539342d01f0d6f0d9d945648027966db"
+    },
+    {
+      "path": "personal-expense-rollup/authoring-sources/examples/example-expense-rollup.md",
+      "bytes": 465,
+      "sha256": "c321f6988797e6ff7f0d681d938da01b7829c4ff37994ba734f9ec2c8952deba"
+    },
+    {
+      "path": "personal-expense-rollup/authoring-sources/knowledge/expense-rollup-contract.md",
+      "bytes": 2432,
+      "sha256": "5cbb137453af0b1ab9eb9cdcaf5bc621c39b753215a74c8c1125147db8abcda0"
+    },
+    {
+      "path": "personal-expense-rollup/contract.json",
+      "bytes": 2217,
+      "sha256": "fea588cd43a55d217de5df579401f76c2ce5055b1062461a4ccac1ebc957c6e0"
+    },
+    {
+      "path": "personal-expense-rollup/downstream-prompt.md",
+      "bytes": 155,
+      "sha256": "2df91bbb49f494cdd8df90998821faacbabe2131d6bbfb6c439523dd93eb4b49"
+    },
+    {
+      "path": "personal-expense-rollup/downstream-workspace/knowledge/expense-rollup-contract.md",
+      "bytes": 2432,
+      "sha256": "5cbb137453af0b1ab9eb9cdcaf5bc621c39b753215a74c8c1125147db8abcda0"
+    },
+    {
+      "path": "personal-expense-rollup/downstream-workspace/workspace/expense-tracker.csv",
+      "bytes": 146,
+      "sha256": "f72e417c77f1284f109accef01135ca5a330561a5686a1578d8d525a4ed10227"
+    },
+    {
+      "path": "personal-expense-rollup/downstream-workspace/workspace/transactions.csv",
+      "bytes": 269,
+      "sha256": "2a43677f0fa50200cd351f845e7259ae75121a2746ebc49a63adab144b06a439"
+    },
+    {
+      "path": "personal-expense-rollup/near-miss-prompt.md",
+      "bytes": 95,
+      "sha256": "86f7da7791fb63b8428423e7a606afc0084f135ae3b98f51e6137a5c5bd12929"
+    },
+    {
+      "path": "weekly-status-deck/authoring-prompt.md",
+      "bytes": 965,
+      "sha256": "46aad62ce08844c0093c11bc2641280ae44ac83645b45b90ef18dbe02270b502"
+    },
+    {
+      "path": "weekly-status-deck/authoring-sources/examples/example-weekly-notes.md",
+      "bytes": 638,
+      "sha256": "537a8908999a6e66c5e777f9a4375d6b88cc9e362219bb0c8d31ea97dc4d4ed0"
+    },
+    {
+      "path": "weekly-status-deck/authoring-sources/knowledge/status-deck-contract.md",
+      "bytes": 2009,
+      "sha256": "9b519e17c9b9b16eb4221b8b069bea77568f470c617e49b91d8e98a67151cd6b"
+    },
+    {
+      "path": "weekly-status-deck/contract.json",
+      "bytes": 2830,
+      "sha256": "07aec398e54787901049cfba9479d55d760408e340a8e012fde489784250ee46"
+    },
+    {
+      "path": "weekly-status-deck/downstream-prompt.md",
+      "bytes": 111,
+      "sha256": "1c03460e9a18cbc5713150ccfdbec7fa5b9d533772446be3f21ddaaac8944e32"
+    },
+    {
+      "path": "weekly-status-deck/downstream-workspace/knowledge/status-deck-contract.md",
+      "bytes": 2009,
+      "sha256": "9b519e17c9b9b16eb4221b8b069bea77568f470c617e49b91d8e98a67151cd6b"
+    },
+    {
+      "path": "weekly-status-deck/downstream-workspace/workspace/weekly-notes.md",
+      "bytes": 761,
+      "sha256": "bdd99bc40ddac87414b2f95d38dc9c55455373910a66fd34eade27af763c36ce"
+    },
+    {
+      "path": "weekly-status-deck/near-miss-prompt.md",
+      "bytes": 73,
+      "sha256": "f029c4e74f24fa6c3d44783b920ffd0f21141ad65c11815227813f2e4ae36c48"
+    }
+  ]
+}

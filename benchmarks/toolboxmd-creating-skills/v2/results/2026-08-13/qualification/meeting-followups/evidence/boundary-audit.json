@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "output",
+  "protectedFileCount": 4,
+  "newFiles": [
+    "output/actions.csv",
+    "output/team-follow-up-2026-08-13.md"
+  ],
+  "reasons": []
+}

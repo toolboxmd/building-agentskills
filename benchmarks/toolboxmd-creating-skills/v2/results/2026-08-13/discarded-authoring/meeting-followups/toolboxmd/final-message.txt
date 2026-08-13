@@ -1,0 +1,19 @@
+Created the reusable skill at [output/meeting-followups/SKILL.md](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring/meeting-followups/toolboxmd/run/output/meeting-followups/SKILL.md).
+
+It includes:
+
+- Concise positive trigger and general-meeting-advice boundary.
+- Exact classification, owner mapping, formatting, tracker, and QA conventions.
+- A deterministic [validator](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring/meeting-followups/toolboxmd/run/output/meeting-followups/scripts/validate_followup.py).
+- Three evaluation cases and a downstream smoke-check recipe.
+- Five files total; no speculative assets or documentation.
+
+Design summary: an Agent Skill fits the reusable judgment-heavy conversion workflow. Users or agents may invoke it. Mechanical invariants are validator-enforced; wording fidelity remains advisory judgment. `SKILL.md` is 35 lines with one conditional reference.
+
+Validated: yes — bundled validator passed; all internal links, names, JSON, file sizes, and package structure passed final audit.
+
+Tested: partial — positive fixture passed; incorrect owner and idea promotion were rejected. Fresh-agent smoke testing was not run because invoking another agent was prohibited. The official validator was unavailable locally.
+
+Committed: no — the destination is git-ignored and untracked.
+
+Pushed: no.

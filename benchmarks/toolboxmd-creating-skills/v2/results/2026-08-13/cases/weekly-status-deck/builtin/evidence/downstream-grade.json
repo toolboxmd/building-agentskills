@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 2,
+  "caseId": "weekly-status-deck",
+  "passed": true,
+  "checkCount": 8,
+  "passedCheckCount": 8,
+  "failedCheckCount": 0,
+  "failedCheckIds": [],
+  "criticalCheckCount": 8,
+  "criticalPassCount": 8,
+  "criticalFailedCheckIds": [],
+  "checks": [
+    {
+      "id": "deck-file",
+      "type": "file-exists",
+      "critical": true,
+      "passed": true,
+      "detail": "output/status-deck.md exists"
+    },
+    {
+      "id": "check-file",
+      "type": "file-exists",
+      "critical": true,
+      "passed": true,
+      "detail": "output/deck-check.json exists"
+    },
+    {
+      "id": "deck-frontmatter",
+      "type": "frontmatter-equals",
+      "critical": true,
+      "passed": true,
+      "detail": "observed: {\"marp\":\"true\",\"theme\":\"default\",\"paginate\":\"true\",\"footer\":\"Aster Weekly | Internal\"}"
+    },
+    {
+      "id": "deck-slides",
+      "type": "marp-slide-headings-exact",
+      "critical": true,
+      "passed": true,
+      "detail": "observed: [\"Aster Weekly Status\",\"Outcomes\",\"Work in progress\",\"Risks\",\"Decisions and asks\"]"
+    },
+    {
+      "id": "deck-reporting-range",
+      "type": "contains-all",
+      "critical": true,
+      "passed": true,
+      "detail": "all required values present"
+    },
+    {
+      "id": "deck-supported-content",
+      "type": "contains-all",
+      "critical": true,
+      "passed": true,
+      "detail": "all required values present"
+    },
+    {
+      "id": "deck-claim-boundary",
+      "type": "not-contains",
+      "critical": true,
+      "passed": true,
+      "detail": "no forbidden values present"
+    },
+    {
+      "id": "deck-check-exact",
+      "type": "json-equals",
+      "critical": true,
+      "passed": true,
+      "detail": "JSON value matches"
+    }
+  ]
+}

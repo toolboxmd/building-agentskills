@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 2,
+  "caseId": "weekly-status-deck",
+  "passed": false,
+  "checkCount": 8,
+  "passedCheckCount": 7,
+  "failedCheckCount": 1,
+  "failedCheckIds": [
+    "deck-check-exact"
+  ],
+  "criticalCheckCount": 8,
+  "criticalPassCount": 7,
+  "criticalFailedCheckIds": [
+    "deck-check-exact"
+  ],
+  "checks": [
+    {
+      "id": "deck-file",
+      "type": "file-exists",
+      "critical": true,
+      "passed": true,
+      "detail": "output/status-deck.md exists"
+    },
+    {
+      "id": "check-file",
+      "type": "file-exists",
+      "critical": true,
+      "passed": true,
+      "detail": "output/deck-check.json exists"
+    },
+    {
+      "id": "deck-frontmatter",
+      "type": "frontmatter-equals",
+      "critical": true,
+      "passed": true,
+      "detail": "observed: {\"marp\":\"true\",\"theme\":\"default\",\"paginate\":\"true\",\"footer\":\"Aster Weekly | Internal\"}"
+    },
+    {
+      "id": "deck-slides",
+      "type": "marp-slide-headings-exact",
+      "critical": true,
+      "passed": true,
+      "detail": "observed: [\"Aster Weekly Status\",\"Outcomes\",\"Work in progress\",\"Risks\",\"Decisions and asks\"]"
+    },
+    {
+      "id": "deck-reporting-range",
+      "type": "contains-all",
+      "critical": true,
+      "passed": true,
+      "detail": "all required values present"
+    },
+    {
+      "id": "deck-supported-content",
+      "type": "contains-all",
+      "critical": true,
+      "passed": true,
+      "detail": "all required values present"
+    },
+    {
+      "id": "deck-claim-boundary",
+      "type": "not-contains",
+      "critical": true,
+      "passed": true,
+      "detail": "no forbidden values present"
+    },
+    {
+      "id": "deck-check-exact",
+      "type": "json-equals",
+      "critical": true,
+      "passed": false,
+      "detail": "observed: {\"schema_version\":1,\"slide_count\":5,\"required_sections\":[\"Aster Weekly Status\",\"Outcomes\",\"Work in progress\",\"Risks\",\"Decisions and asks\"],\"evidence_ids\":[\"W1\",\"W2\",\"W3\",\"W4\",\"W5\",\"W6\",\"W8\"],\"unsupported_claims\":0,\"checks\":{\"frontmatter\":true,\"slide-order\":true,\"evidence\":true,\"claim-boundary\":true}}"
+    }
+  ]
+}

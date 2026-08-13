@@ -1,0 +1,3 @@
+date,transaction_id,merchant,category,amount_pln
+2026-08-01,old-001,BIEDRONKA*9821,Groceries,54.20
+2026-08-02,old-002,SPOTIFY,Subscriptions,23.99

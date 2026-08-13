@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "slide_count": 5,
+  "required_sections": [
+    "Aster Weekly Status",
+    "Outcomes",
+    "Work in progress",
+    "Risks",
+    "Decisions and asks"
+  ],
+  "evidence_ids": [
+    "W1",
+    "W2",
+    "W3",
+    "W4",
+    "W5",
+    "W6",
+    "W8"
+  ],
+  "unsupported_claims": 0,
+  "checks": [
+    "frontmatter",
+    "slide-order",
+    "evidence",
+    "claim-boundary"
+  ]
+}

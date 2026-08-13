@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "meeting_date": "2026-08-11",
+  "decision_count": 2,
+  "action_count": 3,
+  "open_question_count": 1,
+  "deferred_idea_count": 1,
+  "tracker_rows_added": 3,
+  "missing_due_dates": [
+    "M-260811-02"
+  ],
+  "checks": [
+    "source-citations",
+    "tracker-schema",
+    "no-idea-promotion"
+  ]
+}

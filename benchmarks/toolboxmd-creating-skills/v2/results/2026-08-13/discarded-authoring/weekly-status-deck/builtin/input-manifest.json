@@ -1,0 +1,66 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "e2c51b751795a4536528d92c5e6c4838823ce7932c7ce60a18c7689b833c1b44",
+  "files": [
+    {
+      "path": "authoring-sources/examples/example-weekly-notes.md",
+      "bytes": 638,
+      "sha256": "537a8908999a6e66c5e777f9a4375d6b88cc9e362219bb0c8d31ea97dc4d4ed0"
+    },
+    {
+      "path": "authoring-sources/knowledge/status-deck-contract.md",
+      "bytes": 2009,
+      "sha256": "9b519e17c9b9b16eb4221b8b069bea77568f470c617e49b91d8e98a67151cd6b"
+    },
+    {
+      "path": "creator/SKILL.md",
+      "bytes": 22047,
+      "sha256": "da44c88f6b3845a8fa8c60792ec9a722110a55a9793c279757b48fefb11f819c"
+    },
+    {
+      "path": "creator/agents/openai.yaml",
+      "bytes": 183,
+      "sha256": "d07d21b93fcf3d4dc8d9a3399c05fc226a49a333a96d3e1c68b451b8dd9eade6"
+    },
+    {
+      "path": "creator/assets/skill-creator-small.svg",
+      "bytes": 1319,
+      "sha256": "6591bf8ea9bb9435890dbdea299e0d2bd05f3aa893a335d26e4c535e93c8e7fb"
+    },
+    {
+      "path": "creator/assets/skill-creator.png",
+      "bytes": 1563,
+      "sha256": "a4024b0306ddb05847e1012879d37aaf1e658205199da596f5145ed7a88d9162"
+    },
+    {
+      "path": "creator/license.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "creator/references/openai_yaml.md",
+      "bytes": 2356,
+      "sha256": "ffac39318e408108141d40f820968e59f70434a891694f9bf1d25be8237b150c"
+    },
+    {
+      "path": "creator/scripts/generate_openai_yaml.py",
+      "bytes": 6619,
+      "sha256": "ddaf9abdfb3e762ed3c82571e9c607ce964188f49f2146281beb2cb8a553a93d"
+    },
+    {
+      "path": "creator/scripts/init_skill.py",
+      "bytes": 14602,
+      "sha256": "f40cb8fafc34e2d5dbbb8b6b04297af128b70844b67bc9445ef69790e0cdb49e"
+    },
+    {
+      "path": "creator/scripts/quick_validate.py",
+      "bytes": 3293,
+      "sha256": "6cc9dc3199c935916cf6f73fcbbbb0e3bb1b58c8f5109fefa499978908164f51"
+    },
+    {
+      "path": "task.md",
+      "bytes": 965,
+      "sha256": "46aad62ce08844c0093c11bc2641280ae44ac83645b45b90ef18dbe02270b502"
+    }
+  ]
+}

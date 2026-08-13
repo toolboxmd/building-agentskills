@@ -1,0 +1,4 @@
+interface:
+  display_name: "Meeting Follow-ups"
+  short_description: "Turn meeting notes into tracked follow-ups"
+  default_prompt: "Use $meeting-followups to turn these meeting notes into a team follow-up and update the action tracker."

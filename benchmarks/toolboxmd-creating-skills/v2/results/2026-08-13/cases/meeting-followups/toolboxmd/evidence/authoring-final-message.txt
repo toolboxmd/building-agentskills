@@ -1,0 +1,17 @@
+Created the reusable [`meeting-followups` skill](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring-r2/meeting-followups/toolboxmd/run/output/meeting-followups/SKILL.md).
+
+Package contents:
+
+- Exact formatting, classification, tracker, owner, and QA conventions in [follow-up-contract.md](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring-r2/meeting-followups/toolboxmd/run/output/meeting-followups/references/follow-up-contract.md)
+- Read-only deterministic validator in [validate_outputs.py](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring-r2/meeting-followups/toolboxmd/run/output/meeting-followups/scripts/validate_outputs.py)
+- Two positive cases and a general-meeting-advice near miss in [evals.json](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring-r2/meeting-followups/toolboxmd/run/output/meeting-followups/evals/evals.json)
+
+Design summary: an Agent Skill fits the reusable semantic classification workflow; the validator mechanically enforces formatting, tracker, citation, and QA invariants. It supports agent discovery or explicit invocation with no platform-specific mechanism. The description is 377 characters and `SKILL.md` is 40 lines. Its trigger requires explicitly tagged meeting notes; general advice, agendas, facilitation, productivity coaching, and untagged summaries are excluded.
+
+Validated: yes — bundled validator passed; internal links, name, frontmatter, paths, line budgets, and package tree checked.
+
+Tested: partial — syntax and `--help` passed; worked-example and missing-field rehearsals passed; deliberate idea promotion exited with the expected failure. A fresh-model smoke test was skipped because invoking another model or agent was prohibited. No official validator was present locally.
+
+Committed: no.
+
+Pushed: no.

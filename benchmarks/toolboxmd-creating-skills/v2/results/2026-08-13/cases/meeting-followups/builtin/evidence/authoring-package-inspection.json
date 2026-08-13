@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "aggregateSha256": "9f715024c2f0af89f964360eee9e0ea576142c9e4a3fbf194b63475b277446ac",
+  "fileCount": 4,
+  "packageBytes": 15161,
+  "referenceFileCount": 1,
+  "scriptFileCount": 1,
+  "evalFileCount": 0,
+  "skillMd": {
+    "bytes": 2141,
+    "lines": 30,
+    "words": 296,
+    "descriptionCharacters": 533
+  },
+  "files": [
+    {
+      "path": "SKILL.md",
+      "bytes": 2141,
+      "sha256": "55d66d4614500ce5fcacc2fd91ee62622161520c082d5ca4845de86acc9ccd1a"
+    },
+    {
+      "path": "agents/openai.yaml",
+      "bytes": 238,
+      "sha256": "4c346d7a36b3713604714177a406e79ce6b34601064272b574fb543fd66766c9"
+    },
+    {
+      "path": "references/deliverable-contract.md",
+      "bytes": 3284,
+      "sha256": "2fc30a1069f00344fb2cd2007cccaa6b9520326c5ffdaa0976832310b71e91b4"
+    },
+    {
+      "path": "scripts/validate_outputs.py",
+      "bytes": 9498,
+      "sha256": "93a9adfd7a5e4ab2c74a2e02bba04655d90e50dedee6d331118ce6f15710b2fd"
+    }
+  ]
+}

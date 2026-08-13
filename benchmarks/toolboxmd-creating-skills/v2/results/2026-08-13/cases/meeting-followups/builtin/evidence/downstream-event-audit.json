@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 2,
+  "mode": "positive",
+  "eligible": true,
+  "reasons": [],
+  "warnings": [],
+  "eventCount": 19,
+  "commandCount": 5,
+  "turnCompleted": true,
+  "expectedSkillLoad": {
+    "path": ".agents/skills/meeting-followups/SKILL.md",
+    "observed": true,
+    "fullContentObserved": true,
+    "eventIndex": 4,
+    "beforeFirstOutputMutation": true
+  },
+  "observedSkillLoads": [
+    {
+      "path": ".agents/skills/meeting-followups/SKILL.md",
+      "fullContentObserved": true
+    }
+  ],
+  "falsePositiveSkillLoad": false,
+  "firstOutputMutationEventIndex": 12,
+  "networkProbe": {
+    "observed": false,
+    "attemptCount": 0,
+    "blocked": false,
+    "exitCodes": []
+  },
+  "gitStatus": {
+    "observed": false,
+    "ancestorWorktreeNamesObserved": false
+  },
+  "usage": {
+    "inputTokens": 74783,
+    "cachedInputTokens": 57856,
+    "uncachedInputTokens": 16927,
+    "outputTokens": 1623,
+    "runtimeTokens": 18550
+  }
+}

@@ -1,0 +1,18 @@
+2026-08-13T13:09:27.425612Z ERROR codex_core::tools::router: error=exec_command failed for `/bin/zsh -lc "rm -rf output/weekly-status-deck/scripts/__pycache__; python3 creator/scripts/validate_skill.py output/weekly-status-deck; PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile output/weekly-status-deck/scripts/validate_deck.py output/weekly-status-deck/scripts/test_validate_deck.py; PYTHONDONTWRITEBYTECODE=1 python3 -m unittest output/weekly-status-deck/scripts/test_validate_deck.py; python3 -m json.tool output/weekly-status-deck/evals/evals.json >/dev/null; python3 - <<'PY'
+from pathlib import Path
+import re
+root = Path('output/weekly-status-deck')
+errors=[]
+for path in root.rglob('*.md'):
+    text=path.read_text(encoding='utf-8')
+    for target in re.findall(r'\\[["'^]]+'"\\]\\((["'^)]+)'"\\)', text):
+        if '://' in target or target.startswith('#'):
+            continue
+        resolved=(path.parent/target.split('#',1)[0]).resolve()
+        if not resolved.exists():
+            errors.append(f'{path}: missing {target}')
+if errors:
+    raise SystemExit('\\n'.join(errors))
+print('PASS: all relative Markdown links resolve')
+PY
+if rg -n '/Users/|authoring-sources/|creator/' output/weekly-status-deck; then exit 1; else echo 'PASS: no local absolute/source-authoring paths embedded'; fi; printf '%s\\n' '--- final files ---'; find output/weekly-status-deck -type f -print | sort; printf '%s\\n' '--- status ---'; git status --short -- output/weekly-status-deck"`: CreateProcess { message: "Rejected(\"`/bin/zsh -lc \\\"rm -rf output/weekly-status-deck/scripts/__pycache__; python3 creator/scripts/validate_skill.py output/weekly-status-deck; PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile output/weekly-status-deck/scripts/validate_deck.py output/weekly-status-deck/scripts/test_validate_deck.py; PYTHONDONTWRITEBYTECODE=1 python3 -m unittest output/weekly-status-deck/scripts/test_validate_deck.py; python3 -m json.tool output/weekly-status-deck/evals/evals.json >/dev/null; python3 - <<'PY'\\nfrom pathlib import Path\\nimport re\\nroot = Path('output/weekly-status-deck')\\nerrors=[]\\nfor path in root.rglob('*.md'):\\n    text=path.read_text(encoding='utf-8')\\n    for target in re.findall(r'\\\\\\\\[[\\\"'^]]+'\\\"\\\\\\\\]\\\\\\\\(([\\\"'^)]+)'\\\"\\\\\\\\)', text):\\n        if '://' in target or target.startswith('#'):\\n            continue\\n        resolved=(path.parent/target.split('#',1)[0]).resolve()\\n        if not resolved.exists():\\n            errors.append(f'{path}: missing {target}')\\nif errors:\\n    raise SystemExit('\\\\\\\\n'.join(errors))\\nprint('PASS: all relative Markdown links resolve')\\nPY\\nif rg -n '/Users/|authoring-sources/|creator/' output/weekly-status-deck; then exit 1; else echo 'PASS: no local absolute/source-authoring paths embedded'; fi; printf '%s\\\\\\\\n' '--- final files ---'; find output/weekly-status-deck -type f -print | sort; printf '%s\\\\\\\\n' '--- status ---'; git status --short -- output/weekly-status-deck\\\"` rejected: rm -f style commands are not permitted. Use a safer approach\")" }

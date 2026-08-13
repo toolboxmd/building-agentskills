@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "eligible": true,
+  "allowedNewPrefix": "output",
+  "protectedFileCount": 12,
+  "newFiles": [
+    "output/meeting-followups/SKILL.md",
+    "output/meeting-followups/agents/openai.yaml",
+    "output/meeting-followups/references/deliverable-contract.md",
+    "output/meeting-followups/scripts/validate_outputs.py"
+  ],
+  "reasons": []
+}

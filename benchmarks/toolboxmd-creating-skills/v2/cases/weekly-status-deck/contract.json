@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 2,
+  "caseId": "weekly-status-deck",
+  "targetSkillName": "weekly-status-deck",
+  "criticalCheckIds": [
+    "deck-file",
+    "check-file",
+    "deck-frontmatter",
+    "deck-slides",
+    "deck-reporting-range",
+    "deck-supported-content",
+    "deck-claim-boundary",
+    "deck-check-exact"
+  ],
+  "checks": [
+    {
+      "id": "deck-file",
+      "type": "file-exists",
+      "path": "output/status-deck.md"
+    },
+    {
+      "id": "check-file",
+      "type": "file-exists",
+      "path": "output/deck-check.json"
+    },
+    {
+      "id": "deck-frontmatter",
+      "type": "frontmatter-equals",
+      "path": "output/status-deck.md",
+      "value": {
+        "marp": "true",
+        "theme": "default",
+        "paginate": "true",
+        "footer": "Aster Weekly | Internal"
+      }
+    },
+    {
+      "id": "deck-slides",
+      "type": "marp-slide-headings-exact",
+      "path": "output/status-deck.md",
+      "headings": [
+        "Aster Weekly Status",
+        "Outcomes",
+        "Work in progress",
+        "Risks",
+        "Decisions and asks"
+      ]
+    },
+    {
+      "id": "deck-reporting-range",
+      "type": "contains-all",
+      "path": "output/status-deck.md",
+      "caseSensitive": true,
+      "values": [
+        "2026-08-10 to 2026-08-14"
+      ]
+    },
+    {
+      "id": "deck-supported-content",
+      "type": "contains-all",
+      "path": "output/status-deck.md",
+      "caseSensitive": false,
+      "values": [
+        "DONE",
+        "checkout copy experiment",
+        "12% week over week",
+        "ON TRACK",
+        "70% complete",
+        "2026-08-14",
+        "BLOCKED",
+        "iOS test device",
+        "EUR 600",
+        "UNCONFIRMED",
+        "41%",
+        "2026-08-18",
+        "[W1]",
+        "[W2]",
+        "[W3]",
+        "[W4]",
+        "[W5]",
+        "[W6]",
+        "[W8]"
+      ]
+    },
+    {
+      "id": "deck-claim-boundary",
+      "type": "not-contains",
+      "path": "output/status-deck.md",
+      "caseSensitive": false,
+      "values": [
+        "category leader",
+        "activation improved",
+        "activation increased",
+        "activation trend"
+      ]
+    },
+    {
+      "id": "deck-check-exact",
+      "type": "json-equals",
+      "path": "output/deck-check.json",
+      "value": {
+        "schema_version": 1,
+        "slide_count": 5,
+        "required_sections": [
+          "Aster Weekly Status",
+          "Outcomes",
+          "Work in progress",
+          "Risks",
+          "Decisions and asks"
+        ],
+        "evidence_ids": [
+          "W1",
+          "W2",
+          "W3",
+          "W4",
+          "W5",
+          "W6",
+          "W8"
+        ],
+        "unsupported_claims": 0,
+        "checks": [
+          "frontmatter",
+          "slide-order",
+          "evidence",
+          "claim-boundary"
+        ]
+      }
+    }
+  ]
+}

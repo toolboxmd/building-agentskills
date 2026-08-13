@@ -1,0 +1,16 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "dfb5fa589d762a8b209f5f6b314927b0dff3e235f96c8a249ff9f6fceccb5aa6",
+  "files": [
+    {
+      "path": ".agents/skills/cobalt-finch-preflight/SKILL.md",
+      "bytes": 631,
+      "sha256": "4bf6edba2842fadaa11ece3d7ab7fd4498a17e14f887319600ace5e6a4ba6855"
+    },
+    {
+      "path": "task.md",
+      "bytes": 76,
+      "sha256": "2b1851223c5349b04777f2df28b88db10e9b101b8d79772d400048c4ae3bdfe4"
+    }
+  ]
+}

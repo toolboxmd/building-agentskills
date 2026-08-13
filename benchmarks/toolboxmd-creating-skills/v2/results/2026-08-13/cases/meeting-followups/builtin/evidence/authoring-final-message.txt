@@ -1,0 +1,10 @@
+Created the reusable skill at [output/meeting-followups](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring-r2/meeting-followups/builtin/run/output/meeting-followups/).
+
+It includes:
+
+- Concise workflow and precise trigger/near-miss boundary
+- Full private classification, formatting, tracker, and QA contract
+- UI metadata
+- Deterministic output validator
+
+Validation completed successfully with positive and negative fixtures. Internal links and package structure passed equivalent structural checks. The provided `quick_validate.py` could not run because PyYAML is unavailable, so its checks were reproduced locally without network access.

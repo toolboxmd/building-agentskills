@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "reason": "Both built-in attempts wrote Python bytecode under the protected creator tree. The complete four-run batch was discarded before downstream use and repeated symmetrically with bytecode isolation.",
+  "attempts": [
+    {
+      "caseId": "meeting-followups",
+      "treatment": "builtin",
+      "batchDisposition": "discarded_before_downstream_for_symmetric_runner_correction",
+      "boundaryEligible": false,
+      "boundaryReasons": [
+        "new file outside allowed prefix: creator/scripts/__pycache__/generate_openai_yaml.cpython-314.pyc"
+      ],
+      "pycFiles": [
+        {
+          "path": "creator/scripts/__pycache__/generate_openai_yaml.cpython-314.pyc",
+          "bytes": 9239,
+          "sha256": "b2e84006461c05618b38c10b1951c1c153c18d2c8ad675f88359e6ebb971182e"
+        }
+      ],
+      "rawEvents": {
+        "bytes": 70171,
+        "sha256": "2a7221765b15df1698b6c118f17e710ee7b34d26cf001302a6453ca6cd6c2c4a"
+      }
+    },
+    {
+      "caseId": "meeting-followups",
+      "treatment": "toolboxmd",
+      "batchDisposition": "discarded_before_downstream_for_symmetric_runner_correction",
+      "boundaryEligible": true,
+      "boundaryReasons": [],
+      "pycFiles": [],
+      "rawEvents": {
+        "bytes": 102780,
+        "sha256": "b534fa33baf27e9ff7bcd996bee925b5bda94134675312e5fda2988970fc986c"
+      }
+    },
+    {
+      "caseId": "weekly-status-deck",
+      "treatment": "builtin",
+      "batchDisposition": "discarded_before_downstream_for_symmetric_runner_correction",
+      "boundaryEligible": false,
+      "boundaryReasons": [
+        "new file outside allowed prefix: creator/scripts/__pycache__/generate_openai_yaml.cpython-314.pyc"
+      ],
+      "pycFiles": [
+        {
+          "path": "creator/scripts/__pycache__/generate_openai_yaml.cpython-314.pyc",
+          "bytes": 9240,
+          "sha256": "20cb9b163bdebd014118215a5251cec2af1b5b81b998d871d45f3a5bc8618202"
+        }
+      ],
+      "rawEvents": {
+        "bytes": 57430,
+        "sha256": "10700e53a30c14eb0b80e41e07db94e53f40a8a6096c77bbfe4ebd13ffb24399"
+      }
+    },
+    {
+      "caseId": "weekly-status-deck",
+      "treatment": "toolboxmd",
+      "batchDisposition": "discarded_before_downstream_for_symmetric_runner_correction",
+      "boundaryEligible": true,
+      "boundaryReasons": [],
+      "pycFiles": [],
+      "rawEvents": {
+        "bytes": 68974,
+        "sha256": "8b75ebbc82b7782f9d5afef3506eb79ca0b7a54d6e696f555c09a32495c16e54"
+      }
+    }
+  ]
+}

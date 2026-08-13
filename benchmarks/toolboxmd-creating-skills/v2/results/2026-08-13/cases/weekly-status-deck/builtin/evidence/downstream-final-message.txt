@@ -1,0 +1,6 @@
+Created the leadership status deck and validation receipt:
+
+- [status-deck.md](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/downstream/weekly-status-deck/builtin/run/output/status-deck.md)
+- [deck-check.json](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/downstream/weekly-status-deck/builtin/run/output/deck-check.json)
+
+Validation passed: 5 slides, 7 evidence IDs, 0 unsupported claims.

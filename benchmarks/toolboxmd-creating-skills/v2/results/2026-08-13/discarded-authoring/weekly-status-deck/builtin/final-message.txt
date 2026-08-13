@@ -1,0 +1,11 @@
+Created the reusable [`weekly-status-deck` skill](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring/weekly-status-deck/builtin/run/output/weekly-status-deck/SKILL.md).
+
+Included:
+
+- Exact private Marp template and five-slide order
+- Detailed status, evidence, claim, and receipt conventions
+- Precise positive trigger and general-advice near-miss boundary
+- Deterministic deck/receipt validator
+- Agent UI metadata
+
+Validation passed for internal links, YAML metadata, script syntax, a valid worked-example deck, and rejection of an incomplete deck. The creator’s `quick_validate.py` was also attempted but lacked PyYAML; equivalent frontmatter checks passed using the available Ruby YAML parser.

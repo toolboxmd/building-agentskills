@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "mode": "noskill",
+  "eligible": true,
+  "reasons": [],
+  "eventCount": 16,
+  "commandCount": 4,
+  "turnCompleted": true,
+  "expectedSkillLoad": null,
+  "observedSkillLoads": [],
+  "falsePositiveSkillLoad": false,
+  "firstOutputMutationEventIndex": 3,
+  "networkProbe": {
+    "observed": false,
+    "attemptCount": 0,
+    "blocked": false,
+    "exitCodes": []
+  },
+  "usage": {
+    "inputTokens": 57293,
+    "cachedInputTokens": 34816,
+    "uncachedInputTokens": 22477,
+    "outputTokens": 1634,
+    "runtimeTokens": 24111
+  }
+}

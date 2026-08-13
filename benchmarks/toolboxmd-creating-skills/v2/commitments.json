@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 2,
+  "benchmarkId": "toolboxmd-creating-skills-v2",
+  "frozenOn": "2026-08-13",
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "treatments": {
+    "builtin": {
+      "source": "../v1/baselines/codex-skill-creator-0.147.0/package",
+      "aggregateSha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c",
+      "skillMdSha256": "da44c88f6b3845a8fa8c60792ec9a722110a55a9793c279757b48fefb11f819c"
+    },
+    "toolboxmd": {
+      "source": "../v1/results/2026-08-12/candidate/toolboxmd-creating-skills",
+      "aggregateSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",
+      "skillMdSha256": "54411fef8b6477ffdc4ae6af8572f709cf881fdb8f84b6834885ec13afb8af59"
+    }
+  },
+  "protocol": {
+    "revision": 2,
+    "revisionReason": "The first authoring batch exposed Python bytecode writes under the protected built-in creator. A v2-only runner disables bytecode writes and redirects the cache prefix under .tmp. Cases, prompts, treatments, grader, and decision rules did not change.",
+    "aggregateSha256": "da1744ec7a2cc8efa5ae4c3511d5372dd82ed05af888aff9422aa1debf1ee45e",
+    "files": [
+      {
+        "path": "benchmarks/toolboxmd-creating-skills/v2/case-contracts/meeting-followups.md",
+        "bytes": 2026,
+        "sha256": "a09b64061ef9ccb1feb2e74ad2e3f03ee5bf86c2502112733b2dadf03322cefa"
+      },
+      {
+        "path": "benchmarks/toolboxmd-creating-skills/v2/case-contracts/personal-expense-rollup.md",
+        "bytes": 1790,
+        "sha256": "489fa20a995c50738da325434309ddac50bf414ff5ca64988e5c5052893ba975"
+      },
+      {
+        "path": "benchmarks/toolboxmd-creating-skills/v2/case-contracts/weekly-status-deck.md",
+        "bytes": 1882,
+        "sha256": "8e7675e28df3471cecd19f16502dcf8bf702b8c67b9796b9705f2c5ef6dc4415"
+      },
+      {
+        "path": "benchmarks/toolboxmd-creating-skills/v2/preflight/prompt.md",
+        "bytes": 76,
+        "sha256": "2b1851223c5349b04777f2df28b88db10e9b101b8d79772d400048c4ae3bdfe4"
+      },
+      {
+        "path": "benchmarks/toolboxmd-creating-skills/v2/preflight/skill/SKILL.md",
+        "bytes": 631,
+        "sha256": "4bf6edba2842fadaa11ece3d7ab7fd4498a17e14f887319600ace5e6a4ba6855"
+      },
+      {
+        "path": "benchmarks/toolboxmd-creating-skills/v2/README.md",
+        "bytes": 3408,
+        "sha256": "381656d0abcea5d4423fea52b4e65a0d6b9ad17ee2515d84a009a50dc4705a0e"
+      },
+      {
+        "path": "benchmarks/toolboxmd-creating-skills/v2/rubric.md",
+        "bytes": 2374,
+        "sha256": "62c382fb9aa9d6bbc02571423147b6bcc4e04c841bfcfa7098c761b765f59472"
+      },
+      {
+        "path": "benchmarks/toolboxmd-creating-skills/v2/run-config.json",
+        "bytes": 3345,
+        "sha256": "95b75bcbf246abab60b5b84aab469a082aa53a9318c6a563d793e1f69ccf02fa"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-08-13-toolboxmd-creating-skills-benchmark-v2-implementation.md",
+        "bytes": 7013,
+        "sha256": "5902a21013a1a5e104aba23916e82b0f6f688c1280ec8c6cc2badddc82f80516"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-08-13-toolboxmd-creating-skills-benchmark-v2-design.md",
+        "bytes": 11669,
+        "sha256": "0ed4184574d78a0de42b466a85470fc4d48058c0efd249c48ce469f8cfe15245"
+      },
+      {
+        "path": "scripts/run-isolated-codex-v2.sh",
+        "bytes": 3095,
+        "sha256": "462f9533dade77a722dc24abccd92ae3132b29129f8f0be17c47424b86bc2580"
+      }
+    ]
+  },
+  "cases": {
+    "manifest": "cases-manifest.json",
+    "aggregateSha256": "f5c0d2d74a42063c15f4fd4b4b8871522fcb53623d5188d58d957cbd4d846d87",
+    "frozenAfterBothTreatments": true,
+    "treatmentOutputsObservedBeforeFreeze": false
+  }
+}

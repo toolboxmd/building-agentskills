@@ -1,0 +1,21 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "0e9b6d1002b4b9ef46606d221d193df4120acb35d90382bf67bdbe71ac8ccea5",
+  "files": [
+    {
+      "path": "knowledge/status-deck-contract.md",
+      "bytes": 2009,
+      "sha256": "9b519e17c9b9b16eb4221b8b069bea77568f470c617e49b91d8e98a67151cd6b"
+    },
+    {
+      "path": "task.md",
+      "bytes": 111,
+      "sha256": "1c03460e9a18cbc5713150ccfdbec7fa5b9d533772446be3f21ddaaac8944e32"
+    },
+    {
+      "path": "workspace/weekly-notes.md",
+      "bytes": 761,
+      "sha256": "bdd99bc40ddac87414b2f95d38dc9c55455373910a66fd34eade27af763c36ce"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+Created the reusable `meeting-followups` skill at [output/meeting-followups/SKILL.md](/Users/lukaszmaj/dev/toolboxmd/building-agentskills-benchmark-v2/.benchmark-work/toolboxmd-creating-skills-v2/runs/authoring/meeting-followups/builtin/run/output/meeting-followups/SKILL.md).
+
+Included:
+
+- Precise positive trigger and general-advice near-miss boundary
+- Full private classification, formatting, tracker, and QA contract
+- UI metadata in `agents/openai.yaml`
+- Deterministic `validate_followups.py` helper
+
+Validation completed successfully:
+
+- Creator package validator passed
+- All internal Markdown links resolve
+- Valid fixture accepted
+- Idea-promotion fixture correctly rejected
+- No placeholders or temporary artifacts remain
+- Helper is executable

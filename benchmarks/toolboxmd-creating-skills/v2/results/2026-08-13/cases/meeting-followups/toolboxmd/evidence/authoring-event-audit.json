@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 2,
+  "mode": "authoring",
+  "eligible": true,
+  "reasons": [],
+  "warnings": [
+    "git status exposed names from an ancestor worktree without reading file contents"
+  ],
+  "eventCount": 81,
+  "commandCount": 29,
+  "turnCompleted": true,
+  "expectedSkillLoad": {
+    "path": "creator/SKILL.md",
+    "observed": true,
+    "fullContentObserved": true,
+    "eventIndex": 4,
+    "beforeFirstOutputMutation": true
+  },
+  "observedSkillLoads": [
+    {
+      "path": "creator/SKILL.md",
+      "fullContentObserved": true
+    }
+  ],
+  "falsePositiveSkillLoad": false,
+  "firstOutputMutationEventIndex": 25,
+  "networkProbe": {
+    "observed": false,
+    "attemptCount": 0,
+    "blocked": false,
+    "exitCodes": []
+  },
+  "gitStatus": {
+    "observed": true,
+    "ancestorWorktreeNamesObserved": true
+  },
+  "usage": {
+    "inputTokens": 588829,
+    "cachedInputTokens": 542208,
+    "uncachedInputTokens": 46621,
+    "outputTokens": 15333,
+    "runtimeTokens": 61954
+  }
+}

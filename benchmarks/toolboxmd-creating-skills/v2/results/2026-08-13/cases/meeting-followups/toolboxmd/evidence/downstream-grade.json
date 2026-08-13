@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 2,
+  "caseId": "meeting-followups",
+  "passed": false,
+  "checkCount": 8,
+  "passedCheckCount": 7,
+  "failedCheckCount": 1,
+  "failedCheckIds": [
+    "tracker-exact"
+  ],
+  "criticalCheckCount": 8,
+  "criticalPassCount": 7,
+  "criticalFailedCheckIds": [
+    "tracker-exact"
+  ],
+  "checks": [
+    {
+      "id": "follow-up-file",
+      "type": "file-exists",
+      "critical": true,
+      "passed": true,
+      "detail": "output/follow-up.md exists"
+    },
+    {
+      "id": "tracker-file",
+      "type": "file-exists",
+      "critical": true,
+      "passed": true,
+      "detail": "output/actions.csv exists"
+    },
+    {
+      "id": "qa-file",
+      "type": "file-exists",
+      "critical": true,
+      "passed": true,
+      "detail": "output/qa.json exists"
+    },
+    {
+      "id": "follow-up-headings",
+      "type": "markdown-headings-exact",
+      "critical": true,
+      "passed": true,
+      "detail": "observed: [\"Meeting follow-up\",\"Decisions\",\"Action items\",\"Open questions\",\"Deferred ideas\"]"
+    },
+    {
+      "id": "follow-up-content",
+      "type": "contains-all",
+      "critical": true,
+      "passed": true,
+      "detail": "all required values present"
+    },
+    {
+      "id": "tracker-exact",
+      "type": "exact-text",
+      "critical": true,
+      "passed": false,
+      "detail": "text differs"
+    },
+    {
+      "id": "tracker-no-idea",
+      "type": "not-contains",
+      "critical": true,
+      "passed": true,
+      "detail": "no forbidden values present"
+    },
+    {
+      "id": "qa-exact",
+      "type": "json-equals",
+      "critical": true,
+      "passed": true,
+      "detail": "JSON value matches"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Weekly Status Deck"
+  short_description: "Turn weekly notes into a leadership status deck"
+  default_prompt: "Use $weekly-status-deck to turn these weekly notes into a leadership-ready status deck."

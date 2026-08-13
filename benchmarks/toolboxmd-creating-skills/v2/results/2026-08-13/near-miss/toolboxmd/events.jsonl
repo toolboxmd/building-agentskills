@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"019ffb44-be7c-7871-94dd-44f677b9bdf1"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"1. Use a consistent agenda, clearly label decisions and action items, and end with a recap of owners and deadlines.\n\n2. A scannable weekly status update uses consistent headings, short bullets, and key metrics upfront. It clearly separates progress, risks, decisions, and asks."}}
+{"type":"turn.completed","usage":{"input_tokens":9040,"cached_input_tokens":6912,"cache_write_input_tokens":0,"output_tokens":61,"reasoning_output_tokens":0}}

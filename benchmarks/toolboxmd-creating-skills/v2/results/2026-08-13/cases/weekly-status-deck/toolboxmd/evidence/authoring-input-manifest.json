@@ -1,0 +1,51 @@
+{
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by relative path",
+  "aggregateSha256": "10edb50f5d99d98da6c4f793cc6492f422b950d779cf0217889d59c487f853a6",
+  "files": [
+    {
+      "path": "authoring-sources/examples/example-weekly-notes.md",
+      "bytes": 638,
+      "sha256": "537a8908999a6e66c5e777f9a4375d6b88cc9e362219bb0c8d31ea97dc4d4ed0"
+    },
+    {
+      "path": "authoring-sources/knowledge/status-deck-contract.md",
+      "bytes": 2009,
+      "sha256": "9b519e17c9b9b16eb4221b8b069bea77568f470c617e49b91d8e98a67151cd6b"
+    },
+    {
+      "path": "creator/SKILL.md",
+      "bytes": 10056,
+      "sha256": "54411fef8b6477ffdc4ae6af8572f709cf881fdb8f84b6834885ec13afb8af59"
+    },
+    {
+      "path": "creator/agents/openai.yaml",
+      "bytes": 235,
+      "sha256": "92a34e6af17f93aa0dd034f4cca2d559e8601fbb88eb40c0bc3a116c66ff12b7"
+    },
+    {
+      "path": "creator/evals/downstream-smoke.md",
+      "bytes": 1407,
+      "sha256": "1050ee83588a8935f0e1c56eb891269d01e2d55ddf2dac0948d1fe2ab902b368"
+    },
+    {
+      "path": "creator/evals/evals.json",
+      "bytes": 2816,
+      "sha256": "4f3560f5b21d6ae360040b062345b0d52d5c30495834df2bc0d5e9ab34ab8b9a"
+    },
+    {
+      "path": "creator/references/authoring-reference.md",
+      "bytes": 8962,
+      "sha256": "1be30adbf23d1716e1ba4bb4df8b5e5d3dd47e3061ab088838461e6e04153a72"
+    },
+    {
+      "path": "creator/scripts/validate_skill.py",
+      "bytes": 10964,
+      "sha256": "470a9d6cfd7ea582e7b3c8f8609071b39c5e8c872237952635cb87cb81212beb"
+    },
+    {
+      "path": "task.md",
+      "bytes": 965,
+      "sha256": "46aad62ce08844c0093c11bc2641280ae44ac83645b45b90ef18dbe02270b502"
+    }
+  ]
+}
