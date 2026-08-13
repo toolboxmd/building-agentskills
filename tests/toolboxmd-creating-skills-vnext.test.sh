@@ -31,7 +31,7 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-eval-files 0 \
   --max-script-files 1 \
   "$package")"
-[[ "$human_output" == *"METRICS: description_chars=278 skill_lines=109 skill_bytes=4472 files=3 package_bytes=23501 references=0 evals=0 scripts=1"* ]]
+[[ "$human_output" == *"METRICS: description_chars=240 skill_lines=72 skill_bytes=3656 files=3 package_bytes=23738 references=0 evals=0 scripts=1"* ]]
 [[ "$human_output" == *"PASS: portable skill package validation succeeded"* ]]
 
 cd "$test_tmp"
@@ -150,6 +150,87 @@ for reserved in claude-helper anthropic-helper; do
   [[ $reserved_exit -eq 1 ]]
 done
 
+for name in list-description quoted-description; do
+  mkdir -p "$test_tmp/$name"
+done
+cat > "$test_tmp/list-description/SKILL.md" <<'EOF'
+---
+name: list-description
+description: [one, two]
+---
+
+# Collection description
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/list-description" > "$test_tmp/list-description.json"
+list_description_exit=$?
+set -e
+[[ $list_description_exit -eq 1 ]]
+cat > "$test_tmp/quoted-description/SKILL.md" <<'EOF'
+---
+name: quoted-description
+description: "[one, two]"
+---
+
+# Quoted description
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/quoted-description" > "$test_tmp/quoted-description.json"
+
+scalar_cases=(boolean true null null numeric 123.5)
+for ((index = 0; index < ${#scalar_cases[@]}; index += 2)); do
+  label="${scalar_cases[$index]}"
+  raw="${scalar_cases[$((index + 1))]}"
+  for prefix in unquoted quoted; do
+    mkdir -p "$test_tmp/$prefix-$label-description"
+  done
+  printf -- '---\nname: unquoted-%s-description\ndescription: %s\n---\n\n# Unquoted scalar\n' "$label" "$raw" > "$test_tmp/unquoted-$label-description/SKILL.md"
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/unquoted-$label-description" > "$test_tmp/unquoted-$label-description.json"
+  scalar_exit=$?
+  set -e
+  [[ $scalar_exit -eq 1 ]]
+  printf -- '---\nname: quoted-%s-description\ndescription: "%s"\n---\n\n# Quoted scalar\n' "$label" "$raw" > "$test_tmp/quoted-$label-description/SKILL.md"
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/quoted-$label-description" > "$test_tmp/quoted-$label-description.json"
+done
+
+make_fixture "$test_tmp/code-links-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+cat >> "$test_tmp/code-links-fixture/SKILL.md" <<'EOF'
+
+`[Inline example](inline-missing.md)`
+
+```markdown
+[Fenced example](fenced-missing.md)
+```
+
+[Real link](real-missing.md)
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/code-links-fixture" > "$test_tmp/code-links.json"
+code_links_exit=$?
+set -e
+[[ $code_links_exit -eq 1 ]]
+
+for name in workspace-path root-path; do
+  make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+done
+printf '\nRead /workspace/alice/project/input.md before continuing.\n' >> "$test_tmp/workspace-path/SKILL.md"
+printf '\nRead /root/project/input.md before continuing.\n' >> "$test_tmp/root-path/SKILL.md"
+for name in workspace-path root-path; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
+  local_path_exit=$?
+  set -e
+  [[ $local_path_exit -eq 1 ]]
+done
+
+make_fixture "$test_tmp/web-root-link" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\n[App route](/workspace/app) and [remote docs](https://example.com/root/docs).\n' >> "$test_tmp/web-root-link/SKILL.md"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/web-root-link" > "$test_tmp/web-root-link.json"
+web_root_exit=$?
+set -e
+[[ $web_root_exit -eq 1 ]]
+
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$root/benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/cases/meeting-followups/toolboxmd/skill" > "$test_tmp/meeting.json"
 meeting_exit=$?
@@ -173,6 +254,14 @@ const missingIcon = JSON.parse(fs.readFileSync(path.join(temporary, "missing-ico
 const missingInterface = JSON.parse(fs.readFileSync(path.join(temporary, "missing-interface.json")));
 const titledLink = JSON.parse(fs.readFileSync(path.join(temporary, "titled-link.json")));
 const reserved = ["claude-helper", "anthropic-helper"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const listDescription = JSON.parse(fs.readFileSync(path.join(temporary, "list-description.json")));
+const quotedDescription = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-description.json")));
+const scalarKinds = ["boolean", "null", "numeric"];
+const unquotedScalars = scalarKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `unquoted-${name}-description.json`))));
+const quotedScalars = scalarKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `quoted-${name}-description.json`))));
+const codeLinks = JSON.parse(fs.readFileSync(path.join(temporary, "code-links.json")));
+const localPaths = ["workspace-path", "root-path"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const webRootLink = JSON.parse(fs.readFileSync(path.join(temporary, "web-root-link.json")));
 const meeting = JSON.parse(fs.readFileSync(path.join(temporary, "meeting.json")));
 const deck = JSON.parse(fs.readFileSync(path.join(temporary, "deck.json")));
 
@@ -209,7 +298,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 23501, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 23738, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -220,6 +309,14 @@ assert(missingIcon.issues.some(item => item.code === "OPENAI_ICON"), "declared i
 assert(missingInterface.issues.filter(item => item.code === "OPENAI_MISSING").length === 2, "required interface fields must remain enforced");
 assert(titledLink.status === "pass" && titledLink.errorCount === 0, "valid local link with optional title must pass");
 assert(reserved.every(result => result.status === "fail" && result.issues.some(item => item.code === "NAME_RESERVED")), "reserved provider names must fail");
+assert(listDescription.status === "fail" && listDescription.issues.some(item => item.code === "FRONTMATTER_TYPE"), "unquoted collection description must fail");
+assert(quotedDescription.status === "pass", "quoted collection-looking description must remain a string");
+assert(unquotedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_TYPE")), "obvious unquoted non-string scalars must fail");
+assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
+const brokenLinks = codeLinks.issues.filter(item => item.code === "BROKEN_LINK");
+assert(brokenLinks.length === 1 && brokenLinks[0].message.includes("real-missing.md"), "code links must be ignored while a real broken link fails");
+assert(localPaths.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "common container-local roots must fail");
+assert(webRootLink.issues.some(item => item.code === "ROOT_LINK") && !webRootLink.issues.some(item => item.code === "LOCAL_PATH"), "web links must not be mistaken for workstation paths");
 for (const [name, result, expectedEvals] of [["meeting", meeting, 1], ["deck", deck, 2]]) {
   assert(result.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), `${name}: retained bare script pattern not detected`);
   assert(result.metrics.referenceFileCount === 1, `${name}: retained always-read reference pattern changed`);

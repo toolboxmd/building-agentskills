@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, 2026-08-13:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 23,501 bytes, aggregate SHA-256
-  `31c06f2e0570ef1227b933e1beb6a7e698bafe87352d94d544619609427507aa`;
-- activated core: 109 lines and 4,472 bytes, with a 278-character
+- exact package: three files, 23,738 bytes, aggregate SHA-256
+  `8c7463d37a2e1f02f35d8e52e021dc7926f6e74b0412d80dcc8624de0a37c2a4`;
+- activated core: 72 lines and 3,656 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -142,9 +142,11 @@ Completion evidence, 2026-08-13:
 - the test reproduces the package freeze and budgets, checks exit codes 0/1/2,
   blocks fragile bare script paths, accepts the explicit `<skill-dir>`
   contract, accepts supported Codex sidecar sections and titled local links,
-  rejects reserved provider names, detects the retained meeting and deck
-  baggage patterns, disables Python bytecode writes, and proves retained
-  creator inputs were not mutated;
+  rejects reserved provider names and obvious unquoted non-string frontmatter,
+  ignores link syntax inside Markdown code, detects common container-local
+  paths in prose, detects the retained meeting and deck baggage patterns,
+  disables Python bytecode writes, and proves retained creator inputs were not
+  mutated;
 - zero model sessions were run, so this is a deterministic regression screen,
   not a new creator comparison.
 

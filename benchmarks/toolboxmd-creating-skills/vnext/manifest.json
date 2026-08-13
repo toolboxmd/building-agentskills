@@ -43,22 +43,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "31c06f2e0570ef1227b933e1beb6a7e698bafe87352d94d544619609427507aa",
+    "aggregateSha256": "8c7463d37a2e1f02f35d8e52e021dc7926f6e74b0412d80dcc8624de0a37c2a4",
     "fileCount": 3,
-    "packageBytes": 23501,
+    "packageBytes": 23738,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4472,
-      "lines": 109,
-      "descriptionCharacters": 278
+      "bytes": 3656,
+      "lines": 72,
+      "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4472,
-        "sha256": "c7b835437c47833875815b5aadc360392107c3bf32346101a464c411210b59c8"
+        "bytes": 3656,
+        "sha256": "ef6eccd962233b86c934f9b2d72f21347938dce468c0c8a0e473703e856cd2ac"
       },
       {
         "path": "agents/openai.yaml",
@@ -67,8 +67,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 18813,
-        "sha256": "86fba4d91b2a98bad8d5cdbfb396f022ae95558d695ed6bea4c4664fa9e5eb27"
+        "bytes": 19866,
+        "sha256": "572fd5e3dda470dd6f94a60c00264ad9d55a79de59788971526bc908fa6b4a29"
       }
     ]
   },
@@ -82,6 +82,10 @@
       "the supported Codex sidecar sections parse while required interface fields remain enforced",
       "valid Markdown links with optional titles pass",
       "skill names containing reserved provider strings fail",
+      "string-valued frontmatter rejects obvious unquoted collections and scalars while quoted lookalikes remain strings",
+      "Markdown links inside code are ignored while a real broken link is detected",
+      "common container-local paths in Markdown prose are detected",
+      "root-relative and remote web links are not misclassified as workstation paths",
       "default reference and eval baggage and unconditional Git inspection are absent",
       "the retained meeting-followups and weekly-status-deck path and baggage patterns are detected",
       "retained creator inputs remain byte-identical"

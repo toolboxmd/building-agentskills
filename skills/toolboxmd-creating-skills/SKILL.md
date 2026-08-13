@@ -1,16 +1,13 @@
 ---
 name: toolboxmd-creating-skills
-description: "Create a new portable Agent Skill from user needs, trigger examples, artifacts, and observed failures. Use for new reusable skill packages and proportional validation. Do not use to update an existing skill or compare versions; route those to updating or benchmarking workflows."
+description: "Create portable Agent Skills from needs, trigger and near-miss examples, artifacts, and failures. Use for new reusable packages and proportional validation. Do not update or compare skills; route those to updating or benchmarking workflows."
 ---
 
 # Creating Skills
 
-Create the smallest evidenced package for a reusable task.
-
 ## Boundaries
 
-- Route existing skills to `toolboxmd-updating-skills`.
-- Route comparisons to `toolboxmd-benchmarking-skills`.
+- For new skills. Route existing skills to `toolboxmd-updating-skills` and comparisons to `toolboxmd-benchmarking-skills`.
 - Use examples for discovery; confirm rules with authoritative sources and evidence.
 
 ## Default path
@@ -28,51 +25,27 @@ Read project instructions and choose the smallest mechanism:
 | Explicit user-started operation | Command or user-invoked skill |
 | Installation and lifecycle wiring | Plugin or extension |
 
-A skill may coordinate mechanisms; prose does not fire them.
+A skill may coordinate these; prose does not fire them.
 
 ### 2. Build an evidence brief
 
-Record before drafting:
-
-- job, value, inputs, outputs, and artifacts;
-- realistic triggers and close near misses;
-- observed mistakes, corrections, traces, or review evidence;
-- platform, safety, dependency, and delivery constraints;
-- evidence gaps and how to close them.
-
-Ask or perform one representative task to close evidence gaps. Label hypotheses.
+Record job and value, triggers and close near misses, inputs and outputs, observed mistakes, constraints, and evidence gaps. Ask questions or do a representative task to close load-bearing gaps. Label hypotheses.
 
 ### 3. Answer three independent questions
 
 1. **Who invokes?** Record agent, user, or both and the mechanism.
-2. **What fires on each invariant?** Mark each rigid rule as advisory or name its script, validator, hook, gate, or checked artifact.
-3. **What is the token budget?** Cap description, `SKILL.md`, always-read, file, and package sizes.
+2. **What fires on each invariant?** Mark it advisory or name its mechanism and checked artifact.
+3. **What is the token budget?** Cap description, activated core, files, and package.
 
-### 4. Plan the smallest package
+### 4. Plan and draft the package
 
-Start with `SKILL.md`. Add support only for an evidenced benefit:
+Start with `SKILL.md`. Add only evidenced support: always-needed rules inline; conditional knowledge in `references/`; repeated deterministic work or gates in `scripts/`; output inputs in `assets/`; sidecars for a stated target. Keep comparative evals outside. Add package tests only for a bundled script or distribution contract. Never add speculative directories.
 
-- inline short rules needed on every invocation;
-- use `references/` for conditional knowledge;
-- use `scripts/` for repeated deterministic work or a mechanical gate;
-- use `assets/` only for files consumed in outputs;
-- keep comparative and trace-based evals outside the package by default;
-- keep package tests only for a bundled script or distribution contract;
-- add sidecars only for a stated target.
+Use portable frontmatter with matching directory and `name`. Describe capability, triggers, and exclusions, not workflow. Keep decisions, evidence, three answers, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
 
-Do not add process documents or speculative directories.
-
-### 5. Draft the activation and default path
-
-Use portable frontmatter with matching directory and `name`. Describe capability, triggers, and exclusions, not workflow.
-
-Keep the decision, evidence, three answers, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Use rigid language only for mechanized rules.
-
-### 6. Make script commands portable
+### 5. Make scripts portable
 
 Resolve `<skill-dir>` from loaded `SKILL.md` as an absolute argument, never from cwd or shell expansion. Use `<target-skill-dir>` for the created package.
-
-Run this creator's validator from any working directory:
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" "<target-skill-dir>"
@@ -80,26 +53,16 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" "<t
 
 Pass budget flags when defaults differ. Rewrite examples that address only `scripts/`.
 
-### 7. Test in proportion to the claim
+### 6. Test, delete, and deliver
 
-- Validate structure and budgets for every package.
-- Syntax-check and behavior-test bundled deterministic scripts.
-- Smoke-check one realistic task for a nontrivial skill when possible.
-- Add pressure or repeated tests only for observed variance, high risk, or a strong claim.
-- Hand comparative claims to the benchmarking workflow.
-
-### 8. Delete, validate, and deliver
-
-Record description, core/reference bytes, line/file/script/eval counts, and package bytes. Delete unsupported files, then rerun checks.
+- Validate structure and budgets. Test bundled scripts.
+- Smoke-check one realistic task when possible. Add pressure or repetition only for observed variance, high risk, or a strong claim.
+- Hand comparisons to the benchmarking workflow.
+- Record description, core/reference bytes, line/file/script/eval counts, and package bytes. Delete unsupported files and rerun checks.
 
 Inspect Git state only when the user requested Git delivery. Do not search ancestors for package-only work.
 
-Report separately:
-
-- **Validated:** command and result;
-- **Tested:** checks and justified skips;
-- **Committed:** commit only when Git delivery was requested;
-- **Pushed:** remote and ref only when Git delivery was requested.
+Report validated command/result and tested checks/skips. Report committed/pushed only when Git delivery was requested.
 
 ## Gotchas
 

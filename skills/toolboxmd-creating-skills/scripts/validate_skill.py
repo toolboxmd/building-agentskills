@@ -14,19 +14,23 @@ from urllib.parse import unquote, urlsplit
 
 
 PORTABLE_FIELDS = {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
+STRING_FIELDS = PORTABLE_FIELDS - {"metadata"}
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+NON_STRING_RE = re.compile(r"(?i)(?:\[.*\]|\{.*\}|true|false|null|~|[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?)")
 LINK_RE = re.compile(
     r'''!?\[[^\]]*\]\(\s*(<[^>\n]*>|[^\s)]+)(?:\s+(?:"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|\((?:\\.|[^)])*\)))?\s*\)'''
 )
 OPENAI_FIELD_RE = re.compile(r'^([a-z_]+):\s*("(?:[^"\\]|\\.)*")$')
 OPENAI_INTERFACE_FIELDS = {"display_name", "short_description", "icon_small", "icon_large", "brand_color", "default_prompt"}
 OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
+CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
 FRAGILE_SCRIPT_RE = re.compile(
     r"\b(?:python(?:3(?:\.\d+)?)?|node|bash|sh|ruby)\b"
     r"(?:\s+-[A-Za-z0-9-]+(?:=[^\s]+)?)*\s+[\"']?scripts/"
 )
 LOCAL_PATH_RE = re.compile(
-    rf"(?:{re.escape('/' + 'Users/')}|{re.escape('/' + 'home/')}|"
+    rf"(?<![A-Za-z0-9:/])(?:{re.escape('/' + 'Users/')}|{re.escape('/' + 'home/')}|"
+    rf"{re.escape('/' + 'workspace/')}|{re.escape('/' + 'root/')}|"
     rf"[A-Za-z]:\\{'Users'}\\)[^\s'\"`]+"
 )
 PROCESS_NAMES = {"README.md", "CHANGELOG.md", "STATUS.md", "DESIGN.md", "NOTES.md"}
@@ -36,18 +40,18 @@ class InspectionError(Exception):
     pass
 
 
-def issue(severity: str, code: str, path: str, message: str) -> dict[str, str]:
+def issue(code: str, path: str, message: str, severity: str = "error") -> dict[str, str]:
     return {"severity": severity, "code": code, "path": path, "message": message}
 
 
 def split_frontmatter(text: str) -> tuple[list[str], str]:
     lines = text.splitlines()
     if not lines or lines[0] != "---":
-        raise InspectionError("missing opening frontmatter delimiter")
+        raise InspectionError("missing opening ---")
     try:
         end = lines.index("---", 1)
     except ValueError as exc:
-        raise InspectionError("missing closing frontmatter delimiter") from exc
+        raise InspectionError("missing closing ---") from exc
     return lines[1:end], "\n".join(lines[end + 1 :])
 
 
@@ -72,17 +76,17 @@ def parse_frontmatter(lines: list[str]) -> tuple[dict[str, object], list[dict[st
             index += 1
             continue
         if line.startswith((" ", "\t")):
-            problems.append(issue("error", "FRONTMATTER_INDENT", "SKILL.md", f"unexpected indent at line {index + 2}"))
+            problems.append(issue("FRONTMATTER_INDENT", "SKILL.md", f"indent at line {index + 2}"))
             index += 1
             continue
         match = re.match(r"^([A-Za-z0-9_-]+):(?:\s*(.*))?$", line)
         if not match:
-            problems.append(issue("error", "FRONTMATTER_PARSE", "SKILL.md", f"unparsed frontmatter line {index + 2}"))
+            problems.append(issue("FRONTMATTER_PARSE", "SKILL.md", f"unparsed line {index + 2}"))
             index += 1
             continue
         key, raw_value = match.group(1), match.group(2) or ""
         if key in data:
-            problems.append(issue("error", "FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate: {key}"))
+            problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate: {key}"))
         if raw_value in {"|", "|-", ">", ">-"}:
             block: list[str] = []
             index += 1
@@ -100,12 +104,14 @@ def parse_frontmatter(lines: list[str]) -> tuple[dict[str, object], list[dict[st
                 if child and not child.startswith("#"):
                     child_match = re.match(r"^([^:]+):\s*(.+)$", child)
                     if not child_match:
-                        problems.append(issue("error", "METADATA_SHAPE", "SKILL.md", "metadata needs string keys and values"))
+                        problems.append(issue("METADATA_SHAPE", "SKILL.md", "metadata needs string pairs"))
                     else:
                         mapping[child_match.group(1).strip()] = scalar(child_match.group(2))
                 index += 1
             data[key] = mapping
             continue
+        if key in STRING_FIELDS and NON_STRING_RE.fullmatch(raw_value):
+            problems.append(issue("FRONTMATTER_TYPE", "SKILL.md", f"{key} must be a string"))
         data[key] = scalar(raw_value)
         index += 1
     return data, problems
@@ -117,7 +123,7 @@ def collect_files(root: Path) -> tuple[list[dict[str, object]], list[dict[str, s
     for path in sorted(root.rglob("*")):
         relative = path.relative_to(root).as_posix()
         if path.is_symlink():
-            problems.append(issue("error", "SYMLINK", relative, "symlink not allowed"))
+            problems.append(issue("SYMLINK", relative, "symlink not allowed"))
             continue
         if not path.is_file():
             continue
@@ -130,11 +136,26 @@ def collect_files(root: Path) -> tuple[list[dict[str, object]], list[dict[str, s
             }
         )
         if path.suffix in {".pyc", ".pyo"} or "__pycache__" in path.parts:
-            problems.append(issue("error", "PYTHON_BYTECODE", relative, "bytecode not allowed"))
+            problems.append(issue("PYTHON_BYTECODE", relative, "bytecode not allowed"))
         if path.name in PROCESS_NAMES:
-            problems.append(issue("warning", "PROCESS_ARTIFACT", relative, "needs distribution evidence"))
+            problems.append(issue("PROCESS_ARTIFACT", relative, "needs distribution evidence", "warning"))
     files.sort(key=lambda record: str(record["path"]).encode("utf-8"))
     return files, problems
+
+
+def markdown_without_code(text: str) -> str:
+    output: list[str] = []
+    fence = ""
+    for line in text.splitlines(keepends=True):
+        marker = re.match(r"^ {0,3}(`{3,}|~{3,})", line)
+        if fence:
+            if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence) and not line[marker.end(1) :].strip():
+                fence = ""
+        elif marker and (marker.group(1)[0] == "~" or "`" not in line[marker.end(1) :]):
+            fence = marker.group(1)
+        else:
+            output.append(line)
+    return CODE_SPAN_RE.sub("", "".join(output))
 
 
 def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None:
@@ -146,14 +167,20 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         try:
             content = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
-            problems.append(issue("error", "UTF8", relative, "text file is not UTF-8"))
+            problems.append(issue("UTF8", relative, "text file is not UTF-8"))
             continue
         searchable = "\n".join(line for line in content.splitlines() if not line.startswith("#!"))
-        if LOCAL_PATH_RE.search(searchable):
-            problems.append(issue("error", "LOCAL_PATH", relative, "workstation path"))
+        path_searchable = searchable
+        if path.suffix.lower() == ".md":
+            path_searchable = LINK_RE.sub(
+                lambda match: match.group(0).replace(match.group(1), "") if match.group(1).lstrip("<").startswith("/") else match.group(0),
+                searchable,
+            )
+        if LOCAL_PATH_RE.search(path_searchable):
+            problems.append(issue("LOCAL_PATH", relative, "workstation path"))
         if path.suffix.lower() != ".md":
             continue
-        for match in LINK_RE.finditer(content):
+        for match in LINK_RE.finditer(markdown_without_code(content)):
             raw = match.group(1)
             if raw.startswith("<"):
                 raw = raw[1:-1]
@@ -161,19 +188,19 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
             if parsed.scheme or raw.startswith(("#", "mailto:")):
                 continue
             if raw.startswith("/"):
-                problems.append(issue("error", "ROOT_LINK", relative, f"root-relative link: {raw}"))
+                problems.append(issue("ROOT_LINK", relative, f"root-relative link: {raw}"))
                 continue
             target_text = unquote(parsed.path)
             if not target_text:
                 continue
             target = (path.parent / target_text).resolve()
             if not target.is_relative_to(root.resolve()):
-                problems.append(issue("error", "LINK_ESCAPE", relative, f"link escapes package: {raw}"))
+                problems.append(issue("LINK_ESCAPE", relative, f"link escapes package: {raw}"))
             elif not target.exists():
-                problems.append(issue("error", "BROKEN_LINK", relative, f"missing link target: {raw}"))
+                problems.append(issue("BROKEN_LINK", relative, f"missing link target: {raw}"))
         for line_number, line in enumerate(content.splitlines(), 1):
             if FRAGILE_SCRIPT_RE.search(line):
-                problems.append(issue("warning", "FRAGILE_SCRIPT_PATH", relative, f"line {line_number} uses task-relative scripts/"))
+                problems.append(issue("FRAGILE_SCRIPT_PATH", relative, f"line {line_number} uses task-relative scripts/", "warning"))
 
 
 def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> None:
@@ -183,7 +210,7 @@ def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> N
     path = "agents/openai.yaml"
 
     def fail(code: str, message: str) -> None:
-        problems.append(issue("error", code, path, message))
+        problems.append(issue(code, path, message))
 
     section = ""
     values = {}
@@ -263,12 +290,12 @@ def validate_scripts(root: Path, problems: list[dict[str, str]]) -> None:
         try:
             ast.parse(path.read_text(encoding="utf-8"), filename=relative)
         except SyntaxError as exc:
-            problems.append(issue("error", "PYTHON_SYNTAX", relative, f"{exc.msg} at line {exc.lineno}"))
+            problems.append(issue("PYTHON_SYNTAX", relative, f"{exc.msg} at line {exc.lineno}"))
 
 
 def budget_problem(value: int, maximum: int | None, code: str, label: str, problems: list[dict[str, str]]) -> None:
     if maximum is not None and value > maximum:
-        problems.append(issue("error", code, "SKILL.md" if label.startswith("SKILL.md") or label.startswith("description") else ".", f"{label} is {value}; maximum is {maximum}"))
+        problems.append(issue(code, "SKILL.md" if label.startswith(("SKILL.md", "description")) else ".", f"{label}: {value} > {maximum}"))
 
 
 def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
@@ -285,26 +312,26 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
 
     unknown = sorted(set(metadata) - PORTABLE_FIELDS)
     if unknown:
-        problems.append(issue("error", "FRONTMATTER_PORTABILITY", "SKILL.md", f"non-portable: {', '.join(unknown)}"))
+        problems.append(issue("FRONTMATTER_PORTABILITY", "SKILL.md", f"non-portable: {', '.join(unknown)}"))
     name = metadata.get("name")
     if not isinstance(name, str) or not name:
-        problems.append(issue("error", "NAME_REQUIRED", "SKILL.md", "name is required"))
+        problems.append(issue("NAME_REQUIRED", "SKILL.md", "name is required"))
         name = ""
     elif len(name) > 64 or not NAME_RE.fullmatch(name):
-        problems.append(issue("error", "NAME_FORMAT", "SKILL.md", "name must match lowercase kebab-case and be at most 64 characters"))
+        problems.append(issue("NAME_FORMAT", "SKILL.md", "lowercase kebab-case, max 64 chars"))
     elif any(reserved in name for reserved in ("anthropic", "claude")):
-        problems.append(issue("error", "NAME_RESERVED", "SKILL.md", "name contains reserved provider text: anthropic or claude"))
+        problems.append(issue("NAME_RESERVED", "SKILL.md", "reserved anthropic/claude text"))
     if name and name != root.name:
-        problems.append(issue("error", "NAME_DIRECTORY", "SKILL.md", f"name {name!r} differs from directory {root.name!r}"))
+        problems.append(issue("NAME_DIRECTORY", "SKILL.md", f"name {name!r} differs from directory {root.name!r}"))
     description = metadata.get("description")
     if not isinstance(description, str) or not description.strip():
-        problems.append(issue("error", "DESCRIPTION_REQUIRED", "SKILL.md", "description is required"))
+        problems.append(issue("DESCRIPTION_REQUIRED", "SKILL.md", "description is required"))
         description = ""
     compatibility = metadata.get("compatibility")
     if isinstance(compatibility, str) and len(compatibility) > 500:
-        problems.append(issue("error", "COMPATIBILITY_BUDGET", "SKILL.md", "compatibility exceeds 500 chars"))
+        problems.append(issue("COMPATIBILITY_BUDGET", "SKILL.md", "compatibility > 500 chars"))
     if not body.strip():
-        problems.append(issue("error", "BODY_EMPTY", "SKILL.md", "empty body"))
+        problems.append(issue("BODY_EMPTY", "SKILL.md", "empty body"))
 
     validate_links_and_paths(root, problems)
     validate_sidecar(root, name, problems)
