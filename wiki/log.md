@@ -37,3 +37,7 @@ Superseded the command-parser eligibility boundary with a smaller evidence invar
 ## [2026-08-13] correction | ToolboxMD creator benchmark v1 isolation-evidence boundary
 
 Applied the repository-wide command-isolation invariant to v1 without running new model sessions or reconstructing missing commands. All 15 retained compact event audits record `commandCount > 0`, none records trust-bearing environment, filesystem, and network isolation evidence, and the corresponding raw model-event JSONL is not retained. All 15 streams and all three creator comparisons are ineligible. The original scores, blind judgments, usage, generated skills, outputs, and grades remain diagnostic history; the recorded tie and built-in preference no longer support eligible outcomes. The candidate stays unpromoted because it did not clear its promotion gate, not because v1 established a better creator.
+
+## [2026-08-13] product | ToolboxMD creator vNext candidate frozen
+
+Recorded the approved program's completed Steps 1 through 3 and the active `skills/toolboxmd-creating-skills/` product-candidate path in [[benchmark-integrity-for-agent-skills]]. The package is frozen but unpromoted. Its regression is deterministic with zero new model sessions; corrected v1 and v2 each retain zero eligible creator comparisons, so no superiority, cost-ranking, or promotion claim is supported. Updated the tracked raw case-study mirror without ingesting or changing any pending capture.

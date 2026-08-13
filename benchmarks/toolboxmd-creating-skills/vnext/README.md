@@ -21,3 +21,9 @@ The test verifies package bytes, budgets, validator behavior from another
 working directory, Python bytecode isolation, known failure-pattern fixtures,
 and non-mutation of retained inputs. It does not test triggering or semantic
 downstream usefulness.
+
+The package budget is 28,000 bytes. Exact-HEAD review added 2,256 bytes of
+deterministic executable validator code for the currently documented
+`metadata.hermes.config` shape and quote-aware YAML comment correctness.
+Description, activated-core, file, reference, eval, and script budgets did not
+change. This is not a claim of lower total package cost.

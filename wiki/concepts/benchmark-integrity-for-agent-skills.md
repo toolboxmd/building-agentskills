@@ -7,9 +7,9 @@ sources:
   - raw/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md
 related:
   - /concepts/provider-neutral-skill-runtime.md
-related_files: [docs/06-testing/benchmark-integrity.md, case-studies/evidence/2026-08-11-karpathy-wiki-ingest-benchmark.json, case-studies/evidence/2026-08-12-toolboxmd-creating-skills-benchmark.json, benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/manifest.json, case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md, case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json]
+related_files: [docs/06-testing/benchmark-integrity.md, case-studies/evidence/2026-08-11-karpathy-wiki-ingest-benchmark.json, case-studies/evidence/2026-08-12-toolboxmd-creating-skills-benchmark.json, benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/manifest.json, case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md, case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json, skills/toolboxmd-creating-skills/SKILL.md, benchmarks/toolboxmd-creating-skills/vnext/manifest.json, docs/superpowers/plans/2026-08-13-creator-vnext-and-toolboxmd-use-grok-program.md]
 created: "2026-08-11T00:00:00Z"
-updated: "2026-08-13T18:18:46Z"
+updated: "2026-08-13T20:22:44Z"
 quality:
   accuracy: 5
   completeness: 5
@@ -67,6 +67,12 @@ Meeting follow-ups passed 2/8 critical checks without a skill; the two retained 
 The retained ToolboxMD descriptions were 29.5% and 39.2% shorter, while its packages had larger `SKILL.md` files, larger total size, and longer authoring time. None of these differences is eligible comparative evidence. They motivate hypotheses for a smaller next candidate and a clean re-benchmark.
 
 Product changes for the next ToolboxMD creator candidate: preserve the compact-description pattern; emit current-directory-independent script commands (observed traces needed `.agents/skills/<name>/scripts/...` repair); move comparative/repeated eval ownership to `toolboxmd-benchmarking-skills`; count always-read references as activated core, not progressive disclosure; make Git delivery checks conditional on an explicit repository-delivery request; enforce a measured artifact-deletion pass before freezing. It must ship as a new frozen candidate, not a mutation of the retained v1 snapshot.
+
+## vNext product candidate (2026-08-13)
+
+The approved creator program completed Steps 1 through 3 and added `skills/toolboxmd-creating-skills/` as the active product-candidate package. It is a frozen, unpromoted vNext candidate that responds to the diagnostic failure patterns above. Its validator and known-case regression are deterministic; no new model sessions were run for that regression.
+
+This active path does not change either benchmark verdict. Corrected v1 and v2 each retain zero eligible creator comparisons, and neither supports a creator winner or cost ranking. The vNext freeze permits no superiority or promotion claim. The built-in creator remains the current default while the later dogfooding and held-out promotion work in Steps 4 and 5 remains separate.
 
 Infrastructure note: the first four authoring attempts were discarded before downstream use because both built-in attempts wrote Python bytecode under the protected creator tree; protocol revision 2 disabled bytecode writes and repeated all four arms symmetrically. The reserve spreadsheet case did not run — it needed five more sessions and only one remained under the 17-session ceiling. Sixteen decision sessions used 728,273 uncached-input-plus-output runtime tokens over 2,759 cumulative seconds.
 

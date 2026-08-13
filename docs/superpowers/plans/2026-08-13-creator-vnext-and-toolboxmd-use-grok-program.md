@@ -107,14 +107,18 @@ with its own hash and package inspection.
 Completion evidence, 2026-08-13:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 23,738 bytes, aggregate SHA-256
-  `8c7463d37a2e1f02f35d8e52e021dc7926f6e74b0412d80dcc8624de0a37c2a4`;
+- exact package: three files, 25,994 bytes, aggregate SHA-256
+  `061631aca74379b26b19db7efba5e0495972e2309da9250865d12364318b30d1`;
 - activated core: 72 lines and 3,656 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
 - the delta answers diagnostic failure patterns only. It supports no creator
   superiority or promotion claim.
+- exact-HEAD review added 2,256 executable-only bytes for the documented
+  `metadata.hermes.config` shape and quote-aware YAML comment correctness. The
+  package cap is now 28,000 bytes; activated-core, file, reference, eval, and
+  script budgets are unchanged. This is not a lower-total-package-cost claim.
 
 ## Step 3: run a cheap deterministic regression check
 
@@ -143,8 +147,10 @@ Completion evidence, 2026-08-13:
   blocks fragile bare script paths, accepts the explicit `<skill-dir>`
   contract, accepts supported Codex sidecar sections and titled local links,
   rejects reserved provider names and obvious unquoted non-string frontmatter,
-  ignores link syntax inside Markdown code, detects common container-local
-  paths in prose, detects the retained meeting and deck baggage patterns,
+  prevents trailing comments from hiding YAML types, accepts the documented
+  Hermes config metadata shape, rejects unsupported nesting, ignores link
+  syntax inside Markdown code, detects common container-local paths in prose,
+  detects the retained meeting and deck baggage patterns,
   disables Python bytecode writes, and proves retained creator inputs were not
   mutated;
 - zero model sessions were run, so this is a deterministic regression screen,

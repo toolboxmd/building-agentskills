@@ -35,17 +35,32 @@
     "skillMdLinesMaximum": 150,
     "skillMdBytesMaximum": 10500,
     "fileCountMaximum": 3,
-    "packageBytesMaximum": 24000,
+    "packageBytesMaximum": 28000,
     "referenceFileCountMaximum": 0,
     "evalFileCountMaximum": 0,
     "scriptFileCount": 1
   },
+  "budgetRevision": {
+    "previousPackageBytesMaximum": 24000,
+    "currentPackageBytesMaximum": 28000,
+    "deterministicExecutableDeltaBytes": 2256,
+    "reason": "Exact-HEAD review required the current documented metadata.hermes.config shape and quote-aware YAML comment correctness.",
+    "unchanged": [
+      "description maximum",
+      "SKILL.md line and byte maximums",
+      "file maximum",
+      "reference maximum",
+      "eval maximum",
+      "script count"
+    ],
+    "lowerTotalPackageCostClaimAllowed": false
+  },
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "8c7463d37a2e1f02f35d8e52e021dc7926f6e74b0412d80dcc8624de0a37c2a4",
+    "aggregateSha256": "061631aca74379b26b19db7efba5e0495972e2309da9250865d12364318b30d1",
     "fileCount": 3,
-    "packageBytes": 23738,
+    "packageBytes": 25994,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -67,8 +82,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 19866,
-        "sha256": "572fd5e3dda470dd6f94a60c00264ad9d55a79de59788971526bc908fa6b4a29"
+        "bytes": 22122,
+        "sha256": "f2ec7572dcd5110b6a4259d880791ac21f0811ef8f4084f8de7971b27e6266d2"
       }
     ]
   },
@@ -83,6 +98,8 @@
       "valid Markdown links with optional titles pass",
       "skill names containing reserved provider strings fail",
       "string-valued frontmatter rejects obvious unquoted collections and scalars while quoted lookalikes remain strings",
+      "trailing YAML comments do not hide non-string values while quoted hashes and block scalars remain content",
+      "the documented metadata.hermes.config shape passes while unsupported nesting and non-string leaves fail",
       "Markdown links inside code are ignored while a real broken link is detected",
       "common container-local paths in Markdown prose are detected",
       "root-relative and remote web links are not misclassified as workstation paths",

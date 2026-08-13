@@ -66,6 +66,63 @@ def scalar(raw: str) -> str:
     return value
 
 
+def without_comment(raw: str) -> str:
+    quote = ""
+    escaped = False
+    index = 0
+    while index < len(raw):
+        char = raw[index]
+        if quote:
+            if quote == "'" and char == "'" and index + 1 < len(raw) and raw[index + 1] == "'":
+                index += 2
+                continue
+            if char == quote and not escaped:
+                quote = ""
+            escaped = quote == '"' and char == "\\" and not escaped
+        elif char in "\"'":
+            quote = char
+        elif char == "#" and (index == 0 or raw[index - 1].isspace()):
+            return raw[:index].rstrip()
+        index += 1
+    return raw.strip()
+
+
+def parse_metadata(lines: list[str], index: int, problems: list[dict[str, str]]) -> tuple[dict[str, object], int]:
+    mapping = {}
+    hermes = config = False
+    required: set[str] = set()
+    while index < len(lines) and (not lines[index].strip() or lines[index].lstrip().startswith("#") or lines[index].startswith((" ", "\t"))):
+        line = lines[index]
+        index += 1
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        indent = len(line) - len(line.lstrip(" "))
+        field = line.strip()
+        match = re.fullmatch(r"(?:- )?([^:]+):\s*(.*)", field)
+        key, raw = match.groups() if match else ("", "")
+        value = without_comment(raw)
+        if indent == 2 and key == "hermes" and not value and "hermes" not in mapping:
+            hermes, config = True, False
+            mapping[key] = {}
+        elif indent == 2 and match and value and key not in mapping:
+            mapping[key] = scalar(value)
+        elif indent == 4 and hermes and key == "config" and not value and not config:
+            config = True
+        elif config and match and key in {"key", "description", "default", "prompt"} and value and ((indent == 6 and field.startswith("- ")) or (indent == 8 and key not in required)):
+            if indent == 6:
+                if required and not {"key", "description"} <= required:
+                    problems.append(issue("METADATA_SHAPE", "SKILL.md", "invalid Hermes entry"))
+                required = set()
+            required.add(key)
+        else:
+            problems.append(issue("METADATA_SHAPE", "SKILL.md", "unsupported nesting"))
+        if match and value and NON_STRING_RE.fullmatch(value):
+            problems.append(issue("FRONTMATTER_TYPE", "SKILL.md", f"metadata.{key} must be a string"))
+    if hermes and (not config or not {"key", "description"} <= required):
+        problems.append(issue("METADATA_SHAPE", "SKILL.md", "Hermes config needs key + description"))
+    return mapping, index
+
+
 def parse_frontmatter(lines: list[str]) -> tuple[dict[str, object], list[dict[str, str]]]:
     data: dict[str, object] = {}
     problems: list[dict[str, str]] = []
@@ -84,7 +141,7 @@ def parse_frontmatter(lines: list[str]) -> tuple[dict[str, object], list[dict[st
             problems.append(issue("FRONTMATTER_PARSE", "SKILL.md", f"unparsed line {index + 2}"))
             index += 1
             continue
-        key, raw_value = match.group(1), match.group(2) or ""
+        key, raw_value = match.group(1), without_comment(match.group(2) or "")
         if key in data:
             problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate: {key}"))
         if raw_value in {"|", "|-", ">", ">-"}:
@@ -96,19 +153,13 @@ def parse_frontmatter(lines: list[str]) -> tuple[dict[str, object], list[dict[st
             separator = "\n" if raw_value.startswith("|") else " "
             data[key] = separator.join(block).strip()
             continue
-        if raw_value == "" and key == "metadata":
-            mapping: dict[str, str] = {}
-            index += 1
-            while index < len(lines) and (not lines[index].strip() or lines[index].startswith((" ", "\t"))):
-                child = lines[index].strip()
-                if child and not child.startswith("#"):
-                    child_match = re.match(r"^([^:]+):\s*(.+)$", child)
-                    if not child_match:
-                        problems.append(issue("METADATA_SHAPE", "SKILL.md", "metadata needs string pairs"))
-                    else:
-                        mapping[child_match.group(1).strip()] = scalar(child_match.group(2))
+        if key == "metadata":
+            if raw_value:
+                problems.append(issue("METADATA_SHAPE", "SKILL.md", "metadata needs a mapping"))
+                data[key] = {}
                 index += 1
-            data[key] = mapping
+                continue
+            data[key], index = parse_metadata(lines, index + 1, problems)
             continue
         if key in STRING_FIELDS and NON_STRING_RE.fullmatch(raw_value):
             problems.append(issue("FRONTMATTER_TYPE", "SKILL.md", f"{key} must be a string"))

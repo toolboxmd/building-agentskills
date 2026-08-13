@@ -26,12 +26,12 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-skill-lines 150 \
   --max-skill-bytes 10500 \
   --max-files 3 \
-  --max-package-bytes 24000 \
+  --max-package-bytes 28000 \
   --max-reference-files 0 \
   --max-eval-files 0 \
   --max-script-files 1 \
   "$package")"
-[[ "$human_output" == *"METRICS: description_chars=240 skill_lines=72 skill_bytes=3656 files=3 package_bytes=23738 references=0 evals=0 scripts=1"* ]]
+[[ "$human_output" == *"METRICS: description_chars=240 skill_lines=72 skill_bytes=3656 files=3 package_bytes=25994 references=0 evals=0 scripts=1"* ]]
 [[ "$human_output" == *"PASS: portable skill package validation succeeded"* ]]
 
 cd "$test_tmp"
@@ -41,7 +41,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json \
   --max-skill-lines 150 \
   --max-skill-bytes 10500 \
   --max-files 3 \
-  --max-package-bytes 24000 \
+  --max-package-bytes 28000 \
   --max-reference-files 0 \
   --max-eval-files 0 \
   --max-script-files 1 \
@@ -193,6 +193,100 @@ for ((index = 0; index < ${#scalar_cases[@]}; index += 2)); do
   PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/quoted-$label-description" > "$test_tmp/quoted-$label-description.json"
 done
 
+comment_cases=(collection '[one, two]' boolean true null null numeric 123.5)
+for ((index = 0; index < ${#comment_cases[@]}; index += 2)); do
+  label="${comment_cases[$index]}"
+  raw="${comment_cases[$((index + 1))]}"
+  mkdir -p "$test_tmp/commented-$label-description"
+  printf -- '---\nname: commented-%s-description\ndescription: %s # type comment\n---\n\n# Commented scalar\n' "$label" "$raw" > "$test_tmp/commented-$label-description/SKILL.md"
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/commented-$label-description" > "$test_tmp/commented-$label-description.json"
+  commented_exit=$?
+  set -e
+  [[ $commented_exit -eq 1 ]]
+done
+
+mkdir -p "$test_tmp/quoted-hash-description" "$test_tmp/block-description"
+cat > "$test_tmp/quoted-hash-description/SKILL.md" <<'EOF'
+---
+name: quoted-hash-description
+description: "[one, two] # literal"
+compatibility: "true # literal" # actual comment
+---
+
+# Quoted hashes
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/quoted-hash-description" > "$test_tmp/quoted-hash-description.json"
+cat > "$test_tmp/block-description/SKILL.md" <<'EOF'
+---
+name: block-description
+description: | # block header comment
+  Validate a block scalar without treating its hashes # as YAML comments.
+---
+
+# Block description
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/block-description" > "$test_tmp/block-description.json"
+
+mkdir -p "$test_tmp/hermes-metadata" "$test_tmp/unsupported-metadata" "$test_tmp/non-string-metadata"
+cat > "$test_tmp/hermes-metadata/SKILL.md" <<'EOF'
+---
+name: hermes-metadata
+description: Validate documented Hermes configuration metadata.
+metadata:
+  author: toolboxmd
+  hermes:
+    config:
+      - key: wiki.path
+        description: Path to the main wiki
+        default: "~/wiki"
+      - key: wiki.mode
+        description: Wiki mode
+        default: project
+        prompt: "Choose a wiki mode"
+---
+
+# Hermes metadata
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/hermes-metadata" > "$test_tmp/hermes-metadata.json"
+cat > "$test_tmp/unsupported-metadata/SKILL.md" <<'EOF'
+---
+name: unsupported-metadata
+description: Reject an unsupported nested metadata extension.
+metadata:
+  other:
+    config:
+      - key: path
+        description: A path
+---
+
+# Unsupported metadata
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/unsupported-metadata" > "$test_tmp/unsupported-metadata.json"
+unsupported_metadata_exit=$?
+set -e
+[[ $unsupported_metadata_exit -eq 1 ]]
+cat > "$test_tmp/non-string-metadata/SKILL.md" <<'EOF'
+---
+name: non-string-metadata
+description: Reject a non-string Hermes configuration value.
+metadata:
+  hermes:
+    config:
+      - key: wiki.enabled
+        description: Enable the wiki
+        default: false # must remain typed
+---
+
+# Non-string metadata
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/non-string-metadata" > "$test_tmp/non-string-metadata.json"
+non_string_metadata_exit=$?
+set -e
+[[ $non_string_metadata_exit -eq 1 ]]
+
 make_fixture "$test_tmp/code-links-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 cat >> "$test_tmp/code-links-fixture/SKILL.md" <<'EOF'
 
@@ -259,6 +353,13 @@ const quotedDescription = JSON.parse(fs.readFileSync(path.join(temporary, "quote
 const scalarKinds = ["boolean", "null", "numeric"];
 const unquotedScalars = scalarKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `unquoted-${name}-description.json`))));
 const quotedScalars = scalarKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `quoted-${name}-description.json`))));
+const commentKinds = ["collection", "boolean", "null", "numeric"];
+const commentedScalars = commentKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `commented-${name}-description.json`))));
+const quotedHash = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-hash-description.json")));
+const blockDescription = JSON.parse(fs.readFileSync(path.join(temporary, "block-description.json")));
+const hermesMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "hermes-metadata.json")));
+const unsupportedMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "unsupported-metadata.json")));
+const nonStringMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "non-string-metadata.json")));
 const codeLinks = JSON.parse(fs.readFileSync(path.join(temporary, "code-links.json")));
 const localPaths = ["workspace-path", "root-path"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const webRootLink = JSON.parse(fs.readFileSync(path.join(temporary, "web-root-link.json")));
@@ -279,6 +380,9 @@ function fileSha(relative) {
 assert(freeze.claimBoundary.newModelSessions === 0, "freeze must record zero model sessions");
 assert(freeze.claimBoundary.superiorityClaimAllowed === false, "freeze must forbid a superiority claim");
 assert(freeze.claimBoundary.promotionClaimAllowed === false, "freeze must forbid a promotion claim");
+assert(freeze.creatorBudgets.packageBytesMaximum === 28000, "reviewed package cap changed");
+assert(freeze.budgetRevision.deterministicExecutableDeltaBytes === 2256, "executable review delta changed");
+assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
 for (const source of [freeze.source.v1ResultManifest, freeze.source.v2ResultManifest, freeze.source.diagnosticRecommendations]) {
@@ -298,7 +402,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 23738, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 25994, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -313,6 +417,12 @@ assert(listDescription.status === "fail" && listDescription.issues.some(item => 
 assert(quotedDescription.status === "pass", "quoted collection-looking description must remain a string");
 assert(unquotedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_TYPE")), "obvious unquoted non-string scalars must fail");
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
+assert(commentedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_TYPE")), "trailing comments must not hide non-string scalars");
+assert(quotedHash.status === "pass", "hashes inside quoted strings must remain content");
+assert(blockDescription.status === "pass", "block scalar headers with comments must pass");
+assert(hermesMetadata.status === "pass", "documented metadata.hermes.config must pass");
+assert(unsupportedMetadata.status === "fail" && unsupportedMetadata.issues.some(item => item.code === "METADATA_SHAPE"), "unsupported nested metadata must fail");
+assert(nonStringMetadata.status === "fail" && nonStringMetadata.issues.some(item => item.code === "FRONTMATTER_TYPE"), "Hermes config values must remain strings");
 const brokenLinks = codeLinks.issues.filter(item => item.code === "BROKEN_LINK");
 assert(brokenLinks.length === 1 && brokenLinks[0].message.includes("real-missing.md"), "code links must be ignored while a real broken link fails");
 assert(localPaths.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "common container-local roots must fail");

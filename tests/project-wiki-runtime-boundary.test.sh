@@ -65,6 +65,14 @@ assert(entry, "benchmark case-study raw evidence is absent from the wiki manifes
 const raw = fs.readFileSync(path.join(wiki, rawRelative));
 assert(crypto.createHash("sha256").update(raw).digest("hex") === entry.sha256, "wiki raw evidence hash changed");
 assert(JSON.stringify(entry.referenced_by) === JSON.stringify(["concepts/benchmark-integrity-for-agent-skills.md"]), "wiki evidence lineage changed");
+assert(raw.equals(fs.readFileSync(path.join(root, "case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md"))), "wiki raw mirror differs from its source case study");
+const concept = fs.readFileSync(path.join(wiki, "concepts/benchmark-integrity-for-agent-skills.md"), "utf8");
+const log = fs.readFileSync(path.join(wiki, "log.md"), "utf8");
+for (const content of [raw.toString("utf8"), concept, log]) {
+  assert(content.includes("skills/toolboxmd-creating-skills/"), "wiki omits the active creator candidate path");
+  assert(/unpromoted/i.test(content), "wiki omits the vNext promotion boundary");
+}
+assert(concept.includes("zero eligible creator comparisons"), "wiki omits the corrected v1/v2 comparison boundary");
 
 const runs = fs.readFileSync(path.join(wiki, ".ingest-runs.jsonl"), "utf8")
   .split(/\r?\n/)

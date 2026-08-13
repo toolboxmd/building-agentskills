@@ -115,7 +115,9 @@ The next `toolboxmd-creating-skills` candidate should:
 6. enforce a final artifact-budget deletion pass;
 7. remain a new frozen candidate instead of mutating the old benchmark snapshot.
 
-No change is made to an active ToolboxMD creator in this ship because the repository has no promoted `skills/toolboxmd-creating-skills` package. The benchmark result defines the next revision rather than silently turning an unpromoted artifact into doctrine.
+At the time of this benchmark ship, no active ToolboxMD creator changed because the repository had no promoted `skills/toolboxmd-creating-skills` package. The benchmark result defined the next revision rather than silently turning an unpromoted artifact into doctrine.
+
+Subsequently, the approved creator program completed Steps 1 through 3 and added `skills/toolboxmd-creating-skills/` as an active, frozen vNext product candidate. It remains unpromoted. Its known-case regression is deterministic and ran zero new model sessions; corrected v1 and v2 still have zero eligible creator comparisons. This later package supports no superiority or promotion claim and does not retroactively change the benchmark verdict.
 
 ## What changes in benchmark doctrine
 
