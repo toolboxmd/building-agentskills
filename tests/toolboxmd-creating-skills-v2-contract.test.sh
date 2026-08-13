@@ -11,6 +11,7 @@ required=(
   "$bench/rubric.md"
   "$bench/run-config.json"
   "$bench/commitments.json"
+  "$bench/treatment-hash-provenance.json"
   "$bench/cases-manifest.json"
 )
 
@@ -62,7 +63,10 @@ const path = require("node:path");
 
 const [repositoryRoot, benchmarkRoot] = process.argv.slice(2);
 const config = JSON.parse(fs.readFileSync(path.join(benchmarkRoot, "run-config.json"), "utf8"));
-const commitments = JSON.parse(fs.readFileSync(path.join(benchmarkRoot, "commitments.json"), "utf8"));
+const commitmentsPath = path.join(benchmarkRoot, "commitments.json");
+const commitmentsBytes = fs.readFileSync(commitmentsPath);
+const commitments = JSON.parse(commitmentsBytes);
+const hashProvenance = JSON.parse(fs.readFileSync(path.join(benchmarkRoot, "treatment-hash-provenance.json"), "utf8"));
 const casesManifest = JSON.parse(fs.readFileSync(path.join(benchmarkRoot, "cases-manifest.json"), "utf8"));
 
 function assert(condition, message) {
@@ -97,6 +101,38 @@ function treeManifest(root) {
   return { aggregateSha256, files };
 }
 
+function resolveJsonPointer(document, pointer) {
+  if (pointer === "") return document;
+  assert(pointer.startsWith("/"), `invalid JSON pointer: ${pointer}`);
+  return pointer.slice(1).split("/").reduce((value, token) => {
+    const key = token.replace(/~1/g, "/").replace(/~0/g, "~");
+    assert(value !== null && typeof value === "object" && Object.hasOwn(value, key), `missing JSON pointer token: ${pointer}`);
+    return value[key];
+  }, document);
+}
+
+function treatmentTreeManifest(root, declaration) {
+  const algorithm = declaration.aggregateAlgorithm;
+  assert(algorithm.fileDigest === "sha256", `${declaration.source}: unsupported file digest`);
+  assert(algorithm.aggregateDigest === "sha256", `${declaration.source}: unsupported aggregate digest`);
+  assert(algorithm.relativePathStyle === "posix", `${declaration.source}: unsupported path style`);
+  assert(algorithm.pathEncoding === "utf8", `${declaration.source}: unsupported path encoding`);
+  assert(["", "./"].includes(algorithm.pathPrefix), `${declaration.source}: unsupported path prefix`);
+  assert(algorithm.sort === "bytewise_utf8_emitted_path_ascending", `${declaration.source}: unsupported sort`);
+  assert(algorithm.entryFormat === "<file-sha256>  <emitted-path>\n", `${declaration.source}: unsupported entry format`);
+
+  const files = treeManifest(root).files.map(file => ({
+    ...file,
+    emittedPath: `${algorithm.pathPrefix}${file.path}`,
+  }));
+  files.sort((left, right) => Buffer.compare(Buffer.from(left.emittedPath, "utf8"), Buffer.from(right.emittedPath, "utf8")));
+  const manifestBytes = files.map(file => `${file.sha256}  ${file.emittedPath}\n`).join("");
+  return {
+    aggregateSha256: crypto.createHash("sha256").update(manifestBytes).digest("hex"),
+    files,
+  };
+}
+
 assert(config.schemaVersion === 2, "run-config schemaVersion must be 2");
 assert(config.benchmarkId === "toolboxmd-creating-skills-v2", "unexpected benchmarkId");
 assert(config.protocolRevision === 2, "protocol revision must record the pre-run bytecode correction");
@@ -128,20 +164,39 @@ assert(config.decision.equalUtilityHigherRuntimeCostLoses === true, "runtime cos
 assert(config.treatments.builtin.aggregateSha256 === "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c", "built-in snapshot changed");
 assert(config.treatments.toolboxmd.aggregateSha256 === "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7", "ToolboxMD snapshot changed");
 
+assert(hashProvenance.schemaVersion === 1, "treatment hash provenance schemaVersion must be 1");
+assert(hashProvenance.benchmarkId === commitments.benchmarkId, "treatment hash provenance benchmarkId changed");
+assert(hashProvenance.status === "post_freeze_hash_provenance_correction", "treatment hash provenance status changed");
+assert(hashProvenance.correction.frozenCommitmentsPath === "commitments.json", "frozen commitments path changed");
+const commitmentsSha256 = crypto.createHash("sha256").update(commitmentsBytes).digest("hex");
+assert(hashProvenance.correction.frozenCommitmentsSha256 === commitmentsSha256, "frozen commitments bytes changed");
+
+assert(JSON.stringify(Object.keys(hashProvenance.treatments).sort()) === JSON.stringify(Object.keys(config.treatments).sort()), "hash provenance treatment set changed");
 for (const [treatmentId, treatment] of Object.entries(config.treatments)) {
-  const treatmentRoot = path.resolve(benchmarkRoot, treatment.path);
-  assert(treatmentRoot.startsWith(repositoryRoot + path.sep), `treatment escapes repository: ${treatment.path}`);
-  assert(fs.existsSync(path.join(treatmentRoot, "SKILL.md")), `missing treatment SKILL.md: ${treatment.path}`);
-  if (treatmentId === "builtin") {
-    const frozenManifest = JSON.parse(fs.readFileSync(path.join(path.dirname(treatmentRoot), "manifest.json"), "utf8"));
-    assert(frozenManifest.aggregateSha256 === treatment.aggregateSha256, "built-in aggregate commitment changed");
-    for (const expected of frozenManifest.files) {
-      const contents = fs.readFileSync(path.join(treatmentRoot, expected.path));
-      assert(contents.length === expected.bytes, `built-in size changed: ${expected.path}`);
-      assert(crypto.createHash("sha256").update(contents).digest("hex") === expected.sha256, `built-in file changed: ${expected.path}`);
-    }
-  } else {
-    assert(treeManifest(treatmentRoot).aggregateSha256 === treatment.aggregateSha256, `treatment tree changed: ${treatment.path}`);
+  const declaration = hashProvenance.treatments[treatmentId];
+  assert(declaration.source === treatment.path, `${treatmentId}: provenance source differs from run-config`);
+  assert(declaration.source === commitments.treatments[treatmentId].source, `${treatmentId}: provenance source differs from commitments`);
+  assert(declaration.aggregateSha256 === treatment.aggregateSha256, `${treatmentId}: provenance hash differs from run-config`);
+  assert(declaration.aggregateSha256 === commitments.treatments[treatmentId].aggregateSha256, `${treatmentId}: provenance hash differs from commitments`);
+
+  const treatmentRoot = path.resolve(benchmarkRoot, declaration.source);
+  assert(treatmentRoot.startsWith(repositoryRoot + path.sep), `treatment escapes repository: ${declaration.source}`);
+  assert(fs.existsSync(path.join(treatmentRoot, "SKILL.md")), `missing treatment SKILL.md: ${declaration.source}`);
+  const actualTree = treatmentTreeManifest(treatmentRoot, declaration);
+  assert(actualTree.files.length === declaration.fileCount, `${treatmentId}: declared file count changed`);
+  assert(actualTree.aggregateSha256 === declaration.aggregateSha256, `${treatmentId}: package bytes do not reproduce declared aggregate`);
+
+  const sourceManifestPath = path.resolve(benchmarkRoot, declaration.provenance.manifest);
+  assert(sourceManifestPath.startsWith(repositoryRoot + path.sep), `${treatmentId}: provenance manifest escapes repository`);
+  const sourceManifestBytes = fs.readFileSync(sourceManifestPath);
+  const sourceManifestSha256 = crypto.createHash("sha256").update(sourceManifestBytes).digest("hex");
+  assert(sourceManifestSha256 === declaration.provenance.manifestSha256, `${treatmentId}: provenance manifest hash changed`);
+  const sourceManifest = resolveJsonPointer(JSON.parse(sourceManifestBytes), declaration.provenance.jsonPointer);
+  assert(sourceManifest.aggregateSha256 === declaration.aggregateSha256, `${treatmentId}: source manifest aggregate differs`);
+  assert(Array.isArray(sourceManifest.files) && sourceManifest.files.length === actualTree.files.length, `${treatmentId}: source per-file manifest is incomplete`);
+  for (const actual of actualTree.files) {
+    const expected = sourceManifest.files.find(file => file.path === actual.path);
+    assert(expected?.sha256 === actual.sha256 && expected?.bytes === actual.bytes, `${treatmentId}: source manifest differs for ${actual.path}`);
   }
 }
 

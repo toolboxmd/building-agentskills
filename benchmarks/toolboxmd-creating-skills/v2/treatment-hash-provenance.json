@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "benchmarkId": "toolboxmd-creating-skills-v2",
+  "correctedOn": "2026-08-13",
+  "status": "post_freeze_hash_provenance_correction",
+  "correction": {
+    "frozenCommitmentsPath": "commitments.json",
+    "frozenCommitmentsSha256": "573ef16ef2dfd803a67f8bfd746989b6b9a86e707ad4004393668e7a12b07abf",
+    "supersededInterpretation": "The single algorithm field in commitments.json applies unchanged to both treatment aggregate hashes.",
+    "correctedInterpretation": "Each frozen treatment aggregate uses the treatment-specific path convention declared in this file.",
+    "scope": "This correction records provenance only. It changes no frozen package byte, aggregate hash, run configuration, protocol commitment, or result manifest."
+  },
+  "treatments": {
+    "builtin": {
+      "source": "../v1/baselines/codex-skill-creator-0.147.0/package",
+      "aggregateSha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c",
+      "fileCount": 9,
+      "aggregateAlgorithm": {
+        "fileDigest": "sha256",
+        "aggregateDigest": "sha256",
+        "relativePathStyle": "posix",
+        "pathEncoding": "utf8",
+        "pathPrefix": "./",
+        "sort": "bytewise_utf8_emitted_path_ascending",
+        "entryFormat": "<file-sha256>  <emitted-path>\n"
+      },
+      "provenance": {
+        "manifest": "../v1/baselines/codex-skill-creator-0.147.0/manifest.json",
+        "manifestSha256": "4f825566da28cdca443d86dc9fcb5db4a7317955dd34cc81699fb4f52ce76422",
+        "jsonPointer": "",
+        "historicalImplementation": "From the package root, find . emitted ./-prefixed paths, LC_ALL=C sorted them, and the freeze hashed lines '<file-sha256>  <path>\\n'."
+      }
+    },
+    "toolboxmd": {
+      "source": "../v1/results/2026-08-12/candidate/toolboxmd-creating-skills",
+      "aggregateSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",
+      "fileCount": 6,
+      "aggregateAlgorithm": {
+        "fileDigest": "sha256",
+        "aggregateDigest": "sha256",
+        "relativePathStyle": "posix",
+        "pathEncoding": "utf8",
+        "pathPrefix": "",
+        "sort": "bytewise_utf8_emitted_path_ascending",
+        "entryFormat": "<file-sha256>  <emitted-path>\n"
+      },
+      "provenance": {
+        "manifest": "../v1/commitments.json",
+        "manifestSha256": "d2d58e7d30d890458893b98cfcc3c291413cfab7182a1a4e3f0264c060ac48e6",
+        "jsonPointer": "/candidate",
+        "historicalImplementation": "The candidate freeze hashed POSIX relative paths without a leading prefix, matching scripts/hash-tree.mjs."
+      }
+    }
+  }
+}
