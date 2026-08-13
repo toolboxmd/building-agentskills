@@ -38,6 +38,33 @@ const curl = {
 fs.writeFileSync(preflightPath, `${JSON.stringify(load)}\n${JSON.stringify(curl)}\n${JSON.stringify(usage)}\n`);
 NODE
 
+printf '%s\n' '{"type":"turn.completed","usage":{"input_tokens":10,"cached_input_tokens":0,"output_tokens":1}}' > "$test_tmp/zero-command.jsonl"
+zero_command=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
+  "$test_tmp/zero-command.jsonl" "$test_tmp/run" near-miss none)
+node - "$zero_command" <<'NODE'
+const result = JSON.parse(process.argv[2]);
+if (result.schemaVersion !== 3 || !result.eligible || result.commandCount !== 0) process.exit(1);
+if (result.commandExecutionEventCount !== 0) process.exit(1);
+if (result.isolationEvidence.required || result.isolationEvidence.trusted || result.isolationEvidence.status !== "not_required") process.exit(1);
+NODE
+
+printf '%s\n' \
+  '{"type":"item.started","item":{"type":"command_execution","command":"cat workspace/input.md","aggregated_output":"","exit_code":null,"status":"in_progress"}}' \
+  '{"type":"turn.completed","usage":{"input_tokens":10,"cached_input_tokens":0,"output_tokens":1}}' > "$test_tmp/started-command.jsonl"
+set +e
+started_command=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
+  "$test_tmp/started-command.jsonl" "$test_tmp/run" near-miss none)
+status=$?
+set -e
+[[ $status -eq 1 ]] || { echo "FAIL: started command event without isolation evidence should fail" >&2; exit 1; }
+node - "$started_command" <<'NODE'
+const result = JSON.parse(process.argv[2]);
+const reason = "command execution lacks recorded trusted filesystem, environment, and network isolation evidence";
+if (result.eligible || !result.reasons.includes(reason)) process.exit(1);
+if (result.commandCount !== 0 || result.commandExecutionEventCount !== 1) process.exit(1);
+if (!result.isolationEvidence.required || result.isolationEvidence.trusted) process.exit(1);
+NODE
+
 printf '%s\n' \
   '{"type":"item.completed","item":{"type":"command_execution","command":"python3 ../../creator/scripts/validate_skill.py .","aggregated_output":"PASS","exit_code":0,"status":"completed"}}' \
   '{"type":"item.completed","item":{"type":"command_execution","command":"git status --short","aggregated_output":"?? ../../outside-name.md\\n","exit_code":0,"status":"completed"}}' \
@@ -111,11 +138,17 @@ NODE
 printf '%s\n' \
   '{"type":"item.completed","item":{"type":"command_execution","command":"find workspace -name AGENTS.md -print","aggregated_output":"","exit_code":0,"status":"completed"}}' \
   '{"type":"turn.completed","usage":{"input_tokens":10,"cached_input_tokens":0,"output_tokens":1}}' > "$test_tmp/safe-in-root.jsonl"
+set +e
 safe_in_root=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
   "$test_tmp/safe-in-root.jsonl" "$test_tmp/run" near-miss none)
+status=$?
+set -e
+[[ $status -eq 1 ]] || { echo "FAIL: command-bearing stream without isolation proof should fail" >&2; exit 1; }
 node - "$safe_in_root" <<'NODE'
 const result = JSON.parse(process.argv[2]);
-if (!result.eligible || result.reasons.includes("parent-directory traversal observed")) process.exit(1);
+const reason = "command execution lacks recorded trusted filesystem, environment, and network isolation evidence";
+if (result.eligible || !result.reasons.includes(reason) || result.reasons.includes("parent-directory traversal observed")) process.exit(1);
+if (!result.isolationEvidence.required || result.isolationEvidence.trusted || result.isolationEvidence.status !== "not_recorded") process.exit(1);
 NODE
 
 git_run="$test_tmp/ancestor-repo/run"
@@ -176,11 +209,16 @@ if (result.gitExecution.commandCount !== 1) process.exit(1);
 NODE
 done
 for safe_name in safe-non-git safe-echo safe-substitution-text safe-prefix-operands safe-heredoc-text; do
+  set +e
   safe_git_text=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
     "$test_tmp/git-commands/$safe_name.jsonl" "$git_run" near-miss none)
+  status=$?
+  set -e
+  [[ $status -eq 1 ]] || { echo "FAIL: $safe_name lacks trusted command isolation proof" >&2; exit 1; }
   node - "$safe_git_text" <<'NODE'
 const result = JSON.parse(process.argv[2]);
-if (!result.eligible) process.exit(1);
+const reason = "command execution lacks recorded trusted filesystem, environment, and network isolation evidence";
+if (result.eligible || !result.reasons.includes(reason)) process.exit(1);
 if (result.gitExecution.observed || result.gitExecution.readIsolationProven !== null) process.exit(1);
 NODE
 done
@@ -231,11 +269,16 @@ const command = {
 const usage = { type: "turn.completed", usage: { input_tokens: 10, cached_input_tokens: 0, output_tokens: 1 } };
 fs.writeFileSync(output, `${JSON.stringify(command)}\n${JSON.stringify(usage)}\n`);
 NODE
+set +e
 recorded_cwd=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
   "$test_tmp/recorded-cwd.jsonl" "$test_tmp/run" near-miss none)
+status=$?
+set -e
+[[ $status -eq 1 ]] || { echo "FAIL: recorded cwd does not replace isolation proof" >&2; exit 1; }
 node - "$recorded_cwd" <<'NODE'
 const result = JSON.parse(process.argv[2]);
-if (!result.eligible || result.reasons.includes("parent-directory traversal observed")) process.exit(1);
+const reason = "command execution lacks recorded trusted filesystem, environment, and network isolation evidence";
+if (result.eligible || !result.reasons.includes(reason) || result.reasons.includes("parent-directory traversal observed")) process.exit(1);
 NODE
 
 mkdir -p "$test_tmp/absolute-paths"
@@ -272,6 +315,8 @@ const commands = [
   ["url-not-path", "/bin/zsh -lc 'printf %s https://example.com/reference'"],
   ["regex-not-path", "/bin/zsh -lc \"rg '/Users/|/home/' workspace\""],
   ["heredoc-regex-not-path", "/bin/zsh -lc \"python3 - <<'PY'\\nimport re\\nre.compile(r'/Users/|/home/')\\nPY\""],
+  ["env-expanded-path", "/bin/zsh -lc 'cat \"$CODEX_HOME/auth.json\"'"],
+  ["interpreter-network", "python3 -c 'import urllib.request; urllib.request.urlopen(\"https://example.com\")'"],
 ];
 const usage = { type: "turn.completed", usage: { input_tokens: 10, cached_input_tokens: 0, output_tokens: 1 } };
 for (const [name, command] of commands) {
@@ -282,12 +327,18 @@ for (const [name, command] of commands) {
   fs.writeFileSync(path.join(output, `${name}.jsonl`), `${JSON.stringify(event)}\n${JSON.stringify(usage)}\n`);
 }
 NODE
-for safe_name in safe-wrapper safe-in-root safe-inline-in-root safe-inline-regex safe-executable-after-semicolon url-not-path regex-not-path heredoc-regex-not-path; do
+for safe_name in safe-wrapper safe-in-root safe-inline-in-root safe-inline-regex safe-executable-after-semicolon url-not-path regex-not-path heredoc-regex-not-path env-expanded-path interpreter-network; do
+  set +e
   safe_absolute=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
     "$test_tmp/absolute-paths/$safe_name.jsonl" "$test_tmp/run" near-miss none)
+  status=$?
+  set -e
+  [[ $status -eq 1 ]] || { echo "FAIL: $safe_name lacks trusted command isolation proof" >&2; exit 1; }
   node - "$safe_absolute" <<'NODE'
 const result = JSON.parse(process.argv[2]);
-if (!result.eligible || result.reasons.includes("absolute filesystem path outside run root observed")) process.exit(1);
+const reason = "command execution lacks recorded trusted filesystem, environment, and network isolation evidence";
+if (result.eligible || !result.reasons.includes(reason)) process.exit(1);
+if (result.reasons.includes("absolute filesystem path outside run root observed")) process.exit(1);
 NODE
 done
 for outside_name in outside-etc outside-workspace outside-tmp outside-windows outside-assignment outside-executable-loop outside-data-loop outside-after-semicolon outside-heredoc outside-inline-python outside-inline-print-conservative outside-inline-python-wrapper outside-inline-python-prefix outside-inline-python-option outside-inline-python-windows outside-inline-pathlib outside-inline-node outside-inline-ruby outside-inline-perl outside-inline-php; do
@@ -303,26 +354,39 @@ if (result.eligible || !result.reasons.includes("absolute filesystem path outsid
 NODE
 done
 
+set +e
 positive=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
   "$test_tmp/positive.jsonl" "$test_tmp/run" positive .agents/skills/demo-target/SKILL.md)
+status=$?
+set -e
+[[ $status -eq 1 ]] || { echo "FAIL: positive command stream lacks isolation evidence" >&2; exit 1; }
 node - "$positive" <<'NODE'
 const result = JSON.parse(process.argv[2]);
-if (!result.eligible || !result.expectedSkillLoad.fullContentObserved) process.exit(1);
+const reason = "command execution lacks recorded trusted filesystem, environment, and network isolation evidence";
+if (result.eligible || !result.reasons.includes(reason) || !result.expectedSkillLoad.fullContentObserved) process.exit(1);
 if (result.usage.uncachedInputTokens !== 80 || result.usage.runtimeTokens !== 90) process.exit(1);
 NODE
 
+set +e
 near_miss=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
   "$test_tmp/positive.jsonl" "$test_tmp/run" near-miss none)
+status=$?
+set -e
+[[ $status -eq 1 ]] || { echo "FAIL: command-bearing near miss lacks isolation evidence" >&2; exit 1; }
 node - "$near_miss" <<'NODE'
 const result = JSON.parse(process.argv[2]);
-if (!result.eligible || !result.falsePositiveSkillLoad) process.exit(1);
+if (result.eligible || !result.falsePositiveSkillLoad) process.exit(1);
 NODE
 
+set +e
 preflight=$(node "$root/scripts/audit-toolboxmd-v2-events.mjs" \
   "$test_tmp/preflight.jsonl" "$test_tmp/run" preflight .agents/skills/demo-target/SKILL.md)
+status=$?
+set -e
+[[ $status -eq 1 ]] || { echo "FAIL: preflight commands lack isolation evidence" >&2; exit 1; }
 node - "$preflight" <<'NODE'
 const result = JSON.parse(process.argv[2]);
-if (!result.eligible || !result.networkProbe.observed || !result.networkProbe.blocked) process.exit(1);
+if (result.eligible || !result.networkProbe.observed || !result.networkProbe.blocked) process.exit(1);
 NODE
 
 printf '%s\n' '{"type":"item.completed","item":{"type":"command_execution","command":"codex exec nested","aggregated_output":"","exit_code":0,"status":"completed"}}' > "$test_tmp/contaminated.jsonl"
@@ -337,4 +401,4 @@ const result = JSON.parse(process.argv[2]);
 if (result.eligible || !result.reasons.includes("nested model or agentic CLI command observed")) process.exit(1);
 NODE
 
-echo "PASS: v2 event audit proves loads, costs, near misses, and network blocking"
+echo "PASS: v2 event audit applies command isolation evidence and diagnostic trace checks"

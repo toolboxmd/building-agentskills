@@ -1,11 +1,19 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "mode": "preflight",
-  "eligible": true,
-  "reasons": [],
+  "eligible": false,
+  "reasons": [
+    "command execution lacks recorded trusted filesystem, environment, and network isolation evidence"
+  ],
   "warnings": [],
   "eventCount": 10,
   "commandCount": 2,
+  "commandExecutionEventCount": 4,
+  "isolationEvidence": {
+    "required": true,
+    "status": "not_recorded",
+    "trusted": false
+  },
   "turnCompleted": true,
   "expectedSkillLoad": {
     "path": ".agents/skills/cobalt-finch-preflight/SKILL.md",

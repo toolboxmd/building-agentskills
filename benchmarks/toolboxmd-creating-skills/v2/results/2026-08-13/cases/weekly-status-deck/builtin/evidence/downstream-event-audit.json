@@ -1,13 +1,20 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "mode": "positive",
   "eligible": false,
   "reasons": [
-    "Git command executed without proof of read isolation from repository and configuration metadata"
+    "Git command executed without proof of read isolation from repository and configuration metadata",
+    "command execution lacks recorded trusted filesystem, environment, and network isolation evidence"
   ],
   "warnings": [],
   "eventCount": 27,
   "commandCount": 9,
+  "commandExecutionEventCount": 18,
+  "isolationEvidence": {
+    "required": true,
+    "status": "not_recorded",
+    "trusted": false
+  },
   "turnCompleted": true,
   "expectedSkillLoad": {
     "path": ".agents/skills/weekly-status-deck/SKILL.md",

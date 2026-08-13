@@ -9,16 +9,16 @@
     "toolboxmdCandidateDisposition": "retained_as_unpromoted_benchmark_artifact",
     "preferredCreatorUnchanged": true,
     "publicSuperiorityClaimAllowed": false,
-    "reason": "A stricter post-result command audit found unisolated Git execution in six scored event streams. The retained traces prove neither in-root repository metadata nor isolation from system and global Git configuration. No case retains an eligible paired pipeline, so all creator scores, package differences, activation observations, and costs are diagnostic only. The reserve could not fit the 17-session hard limit."
+    "reason": "A stricter post-result isolation audit found that all 15 retained command-bearing event streams lack recorded trusted evidence for a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement. This includes all eight scored streams, both qualification streams, and the infrastructure preflight. Only two zero-command near-miss streams remain eligible for the narrow no-trigger observation. No case qualifies or retains an eligible paired pipeline, so all creator scores, package differences, activation observations, and costs are diagnostic only. The reserve could not fit the 17-session hard limit."
   },
-  "claimBoundary": "Zero eligible paired creator comparisons on Codex CLI 0.147.0 with gpt-5.6-sol at medium reasoning. Retained scores, package measurements, activation observations, and costs are diagnostic raw evidence only. The result does not support a case winner, a cost winner, a general creator ranking, a variance estimate, or cross-provider behavior.",
+  "claimBoundary": "Zero eligible no-skill qualifications and zero eligible paired creator comparisons on Codex CLI 0.147.0 with gpt-5.6-sol at medium reasoning. The two zero-command near-miss streams support only the narrow observation that no target skill load was recorded there. Retained scores, package measurements, positive activation observations, and costs are diagnostic raw evidence only. The result does not support a case winner, a cost winner, a general creator ranking, a variance estimate, or cross-provider behavior.",
   "acceptance": {
-    "primaryCasesQualified": 2,
+    "primaryCasesQualified": 0,
     "primaryCasesRequired": 2,
     "eligiblePairedCases": 0,
-    "ineligibleAuthoringRuns": 3,
-    "ineligiblePositiveRuns": 3,
-    "ineligibleScoredStreams": 6,
+    "ineligibleAuthoringRuns": 4,
+    "ineligiblePositiveRuns": 4,
+    "ineligibleScoredStreams": 8,
     "positiveTargetLoads": 4,
     "positiveRuns": 4,
     "nearMissTargetLoads": 0,
@@ -53,11 +53,15 @@
     "memoriesEnabled": false,
     "webSearchEnabled": false,
     "nestedDelegationObserved": false,
-    "pythonBytecodeIsolation": true
+    "pythonBytecodeIsolation": true,
+    "sanitizedEnvironmentRecorded": false,
+    "filesystemReadIsolationProven": false,
+    "filesystemWriteIsolationProven": false,
+    "networkIsolationProven": false
   },
   "qualification": {
     "meeting-followups": {
-      "qualified": true,
+      "qualified": false,
       "criticalPasses": 2,
       "criticalChecks": 8,
       "failedCheckIds": [
@@ -67,29 +71,33 @@
         "follow-up-content",
         "tracker-exact",
         "qa-exact"
-      ]
+      ],
+      "eligible": false,
+      "ineligibilityReason": "The retained command-bearing traces do not record trusted evidence for a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement."
     },
     "weekly-status-deck": {
-      "qualified": true,
+      "qualified": false,
       "criticalPasses": 7,
       "criticalChecks": 8,
       "failedCheckIds": [
         "deck-check-exact"
-      ]
+      ],
+      "eligible": false,
+      "ineligibilityReason": "The retained command-bearing traces do not record trusted evidence for a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement."
     }
   },
   "cases": {
     "meeting-followups": {
       "comparisonEligible": false,
-      "ineligibilityReason": "The ToolboxMD authoring and downstream traces ran Git commands without proving read isolation from repository and configuration metadata. The authoring trace also contains parent-relative operands without a recorded command cwd.",
+      "ineligibilityReason": "The no-skill arm plus both creator pipelines are command-bearing traces without recorded trusted isolation evidence. The retained command-bearing traces do not record trusted evidence for a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement.",
       "observableUtility": "diagnostic_tie_not_scored",
       "outputsByteIdentical": true,
       "sharedNonDiagnosticFailure": "Both actions.csv files preserved source terminal periods while the under-specified exact fixture omitted them.",
       "finalOutcome": "inconclusive_no_eligible_pair",
       "builtin": {
-        "authoringEligible": true,
-        "downstreamEligible": true,
-        "pipelineEligible": true,
+        "authoringEligible": false,
+        "downstreamEligible": false,
+        "pipelineEligible": false,
         "packageSha256": "9f715024c2f0af89f964360eee9e0ea576142c9e4a3fbf194b63475b277446ac",
         "packageFiles": 4,
         "packageBytes": 15161,
@@ -127,7 +135,7 @@
     },
     "weekly-status-deck": {
       "comparisonEligible": false,
-      "ineligibilityReason": "Both treatments ran Git commands during authoring and downstream execution without proving read isolation from repository and configuration metadata.",
+      "ineligibilityReason": "The no-skill arm plus both creator pipelines are command-bearing traces without recorded trusted isolation evidence. The retained command-bearing traces do not record trusted evidence for a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement.",
       "observableUtility": "diagnostic_tie_not_scored",
       "outputsByteIdentical": false,
       "outputDifference": "Harmless template whitespace and title-slide reporting-range phrasing; both passed 8 of 8 checks.",
@@ -201,10 +209,12 @@
   "protocolNotes": [
     "The first four authoring attempts were discarded as one batch before downstream use because both built-in attempts wrote Python bytecode below the protected creator tree.",
     "Protocol revision 2 disabled Python bytecode writes and repeated all four authoring arms symmetrically without changing cases, prompts, treatments, grader, model, or decision rule.",
-    "A post-result audit correction removed the suffix-based exception for parent-relative paths. The trace must now record an in-root command cwd before such an operand can be proven safe. It rejects literal POSIX and Windows absolute filesystem operands outside the run root, including operands inside shell-wrapper payloads and heredoc code. It also rejects executed Git commands unless the trace proves read isolation from repository plus system and global configuration metadata, regardless of command output or path scoping.",
-    "All 17 retained event streams were re-audited without running another model session. Ten streams are ineligible, including six of the eight scored authoring and downstream streams. No case retains an eligible paired pipeline, so all case scores and cost differences are diagnostic only.",
+    "A post-result audit correction now treats any command_execution event as requiring recorded trusted evidence for a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement. Historical JSONL records none of those controls, so every command-bearing stream is ineligible. Detailed command heuristics remain useful diagnostic reasons, but their completeness is not the eligibility trust boundary.",
+    "All 17 retained event streams were re-audited without running another model session. Fifteen streams are ineligible: all eight scored authoring and downstream streams, both no-skill qualification streams, the infrastructure preflight, and all four discarded authoring streams. Only the two zero-command near-miss streams remain eligible for the narrow no-trigger observation.",
     "The protocol commitment omitted the supporting grader and event-audit scripts. They were implemented and tested before scored downstream runs, and their at-result hashes are recorded below, but the commitment alone cannot prove that every supporting tool stayed byte-identical throughout execution.",
-    "The retained streams executed git status, git diff, or git ls-files while their run roots were nested below the benchmark worktree and without an isolated Git configuration environment. Empty output and path-scoped operands do not make those reads safe because Git may still discover repository, system, global, or included configuration metadata outside the run root.",
+    "Retained diagnostic reasons include Git execution, parent-relative operands, and outside absolute paths. Focused synthetic regressions also demonstrate that environment expansion and opaque interpreter network clients can bypass a narrow command parser. Neither class of diagnostic proves strict isolation.",
+    "The historical preflight observed one curl attempt fail with exit 6, but that probe does not prove that every command was confined or that other network clients and syscall paths were blocked. The preflight is therefore ineligible.",
+    "A future command-bearing benchmark needs a separate, independently verifiable evidence channel produced by the harness or enforcement layer before the event auditor may consider strict filesystem, environment, and network isolation proven.",
     "The shared meeting punctuation mismatch is retained in raw grades but treated as non-diagnostic because the source contract did not specify punctuation removal.",
     "The reserve was frozen but not opened because it required five sessions and only one remained under the hard limit.",
     "Blind review was not run because it cannot repair ineligible traces and no eligible paired comparison remains."
@@ -220,12 +230,13 @@
   },
   "postResultAuditCorrection": {
     "recordedOn": "2026-08-13",
-    "auditorSha256": "ca73f3e93d54af6fea73099a5d4a239e9e02bbff71e79de9b03587613f1adc79",
+    "auditorSha256": "44f376bd22c4315f8ae6cd3542d98f61983faa89deddd7b981ddc7d4da51fb10",
     "retainedStreamsReaudited": 17,
     "modelSessionsAdded": 0,
-    "ineligibleStreamCount": 10,
-    "scoredPipelineExclusions": 3,
+    "ineligibleStreamCount": 15,
     "ineligibleStreams": [
+      "cases/meeting-followups/builtin/evidence/authoring-events.jsonl",
+      "cases/meeting-followups/builtin/evidence/downstream-events.jsonl",
       "cases/meeting-followups/toolboxmd/evidence/authoring-events.jsonl",
       "cases/meeting-followups/toolboxmd/evidence/downstream-events.jsonl",
       "cases/weekly-status-deck/builtin/evidence/authoring-events.jsonl",
@@ -235,14 +246,24 @@
       "discarded-authoring/meeting-followups/builtin/events.jsonl",
       "discarded-authoring/meeting-followups/toolboxmd/events.jsonl",
       "discarded-authoring/weekly-status-deck/builtin/events.jsonl",
-      "discarded-authoring/weekly-status-deck/toolboxmd/events.jsonl"
-    ]
+      "discarded-authoring/weekly-status-deck/toolboxmd/events.jsonl",
+      "preflight/events.jsonl",
+      "qualification/meeting-followups/evidence/events.jsonl",
+      "qualification/weekly-status-deck/evidence/events.jsonl"
+    ],
+    "ineligibleQualificationStreams": 2,
+    "preflightEligible": false,
+    "eligibleZeroCommandNearMissStreams": 2,
+    "ineligibleScoredStreams": 8,
+    "ineligibleScoredPipelines": 4,
+    "ineligibleDiscardedStreams": 4,
+    "ineligiblePreflightStreams": 1
   },
   "retainedEvidence": {
-    "retentionManifestSha256": "e4f3d7ef74ae7346db6828d4c3cf6c204df4f8229b198d1f6220e298bf4d3612",
+    "retentionManifestSha256": "7aeb607e1443fcdb2bfc22e119bb72cb63aa8de8688ccfa2e458b7208717e6c3",
     "sessionUsageSha256": "99df094f3389dbec01c94d0b7f3733647f03b4821d18ef3ea5144ebec1d804e4",
     "discardedAuthoringFailureSha256": "172f8e043b6d879bba3728ee0543b7f56d726eec5a06d5035a36bd588875d992"
   },
   "recommendations": "recommendations.md",
-  "interpretationLimit": "No eligible paired creator comparison remains. All retained case scores, package measurements, activation observations, and costs are diagnostic only and cannot support a creator or cost winner."
+  "interpretationLimit": "No eligible no-skill qualification or paired creator comparison remains. The two eligible zero-command near-miss streams support only a narrow no-trigger observation. All retained case scores, package measurements, positive activation observations, and costs are diagnostic only and cannot support a creator or cost winner."
 }

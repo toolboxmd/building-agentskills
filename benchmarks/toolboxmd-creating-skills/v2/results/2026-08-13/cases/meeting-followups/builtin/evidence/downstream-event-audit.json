@@ -1,11 +1,19 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "mode": "positive",
-  "eligible": true,
-  "reasons": [],
+  "eligible": false,
+  "reasons": [
+    "command execution lacks recorded trusted filesystem, environment, and network isolation evidence"
+  ],
   "warnings": [],
   "eventCount": 19,
   "commandCount": 5,
+  "commandExecutionEventCount": 10,
+  "isolationEvidence": {
+    "required": true,
+    "status": "not_recorded",
+    "trusted": false
+  },
   "turnCompleted": true,
   "expectedSkillLoad": {
     "path": ".agents/skills/meeting-followups/SKILL.md",

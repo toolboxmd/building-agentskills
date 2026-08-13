@@ -8,10 +8,10 @@ The current built-in creator remains the default because the challenger did not 
 
 | Case | No-skill qualification | Built-in | ToolboxMD | Operational outcome |
 |---|---:|---:|---:|---|
-| `meeting-followups` | 2/8 critical checks | 7/8, loaded, 18,550 runtime tokens | 7/8, loaded, 21,609 runtime tokens | Not scored: ToolboxMD pipeline is ineligible |
-| `weekly-status-deck` | 7/8 critical checks | 8/8, loaded, 30,228 runtime tokens | 8/8, loaded, 23,982 runtime tokens | Not scored: both pipelines are ineligible |
+| `meeting-followups` | 2/8, diagnostic and ineligible | 7/8, loaded, 18,550 runtime tokens | 7/8, loaded, 21,609 runtime tokens | Not scored: qualification and both pipelines are ineligible |
+| `weekly-status-deck` | 7/8, diagnostic and ineligible | 8/8, loaded, 30,228 runtime tokens | 8/8, loaded, 23,982 runtime tokens | Not scored: qualification and both pipelines are ineligible |
 
-Both near-miss sessions were clean. None of the four installed target skills loaded for general advice prompts. Four positive target loads were also observed. These activation observations are diagnostic only because no case retains two eligible treatment pipelines.
+Both zero-command near-miss sessions remain eligible for the narrow observation that none of the four installed target skills loaded for general advice prompts. Four positive target loads were also observed, but every positive stream is ineligible. No case has an eligible no-skill qualification or two eligible treatment pipelines.
 
 The reserve case did not run. After four authoring attempts were discarded for the Python bytecode boundary failure, only one session remained below the 17-session hard limit. The reserve required five sessions. Running it would have violated the precommitted budget.
 
@@ -69,9 +69,9 @@ The next candidate should preserve the description pattern and validation discip
 - Reasoning effort: `medium`
 - Same model, prompt, source files, sandbox, and runner configuration across treatments
 - Positive prompts did not name a skill or `SKILL.md`
-- Four of four positive runs loaded the full target `SKILL.md` before output creation, but three positive streams are ineligible and no paired comparison remains eligible
-- Zero false-positive loads in two aggregate near-miss sessions
-- Network probe blocked with curl exit code 6
+- Four of four positive runs loaded the full target `SKILL.md` before output creation, but all four positive streams are ineligible and no paired comparison remains eligible
+- Zero false-positive loads in two eligible zero-command aggregate near-miss sessions
+- The historical curl probe failed with exit code 6, but the preflight is ineligible because that observation does not prove filesystem or syscall-level network confinement
 - Plugins, apps, memories, bundled skills, web search, and nested delegation disabled
 - Sixteen decision sessions, including four discarded authoring attempts
 - 728,273 uncached-input-plus-output runtime tokens across decision sessions
@@ -79,9 +79,11 @@ The next candidate should preserve the description pattern and validation discip
 
 The first authoring batch was discarded before downstream use because both built-in runs created Python bytecode under the protected creator tree. The corrected runner disabled bytecode writes and repeated all four authoring arms symmetrically. The exact failed-attempt hashes are retained in `discarded-authoring/failure.json`.
 
-A post-result correction removed the event auditor's unsafe suffix exception for parent-relative paths, added detection for bare `..` operands, and rejects literal POSIX and Windows absolute filesystem operands outside the run root. Wrapper payloads and heredoc code are audited recursively. The auditor now also rejects an executed Git command unless the trace proves read isolation from repository plus system and global configuration metadata. Empty output and path scoping do not make `git status`, `git diff`, or `git ls-files` safe because Git may still discover metadata outside the run root.
+A post-result correction now applies one strict eligibility invariant: any `command_execution` event requires recorded trusted evidence for a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement. Historical Codex JSONL records none of those controls, so every command-bearing stream is ineligible, including started or incomplete command events. Detailed checks for parent traversal, absolute paths, Git, shell wrappers, and interpreter payloads remain diagnostic reasons. Their completeness is not the trust boundary.
 
-All 17 retained streams were re-audited without another model session. Ten are ineligible: six scored authoring or downstream streams and four discarded authoring streams. No case retains an eligible pair. The generated packages, downstream outputs, grades, and raw traces remain inspectable diagnostic evidence, but they cannot determine a creator or cost winner.
+All 17 retained streams were re-audited without another model session. Fifteen are ineligible: all eight scored authoring or downstream streams, both no-skill qualification streams, the infrastructure preflight, and four discarded authoring streams. Only the two zero-command near-miss streams remain eligible for their narrow observation. No case qualifies or retains an eligible pair. The generated packages, downstream outputs, grades, and raw traces remain inspectable diagnostic evidence, but they cannot determine a creator or cost winner.
+
+A future command-bearing harness must add a separate, independently verifiable evidence channel for environment sanitization plus filesystem and network enforcement before such a stream can qualify. A command parser or user-controlled assertion is not that evidence.
 
 The protocol commitment did not include the supporting grader and event-audit scripts. Those tools were implemented and tested before the scored downstream runs, and `manifest.json` records their at-result hashes. The evidence does not independently prove that every supporting script stayed byte-identical across the whole execution. Future runs must include every scoring and eligibility tool in the pre-run commitment.
 
@@ -89,4 +91,4 @@ The tracked result retains every JSONL stream, stderr file, and run-metadata rec
 
 ## Claim boundary
 
-This result contains zero eligible paired creator comparisons on Codex CLI 0.147.0 with `gpt-5.6-sol` at medium reasoning. Retained scores, package measurements, activation observations, and costs are diagnostic raw evidence only. The valid conclusion is narrow: the benchmark is inconclusive, it supports no creator or cost winner, ToolboxMD should not be promoted from this candidate, and the observed failure modes motivate the changes in `recommendations.md`.
+This result contains zero eligible no-skill qualifications and zero eligible paired creator comparisons on Codex CLI 0.147.0 with `gpt-5.6-sol` at medium reasoning. The two zero-command near-miss streams support only a narrow no-trigger observation. Retained scores, package measurements, positive activation observations, and costs are diagnostic raw evidence only. The valid conclusion is narrow: the benchmark is inconclusive, it supports no creator or cost winner, ToolboxMD should not be promoted from this candidate, and the observed failure modes motivate the changes in `recommendations.md`.

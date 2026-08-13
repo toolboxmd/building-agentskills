@@ -47,6 +47,7 @@ let gitStatusOutsideNamesObserved = false;
 let firstOutputMutationIndex = null;
 let expectedLoadIndex = null;
 let eventCount = 0;
+let commandExecutionEventCount = 0;
 let turnCompleted = false;
 const usage = {
   inputTokens: null,
@@ -573,6 +574,7 @@ for (let index = 0; index < lines.length; index += 1) {
   if (firstOutputMutationIndex === null && isOutputMutation(event, index)) firstOutputMutationIndex = index;
 
   const item = event.item;
+  if (item?.type === "command_execution") commandExecutionEventCount += 1;
   if (!item || item.type !== "command_execution" || item.status === "in_progress" || typeof item.command !== "string") continue;
 
   const command = item.command;
@@ -631,6 +633,10 @@ for (let index = 0; index < lines.length; index += 1) {
     skillOutputs.get(relative).push(output);
     if (expectedRelative === relative && expectedLoadIndex === null) expectedLoadIndex = index;
   }
+}
+
+if (commandExecutionEventCount > 0) {
+  reasons.push("command execution lacks recorded trusted filesystem, environment, and network isolation evidence");
 }
 
 if (Number.isInteger(usage.inputTokens) && Number.isInteger(usage.cachedInputTokens)) {
@@ -702,13 +708,19 @@ if (!turnCompleted) reasons.push("turn.completed event not observed");
 
 const uniqueReasons = [...new Set(reasons)];
 const result = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   mode,
   eligible: uniqueReasons.length === 0,
   reasons: uniqueReasons,
   warnings: [...new Set(warnings)],
   eventCount,
   commandCount: commands.length,
+  commandExecutionEventCount,
+  isolationEvidence: {
+    required: commandExecutionEventCount > 0,
+    status: commandExecutionEventCount > 0 ? "not_recorded" : "not_required",
+    trusted: false,
+  },
   turnCompleted,
   expectedSkillLoad,
   observedSkillLoads: observedLoads,

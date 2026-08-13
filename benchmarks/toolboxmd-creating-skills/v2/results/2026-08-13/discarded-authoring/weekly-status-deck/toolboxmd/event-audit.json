@@ -1,15 +1,22 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "mode": "authoring",
   "eligible": false,
   "reasons": [
-    "Git command executed without proof of read isolation from repository and configuration metadata"
+    "Git command executed without proof of read isolation from repository and configuration metadata",
+    "command execution lacks recorded trusted filesystem, environment, and network isolation evidence"
   ],
   "warnings": [
     "git status exposed names from an ancestor worktree without reading file contents"
   ],
   "eventCount": 38,
   "commandCount": 10,
+  "commandExecutionEventCount": 20,
+  "isolationEvidence": {
+    "required": true,
+    "status": "not_recorded",
+    "trusted": false
+  },
   "turnCompleted": true,
   "expectedSkillLoad": {
     "path": "creator/SKILL.md",

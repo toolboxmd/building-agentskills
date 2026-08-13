@@ -1,11 +1,19 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "mode": "authoring",
-  "eligible": true,
-  "reasons": [],
+  "eligible": false,
+  "reasons": [
+    "command execution lacks recorded trusted filesystem, environment, and network isolation evidence"
+  ],
   "warnings": [],
   "eventCount": 54,
   "commandCount": 18,
+  "commandExecutionEventCount": 36,
+  "isolationEvidence": {
+    "required": true,
+    "status": "not_recorded",
+    "trusted": false
+  },
   "turnCompleted": true,
   "expectedSkillLoad": {
     "path": "creator/SKILL.md",

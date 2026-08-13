@@ -7,7 +7,7 @@
     "recommended_creator": null,
     "toolboxmd_candidate_recommended": false,
     "current_default_unchanged": true,
-    "claim_boundary": "Zero eligible paired creator comparisons under Codex CLI 0.147.0 and gpt-5.6-sol at medium reasoning. Retained scores, package measurements, activation observations, and costs are diagnostic raw evidence only. The result does not support a case winner, a cost winner, a general creator ranking, a variance estimate, or cross-provider behavior.",
+    "claim_boundary": "Zero eligible no-skill qualifications and zero eligible paired creator comparisons under Codex CLI 0.147.0 and gpt-5.6-sol at medium reasoning. The two zero-command near-miss streams support only the narrow observation that no target skill load was recorded there. Retained scores, package measurements, positive activation observations, and costs are diagnostic raw evidence only. The result does not support a case winner, a cost winner, a general creator ranking, a variance estimate, or cross-provider behavior.",
     "configuration": {
       "codex_cli_version": "0.147.0",
       "model": "gpt-5.6-sol",
@@ -19,14 +19,18 @@
       "apps_enabled": false,
       "memories_enabled": false,
       "web_search_enabled": false,
-      "nested_delegation_observed": false
+      "nested_delegation_observed": false,
+      "sanitized_environment_recorded": false,
+      "filesystem_read_isolation_proven": false,
+      "filesystem_write_isolation_proven": false,
+      "network_isolation_proven": false
     },
     "acceptance": {
-      "primary_cases_qualified": 2,
+      "primary_cases_qualified": 0,
       "eligible_paired_cases": 0,
-      "ineligible_authoring_runs": 3,
-      "ineligible_positive_runs": 3,
-      "ineligible_scored_streams": 6,
+      "ineligible_authoring_runs": 4,
+      "ineligible_positive_runs": 4,
+      "ineligible_scored_streams": 8,
       "positive_target_loads": 4,
       "positive_runs": 4,
       "near_miss_target_loads": 0,
@@ -35,13 +39,15 @@
       "toolboxmd_case_wins": 0,
       "wins_required_to_promote_toolboxmd": 2,
       "toolboxmd_promotion_gate_passed": false,
-      "reserve_used": false
+      "reserve_used": false,
+      "eligible_zero_command_near_miss_streams": 2,
+      "preflight_eligible": false
     },
     "cases": [
       {
         "case_id": "meeting-followups",
         "comparison_eligible": false,
-        "ineligibility_reason": "The ToolboxMD authoring and downstream traces ran Git commands without proving read isolation from repository and configuration metadata. The authoring trace also used parent-relative operands without a recorded command cwd.",
+        "ineligibility_reason": "The no-skill arm plus both creator pipelines contain command execution without recorded trusted evidence for a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement.",
         "no_skill_critical_passes": 2,
         "no_skill_critical_checks": 8,
         "builtin_critical_passes": 7,
@@ -51,12 +57,13 @@
         "toolboxmd_runtime_tokens": 21609,
         "observable_utility": "diagnostic_tie_not_scored",
         "final_outcome": "inconclusive_no_eligible_pair",
-        "shared_non_diagnostic_failure": "Both outputs preserved source terminal periods while the under-specified exact fixture omitted them."
+        "shared_non_diagnostic_failure": "Both outputs preserved source terminal periods while the under-specified exact fixture omitted them.",
+        "no_skill_eligible": false
       },
       {
         "case_id": "weekly-status-deck",
         "comparison_eligible": false,
-        "ineligibility_reason": "Both treatments ran Git commands during authoring and downstream execution without proving read isolation from repository and configuration metadata.",
+        "ineligibility_reason": "The no-skill arm plus both creator pipelines contain command execution without recorded trusted evidence for a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement.",
         "no_skill_critical_passes": 7,
         "no_skill_critical_checks": 8,
         "builtin_critical_passes": 8,
@@ -66,7 +73,8 @@
         "toolboxmd_runtime_tokens": 23982,
         "observable_utility": "diagnostic_tie_not_scored",
         "final_outcome": "inconclusive_no_eligible_pair",
-        "output_difference": "Harmless template whitespace and title-slide reporting-range phrasing."
+        "output_difference": "Harmless template whitespace and title-slide reporting-range phrasing.",
+        "no_skill_eligible": false
       }
     ],
     "creator_comparison": {
@@ -96,7 +104,7 @@
       "output_tokens": 115376,
       "runtime_tokens": 728273
     },
-    "interpretation_limit": "No eligible paired creator comparison remains. All retained case scores, package measurements, activation observations, and costs are diagnostic only and cannot support a creator or cost winner."
+    "interpretation_limit": "No eligible no-skill qualification or paired creator comparison remains. The two eligible zero-command near-miss streams support only a narrow no-trigger observation. All retained case scores, package measurements, positive activation observations, and costs are diagnostic only and cannot support a creator or cost winner."
   },
   "invalid_attempts": {
     "count": 4,
@@ -105,8 +113,10 @@
     "accepted_amendment": "Protocol revision 2 disabled Python bytecode writes, redirected the cache under the run root, and repeated all four authoring arms symmetrically without changing cases, prompts, treatments, grader, model, or decision rule."
   },
   "post_result_audit_correction": {
-    "ineligible_stream_count": 10,
+    "ineligible_stream_count": 15,
     "streams": [
+      "cases/meeting-followups/builtin/evidence/authoring-events.jsonl",
+      "cases/meeting-followups/builtin/evidence/downstream-events.jsonl",
       "cases/meeting-followups/toolboxmd/evidence/authoring-events.jsonl",
       "cases/meeting-followups/toolboxmd/evidence/downstream-events.jsonl",
       "cases/weekly-status-deck/builtin/evidence/authoring-events.jsonl",
@@ -116,24 +126,33 @@
       "discarded-authoring/meeting-followups/builtin/events.jsonl",
       "discarded-authoring/meeting-followups/toolboxmd/events.jsonl",
       "discarded-authoring/weekly-status-deck/builtin/events.jsonl",
-      "discarded-authoring/weekly-status-deck/toolboxmd/events.jsonl"
+      "discarded-authoring/weekly-status-deck/toolboxmd/events.jsonl",
+      "preflight/events.jsonl",
+      "qualification/meeting-followups/evidence/events.jsonl",
+      "qualification/weekly-status-deck/evidence/events.jsonl"
     ],
-    "failure": "Six scored streams and four discarded streams executed Git commands without proving read isolation from repository plus system and global configuration metadata. The scored ToolboxMD meeting authoring stream also contains unprovable parent-relative operands, and the discarded built-in meeting stream also contains an outside absolute path.",
-    "scored_pipeline_exclusions": 3,
+    "failure": "All 15 command-bearing retained streams lack recorded trusted evidence for environment sanitization, filesystem read and write confinement, and syscall-level network enforcement. Retained diagnostic reasons include Git execution, parent traversal, and outside paths. Focused synthetic regressions demonstrate environment-expansion and interpreter-network parser gaps. Neither is a complete isolation proof.",
     "retained_streams_reaudited": 17,
-    "model_sessions_added": 0
+    "model_sessions_added": 0,
+    "ineligible_qualification_streams": 2,
+    "preflight_eligible": false,
+    "eligible_zero_command_near_miss_streams": 2,
+    "ineligible_scored_streams": 8,
+    "ineligible_scored_pipelines": 4,
+    "ineligible_discarded_streams": 4,
+    "ineligible_preflight_streams": 1
   },
   "evidence": {
     "result_manifest": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/manifest.json",
-    "result_manifest_sha256": "abb82941e13be6a2946b878a46e3393efc1e4d997c38fa610363f41c121f59a0",
+    "result_manifest_sha256": "8fbbefc402bd7ff5d3be98d9080e35fa46c92177395889c41ab2d123e96af23d",
     "result_readme": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/README.md",
     "recommendations": "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/recommendations.md",
-    "retention_manifest_sha256": "e4f3d7ef74ae7346db6828d4c3cf6c204df4f8229b198d1f6220e298bf4d3612",
+    "retention_manifest_sha256": "7aeb607e1443fcdb2bfc22e119bb72cb63aa8de8688ccfa2e458b7208717e6c3",
     "session_usage_sha256": "99df094f3389dbec01c94d0b7f3733647f03b4821d18ef3ea5144ebec1d804e4",
     "discarded_authoring_failure_sha256": "172f8e043b6d879bba3728ee0543b7f56d726eec5a06d5035a36bd588875d992",
     "cases_sha256": "f5c0d2d74a42063c15f4fd4b4b8871522fcb53623d5188d58d957cbd4d846d87",
     "builtin_creator_sha256": "473b9dd5ff3df1d352b499d83e00864290bd2874ac3f9243e33f09ab7e9e835c",
     "toolboxmd_creator_sha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7"
   },
-  "known_protocol_limit": "The pre-run protocol commitment omitted the supporting grader and event-audit scripts. Their at-result hashes and retained outputs are inspectable, but the commitment alone cannot prove that every supporting tool stayed byte-identical throughout execution. The retained Codex JSONL also omits command cwd, so parent-relative operands in one authoring trace cannot be located reliably after the fact."
+  "known_protocol_limit": "The pre-run protocol commitment omitted the supporting grader and event-audit scripts. Their at-result hashes and retained outputs are inspectable, but the commitment alone cannot prove that every supporting tool stayed byte-identical throughout execution. More importantly, the retained Codex JSONL records no independently verifiable sanitized environment, filesystem read and write confinement, or syscall-level network enforcement. A future harness must emit that evidence through a separate trust-bearing channel before any command-bearing stream can qualify."
 }

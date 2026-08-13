@@ -1,11 +1,17 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "mode": "near-miss",
   "eligible": true,
   "reasons": [],
   "warnings": [],
   "eventCount": 4,
   "commandCount": 0,
+  "commandExecutionEventCount": 0,
+  "isolationEvidence": {
+    "required": false,
+    "status": "not_required",
+    "trusted": false
+  },
   "turnCompleted": true,
   "expectedSkillLoad": null,
   "observedSkillLoads": [],

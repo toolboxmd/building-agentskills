@@ -1,11 +1,19 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "mode": "noskill",
-  "eligible": true,
-  "reasons": [],
+  "eligible": false,
+  "reasons": [
+    "command execution lacks recorded trusted filesystem, environment, and network isolation evidence"
+  ],
   "warnings": [],
   "eventCount": 16,
   "commandCount": 4,
+  "commandExecutionEventCount": 8,
+  "isolationEvidence": {
+    "required": true,
+    "status": "not_recorded",
+    "trusted": false
+  },
   "turnCompleted": true,
   "expectedSkillLoad": null,
   "observedSkillLoads": [],

@@ -90,11 +90,11 @@ assert(manifest.decision.publicSuperiorityClaimAllowed === false, "superiority c
 assert(manifest.acceptance.builtinCaseWins === 0, "built-in win count changed");
 assert(manifest.acceptance.toolboxmdCaseWins === 0, "ToolboxMD win count changed");
 assert(manifest.acceptance.toolboxmdPromotionGatePassed === false, "ToolboxMD promotion gate changed");
-assert(manifest.acceptance.primaryCasesQualified === 2, "both primary cases must be qualified");
+assert(manifest.acceptance.primaryCasesQualified === 0, "command-bearing qualification streams must remain unqualified");
 assert(manifest.acceptance.eligiblePairedCases === 0, "no paired case may remain eligible");
-assert(manifest.acceptance.ineligibleAuthoringRuns === 3, "corrected authoring exclusion count changed");
-assert(manifest.acceptance.ineligiblePositiveRuns === 3, "corrected downstream exclusion count changed");
-assert(manifest.acceptance.ineligibleScoredStreams === 6, "corrected scored-stream exclusion count changed");
+assert(manifest.acceptance.ineligibleAuthoringRuns === 4, "corrected authoring exclusion count changed");
+assert(manifest.acceptance.ineligiblePositiveRuns === 4, "corrected downstream exclusion count changed");
+assert(manifest.acceptance.ineligibleScoredStreams === 8, "corrected scored-stream exclusion count changed");
 assert(manifest.acceptance.positiveTargetLoads === 4, "all positive runs must load their target skill");
 assert(manifest.acceptance.nearMissTargetLoads === 0, "near-miss runs must not load target skills");
 assert(manifest.acceptance.reserveUsed === false, "reserve must remain unopened");
@@ -111,14 +111,19 @@ assert(condensed.benchmark.toolboxmd_candidate_recommended === false, "condensed
 assert(condensed.evidence.result_manifest === "benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/manifest.json", "condensed result path changed");
 assert(sha256File(path.join(resultRoot, "manifest.json")) === condensed.evidence.result_manifest_sha256, "condensed result hash changed");
 assert(condensed.evidence.retention_manifest_sha256 === manifest.retainedEvidence.retentionManifestSha256, "condensed retention hash changed");
-assert(condensed.post_result_audit_correction.ineligible_stream_count === 10, "condensed corrected ineligible stream count changed");
-assert(condensed.post_result_audit_correction.scored_pipeline_exclusions === 3, "condensed corrected scored exclusion count changed");
+assert(condensed.post_result_audit_correction.ineligible_stream_count === 15, "condensed corrected ineligible stream count changed");
+assert(condensed.post_result_audit_correction.ineligible_scored_streams === 8, "condensed corrected scored-stream count changed");
+assert(condensed.post_result_audit_correction.ineligible_scored_pipelines === 4, "condensed corrected scored-pipeline count changed");
 
 const preflightEvent = readJson("preflight/event-audit.json");
 const preflightBoundary = readJson("preflight/boundary-audit.json");
-assert(preflightEvent.eligible === true && preflightBoundary.eligible === true, "preflight is not eligible");
+const isolationReason = "command execution lacks recorded trusted filesystem, environment, and network isolation evidence";
+assert(preflightEvent.schemaVersion === 3, "preflight audit schema changed");
+assert(preflightEvent.eligible === false && preflightBoundary.eligible === true, "historical preflight eligibility changed");
+assert(preflightEvent.reasons.includes(isolationReason), "preflight isolation-evidence reason missing");
+assert(preflightEvent.isolationEvidence?.status === "not_recorded", "preflight isolation evidence is overstated");
 assert(preflightEvent.expectedSkillLoad?.fullContentObserved === true, "preflight did not prove full skill loading");
-assert(preflightEvent.networkProbe?.blocked === true, "preflight did not prove blocked network access");
+assert(preflightEvent.networkProbe?.blocked === true, "preflight did not retain the failed curl observation");
 assert(JSON.stringify(preflightEvent.networkProbe.exitCodes) === JSON.stringify([6]), "unexpected network probe result");
 
 const expected = {
@@ -134,8 +139,8 @@ const expected = {
       toolboxmd: "6f738c66e2aa13c9e1f8e69aa019a5c1e82451d22e28c9da6a21be53affa102c",
     },
     passes: { builtin: 7, toolboxmd: 7 },
-    authoringEligible: { builtin: true, toolboxmd: false },
-    downstreamEligible: { builtin: true, toolboxmd: false },
+    authoringEligible: { builtin: false, toolboxmd: false },
+    downstreamEligible: { builtin: false, toolboxmd: false },
   },
   "weekly-status-deck": {
     qualificationPasses: 7,
@@ -158,7 +163,9 @@ for (const [caseId, caseExpected] of Object.entries(expected)) {
   const qualificationGrade = readJson(`qualification/${caseId}/evidence/grade.json`);
   const qualificationEvent = readJson(`qualification/${caseId}/evidence/event-audit.json`);
   const qualificationBoundary = readJson(`qualification/${caseId}/evidence/boundary-audit.json`);
-  assert(qualificationEvent.eligible === true && qualificationBoundary.eligible === true, `${caseId}: no-skill run is ineligible`);
+  assert(qualificationEvent.eligible === false && qualificationBoundary.eligible === true, `${caseId}: historical no-skill eligibility changed`);
+  assert(qualificationEvent.reasons.includes(isolationReason), `${caseId}: no-skill isolation-evidence reason missing`);
+  assert(manifest.qualification[caseId].qualified === false, `${caseId}: ineligible no-skill arm cannot qualify the case`);
   assert(qualificationEvent.observedSkillLoads.length === 0, `${caseId}: no-skill run loaded a skill`);
   assert(qualificationGrade.criticalPassCount === caseExpected.qualificationPasses, `${caseId}: qualification score changed`);
   assert(JSON.stringify(qualificationGrade.criticalFailedCheckIds) === JSON.stringify(caseExpected.qualificationFailures), `${caseId}: qualification failures changed`);
@@ -182,12 +189,8 @@ for (const [caseId, caseExpected] of Object.entries(expected)) {
     assert(boundary.reasons.length === 0, `${caseId}/${treatment}: downstream boundary violation`);
     assert(authoringEvent.eligible === caseExpected.authoringEligible[treatment], `${caseId}/${treatment}: corrected authoring eligibility changed`);
     assert(authoringBoundary.eligible === true, `${caseId}/${treatment}: authoring write boundary changed`);
-    if (!caseExpected.authoringEligible[treatment]) {
-      assert(authoringEvent.reasons.includes("Git command executed without proof of read isolation from repository and configuration metadata"), `${caseId}/${treatment}: unisolated Git reason missing from authoring audit`);
-    }
-    if (!caseExpected.downstreamEligible[treatment]) {
-      assert(event.reasons.includes("Git command executed without proof of read isolation from repository and configuration metadata"), `${caseId}/${treatment}: unisolated Git reason missing from downstream audit`);
-    }
+    assert(authoringEvent.reasons.includes(isolationReason), `${caseId}/${treatment}: authoring isolation-evidence reason missing`);
+    assert(event.reasons.includes(isolationReason), `${caseId}/${treatment}: downstream isolation-evidence reason missing`);
     if (caseId === "meeting-followups" && treatment === "toolboxmd") {
       assert(authoringEvent.reasons.includes("parent-directory traversal observed"), "meeting/toolboxmd: traversal reason missing");
     }
@@ -261,8 +264,10 @@ function findEventAudits(directory) {
 findEventAudits(resultRoot);
 assert(eventAudits.length === 17, `expected 17 corrected event audits, found ${eventAudits.length}`);
 const ineligibleAudits = eventAudits.filter(file => JSON.parse(fs.readFileSync(file, "utf8")).eligible === false);
-assert(ineligibleAudits.length === 10, `expected ten ineligible corrected event audits, found ${ineligibleAudits.length}`);
+assert(ineligibleAudits.length === 15, `expected fifteen ineligible corrected event audits, found ${ineligibleAudits.length}`);
 assert(JSON.stringify(ineligibleAudits.map(file => path.relative(resultRoot, file).split(path.sep).join("/")).sort()) === JSON.stringify([
+  "cases/meeting-followups/builtin/evidence/authoring-event-audit.json",
+  "cases/meeting-followups/builtin/evidence/downstream-event-audit.json",
   "cases/meeting-followups/toolboxmd/evidence/authoring-event-audit.json",
   "cases/meeting-followups/toolboxmd/evidence/downstream-event-audit.json",
   "cases/weekly-status-deck/builtin/evidence/authoring-event-audit.json",
@@ -273,10 +278,15 @@ assert(JSON.stringify(ineligibleAudits.map(file => path.relative(resultRoot, fil
   "discarded-authoring/meeting-followups/toolboxmd/event-audit.json",
   "discarded-authoring/weekly-status-deck/builtin/event-audit.json",
   "discarded-authoring/weekly-status-deck/toolboxmd/event-audit.json",
+  "preflight/event-audit.json",
+  "qualification/meeting-followups/evidence/event-audit.json",
+  "qualification/weekly-status-deck/evidence/event-audit.json",
 ]), "unexpected corrected ineligible streams");
 assert(manifest.postResultAuditCorrection.retainedStreamsReaudited === 17, "corrected audit stream count changed");
 assert(manifest.postResultAuditCorrection.modelSessionsAdded === 0, "audit correction must not add model sessions");
 assert(JSON.stringify(manifest.postResultAuditCorrection.ineligibleStreams) === JSON.stringify([
+  "cases/meeting-followups/builtin/evidence/authoring-events.jsonl",
+  "cases/meeting-followups/builtin/evidence/downstream-events.jsonl",
   "cases/meeting-followups/toolboxmd/evidence/authoring-events.jsonl",
   "cases/meeting-followups/toolboxmd/evidence/downstream-events.jsonl",
   "cases/weekly-status-deck/builtin/evidence/authoring-events.jsonl",
@@ -287,9 +297,16 @@ assert(JSON.stringify(manifest.postResultAuditCorrection.ineligibleStreams) === 
   "discarded-authoring/meeting-followups/toolboxmd/events.jsonl",
   "discarded-authoring/weekly-status-deck/builtin/events.jsonl",
   "discarded-authoring/weekly-status-deck/toolboxmd/events.jsonl",
+  "preflight/events.jsonl",
+  "qualification/meeting-followups/evidence/events.jsonl",
+  "qualification/weekly-status-deck/evidence/events.jsonl",
 ]), "corrected manifest ineligible stream list changed");
-assert(manifest.postResultAuditCorrection.ineligibleStreamCount === 10, "corrected manifest ineligible stream count changed");
-assert(manifest.postResultAuditCorrection.scoredPipelineExclusions === 3, "corrected manifest scored pipeline exclusion count changed");
+assert(manifest.postResultAuditCorrection.ineligibleStreamCount === 15, "corrected manifest ineligible stream count changed");
+assert(manifest.postResultAuditCorrection.ineligibleScoredStreams === 8, "corrected manifest scored-stream count changed");
+assert(manifest.postResultAuditCorrection.ineligibleScoredPipelines === 4, "corrected manifest scored-pipeline count changed");
+assert(manifest.postResultAuditCorrection.ineligibleDiscardedStreams === 4, "corrected manifest discarded-stream count changed");
+assert(manifest.postResultAuditCorrection.ineligibleQualificationStreams === 2, "corrected manifest qualification-stream count changed");
+assert(manifest.postResultAuditCorrection.ineligiblePreflightStreams === 1, "corrected manifest preflight-stream count changed");
 
 const retained = readJson("retention-manifest.json");
 const aggregateLines = [];

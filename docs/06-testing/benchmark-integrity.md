@@ -47,7 +47,7 @@ A case qualifies when:
 
 Then install each generated skill through the normal discovery path and issue a natural prompt. Do not name the skill, its path, `SKILL.md`, or an invocation command. Count activation only when the event trace shows the full target `SKILL.md` loaded before output creation. Test one or more related near misses and audit that no target skill loaded.
 
-In the v2 creator benchmark, the meeting no-skill arm passed 2 of 8 critical checks and the status-deck arm passed 7 of 8. Both generated treatments then reached 7 of 8 and 8 of 8 respectively. All four positive runs loaded their target skill, while none of four exposed target skills loaded for the near misses. A later trace-audit correction found Git execution without proof of read isolation in six scored streams, leaving zero eligible paired comparisons. The retained activation observations are diagnostic only, but they still show why future valid runs should use no-skill qualification and trace-backed loading rather than ask whether an agent can produce a plausible artifact.
+In the v2 creator benchmark, the meeting no-skill arm passed 2 of 8 critical checks and the status-deck arm passed 7 of 8. Both generated treatments then reached 7 of 8 and 8 of 8 respectively. All four positive runs loaded their target skill, while none of four exposed target skills loaded for the near misses. A later isolation-evidence correction made all 15 command-bearing streams ineligible, including both qualifications, all eight scored streams, and the preflight. The two zero-command near-miss streams remain eligible only for the narrow no-trigger observation. The grades and positive activation observations are diagnostic, but they still show what a future valid run should attempt to measure with eligible no-skill qualification and trace-backed loading.
 
 ## Guard model attribution
 
@@ -81,6 +81,18 @@ Block or audit reads of:
 In the invalid medium attempt, a broad search read global memory, a previous low run, and deterministic grader source before the first wiki write. The run was independent in name only. This is cross-run read leakage, and it invalidates the attempt even if the final answer looks original.
 
 Filesystem isolation is stronger than prose alone. Put allowed inputs in a run-local tree and keep sibling runs, graders, private maps, and reports outside it. Retain a transcript audit as a second line of defense.
+
+For strict eligibility, command text is not proof of isolation. Any stream containing a `command_execution` event, including a started or incomplete event, needs a separate, independently verifiable evidence channel from the harness or enforcement layer. That channel must establish a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement. A failed network probe, a command allowlist, or a user-controlled declaration cannot establish those controls. Without the trust-bearing evidence, mark the stream ineligible.
+
+Keep detailed command heuristics for diagnosis. Parent traversal, absolute paths, Git, environment expansion, shell wrappers, and interpreter payloads explain concrete risks and help improve the harness, but parser completeness is not the eligibility trust boundary.
+
+The v2 event auditor exposes this boundary in output schema version 3. Invoke it as:
+
+```text
+node scripts/audit-toolboxmd-v2-events.mjs <events.jsonl> <run-root> <mode> <expected-skill-relative-path|none>
+```
+
+`commandCount` retains the completed-command telemetry used by the historical result. `commandExecutionEventCount` counts every command event, including started or incomplete events. `isolationEvidence.required` becomes true when that second count is nonzero. The historical auditor reports `status: not_recorded` and `trusted: false` in that state; a zero-command stream reports `status: not_required`. This version has no flag that can self-assert trust. Adding an independently verified evidence channel is future harness work.
 
 Do not allow parent-relative operands merely because their suffix resembles an allowed directory. Resolve them only from a command cwd explicitly recorded in the event, and require the resolved path to remain inside the run root. If cwd is absent, outside the root, or changed inside an opaque shell command, mark the run ineligible rather than infer safety from command output. The corrected v2 creator audit rejected one retained authoring trace containing `find ..` and parent-relative validator paths because the event schema did not record cwd.
 

@@ -2,7 +2,7 @@
 
 ## Release recommendation
 
-Do not promote the frozen ToolboxMD candidate. The corrected benchmark is inconclusive because neither primary case retains an eligible paired pipeline. Keep ToolboxMD as an inspectable product candidate and use the built-in creator as the current default until a simplified revision wins a new benchmark or demonstrates a clear capability the built-in creator lacks.
+Do not promote the frozen ToolboxMD candidate. The corrected benchmark is inconclusive because neither primary case has an eligible no-skill qualification or paired pipeline. Keep ToolboxMD as an inspectable product candidate and use the built-in creator as the current default until a simplified revision wins a new benchmark or demonstrates a clear capability the built-in creator lacks.
 
 Do not rewrite the frozen candidate in place. Build the next candidate from these changes, freeze it, and compare it against both the current ToolboxMD snapshot and the built-in baseline.
 
@@ -10,7 +10,7 @@ Do not rewrite the frozen candidate in place. Build the next candidate from thes
 
 ### 1. Compact activation contracts
 
-Keep the current description pattern as a hypothesis to retest: capability, concrete intents, and close exclusions without a workflow summary. The retained ToolboxMD descriptions are 29.5% and 39.2% shorter than their built-in counterparts, all four positive traces loaded a target, and neither near-miss session loaded one. No paired pipeline remains eligible, so these are diagnostic package and trace observations rather than a demonstrated ToolboxMD advantage.
+Keep the current description pattern as a hypothesis to retest: capability, concrete intents, and close exclusions without a workflow summary. The retained ToolboxMD descriptions are 29.5% and 39.2% shorter than their built-in counterparts. All four positive traces loaded a target, but those command-bearing streams are ineligible. Neither eligible zero-command near-miss stream loaded one. These are diagnostic package and positive-trace observations plus a narrow eligible no-trigger observation, not a demonstrated ToolboxMD advantage.
 
 Acceptance for the next candidate:
 
@@ -76,7 +76,7 @@ If a short reference is required on every invocation, either inline the load-bea
 
 ### P1. Make Git delivery checks conditional
 
-The frozen creator requires a handoff that states validated, tested, committed, and pushed separately. Two ToolboxMD authoring sessions responded by running unscoped `git status`. The strict re-audit also found scoped Git commands in downstream and built-in streams. Even when stdout is empty or paths are scoped below `output/`, Git may read repository plus system, global, or included configuration metadata outside the run root. The retained traces did not prove those reads isolated. This invalidated six scored streams and eliminated every paired comparison.
+The frozen creator requires a handoff that states validated, tested, committed, and pushed separately. Two ToolboxMD authoring sessions responded by running unscoped `git status`. The strict re-audit also found scoped Git commands in downstream and built-in streams. Even when stdout is empty or paths are scoped below `output/`, Git may read repository plus system, global, or included configuration metadata outside the run root. More broadly, none of the command-bearing traces records trusted environment, filesystem, or syscall-level network isolation evidence. All eight scored streams are ineligible and every paired comparison is eliminated.
 
 Change the handoff rule:
 
@@ -104,15 +104,28 @@ This is a targeted trigger test, not a twenty-query optimization campaign for ev
 
 ## Change the repository and benchmark harness
 
+### P0. Require trust-bearing isolation evidence for command execution
+
+Any event stream containing `command_execution`, including an incomplete or started event, must be ineligible unless the harness supplies a separate, independently verifiable evidence channel for:
+
+- a sanitized, recorded environment;
+- filesystem read confinement;
+- filesystem write confinement;
+- syscall-level network enforcement and audit.
+
+The historical JSONL contains no such channel. A failed curl probe, a command allowlist, or a user-controlled assertion cannot establish the invariant. Re-auditing the same 17 streams with zero model sessions added made 15 ineligible: eight scored streams, four discarded authoring streams, two qualifications, and the preflight. Only two zero-command near-miss streams remain eligible for the narrow no-trigger observation.
+
+Detailed command heuristics remain diagnostic reasons. They help explain observed risks, but their completeness is not the eligibility trust boundary.
+
 ### P0. Require path proof, not a trusted suffix
 
 Never allow a parent-relative operand merely because its suffix resembles `creator/`, `authoring-sources/`, `output/`, `knowledge/`, or `workspace/`. Resolve it only when the event records an in-root command cwd and the resolved path stays inside the run root. Treat bare `..`, missing cwd, an outside cwd, and commands that change cwd internally as ineligible when the trace cannot prove the effective location.
 
-The corrected auditor rejects unprovable parent traversal, outside absolute filesystem operands, and Git execution without trace-backed read isolation. Re-auditing the same 17 retained streams made 10 ineligible, including six scored streams, without adding a model session. Preserve them as inspectable failures and keep the overall verdict inconclusive. Future preflight should verify that the harness records cwd before permitting parent-relative commands and should prohibit Git by default.
+The corrected auditor retains diagnostic reasons for unprovable parent traversal, outside absolute filesystem operands, and Git execution without trace-backed read isolation. Preserve those findings as inspectable failure detail, but do not mistake command parsing for proof that every possible filesystem or network access was captured.
 
 ### P0. Isolate Python and Git before the first model run
 
-Keep `PYTHONDONTWRITEBYTECODE=1` and a run-local Python cache prefix in the runner. Prohibit Git in model runs by default. If a future case genuinely requires Git, preflight a complete boundary that keeps repository metadata, HOME/XDG configuration, global configuration, system configuration, and includes inside the run root or disables them explicitly. Staging outside a worktree alone is insufficient.
+Keep `PYTHONDONTWRITEBYTECODE=1` and a run-local Python cache prefix in the runner. Prohibit Git in model runs by default. If a future case genuinely requires Git, the trust-bearing isolation evidence must cover repository metadata, HOME/XDG configuration, global configuration, system configuration, and includes. Staging outside a worktree alone is insufficient.
 
 The bytecode failure consumed four authoring sessions. A correct infrastructure preflight should catch this class before creator output exists.
 

@@ -6,7 +6,7 @@
 - **Configuration:** Codex CLI 0.147.0, `gpt-5.6-sol`, medium reasoning
 - **Evidence:** [Condensed machine-readable manifest](/case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json)
 
-The corrected v2 benchmark contains no eligible paired creator comparison. The retained outputs show equal deterministic scores within each case, but a stricter post-result command audit found Git execution without proof of read isolation in six scored streams. Both case comparisons are ineligible, so the scores, activation observations, package differences, and costs are diagnostic only. The frozen ToolboxMD candidate remains evidence, not the recommended default.
+The corrected v2 benchmark contains no eligible no-skill qualification and no eligible paired creator comparison. All 15 retained command-bearing event streams lack recorded trusted evidence for a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement. This includes all eight scored streams, both qualification streams, the infrastructure preflight, and four discarded authoring streams. Only two zero-command near-miss streams remain eligible for the narrow no-trigger observation. The scores, positive activation observations, package differences, and costs are diagnostic only. The frozen ToolboxMD candidate remains evidence, not the recommended default.
 
 The retained artifacts still expose hypotheses worth retesting. ToolboxMD produced shorter activation descriptions, larger activated cores, larger packages, and longer authoring runs. None of those differences is eligible comparative evidence in this benchmark.
 
@@ -16,7 +16,7 @@ The first creator benchmark used specialized production-oriented tasks. Downstre
 
 V2 changed the causal question. It held the model, effort, source material, ordinary workspace, prompt, sandbox, and runner constant, then varied only the creator used to author the target skill. Each generated skill was installed through normal Codex discovery. Positive prompts did not name a skill, `SKILL.md`, or an invocation command. Event traces, rather than model self-report, proved whether the full target skill loaded before output creation.
 
-Each case first ran without a target skill. A case qualified only when the same model could perform the task mechanically but missed at least one critical private workflow convention. This filtered out tasks that needed no skill.
+Each case first ran without a target skill. A case was intended to qualify only when an eligible no-skill run could perform the task mechanically but missed at least one critical private workflow convention. Both retained no-skill runs show such failures, but neither is eligible after the isolation-evidence correction. Their grades are diagnostic and neither case is formally qualified.
 
 ## Daily-use cases
 
@@ -40,10 +40,10 @@ Marp Markdown was deliberate. It tested a common presentation workflow without a
 
 | Case | No skill | Built-in | ToolboxMD | Frozen outcome |
 |---|---:|---:|---:|---|
-| Meeting follow-ups | 2/8 | 7/8, 18,550 runtime tokens | 7/8, 21,609 runtime tokens | Not scored: ToolboxMD pipeline is ineligible |
-| Weekly status deck | 7/8 | 8/8, 30,228 runtime tokens | 8/8, 23,982 runtime tokens | Not scored: both pipelines are ineligible |
+| Meeting follow-ups | 2/8, diagnostic and ineligible | 7/8, 18,550 runtime tokens | 7/8, 21,609 runtime tokens | Not scored: qualification and both pipelines are ineligible |
+| Weekly status deck | 7/8, diagnostic and ineligible | 8/8, 30,228 runtime tokens | 8/8, 23,982 runtime tokens | Not scored: qualification and both pipelines are ineligible |
 
-All four positive runs loaded the full target `SKILL.md` before writing output. Two aggregate near-miss sessions exposed four generated target skills to related general-advice prompts. None loaded. Those observations remain inspectable, but three positive streams are ineligible and no paired comparison remains eligible.
+All four positive runs loaded the full target `SKILL.md` before writing output, but all four positive streams are ineligible. Two aggregate near-miss sessions exposed four generated target skills to related general-advice prompts and recorded no command execution or target load. Those two streams remain eligible only for that narrow no-trigger observation. No positive activation comparison or paired creator comparison remains eligible.
 
 The frozen decision rule required ToolboxMD to win both primary cases with no critical regression, or win a deciding reserve. Both primary pairs are unavailable after re-audit. The reserve required five more sessions, but only one remained under the 17-session hard limit after a symmetric infrastructure retry. It was not opened.
 
@@ -77,9 +77,9 @@ The original event auditor removed parent-relative operands from consideration w
 
 The corrected auditor permits a parent-relative operand only when the event records an in-root command cwd and resolving the operand from that cwd remains inside the run root. It does not infer cwd from command output or later success. It also rejects literal POSIX and Windows absolute filesystem operands outside the run root, including operands inside shell-wrapper payloads and heredoc code.
 
-The final correction also rejects an executed Git command unless the trace proves read isolation from repository plus system and global configuration metadata. `git status`, `git diff`, and `git ls-files` may still read outside metadata when stdout is empty or operands are scoped below `output/`. The focused command parser recognizes the direct, shell-wrapper, substitution, and prefix forms covered by retained traces and regression fixtures without treating strings passed to `echo` or `printf` as commands.
+The final correction uses a smaller evidence-honest invariant. Any `command_execution` event requires recorded trusted evidence for a sanitized environment, filesystem read and write confinement, and syscall-level network enforcement. Historical Codex JSONL contains no such evidence, so every command-bearing stream is ineligible. A started or incomplete command event also activates the rule. Detailed findings for Git, parent traversal, absolute paths, wrappers, and interpreter payloads remain useful diagnostic reasons, but parser completeness is not the eligibility trust boundary.
 
-All 17 retained streams were re-audited without running another model session. Ten are ineligible: six scored authoring or downstream streams and four discarded authoring streams. No case retains an eligible pair. The package, downstream output, grades, and raw events remain retained as inspectable failure evidence. The verdict stays inconclusive and the release action remains: do not promote ToolboxMD.
+All 17 retained streams were re-audited without running another model session. Fifteen are ineligible: all eight scored streams, both no-skill qualification streams, the infrastructure preflight, and four discarded authoring streams. The two zero-command near-miss streams remain eligible for the narrow observation that no target skill load was recorded. No case qualifies or retains an eligible pair. The packages, downstream outputs, grades, and raw events remain retained as inspectable failure evidence. The verdict stays inconclusive and the release action remains: do not promote ToolboxMD.
 
 ### Conditional delivery behavior
 
@@ -93,9 +93,10 @@ The first two built-in authoring attempts executed a creator helper that wrote P
 
 Protocol revision 2 disabled bytecode writes, redirected any Python cache under the run-local temporary directory, and repeated all four authoring arms. Cases, prompts, treatments, model, grader, and decision rule did not change. The failed batch remains inspectable and counts toward the hard session limit.
 
-This exposed two harness requirements:
+This exposed three harness requirements:
 
-- isolate Python bytecode and prohibit Git unless complete read isolation is preflighted before the first model run;
+- isolate Python bytecode;
+- provide a separate, independently verifiable evidence channel for environment sanitization plus filesystem and network enforcement before any command-bearing run can qualify;
 - give infrastructure repair a small explicit allowance separate from the semantic decision budget.
 
 The pre-run commitment also omitted hashes for the supporting grader and event-audit scripts. Their at-result hashes and outputs are retained, but that is weaker than a pre-run commitment. Future runs must freeze every tool that can affect qualification, eligibility, score, cost, retention, or decision.
@@ -124,7 +125,9 @@ No change is made to an active ToolboxMD creator in this ship because the reposi
 - Repeat a paired case when cost alone decides it before spending the budget on another case.
 - Freeze the complete scoring and eligibility toolchain.
 - Reject parent-relative reads unless a recorded command cwd proves the resolved path remains inside the run root.
-- Reject Git execution unless the trace proves repository and configuration reads remain isolated.
+- Require independently verifiable environment, filesystem, and network isolation evidence for every command-bearing stream.
+- Keep detailed command heuristics as diagnostic reasons, not as a claim that command-text parsing proves strict isolation.
+- Reject Git execution unless a future trust-bearing isolation channel also covers repository and configuration reads.
 - Preserve invalid attempts and report neutral amendments without mixing them into scores.
 
 These additions are incorporated into [Benchmark integrity for agent skills](/docs/06-testing/benchmark-integrity).
@@ -134,10 +137,10 @@ These additions are incorporated into [Benchmark integrity for agent skills](/do
 - Each treatment ran once per case, and all cost differences are diagnostic because no paired comparison remains eligible.
 - Zero daily-use families retain an eligible paired comparison, so no creator or cost ranking is possible.
 - The result covers Codex CLI 0.147.0 and one model-effort configuration only.
-- Trigger precision was observed on one positive and one related near miss per generated skill.
+- Positive triggering is diagnostic because every positive stream is ineligible. The two zero-command near-miss streams support only the narrow no-trigger observation.
 - The reserve spreadsheet case was frozen but not executed.
 - Supporting grader and event-audit scripts have at-result hashes, not complete pre-run commitment evidence.
-- The Codex JSONL schema did not record command cwd for the ineligible meeting authoring trace, so its parent-relative reads cannot be located reliably after the fact.
+- The Codex JSONL schema did not record a sanitized environment or independently verifiable filesystem and syscall-level network enforcement. Command cwd was also absent for one meeting authoring trace.
 
 ## Sources
 
