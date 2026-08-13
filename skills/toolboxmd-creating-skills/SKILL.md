@@ -41,7 +41,9 @@ Record job and value, triggers and close near misses, inputs and outputs, observ
 
 Start with `SKILL.md`. Add only evidenced support: always-needed rules inline; conditional knowledge in `references/`; repeated deterministic work or gates in `scripts/`; output inputs in `assets/`; sidecars for a stated target. Keep comparative evals outside. Add package tests only for a bundled script or distribution contract. Never add speculative directories.
 
-Use portable frontmatter with matching directory and `name`. Describe capability, triggers, and exclusions, not workflow. Keep decisions, evidence, three answers, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
+Use canonical one-line string fields in portable frontmatter, with string-to-string `metadata` and matching directory and `name`. Describe capability, triggers, and exclusions, not workflow. Keep decisions, evidence, three answers, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
+
+Only for an explicitly Hermes-targeted package, use the documented `metadata.hermes.config` vendor extension and pass `--allow-hermes-metadata`. Do not describe nested Hermes metadata as portable core.
 
 ### 5. Make scripts portable
 
@@ -53,6 +55,8 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" "<t
 
 Pass budget flags when defaults differ. Rewrite examples that address only `scripts/`.
 
+The bundled checker covers the canonical ToolboxMD-generated subset and package policy, not arbitrary YAML or CommonMark. It checks Python syntax through AST and warns that other helpers need their own syntax tests. It also runs `skills-ref validate <target-skill-dir>` when `skills-ref` is already available, with no install or network step. That call executes a local external program; ToolboxMD does not attest or constrain its filesystem or network behavior. Treat the coverage line and official-validator status as separate evidence.
+
 ### 6. Test, delete, and deliver
 
 - Validate structure and budgets. Test bundled scripts.
@@ -62,11 +66,12 @@ Pass budget flags when defaults differ. Rewrite examples that address only `scri
 
 Inspect Git state only when the user requested Git delivery. Do not search ancestors for package-only work.
 
-Report validated command/result and tested checks/skips. Report committed/pushed only when Git delivery was requested.
+Report the canonical check and official-validator availability/result separately, plus tested checks/skips. Report committed/pushed only when Git delivery was requested.
 
 ## Gotchas
 
 - A passing validator proves mechanics, not usefulness or triggering.
+- Portable-core metadata is string-to-string; nested Hermes config is an opt-in vendor extension.
 - An always-read reference belongs in activated-core cost even when stored in another file.
 - Sidecars are platform metadata, not portable invocation guarantees.
 - Rehearse executable snippets exactly as written and rerun checks after the final deletion pass.

@@ -35,19 +35,21 @@
     "skillMdLinesMaximum": 150,
     "skillMdBytesMaximum": 10500,
     "fileCountMaximum": 3,
-    "packageBytesMaximum": 28000,
+    "packageBytesMaximum": 36000,
     "referenceFileCountMaximum": 0,
     "evalFileCountMaximum": 0,
     "scriptFileCount": 1
   },
   "budgetRevision": {
     "previousPackageBytesMaximum": 24000,
-    "currentPackageBytesMaximum": 28000,
+    "currentPackageBytesMaximum": 36000,
     "deterministicExecutableDeltaBytes": 2256,
-    "reason": "Exact-HEAD review required the current documented metadata.hermes.config shape and quote-aware YAML comment correctness.",
+    "reason": "Exact-HEAD review required quote-aware YAML comments and the then-reviewed metadata.hermes.config vendor surface.",
     "laterDeterministicExecutableDeltaBytes": 460,
     "laterReason": "A later exact-HEAD review required optional default_prompt, all-decodable-file local-path scanning, and single-line CommonMark reference-definition destinations.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 2716,
+    "holisticReviewExecutableDeltaBytes": 7353,
+    "holisticReviewReason": "A bounded exact-HEAD adversarial audit reduced the custom claim to a canonical ToolboxMD checker, made nested Hermes metadata opt-in, added quote-aware canonical scalar and Codex sidecar checks, exposed Markdown and non-Python-script coverage limits, and optionally invokes an already-installed official skills-ref validator.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10069,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -61,22 +63,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "da8f2451fe0ace1714fad3b589f3983a7003516b7c19864366ca7b1ae9eb86c3",
+    "aggregateSha256": "06bd3bd113855118a9e253ebb4379f62d19c8ca5b4f4b755cd3ac5f0eed05023",
     "fileCount": 3,
-    "packageBytes": 26454,
+    "packageBytes": 34768,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 3656,
-      "lines": 72,
+      "bytes": 4617,
+      "lines": 77,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 3656,
-        "sha256": "ef6eccd962233b86c934f9b2d72f21347938dce468c0c8a0e473703e856cd2ac"
+        "bytes": 4617,
+        "sha256": "b89e40249bdf961003e0a8c604eac4768e41517af503ce629aa812d11f2da322"
       },
       {
         "path": "agents/openai.yaml",
@@ -85,8 +87,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 22582,
-        "sha256": "0e4b23d4b7af70eebe6a8aac1772f2d4ba162c7edccd3926659da2d9b3f055af"
+        "bytes": 29935,
+        "sha256": "8c228634b2122d5513ef3898758f7a984a429797dc55aa5c243616081505d0b0"
       }
     ]
   },
@@ -97,16 +99,18 @@
       "the validator runs from outside the package without Python bytecode writes",
       "bare working-directory-relative script examples fail under warnings-as-errors",
       "explicit skill-directory script examples pass",
-      "the supported Codex sidecar sections parse, display_name and short_description remain required, and default_prompt is optional but validated when present",
+      "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, required and bounded interface strings, assets-only icon paths, optional default_prompt, policy, and current tool dependencies",
       "valid Markdown links with optional titles pass",
       "single-line CommonMark reference-definition destinations support angle brackets and optional titles while missing and escaping targets fail",
       "skill names containing reserved provider strings fail",
       "string-valued frontmatter rejects obvious unquoted collections and scalars while quoted lookalikes remain strings",
-      "trailing YAML comments do not hide non-string values while quoted hashes and block scalars remain content",
-      "the documented metadata.hermes.config shape passes while unsupported nesting and non-string leaves fail",
-      "Markdown links inside code are ignored while a real broken link is detected",
-      "common container-local paths in Markdown prose are detected",
-      "local paths in any UTF-8-decodable package file are detected while undecodable binary assets are skipped",
+      "canonical one-line frontmatter handles trailing comments and quoted hashes while rejecting block scalars, typed scalars, reserved YAML indicators, tags, nested scalar syntax, and invalid quotes",
+      "portable-core mode requires string-to-string metadata while the exact metadata.hermes.config extension passes only with --allow-hermes-metadata",
+      "canonical Markdown links ignore code and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
+      "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs",
+      "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",
+      "Python helper syntax is checked through AST while non-Python helpers receive an explicit unchecked-syntax warning",
+      "an already-installed skills-ref is called without a shell using exact validate argv and a bounded timeout, with pass, invalid, unexpected, timeout, unavailable, and unattested external-behavior states reported separately",
       "root-relative and remote web links are not misclassified as workstation paths",
       "default reference and eval baggage and unconditional Git inspection are absent",
       "the retained meeting-followups and weekly-status-deck path and baggage patterns are detected",
@@ -114,6 +118,8 @@
     ],
     "doesNotProve": [
       "implicit skill activation",
+      "arbitrary YAML or full CommonMark validity",
+      "syntax validity of non-Python helper scripts",
       "semantic downstream utility",
       "creator superiority",
       "promotion readiness"

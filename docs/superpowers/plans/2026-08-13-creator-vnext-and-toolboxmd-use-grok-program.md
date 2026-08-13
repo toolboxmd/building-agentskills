@@ -107,21 +107,31 @@ with its own hash and package inspection.
 Completion evidence, 2026-08-13:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 26,454 bytes, aggregate SHA-256
-  `da8f2451fe0ace1714fad3b589f3983a7003516b7c19864366ca7b1ae9eb86c3`;
-- activated core: 72 lines and 3,656 bytes, with a 240-character
+- exact package: three files, 34,768 bytes, aggregate SHA-256
+  `06bd3bd113855118a9e253ebb4379f62d19c8ca5b4f4b755cd3ac5f0eed05023`;
+- activated core: 77 lines and 4,617 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
 - the delta answers diagnostic failure patterns only. It supports no creator
   superiority or promotion claim.
-- exact-HEAD review added 2,256 executable-only bytes for the documented
-  `metadata.hermes.config` shape and quote-aware YAML comment correctness. The
-  package cap is now 28,000 bytes; activated-core, file, reference, eval, and
-  script budgets are unchanged. This is not a lower-total-package-cost claim.
+- exact-HEAD review first added 2,256 executable-only bytes for quote-aware
+  YAML comment correctness and the reviewed Hermes metadata surface;
 - a later exact-HEAD review added 460 executable-only bytes within that cap for
   optional `default_prompt`, all-decodable-file local-path scanning, and
   single-line CommonMark reference-definition destinations;
+- a bounded adversarial audit added 7,353 executable-only bytes and narrowed
+  the claim to a canonical ToolboxMD package-policy checker with optional
+  already-installed `skills-ref` cross-checking. The cumulative executable
+  delta from the pre-revision freeze is 10,069 bytes and the package cap is now
+  36,000 bytes. Activated-core, description, file, reference, eval, and script
+  budgets are unchanged;
+- portable-core mode requires string-to-string metadata. The exact
+  `metadata.hermes.config` vendor extension requires
+  `--allow-hermes-metadata` for an explicitly Hermes-targeted package;
+- vNext retains a smaller activated core and fewer distributed files/artifacts
+  than retained v1, but claims no lower total package bytes, eligible creator
+  advantage, superiority, or promotion readiness;
 
 ## Step 3: run a cheap deterministic regression check
 
@@ -150,10 +160,15 @@ Completion evidence, 2026-08-13:
   blocks fragile bare script paths, accepts the explicit `<skill-dir>`
   contract, accepts supported Codex sidecar sections and titled local links,
   rejects reserved provider names and obvious unquoted non-string frontmatter,
-  prevents trailing comments from hiding YAML types, accepts the documented
-  Hermes config metadata shape, rejects unsupported nesting, ignores link
-  syntax inside Markdown code, validates single-line CommonMark reference
-  destinations, detects container-local paths in all decodable package files,
+  prevents trailing comments from hiding YAML types, rejects block scalars,
+  accepts the exact Hermes config extension only in explicit extension mode,
+  ignores link syntax inside Markdown code, validates canonical single-line
+  reference destinations, warns when complex Markdown requires official
+  coverage, detects POSIX, container, Windows, file URI, and shebang-local
+  paths in decodable package files, reports non-Python helper syntax as
+  unchecked, exercises optional `skills-ref` pass/fail/error/timeout states,
+  records that the external validator's filesystem and network behavior is
+  not attested by ToolboxMD,
   detects the retained meeting and deck baggage patterns,
   disables Python bytecode writes, and proves retained creator inputs were not
   mutated;

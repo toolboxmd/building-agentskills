@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only Agent Skill validator."""
+"""Read-only canonical ToolboxMD skill package checker."""
 
 from __future__ import annotations
 
@@ -7,7 +7,10 @@ import argparse
 import ast
 import hashlib
 import json
+import os
 import re
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -17,6 +20,7 @@ PORTABLE_FIELDS = {"name", "description", "license", "compatibility", "metadata"
 STRING_FIELDS = PORTABLE_FIELDS - {"metadata"}
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 NON_STRING_RE = re.compile(r"(?i)(?:\[.*\]|\{.*\}|true|false|null|~|[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?)")
+BLOCK_SCALAR_RE = re.compile(r"[|>](?:[1-9][+-]?|[+-][1-9]?|[+-]?)")
 LINK_RE = re.compile(
     r'''!?\[[^\]]*\]\(\s*(<[^>\n]*>|[^\s)]+)(?:\s+(?:"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|\((?:\\.|[^)])*\)))?\s*\)'''
 )
@@ -31,16 +35,19 @@ FRAGILE_SCRIPT_RE = re.compile(
     r"\b(?:python(?:3(?:\.\d+)?)?|node|bash|sh|ruby)\b"
     r"(?:\s+-[A-Za-z0-9-]+(?:=[^\s]+)?)*\s+[\"']?scripts/"
 )
+ROOT_NAMES = ("Users", "home", "workspace", "root")
+POSIX_ROOTS = "|".join(re.escape(f"/{name}/") for name in ROOT_NAMES)
 LOCAL_PATH_RE = re.compile(
-    rf"(?<![A-Za-z0-9:/])(?:{re.escape('/' + 'Users/')}|{re.escape('/' + 'home/')}|"
-    rf"{re.escape('/' + 'workspace/')}|{re.escape('/' + 'root/')}|"
-    rf"[A-Za-z]:\\{'Users'}\\)[^\s'\"`]+"
+    rf"(?:file:///(?:{'|'.join(ROOT_NAMES)})/|(?<![A-Za-z0-9:/])(?:{POSIX_ROOTS}|"
+    rf"[A-Za-z]:(?:{re.escape('/' + 'Users/')}|(?:\\)+{'Users'}(?:\\)+)))[^\s'\"`]+"
 )
 PROCESS_NAMES = {"README.md", "CHANGELOG.md", "STATUS.md", "DESIGN.md", "NOTES.md"}
 TEXT_SUFFIXES = {
     ".md", ".yaml", ".yml", ".json", ".py", ".sh", ".bash",
     ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".rb", ".ps1",
+    ".svg", ".xml", ".txt", ".toml", ".html", ".css",
 }
+OFFICIAL_TIMEOUT_SECONDS = 2
 
 
 class InspectionError(Exception):
@@ -62,14 +69,33 @@ def split_frontmatter(text: str) -> tuple[list[str], str]:
     return lines[1:end], "\n".join(lines[end + 1 :])
 
 
-def scalar(raw: str) -> str:
+def canonical_scalar(raw: str) -> str:
     value = raw.strip()
-    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+    if not value:
+        return ""
+    if value.startswith('"'):
+        if not value.endswith('"'):
+            raise ValueError("unterminated double-quoted string")
         try:
-            parsed = ast.literal_eval(value)
-        except (SyntaxError, ValueError):
-            return value[1:-1]
-        return parsed if isinstance(parsed, str) else value
+            parsed = json.loads(value)
+        except (json.JSONDecodeError, TypeError) as exc:
+            raise ValueError("invalid double-quoted string") from exc
+        if not isinstance(parsed, str):
+            raise ValueError("value is not a string")
+        return parsed
+    if value.startswith("'"):
+        if not value.endswith("'"):
+            raise ValueError("unterminated single-quoted string")
+        inner = value[1:-1]
+        if "'" in inner.replace("''", ""):
+            raise ValueError("invalid single-quoted string")
+        return inner.replace("''", "'")
+    if value.endswith(("'", '"')):
+        raise ValueError("mismatched quote")
+    if NON_STRING_RE.fullmatch(value):
+        raise TypeError("value is not a string")
+    if value[0] in "-?:,[]{}&*!|>%@`" or re.search(r":(?:\s|$)", value):
+        raise ValueError("noncanonical plain string")
     return value
 
 
@@ -94,25 +120,43 @@ def without_comment(raw: str) -> str:
     return raw.strip()
 
 
-def parse_metadata(lines: list[str], index: int, problems: list[dict[str, str]]) -> tuple[dict[str, object], int]:
-    mapping = {}
+def parse_string(raw: str, field: str, problems: list[dict[str, str]]) -> str:
+    try:
+        return canonical_scalar(raw)
+    except TypeError:
+        problems.append(issue("FRONTMATTER_TYPE", "SKILL.md", f"{field} must be a string"))
+    except ValueError:
+        problems.append(issue("FRONTMATTER_STRING", "SKILL.md", f"{field} is not a canonical one-line string"))
+    return ""
+
+
+def parse_metadata(
+    lines: list[str], index: int, problems: list[dict[str, str]], allow_hermes: bool
+) -> tuple[dict[str, object], int]:
+    mapping: dict[str, object] = {}
     hermes = config = False
     required: set[str] = set()
+    entry_keys: set[str] = set()
     while index < len(lines) and (not lines[index].strip() or lines[index].lstrip().startswith("#") or lines[index].startswith((" ", "\t"))):
         line = lines[index]
         index += 1
         if not line.strip() or line.lstrip().startswith("#"):
             continue
+        if "\t" in line[: len(line) - len(line.lstrip())]:
+            problems.append(issue("FRONTMATTER_INDENT", "SKILL.md", "metadata uses tab indentation"))
+            continue
         indent = len(line) - len(line.lstrip(" "))
-        field = line.strip()
+        field = without_comment(line.strip())
         match = re.fullmatch(r"(?:- )?([^:]+):\s*(.*)", field)
         key, raw = match.groups() if match else ("", "")
         value = without_comment(raw)
-        if indent == 2 and key == "hermes" and not value and "hermes" not in mapping:
+        if indent == 2 and key == "hermes" and not value and "hermes" not in mapping and allow_hermes:
             hermes, config = True, False
             mapping[key] = {}
         elif indent == 2 and match and value and key not in mapping:
-            mapping[key] = scalar(value)
+            mapping[key] = parse_string(value, f"metadata.{key}", problems)
+        elif indent == 2 and key in mapping:
+            problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate metadata key: {key}"))
         elif indent == 4 and hermes and key == "config" and not value and not config:
             config = True
         elif config and match and key in {"key", "description", "default", "prompt"} and value and ((indent == 6 and field.startswith("- ")) or (indent == 8 and key not in required)):
@@ -120,17 +164,21 @@ def parse_metadata(lines: list[str], index: int, problems: list[dict[str, str]])
                 if required and not {"key", "description"} <= required:
                     problems.append(issue("METADATA_SHAPE", "SKILL.md", "invalid Hermes entry"))
                 required = set()
+                entry_keys = set()
+            if key in entry_keys:
+                problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate Hermes field: {key}"))
+            entry_keys.add(key)
             required.add(key)
+            parse_string(value, f"metadata.hermes.config.{key}", problems)
         else:
-            problems.append(issue("METADATA_SHAPE", "SKILL.md", "unsupported nesting"))
-        if match and value and NON_STRING_RE.fullmatch(value):
-            problems.append(issue("FRONTMATTER_TYPE", "SKILL.md", f"metadata.{key} must be a string"))
+            message = "Hermes metadata requires --allow-hermes-metadata" if key == "hermes" and not allow_hermes else "unsupported nesting"
+            problems.append(issue("METADATA_SHAPE", "SKILL.md", message))
     if hermes and (not config or not {"key", "description"} <= required):
         problems.append(issue("METADATA_SHAPE", "SKILL.md", "Hermes config needs key + description"))
     return mapping, index
 
 
-def parse_frontmatter(lines: list[str]) -> tuple[dict[str, object], list[dict[str, str]]]:
+def parse_frontmatter(lines: list[str], allow_hermes: bool) -> tuple[dict[str, object], list[dict[str, str]]]:
     data: dict[str, object] = {}
     problems: list[dict[str, str]] = []
     index = 0
@@ -151,14 +199,10 @@ def parse_frontmatter(lines: list[str]) -> tuple[dict[str, object], list[dict[st
         key, raw_value = match.group(1), without_comment(match.group(2) or "")
         if key in data:
             problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate: {key}"))
-        if raw_value in {"|", "|-", ">", ">-"}:
-            block: list[str] = []
+        if BLOCK_SCALAR_RE.fullmatch(raw_value):
+            problems.append(issue("FRONTMATTER_STYLE", "SKILL.md", f"{key} must use a canonical one-line scalar"))
+            data[key] = "" if key != "metadata" else {}
             index += 1
-            while index < len(lines) and (not lines[index].strip() or lines[index].startswith((" ", "\t"))):
-                block.append(lines[index].lstrip())
-                index += 1
-            separator = "\n" if raw_value.startswith("|") else " "
-            data[key] = separator.join(block).strip()
             continue
         if key == "metadata":
             if raw_value:
@@ -166,11 +210,9 @@ def parse_frontmatter(lines: list[str]) -> tuple[dict[str, object], list[dict[st
                 data[key] = {}
                 index += 1
                 continue
-            data[key], index = parse_metadata(lines, index + 1, problems)
+            data[key], index = parse_metadata(lines, index + 1, problems, allow_hermes)
             continue
-        if key in STRING_FIELDS and NON_STRING_RE.fullmatch(raw_value):
-            problems.append(issue("FRONTMATTER_TYPE", "SKILL.md", f"{key} must be a string"))
-        data[key] = scalar(raw_value)
+        data[key] = parse_string(raw_value, key, problems) if key in STRING_FIELDS else raw_value
         index += 1
     return data, problems
 
@@ -211,9 +253,10 @@ def markdown_without_code(text: str) -> str:
                 fence = ""
         elif marker and (marker.group(1)[0] == "~" or "`" not in line[marker.end(1) :]):
             fence = marker.group(1)
-        else:
+        elif not line.startswith(("    ", "\t")):
             output.append(line)
-    return CODE_SPAN_RE.sub("", "".join(output))
+    result = CODE_SPAN_RE.sub("", "".join(output))
+    return re.sub(r"\\\[[^]\n]*\](?:\([^\n)]*\)|\[[^]\n]*\])", "", result)
 
 
 def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None:
@@ -223,7 +266,7 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         if raw.startswith("<"):
             raw = raw[1:-1]
         parsed = urlsplit(raw)
-        if parsed.scheme or raw.startswith(("#", "mailto:")):
+        if parsed.scheme or raw.startswith(("#", "mailto:", "//")):
             return
         if raw.startswith("/"):
             problems.append(issue("ROOT_LINK", relative, f"root-relative link: {raw}"))
@@ -242,11 +285,10 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         try:
             content = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
-            if path.suffix.lower() in TEXT_SUFFIXES:
+            if path.suffix.lower() in TEXT_SUFFIXES or os.access(path, os.X_OK):
                 problems.append(issue("UTF8", relative, "text file is not UTF-8"))
             continue
-        searchable = "\n".join(line for line in content.splitlines() if not line.startswith("#!"))
-        path_searchable = searchable
+        path_searchable = content
         if path.suffix.lower() == ".md":
             for pattern in (LINK_RE, REFERENCE_DEFINITION_RE):
                 path_searchable = pattern.sub(
@@ -258,9 +300,22 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         if path.suffix.lower() != ".md":
             continue
         markdown = markdown_without_code(content)
+        complex_link = re.compile(r"!?\[[^]\n]*\]\([^\n)]*\([^\n]*\)[^\n]*\)")
+        unsupported_markdown = bool(re.search(r"(?m)^ {0,3}\[[^]\n]+\]:\s*$", markdown) or complex_link.search(markdown))
+        if unsupported_markdown:
+            problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "complex Markdown link shape needs an official validator", "warning"))
+        canonical_markdown = complex_link.sub("", markdown)
         for pattern in (LINK_RE, REFERENCE_DEFINITION_RE):
-            for match in pattern.finditer(markdown):
+            for match in pattern.finditer(canonical_markdown):
                 validate_destination(match.group(1), relative, path.parent)
+        definitions = {match.group(0).split("]:", 1)[0][1:].casefold() for match in REFERENCE_DEFINITION_RE.finditer(canonical_markdown)}
+        for match in re.finditer(r"(?<!!)\[([^]\n]+)\]\[([^]\n]+)\]", canonical_markdown):
+            if match.group(2).casefold() not in definitions:
+                problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "undefined reference label needs an official validator", "warning"))
+        residual = LINK_RE.sub("", REFERENCE_DEFINITION_RE.sub("", canonical_markdown))
+        residual = re.sub(r"(?<!!)\[[^]\n]+\]\[[^]\n]+\]", "", residual)
+        if not unsupported_markdown and ("](" in residual or "][" in residual):
+            problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "nested Markdown link shape needs an official validator", "warning"))
         for line_number, line in enumerate(content.splitlines(), 1):
             if FRAGILE_SCRIPT_RE.search(line):
                 problems.append(issue("FRAGILE_SCRIPT_PATH", relative, f"line {line_number} uses task-relative scripts/", "warning"))
@@ -276,20 +331,31 @@ def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> N
         problems.append(issue(code, path, message))
 
     section = ""
-    values = {}
-    tools = []
+    sections: set[str] = set()
+    values: dict[str, str] = {}
+    tools: list[dict[str, str]] = []
     tool = None
     tools_seen = False
+    policy_seen = False
     for line in sidecar.read_text(encoding="utf-8").splitlines():
         if not line.strip() or line.lstrip().startswith("#"):
             continue
+        if "\t" in line[: len(line) - len(line.lstrip())]:
+            fail("OPENAI_SHAPE", "tab indentation is not canonical")
+            continue
         indent = len(line) - len(line.lstrip(" "))
-        stripped = line.strip()
+        stripped = without_comment(line[indent:])
+        if not stripped:
+            continue
         if indent == 0:
             section = stripped[:-1] if stripped in {"interface:", "policy:", "dependencies:"} else ""
             tool = None
             if not section:
                 fail("OPENAI_SHAPE", "unsupported section")
+            elif section in sections:
+                fail("OPENAI_DUPLICATE", f"duplicate section: {section}")
+            else:
+                sections.add(section)
             continue
         target = None
         allowed = set()
@@ -299,9 +365,14 @@ def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> N
         elif section == "policy" and indent == 2:
             if not re.fullmatch(r"allow_implicit_invocation:\s*(true|false)", stripped):
                 fail("OPENAI_SHAPE", "invalid policy")
+            elif policy_seen:
+                fail("OPENAI_DUPLICATE", "duplicate field: allow_implicit_invocation")
+            policy_seen = True
             continue
         elif section == "dependencies":
             if indent == 2 and stripped == "tools:":
+                if tools_seen:
+                    fail("OPENAI_DUPLICATE", "duplicate field: dependencies.tools")
                 tools_seen = True
                 continue
             if tools_seen and indent == 4 and stripped.startswith("- "):
@@ -324,32 +395,50 @@ def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> N
         if key in target:
             fail("OPENAI_DUPLICATE", f"duplicate field: {key}")
             continue
-        target[key] = scalar(raw)
-    for key in {"display_name", "short_description"} - values.keys():
-        fail("OPENAI_MISSING", f"missing {key}")
+        try:
+            target[key] = canonical_scalar(raw)
+        except (TypeError, ValueError):
+            fail("OPENAI_SHAPE", f"invalid quoted string: {key}")
+    for key in {"display_name", "short_description"}:
+        if not values.get(key):
+            fail("OPENAI_MISSING", f"missing or empty {key}")
+    display = values.get("display_name", "")
+    if len(display) > 64:
+        fail("OPENAI_DISPLAY_NAME", "display_name length must be at most 64")
     short = values.get("short_description", "")
     if short and not 25 <= len(short) <= 64:
-        fail("OPENAI_SHORT_DESCRIPTION", "short_description length must be 25-64")
+        fail("TOOLBOXMD_SHORT_DESCRIPTION", "ToolboxMD policy requires short_description length 25-64")
     prompt = values.get("default_prompt", "")
-    if prompt and f"${name}" not in prompt:
+    if len(prompt) > 1024:
+        fail("OPENAI_DEFAULT_PROMPT", "default_prompt length must be at most 1024")
+    if prompt and not re.search(rf"(?<![A-Za-z0-9_-])\${re.escape(name)}(?![A-Za-z0-9_-])", prompt):
         fail("OPENAI_DEFAULT_PROMPT", f"default_prompt must name ${name}")
-    if prompt and len(re.findall(r"[.!?](?:\s|$)", prompt)) != 1:
-        fail("OPENAI_DEFAULT_PROMPT", "default_prompt needs one sentence")
     color = values.get("brand_color", "")
     if color and not re.fullmatch(r"#[0-9A-Fa-f]{6}", color):
         fail("OPENAI_BRAND_COLOR", "brand_color needs six hex digits")
     for key in ("icon_small", "icon_large"):
         value = values.get(key, "")
         target = (root / value).resolve()
-        if value and (value.startswith("/") or not target.is_relative_to(root.resolve()) or not target.is_file()):
+        assets = (root / "assets").resolve()
+        if value and (value.startswith("/") or not target.is_relative_to(assets) or not target.is_file()):
             fail("OPENAI_ICON", f"invalid {key}")
     if any(tool.get("type") != "mcp" or not tool.get("value") for tool in tools):
         fail("OPENAI_DEPENDENCY", "each tool needs type mcp and value")
 
 
 def validate_scripts(root: Path, problems: list[dict[str, str]]) -> None:
-    for path in sorted((root / "scripts").rglob("*.py")) if (root / "scripts").is_dir() else []:
+    scripts = root / "scripts"
+    for path in sorted(scripts.rglob("*")) if scripts.is_dir() else []:
+        if not path.is_file() or path.is_symlink():
+            continue
         relative = path.relative_to(root).as_posix()
+        if path.suffix.lower() != ".py":
+            try:
+                path.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                continue
+            problems.append(issue("SCRIPT_SYNTAX_UNCHECKED", relative, "non-Python helper needs its own syntax test", "warning"))
+            continue
         try:
             ast.parse(path.read_text(encoding="utf-8"), filename=relative)
         except SyntaxError as exc:
@@ -361,6 +450,46 @@ def budget_problem(value: int, maximum: int | None, code: str, label: str, probl
         problems.append(issue(code, "SKILL.md" if label.startswith(("SKILL.md", "description")) else ".", f"{label}: {value} > {maximum}"))
 
 
+def run_official_validator(root: Path, problems: list[dict[str, str]]) -> dict[str, object]:
+    command = shutil.which("skills-ref")
+    coverage: dict[str, object] = {
+        "attempted": False,
+        "status": "not_available",
+        "exitCode": None,
+        "externalBehaviorAttested": False,
+    }
+    if not command:
+        return coverage
+    coverage["attempted"] = True
+    try:
+        completed = subprocess.run(
+            [command, "validate", str(root)],
+            capture_output=True,
+            check=False,
+            shell=False,
+            text=True,
+            timeout=OFFICIAL_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired:
+        coverage["status"] = "timeout"
+        problems.append(issue("OFFICIAL_VALIDATOR_TIMEOUT", ".", f"skills-ref exceeded {OFFICIAL_TIMEOUT_SECONDS}s"))
+        return coverage
+    except OSError:
+        coverage["status"] = "error"
+        problems.append(issue("OFFICIAL_VALIDATOR_ERROR", ".", "skills-ref could not be executed"))
+        return coverage
+    coverage["exitCode"] = completed.returncode
+    if completed.returncode == 0:
+        coverage["status"] = "pass"
+    elif completed.returncode == 1:
+        coverage["status"] = "fail"
+        problems.append(issue("OFFICIAL_VALIDATOR", ".", "skills-ref validate reported invalid"))
+    else:
+        coverage["status"] = "error"
+        problems.append(issue("OFFICIAL_VALIDATOR_ERROR", ".", f"skills-ref returned unexpected exit {completed.returncode}"))
+    return coverage
+
+
 def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
     if not root.is_dir():
         raise InspectionError(f"not a directory: {root}")
@@ -369,7 +498,7 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
         raise InspectionError(f"missing required file: {skill_path}")
     text = skill_path.read_text(encoding="utf-8")
     frontmatter_lines, body = split_frontmatter(text)
-    metadata, problems = parse_frontmatter(frontmatter_lines)
+    metadata, problems = parse_frontmatter(frontmatter_lines, args.allow_hermes_metadata)
     files, file_problems = collect_files(root)
     problems.extend(file_problems)
 
@@ -399,6 +528,7 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
     validate_links_and_paths(root, problems)
     validate_sidecar(root, name, problems)
     validate_scripts(root, problems)
+    official = run_official_validator(root, problems)
 
     skill_bytes = len(text.encode("utf-8"))
     skill_lines = len(text.splitlines())
@@ -435,6 +565,13 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
     return {
         "schemaVersion": 1,
         "status": "fail" if failed else "pass",
+        "coverage": {
+            "canonicalSubset": "toolboxmd-portable-core-v1",
+            "enabledExtensions": ["hermes-metadata"] if args.allow_hermes_metadata else [],
+            "markdown": "canonical inline links and single-line reference definitions",
+            "scriptSyntax": "Python .py files via AST; other helper syntax unchecked",
+            "officialSkillsRef": official,
+        },
         "aggregateSha256": aggregate,
         "metrics": metrics,
         "errorCount": error_count,
@@ -446,12 +583,13 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
 
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(
-        description="Validate an Agent Skill package read-only.",
+        description="Check a canonical ToolboxMD Agent Skill package read-only.",
         epilog="Exit: 0 valid, 1 invalid, 2 inspection error.",
     )
     result.add_argument("skill_root", nargs="?", default=".", help="skill root")
     result.add_argument("--json", action="store_true", help="JSON")
     result.add_argument("--warnings-as-errors", action="store_true", help="fail warnings")
+    result.add_argument("--allow-hermes-metadata", action="store_true", help="allow canonical metadata.hermes.config extension")
     limits = (("description-chars", 1024), ("skill-lines", 499), ("skill-bytes", None), ("files", None),
               ("package-bytes", None), ("reference-files", None), ("eval-files", None), ("script-files", None))
     for name, default in limits:
@@ -476,6 +614,10 @@ def main() -> int:
         print(json.dumps(result, indent=2, sort_keys=True))
     else:
         metrics = result["metrics"]
+        coverage = result["coverage"]
+        official = coverage["officialSkillsRef"]
+        extensions = ",".join(coverage["enabledExtensions"]) or "none"
+        print(f"COVERAGE: canonical={coverage['canonicalSubset']} extensions={extensions} script_syntax=python-ast-only official_skills_ref={official['status']} official_external_attested=false")
         labels = (("description_chars", "descriptionCharacters"), ("skill_lines", "skillMdLines"),
                   ("skill_bytes", "skillMdBytes"), ("files", "fileCount"), ("package_bytes", "packageBytes"),
                   ("references", "referenceFileCount"), ("evals", "evalFileCount"), ("scripts", "scriptFileCount"))
@@ -483,9 +625,9 @@ def main() -> int:
         for item in result["issues"]:
             print(f"{item['severity'].upper()}: {item['code']} {item['path']}: {item['message']}")
         if result["status"] == "pass":
-            print("PASS: portable skill package validation succeeded")
+            print("PASS: canonical ToolboxMD package checks succeeded")
         else:
-            print("FAIL: portable skill package validation failed", file=sys.stderr)
+            print("FAIL: canonical ToolboxMD package checks failed", file=sys.stderr)
     return 0 if result["status"] == "pass" else 1
 
 

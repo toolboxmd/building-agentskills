@@ -9,7 +9,7 @@ related:
   - /concepts/provider-neutral-skill-runtime.md
 related_files: [docs/06-testing/benchmark-integrity.md, case-studies/evidence/2026-08-11-karpathy-wiki-ingest-benchmark.json, case-studies/evidence/2026-08-12-toolboxmd-creating-skills-benchmark.json, benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/manifest.json, case-studies/2026-08-13-toolboxmd-creating-skills-benchmark-v2.md, case-studies/evidence/2026-08-13-toolboxmd-creating-skills-benchmark-v2.json, skills/toolboxmd-creating-skills/SKILL.md, benchmarks/toolboxmd-creating-skills/vnext/manifest.json, docs/superpowers/plans/2026-08-13-creator-vnext-and-toolboxmd-use-grok-program.md]
 created: "2026-08-11T00:00:00Z"
-updated: "2026-08-13T20:22:44Z"
+updated: "2026-08-13T21:31:08Z"
 quality:
   accuracy: 5
   completeness: 5
@@ -73,6 +73,8 @@ Product changes for the next ToolboxMD creator candidate: preserve the compact-d
 The approved creator program completed Steps 1 through 3 and added `skills/toolboxmd-creating-skills/` as the active product-candidate package. It is a frozen, unpromoted vNext candidate that responds to the diagnostic failure patterns above. Its validator and known-case regression are deterministic; no new model sessions were run for that regression.
 
 This active path does not change either benchmark verdict. Corrected v1 and v2 each retain zero eligible creator comparisons, and neither supports a creator winner or cost ranking. The vNext freeze permits no superiority or promotion claim. The built-in creator remains the current default while the later dogfooding and held-out promotion work in Steps 4 and 5 remains separate.
+
+The vNext validator has a deliberately smaller claim than earlier freezes. It checks the canonical ToolboxMD-generated portable-core subset and ToolboxMD package policy, then optionally runs an already-installed `skills-ref` validator. Portable-core metadata is string-to-string; nested `metadata.hermes.config` is an opt-in Hermes vendor extension, not spec-portable metadata. The checker reports incomplete Markdown and non-Python script-syntax coverage instead of implying that a custom parser validates arbitrary YAML, CommonMark, or helper languages. This executable-only correction increased total package bytes while leaving the activated-core, file, reference, eval, and script budgets unchanged. VNext therefore makes no lower-total-package-cost claim.
 
 Infrastructure note: the first four authoring attempts were discarded before downstream use because both built-in attempts wrote Python bytecode under the protected creator tree; protocol revision 2 disabled bytecode writes and repeated all four arms symmetrically. The reserve spreadsheet case did not run — it needed five more sessions and only one remained under the 17-session ceiling. Sixteen decision sessions used 728,273 uncached-input-plus-output runtime tokens over 2,759 cumulative seconds.
 

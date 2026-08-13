@@ -22,12 +22,31 @@ working directory, Python bytecode isolation, known failure-pattern fixtures,
 and non-mutation of retained inputs. It does not test triggering or semantic
 downstream usefulness.
 
-The package budget is 28,000 bytes. Exact-HEAD review added 2,256 bytes of
-deterministic executable validator code for the currently documented
-`metadata.hermes.config` shape and quote-aware YAML comment correctness.
-Description, activated-core, file, reference, eval, and script budgets did not
-change. This is not a claim of lower total package cost.
+The package budget is 36,000 bytes. Exact-HEAD review first added 2,256 bytes
+of deterministic executable validator code for quote-aware YAML comments and
+the reviewed Hermes metadata surface, then 460 bytes for optional
+`default_prompt`, all-decodable-file local-path scanning, and single-line
+reference-definition destinations. The bounded round-5 adversarial audit added
+7,353 executable bytes and corrected the claim: this is a canonical ToolboxMD
+package-policy checker, not a general YAML or CommonMark validator. The
+cumulative executable delta from the pre-revision freeze is 10,069 bytes.
 
-A later exact-HEAD review added 460 executable-only bytes within the same cap
-for optional `default_prompt`, all-decodable-file local-path scanning, and
-single-line CommonMark reference-definition destinations.
+Portable-core mode now requires string-to-string metadata. The exact
+`metadata.hermes.config` vendor extension is enabled only by
+`--allow-hermes-metadata` for an explicitly Hermes-targeted package. The
+checker reports its canonical coverage, Python-AST-only script-syntax
+coverage, and the availability/result of `skills-ref validate`; the frozen
+host recorded `not_available`, and no install or network fallback is used.
+When available, `skills-ref` is a local external executable. The ToolboxMD
+checker neither constrains nor attests that program's filesystem or network
+behavior.
+
+Description, activated-core, file, reference, eval, and script budgets did not
+change. VNext retains a smaller activated core and fewer distributed
+files/artifacts than the retained v1 candidate, but claims no lower total
+package byte cost and no benchmark-backed advantage, superiority, or
+promotion readiness.
+
+The frozen package is 34,768 bytes: 4,617 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 29,935-byte read-only checker. The executable is not
+loaded as activated core.

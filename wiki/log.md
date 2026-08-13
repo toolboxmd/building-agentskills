@@ -41,3 +41,7 @@ Applied the repository-wide command-isolation invariant to v1 without running ne
 ## [2026-08-13] product | ToolboxMD creator vNext candidate frozen
 
 Recorded the approved program's completed Steps 1 through 3 and the active `skills/toolboxmd-creating-skills/` product-candidate path in [[benchmark-integrity-for-agent-skills]]. The package is frozen but unpromoted. Its regression is deterministic with zero new model sessions; corrected v1 and v2 each retain zero eligible creator comparisons, so no superiority, cost-ranking, or promotion claim is supported. Updated the tracked raw case-study mirror without ingesting or changing any pending capture.
+
+## [2026-08-13] correction | ToolboxMD creator validator coverage boundary
+
+Narrowed the vNext checker claim in [[benchmark-integrity-for-agent-skills]] after a bounded exact-HEAD adversarial audit. The custom executable validates the canonical ToolboxMD-generated portable-core subset and package policy, not arbitrary YAML or CommonMark. Portable metadata remains string-to-string; the exact nested Hermes config shape is an explicit vendor-extension mode. Optional `skills-ref` results, complex-Markdown coverage, and non-Python helper syntax are reported separately. The deterministic checker increased total package bytes, so no lower-total-package-cost claim is retained. No new benchmark model session ran and no pending capture was ingested.
