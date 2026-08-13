@@ -33,7 +33,7 @@ OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
 FRAGILE_SCRIPT_RE = re.compile(
     r"\b(?:python(?:3(?:\.\d+)?)?|node|bash|sh|ruby)\b"
-    r"(?:\s+-[A-Za-z0-9-]+(?:=[^\s]+)?)*\s+[\"']?(?:\./)?scripts/"
+    r"[^\r\n;&|]*?[ \t]+[\"']?(?:\./)?scripts/"
 )
 ROOT_NAMES = ("Users", "home", "workspace", "root")
 POSIX_ROOTS = "|".join(re.escape(f"/{name}/") for name in ROOT_NAMES)
@@ -135,6 +135,7 @@ def parse_metadata(
 ) -> tuple[dict[str, object], int]:
     mapping: dict[str, object] = {}
     hermes = config = False
+    entry_active = False
     required: set[str] = set()
     entry_keys: set[str] = set()
     while index < len(lines) and (not lines[index].strip() or lines[index].lstrip().startswith("#") or lines[index].startswith((" ", "\t"))):
@@ -159,12 +160,19 @@ def parse_metadata(
             problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate metadata key: {key}"))
         elif indent == 4 and hermes and key == "config" and not value and not config:
             config = True
-        elif config and match and key in {"key", "description", "default", "prompt"} and value and ((indent == 6 and field.startswith("- ")) or (indent == 8 and key not in required)):
-            if indent == 6:
-                if required and not {"key", "description"} <= required:
-                    problems.append(issue("METADATA_SHAPE", "SKILL.md", "invalid Hermes entry"))
-                required = set()
-                entry_keys = set()
+        elif config and match and indent == 6 and field.startswith("- "):
+            if entry_active and "description" not in required:
+                problems.append(issue("METADATA_SHAPE", "SKILL.md", "Hermes entry needs description"))
+            required = set()
+            entry_keys = set()
+            entry_active = key == "key" and bool(value)
+            if not entry_active:
+                problems.append(issue("METADATA_SHAPE", "SKILL.md", "Hermes entry must start with - key"))
+            else:
+                required.add(key)
+                entry_keys.add(key)
+                parse_string(value, f"metadata.hermes.config.{key}", problems)
+        elif config and entry_active and match and indent == 8 and key in {"description", "default", "prompt"} and value:
             if key in entry_keys:
                 problems.append(issue("FRONTMATTER_DUPLICATE", "SKILL.md", f"duplicate Hermes field: {key}"))
             entry_keys.add(key)
@@ -173,7 +181,7 @@ def parse_metadata(
         else:
             message = "Hermes metadata requires --allow-hermes-metadata" if key == "hermes" and not allow_hermes else "unsupported nesting"
             problems.append(issue("METADATA_SHAPE", "SKILL.md", message))
-    if hermes and (not config or not {"key", "description"} <= required):
+    if hermes and (not config or not entry_active or "description" not in required):
         problems.append(issue("METADATA_SHAPE", "SKILL.md", "Hermes config needs key + description"))
     return mapping, index
 

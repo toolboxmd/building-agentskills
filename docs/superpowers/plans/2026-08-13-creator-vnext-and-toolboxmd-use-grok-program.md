@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 34,795 bytes, aggregate SHA-256
-  `4ffc8ffc0972dd654f317845848b34642e7ba0e8822ee3b3b5d4ba590a00800b`;
+- exact package: three files, 35,148 bytes, aggregate SHA-256
+  `2a8b01969a0c1ec08160a44459cb794e77d9c2b269bd3e9d60303cb2ccff322f`;
 - activated core: 77 lines and 4,617 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -128,7 +128,10 @@ Completion evidence, updated 2026-08-14:
   budgets are unchanged;
 - a later two-finding exact-HEAD pass added 27 executable-only bytes for YAML
   special-float classification and dot-relative fragile script commands. The
-  current cumulative executable delta is 10,096 bytes;
+  cumulative executable delta became 10,096 bytes;
+- a subsequent two-finding pass added 353 executable-only bytes for exact
+  Hermes sequence-item state and separator-bounded same-line command
+  detection. The current cumulative executable delta is 10,449 bytes;
 - portable-core mode requires string-to-string metadata. The exact
   `metadata.hermes.config` vendor extension requires
   `--allow-hermes-metadata` for an explicitly Hermes-targeted package;
@@ -160,12 +163,14 @@ Completion evidence, updated 2026-08-14:
 - `tests/toolboxmd-creating-skills-vnext.test.sh` passes from an external
   working directory;
 - the test reproduces the package freeze and budgets, checks exit codes 0/1/2,
-  blocks fragile bare and dot-relative script paths, accepts the explicit
-  `<skill-dir>` contract, accepts supported Codex sidecar sections and titled
-  local links, rejects reserved provider names and obvious unquoted non-string
-  frontmatter including YAML special floats,
+  blocks fragile bare, dot-relative, and option-bearing script paths without
+  crossing command separators, accepts the explicit `<skill-dir>` contract,
+  accepts supported Codex sidecar sections and titled local links, rejects
+  reserved provider names and obvious unquoted non-string frontmatter
+  including YAML special floats,
   prevents trailing comments from hiding YAML types, rejects block scalars,
-  accepts the exact Hermes config extension only in explicit extension mode,
+  accepts the exact Hermes config extension only in explicit extension mode
+  with key-led sequence items and required descriptions,
   ignores link syntax inside Markdown code, validates canonical single-line
   reference destinations, warns when complex Markdown requires official
   coverage, detects POSIX, container, Windows, file URI, and shebang-local

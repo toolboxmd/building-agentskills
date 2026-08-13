@@ -51,7 +51,9 @@
     "holisticReviewReason": "A bounded exact-HEAD adversarial audit reduced the custom claim to a canonical ToolboxMD checker, made nested Hermes metadata opt-in, added quote-aware canonical scalar and Codex sidecar checks, exposed Markdown and non-Python-script coverage limits, and optionally invokes an already-installed official skills-ref validator.",
     "latestExactHeadReviewExecutableDeltaBytes": 27,
     "latestExactHeadReviewReason": "Exact-HEAD review required YAML special-float classification and dot-relative fragile script-path detection.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10096,
+    "sequenceAndCommandReviewExecutableDeltaBytes": 353,
+    "sequenceAndCommandReviewReason": "Exact-HEAD review required active sequence-item state for canonical Hermes config and separator-bounded same-line fragile script detection.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10449,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -65,9 +67,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "4ffc8ffc0972dd654f317845848b34642e7ba0e8822ee3b3b5d4ba590a00800b",
+    "aggregateSha256": "2a8b01969a0c1ec08160a44459cb794e77d9c2b269bd3e9d60303cb2ccff322f",
     "fileCount": 3,
-    "packageBytes": 34795,
+    "packageBytes": 35148,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -89,8 +91,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 29962,
-        "sha256": "0b2c9cf8d076be59f497456285846257e8de47f56350c84cc295defd039dddb6"
+        "bytes": 30315,
+        "sha256": "e1c88d72a971c78f6d14d2b3de40fec8870413bedc5694a3881c1e9e4a30d650"
       }
     ]
   },
@@ -99,7 +101,7 @@
     "proves": [
       "the frozen product package and exact creator budgets reproduce",
       "the validator runs from outside the package without Python bytecode writes",
-      "bare and dot-relative working-directory script examples fail under warnings-as-errors",
+      "bare, dot-relative, and option-bearing working-directory script examples fail without crossing command separators",
       "explicit skill-directory script examples pass",
       "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, required and bounded interface strings, assets-only icon paths, optional default_prompt, policy, and current tool dependencies",
       "valid Markdown links with optional titles pass",
@@ -107,7 +109,7 @@
       "skill names containing reserved provider strings fail",
       "string-valued frontmatter rejects obvious unquoted collections and scalars while quoted lookalikes remain strings",
       "canonical one-line frontmatter handles trailing comments and quoted hashes while rejecting block scalars, typed and special-float scalars, reserved YAML indicators, tags, nested scalar syntax, and invalid quotes",
-      "portable-core mode requires string-to-string metadata while the exact metadata.hermes.config extension passes only with --allow-hermes-metadata",
+      "portable-core mode requires string-to-string metadata while explicit Hermes mode requires each config sequence item to start with key and contain description",
       "canonical Markdown links ignore code and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",

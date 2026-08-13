@@ -94,6 +94,15 @@ dot_bare_exit=$?
 set -e
 [[ $dot_bare_exit -eq 1 ]]
 
+make_fixture "$test_tmp/option-bare-fixture" $'python3 -X dev scripts/run.py\nnode --require loader "./scripts/run.js"\nbash --init-file profile scripts/run.sh\nsh -o errexit scripts/run.sh\nruby -I lib scripts/run.py'
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/option-bare-fixture" > "$test_tmp/option-bare.json"
+option_bare_exit=$?
+set -e
+
+make_fixture "$test_tmp/separator-safe-fixture" $'python3 -X dev; scripts/run.py\nnode --require loader & ./scripts/run.js\nbash --init-file profile | scripts/run.sh\nsh -o errexit && ./scripts/run.sh\nruby -I lib; scripts/run.py\nUse scripts/run.py before python3.'
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/separator-safe-fixture" > "$test_tmp/separator-safe.json"
+
 make_fixture "$test_tmp/portable-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/portable-fixture" > "$test_tmp/portable.json"
 
@@ -503,7 +512,7 @@ under_indented_exit=$?
 set -e
 [[ $under_indented_exit -eq 1 ]]
 
-mkdir -p "$test_tmp/hermes-metadata" "$test_tmp/unsupported-metadata" "$test_tmp/non-string-metadata"
+mkdir -p "$test_tmp/hermes-metadata" "$test_tmp/hermes-mapping" "$test_tmp/hermes-bad-list-start" "$test_tmp/unsupported-metadata" "$test_tmp/non-string-metadata"
 cat > "$test_tmp/hermes-metadata/SKILL.md" <<'EOF'
 ---
 name: hermes-metadata
@@ -529,6 +538,40 @@ hermes_default_exit=$?
 set -e
 [[ $hermes_default_exit -eq 1 ]]
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --allow-hermes-metadata "$test_tmp/hermes-metadata" > "$test_tmp/hermes-metadata.json"
+cat > "$test_tmp/hermes-mapping/SKILL.md" <<'EOF'
+---
+name: hermes-mapping
+description: Reject a mapping where Hermes requires a config sequence.
+metadata:
+  hermes:
+    config:
+        key: wiki.path
+        description: Path to the main wiki
+---
+
+# Hermes mapping
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --allow-hermes-metadata "$test_tmp/hermes-mapping" > "$test_tmp/hermes-mapping.json"
+hermes_mapping_exit=$?
+set -e
+cat > "$test_tmp/hermes-bad-list-start/SKILL.md" <<'EOF'
+---
+name: hermes-bad-list-start
+description: Reject a Hermes config item that does not start with key.
+metadata:
+  hermes:
+    config:
+      - description: Path to the main wiki
+        key: wiki.path
+---
+
+# Hermes bad list start
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --allow-hermes-metadata "$test_tmp/hermes-bad-list-start" > "$test_tmp/hermes-bad-list-start.json"
+hermes_bad_list_start_exit=$?
+set -e
 cat > "$test_tmp/unsupported-metadata/SKILL.md" <<'EOF'
 ---
 name: unsupported-metadata
@@ -737,6 +780,8 @@ const freeze = JSON.parse(fs.readFileSync(freezePath));
 const product = JSON.parse(fs.readFileSync(path.join(temporary, "product.json")));
 const bare = JSON.parse(fs.readFileSync(path.join(temporary, "bare.json")));
 const dotBare = JSON.parse(fs.readFileSync(path.join(temporary, "dot-bare.json")));
+const optionBare = JSON.parse(fs.readFileSync(path.join(temporary, "option-bare.json")));
+const separatorSafe = JSON.parse(fs.readFileSync(path.join(temporary, "separator-safe.json")));
 const portable = JSON.parse(fs.readFileSync(path.join(temporary, "portable.json")));
 const official = ["pass", "fail", "unexpected", "timeout"].map(mode => JSON.parse(fs.readFileSync(path.join(temporary, `skills-ref-${mode}.json`))));
 const sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "sidecar.json")));
@@ -763,6 +808,7 @@ const blockDescription = JSON.parse(fs.readFileSync(path.join(temporary, "block-
 const doubledQuote = JSON.parse(fs.readFileSync(path.join(temporary, "doubled-quote-budget.json")));
 const hermesMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "hermes-metadata.json")));
 const hermesDefault = JSON.parse(fs.readFileSync(path.join(temporary, "hermes-default.json")));
+const hermesInvalidSequences = ["hermes-mapping", "hermes-bad-list-start"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const unsupportedMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "unsupported-metadata.json")));
 const nonStringMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "non-string-metadata.json")));
 const codeLinks = JSON.parse(fs.readFileSync(path.join(temporary, "code-links.json")));
@@ -805,7 +851,8 @@ assert(freeze.budgetRevision.deterministicExecutableDeltaBytes === 2256, "execut
 assert(freeze.budgetRevision.laterDeterministicExecutableDeltaBytes === 460, "later executable review delta changed");
 assert(freeze.budgetRevision.holisticReviewExecutableDeltaBytes === 7353, "holistic review delta changed");
 assert(freeze.budgetRevision.latestExactHeadReviewExecutableDeltaBytes === 27, "latest executable review delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 10096, "current executable delta changed");
+assert(freeze.budgetRevision.sequenceAndCommandReviewExecutableDeltaBytes === 353, "sequence and command review delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 10449, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -826,7 +873,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 34795, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 35148, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -852,6 +899,9 @@ assert(unquotedScalars.every(result => result.status === "fail" && result.issues
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
 assert(dotBare.status === "fail", "dot-relative script fixture must fail under warnings-as-errors");
 assert(dotBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all dot-relative interpreter examples must be detected");
+assert(optionBare.status === "fail" && optionBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "option operands must not hide fragile script paths");
+assert(separatorSafe.status === "pass" && separatorSafe.warningCount === 0, "fragile script detection must not cross command separators or reverse direction");
+assert(hermesInvalidSequences.every(result => result.status === "fail" && result.issues.some(item => item.code === "METADATA_SHAPE")), "Hermes config entries must start with a sequence key");
 assert(commentedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_TYPE")), "trailing comments must not hide non-string scalars");
 assert(quotedHash.status === "pass", "hashes inside quoted strings must remain content");
 assert(blockDescription.status === "fail" && blockDescription.issues.some(item => item.code === "FRONTMATTER_STYLE"), "block frontmatter must be rejected as noncanonical");
