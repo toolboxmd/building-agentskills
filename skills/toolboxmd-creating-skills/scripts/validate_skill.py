@@ -15,7 +15,12 @@ from urllib.parse import unquote, urlsplit
 
 PORTABLE_FIELDS = {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-LINK_RE = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
+LINK_RE = re.compile(
+    r'''!?\[[^\]]*\]\(\s*(<[^>\n]*>|[^\s)]+)(?:\s+(?:"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|\((?:\\.|[^)])*\)))?\s*\)'''
+)
+OPENAI_FIELD_RE = re.compile(r'^([a-z_]+):\s*("(?:[^"\\]|\\.)*")$')
+OPENAI_INTERFACE_FIELDS = {"display_name", "short_description", "icon_small", "icon_large", "brand_color", "default_prompt"}
+OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 FRAGILE_SCRIPT_RE = re.compile(
     r"\b(?:python(?:3(?:\.\d+)?)?|node|bash|sh|ruby)\b"
     r"(?:\s+-[A-Za-z0-9-]+(?:=[^\s]+)?)*\s+[\"']?scripts/"
@@ -149,7 +154,9 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         if path.suffix.lower() != ".md":
             continue
         for match in LINK_RE.finditer(content):
-            raw = match.group(1).strip().strip("<>")
+            raw = match.group(1)
+            if raw.startswith("<"):
+                raw = raw[1:-1]
             parsed = urlsplit(raw)
             if parsed.scheme or raw.startswith(("#", "mailto:")):
                 continue
@@ -173,35 +180,81 @@ def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> N
     sidecar = root / "agents" / "openai.yaml"
     if not sidecar.exists():
         return
-    text = sidecar.read_text(encoding="utf-8")
-    lines = [line for line in text.splitlines() if line.strip() and not line.lstrip().startswith("#")]
-    if not lines or lines[0] != "interface:":
-        problems.append(issue("error", "OPENAI_INTERFACE", "agents/openai.yaml", "expected interface mapping"))
-        return
-    expected = {"display_name", "short_description", "default_prompt"}
-    values: dict[str, str] = {}
-    for line in lines[1:]:
-        match = re.match(r'^  ([a-z_]+):\s*("(?:[^"\\]|\\.)*")$', line)
-        if not match:
-            problems.append(issue("error", "OPENAI_SHAPE", "agents/openai.yaml", f"unsupported line: {line.strip()}"))
+    path = "agents/openai.yaml"
+
+    def fail(code: str, message: str) -> None:
+        problems.append(issue("error", code, path, message))
+
+    section = ""
+    values = {}
+    tools = []
+    tool = None
+    tools_seen = False
+    for line in sidecar.read_text(encoding="utf-8").splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        indent = len(line) - len(line.lstrip(" "))
+        stripped = line.strip()
+        if indent == 0:
+            section = stripped[:-1] if stripped in {"interface:", "policy:", "dependencies:"} else ""
+            tool = None
+            if not section:
+                fail("OPENAI_SHAPE", "unsupported section")
+            continue
+        target = None
+        allowed = set()
+        field = stripped
+        if section == "interface" and indent == 2:
+            target, allowed = values, OPENAI_INTERFACE_FIELDS
+        elif section == "policy" and indent == 2:
+            if not re.fullmatch(r"allow_implicit_invocation:\s*(true|false)", stripped):
+                fail("OPENAI_SHAPE", "invalid policy")
+            continue
+        elif section == "dependencies":
+            if indent == 2 and stripped == "tools:":
+                tools_seen = True
+                continue
+            if tools_seen and indent == 4 and stripped.startswith("- "):
+                tool = {}
+                tools.append(tool)
+                field = stripped[2:]
+            elif indent != 6 or tool is None:
+                fail("OPENAI_SHAPE", "invalid dependency")
+                continue
+            target, allowed = tool, OPENAI_TOOL_FIELDS
+        else:
+            fail("OPENAI_SHAPE", "unsupported shape")
+            continue
+        match = OPENAI_FIELD_RE.fullmatch(field)
+        if not match or match.group(1) not in allowed:
+            fail("OPENAI_SHAPE", "unsupported field")
             continue
         key, raw = match.groups()
-        if key in values:
-            problems.append(issue("error", "OPENAI_DUPLICATE", "agents/openai.yaml", f"duplicate field: {key}"))
+        assert target is not None
+        if key in target:
+            fail("OPENAI_DUPLICATE", f"duplicate field: {key}")
             continue
-        values[key] = scalar(raw)
-    for key in sorted(expected - set(values)):
-        problems.append(issue("error", "OPENAI_MISSING", "agents/openai.yaml", f"missing {key}"))
-    for key in sorted(set(values) - expected):
-        problems.append(issue("error", "OPENAI_UNKNOWN", "agents/openai.yaml", f"unknown field: {key}"))
+        target[key] = scalar(raw)
+    for key in {"display_name", "short_description", "default_prompt"} - values.keys():
+        fail("OPENAI_MISSING", f"missing {key}")
     short = values.get("short_description", "")
     if short and not 25 <= len(short) <= 64:
-        problems.append(issue("error", "OPENAI_SHORT_DESCRIPTION", "agents/openai.yaml", "short_description length must be 25-64"))
+        fail("OPENAI_SHORT_DESCRIPTION", "short_description length must be 25-64")
     prompt = values.get("default_prompt", "")
     if prompt and f"${name}" not in prompt:
-        problems.append(issue("error", "OPENAI_DEFAULT_PROMPT", "agents/openai.yaml", f"default_prompt must name ${name}"))
+        fail("OPENAI_DEFAULT_PROMPT", f"default_prompt must name ${name}")
     if prompt and len(re.findall(r"[.!?](?:\s|$)", prompt)) != 1:
-        problems.append(issue("error", "OPENAI_DEFAULT_PROMPT", "agents/openai.yaml", "default_prompt needs one sentence"))
+        fail("OPENAI_DEFAULT_PROMPT", "default_prompt needs one sentence")
+    color = values.get("brand_color", "")
+    if color and not re.fullmatch(r"#[0-9A-Fa-f]{6}", color):
+        fail("OPENAI_BRAND_COLOR", "brand_color needs six hex digits")
+    for key in ("icon_small", "icon_large"):
+        value = values.get(key, "")
+        target = (root / value).resolve()
+        if value and (value.startswith("/") or not target.is_relative_to(root.resolve()) or not target.is_file()):
+            fail("OPENAI_ICON", f"invalid {key}")
+    if any(tool.get("type") != "mcp" or not tool.get("value") for tool in tools):
+        fail("OPENAI_DEPENDENCY", "each tool needs type mcp and value")
 
 
 def validate_scripts(root: Path, problems: list[dict[str, str]]) -> None:
@@ -239,6 +292,8 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
         name = ""
     elif len(name) > 64 or not NAME_RE.fullmatch(name):
         problems.append(issue("error", "NAME_FORMAT", "SKILL.md", "name must match lowercase kebab-case and be at most 64 characters"))
+    elif any(reserved in name for reserved in ("anthropic", "claude")):
+        problems.append(issue("error", "NAME_RESERVED", "SKILL.md", "name contains reserved provider text: anthropic or claude"))
     if name and name != root.name:
         problems.append(issue("error", "NAME_DIRECTORY", "SKILL.md", f"name {name!r} differs from directory {root.name!r}"))
     description = metadata.get("description")
@@ -307,14 +362,10 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("skill_root", nargs="?", default=".", help="skill root")
     result.add_argument("--json", action="store_true", help="JSON")
     result.add_argument("--warnings-as-errors", action="store_true", help="fail warnings")
-    result.add_argument("--max-description-chars", type=int, default=1024)
-    result.add_argument("--max-skill-lines", type=int, default=499)
-    result.add_argument("--max-skill-bytes", type=int)
-    result.add_argument("--max-files", type=int)
-    result.add_argument("--max-package-bytes", type=int)
-    result.add_argument("--max-reference-files", type=int)
-    result.add_argument("--max-eval-files", type=int)
-    result.add_argument("--max-script-files", type=int)
+    limits = (("description-chars", 1024), ("skill-lines", 499), ("skill-bytes", None), ("files", None),
+              ("package-bytes", None), ("reference-files", None), ("eval-files", None), ("script-files", None))
+    for name, default in limits:
+        result.add_argument(f"--max-{name}", type=int, default=default)
     return result
 
 
@@ -335,17 +386,10 @@ def main() -> int:
         print(json.dumps(result, indent=2, sort_keys=True))
     else:
         metrics = result["metrics"]
-        print(
-            "METRICS: "
-            f"description_chars={metrics['descriptionCharacters']} "
-            f"skill_lines={metrics['skillMdLines']} "
-            f"skill_bytes={metrics['skillMdBytes']} "
-            f"files={metrics['fileCount']} "
-            f"package_bytes={metrics['packageBytes']} "
-            f"references={metrics['referenceFileCount']} "
-            f"evals={metrics['evalFileCount']} "
-            f"scripts={metrics['scriptFileCount']}"
-        )
+        labels = (("description_chars", "descriptionCharacters"), ("skill_lines", "skillMdLines"),
+                  ("skill_bytes", "skillMdBytes"), ("files", "fileCount"), ("package_bytes", "packageBytes"),
+                  ("references", "referenceFileCount"), ("evals", "evalFileCount"), ("scripts", "scriptFileCount"))
+        print("METRICS: " + " ".join(f"{label}={metrics[key]}" for label, key in labels))
         for item in result["issues"]:
             print(f"{item['severity'].upper()}: {item['code']} {item['path']}: {item['message']}")
         if result["status"] == "pass":

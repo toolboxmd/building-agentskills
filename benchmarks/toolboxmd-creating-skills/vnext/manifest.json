@@ -43,22 +43,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "e76c24dda94e6228cdad895b3fc0abe89c22558bbdce7c11c9d062f66cd5212f",
+    "aggregateSha256": "31c06f2e0570ef1227b933e1beb6a7e698bafe87352d94d544619609427507aa",
     "fileCount": 3,
-    "packageBytes": 23496,
+    "packageBytes": 23501,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 6353,
-      "lines": 114,
+      "bytes": 4472,
+      "lines": 109,
       "descriptionCharacters": 278
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 6353,
-        "sha256": "a7881821051f5361d677506f884d3201144b7b316d5eaed757910d7dc63f2d2b"
+        "bytes": 4472,
+        "sha256": "c7b835437c47833875815b5aadc360392107c3bf32346101a464c411210b59c8"
       },
       {
         "path": "agents/openai.yaml",
@@ -67,8 +67,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 16927,
-        "sha256": "cf265b2e02859524812ec01ba0fcc194c83bf02c22fb512c11301b486d1b16ab"
+        "bytes": 18813,
+        "sha256": "86fba4d91b2a98bad8d5cdbfb396f022ae95558d695ed6bea4c4664fa9e5eb27"
       }
     ]
   },
@@ -79,6 +79,9 @@
       "the validator runs from outside the package without Python bytecode writes",
       "bare working-directory-relative script examples fail under warnings-as-errors",
       "explicit skill-directory script examples pass",
+      "the supported Codex sidecar sections parse while required interface fields remain enforced",
+      "valid Markdown links with optional titles pass",
+      "skill names containing reserved provider strings fail",
       "default reference and eval baggage and unconditional Git inspection are absent",
       "the retained meeting-followups and weekly-status-deck path and baggage patterns are detected",
       "retained creator inputs remain byte-identical"

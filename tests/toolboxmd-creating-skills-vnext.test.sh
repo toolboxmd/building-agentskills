@@ -31,7 +31,7 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-eval-files 0 \
   --max-script-files 1 \
   "$package")"
-[[ "$human_output" == *"METRICS: description_chars=278 skill_lines=114 skill_bytes=6353 files=3 package_bytes=23496 references=0 evals=0 scripts=1"* ]]
+[[ "$human_output" == *"METRICS: description_chars=278 skill_lines=109 skill_bytes=4472 files=3 package_bytes=23501 references=0 evals=0 scripts=1"* ]]
 [[ "$human_output" == *"PASS: portable skill package validation succeeded"* ]]
 
 cd "$test_tmp"
@@ -87,6 +87,69 @@ set -e
 make_fixture "$test_tmp/portable-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/portable-fixture" > "$test_tmp/portable.json"
 
+make_fixture "$test_tmp/sidecar-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/sidecar-fixture/agents" "$test_tmp/sidecar-fixture/assets"
+printf '<svg/>\n' > "$test_tmp/sidecar-fixture/assets/small.svg"
+printf 'large\n' > "$test_tmp/sidecar-fixture/assets/large.png"
+cat > "$test_tmp/sidecar-fixture/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Sidecar Fixture"
+  short_description: "Validate an explicit-only sidecar"
+  icon_small: "./assets/small.svg"
+  icon_large: "./assets/large.png"
+  brand_color: "#3B82F6"
+  default_prompt: "Use $sidecar-fixture to run the fixture."
+policy:
+  allow_implicit_invocation: false
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "openaiDeveloperDocs"
+      description: "OpenAI Docs MCP server"
+      transport: "streamable_http"
+      url: "https://developers.openai.com/mcp"
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/sidecar-fixture" > "$test_tmp/sidecar.json"
+
+make_fixture "$test_tmp/missing-icon-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/missing-icon-fixture/agents"
+cat > "$test_tmp/missing-icon-fixture/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Missing Icon"
+  short_description: "Reject a missing sidecar icon"
+  icon_small: "./assets/missing.svg"
+  default_prompt: "Use $missing-icon-fixture to run the fixture."
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/missing-icon-fixture" > "$test_tmp/missing-icon.json"
+missing_icon_exit=$?
+set -e
+[[ $missing_icon_exit -eq 1 ]]
+
+make_fixture "$test_tmp/missing-interface-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/missing-interface-fixture/agents"
+printf 'interface:\n  display_name: "Missing Fields"\n' > "$test_tmp/missing-interface-fixture/agents/openai.yaml"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/missing-interface-fixture" > "$test_tmp/missing-interface.json"
+missing_interface_exit=$?
+set -e
+[[ $missing_interface_exit -eq 1 ]]
+
+make_fixture "$test_tmp/titled-link-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/titled-link-fixture/references"
+printf '# Guide\n' > "$test_tmp/titled-link-fixture/references/guide.md"
+printf '\n[Guide](references/guide.md "Read the guide")\n' >> "$test_tmp/titled-link-fixture/SKILL.md"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/titled-link-fixture" > "$test_tmp/titled-link.json"
+
+for reserved in claude-helper anthropic-helper; do
+  make_fixture "$test_tmp/$reserved" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$reserved" > "$test_tmp/$reserved.json"
+  reserved_exit=$?
+  set -e
+  [[ $reserved_exit -eq 1 ]]
+done
+
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$root/benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/cases/meeting-followups/toolboxmd/skill" > "$test_tmp/meeting.json"
 meeting_exit=$?
@@ -105,6 +168,11 @@ const freeze = JSON.parse(fs.readFileSync(freezePath));
 const product = JSON.parse(fs.readFileSync(path.join(temporary, "product.json")));
 const bare = JSON.parse(fs.readFileSync(path.join(temporary, "bare.json")));
 const portable = JSON.parse(fs.readFileSync(path.join(temporary, "portable.json")));
+const sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "sidecar.json")));
+const missingIcon = JSON.parse(fs.readFileSync(path.join(temporary, "missing-icon.json")));
+const missingInterface = JSON.parse(fs.readFileSync(path.join(temporary, "missing-interface.json")));
+const titledLink = JSON.parse(fs.readFileSync(path.join(temporary, "titled-link.json")));
+const reserved = ["claude-helper", "anthropic-helper"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const meeting = JSON.parse(fs.readFileSync(path.join(temporary, "meeting.json")));
 const deck = JSON.parse(fs.readFileSync(path.join(temporary, "deck.json")));
 
@@ -141,12 +209,17 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 23496, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 23501, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
 assert(bare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all bare interpreter examples must be detected");
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
+assert(sidecar.status === "pass" && sidecar.errorCount === 0, "official nested sidecar must pass");
+assert(missingIcon.issues.some(item => item.code === "OPENAI_ICON"), "declared icon paths must resolve inside the package");
+assert(missingInterface.issues.filter(item => item.code === "OPENAI_MISSING").length === 2, "required interface fields must remain enforced");
+assert(titledLink.status === "pass" && titledLink.errorCount === 0, "valid local link with optional title must pass");
+assert(reserved.every(result => result.status === "fail" && result.issues.some(item => item.code === "NAME_RESERVED")), "reserved provider names must fail");
 for (const [name, result, expectedEvals] of [["meeting", meeting, 1], ["deck", deck, 2]]) {
   assert(result.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), `${name}: retained bare script pattern not detected`);
   assert(result.metrics.referenceFileCount === 1, `${name}: retained always-read reference pattern changed`);

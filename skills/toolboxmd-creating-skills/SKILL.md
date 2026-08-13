@@ -5,75 +5,72 @@ description: "Create a new portable Agent Skill from user needs, trigger example
 
 # Creating Skills
 
-Create the smallest evidence-backed package that makes a reusable task more reliable. Start from the user's real job and observed failures, not a generic template.
+Create the smallest evidenced package for a reusable task.
 
 ## Boundaries
 
-- If a target skill already exists, use `toolboxmd-updating-skills` when available. Do not turn creation into an updater.
-- If the user asks which version is better, use `toolboxmd-benchmarking-skills` when available. Do not build a comparative benchmark here.
-- Treat catalogs and examples as discovery evidence. Confirm format rules with authoritative sources and behavior claims with inspected evidence.
+- Route existing skills to `toolboxmd-updating-skills`.
+- Route comparisons to `toolboxmd-benchmarking-skills`.
+- Use examples for discovery; confirm rules with authoritative sources and evidence.
 
 ## Default path
 
 ### 1. Choose the primitive
 
-Inspect applicable project instructions, then choose the smallest mechanism that matches the job:
+Read project instructions and choose the smallest mechanism:
 
 | Need | Prefer |
 |---|---|
-| Reusable judgment or procedure loaded when relevant | Skill |
+| Reusable judgment loaded when relevant | Skill |
 | Always-on project facts | Project instructions |
 | Deterministic event enforcement | Hook or CI gate |
-| Repeated deterministic transformation | Script or program |
+| Deterministic transformation | Script or program |
 | Explicit user-started operation | Command or user-invoked skill |
 | Installation and lifecycle wiring | Plugin or extension |
 
-A skill may coordinate mechanisms, but its prose does not make them fire. Explain when a smaller primitive is enough.
+A skill may coordinate mechanisms; prose does not fire them.
 
 ### 2. Build an evidence brief
 
 Record before drafting:
 
-- reusable job and user value;
-- realistic prompts that should trigger and close near misses that should not;
-- required inputs, outputs, and representative artifacts;
+- job, value, inputs, outputs, and artifacts;
+- realistic triggers and close near misses;
 - observed mistakes, corrections, traces, or review evidence;
-- platform, safety, dependency, destination, and delivery constraints;
-- unresolved evidence gaps and how to close them.
+- platform, safety, dependency, and delivery constraints;
+- evidence gaps and how to close them.
 
-Ask focused questions or perform one representative task when load-bearing evidence is missing. Label hypotheses instead of presenting them as established rules.
+Ask or perform one representative task to close evidence gaps. Label hypotheses.
 
 ### 3. Answer three independent questions
 
-1. **Who invokes?** Record agent, user, or both, plus any platform-specific mechanism.
-2. **What fires on each invariant?** Classify every rigid rule or threshold as advisory judgment or name the script, validator, hook, CI gate, or checked artifact that enforces it.
-3. **What is the token budget?** Set caps for description characters, `SKILL.md` lines and bytes, always-read reference bytes, file count, and package bytes.
-
-Correct invocation does not enforce rules, and a small package does not guarantee discovery.
+1. **Who invokes?** Record agent, user, or both and the mechanism.
+2. **What fires on each invariant?** Mark each rigid rule as advisory or name its script, validator, hook, gate, or checked artifact.
+3. **What is the token budget?** Cap description, `SKILL.md`, always-read, file, and package sizes.
 
 ### 4. Plan the smallest package
 
-Start with `SKILL.md`. Add a support file only when inspected evidence names its benefit:
+Start with `SKILL.md`. Add support only for an evidenced benefit:
 
 - inline short rules needed on every invocation;
-- use `references/` only for substantial knowledge loaded under a real condition;
-- use `scripts/` for repeated deterministic work or a justified mechanical gate;
+- use `references/` for conditional knowledge;
+- use `scripts/` for repeated deterministic work or a mechanical gate;
 - use `assets/` only for files consumed in outputs;
-- keep comparative, repeated, and trace-based evals outside the distributed skill by default;
-- keep package-local tests only for a bundled deterministic script or explicit distribution contract;
-- add platform sidecars only for a stated delivery target.
+- keep comparative and trace-based evals outside the package by default;
+- keep package tests only for a bundled script or distribution contract;
+- add sidecars only for a stated target.
 
-Do not add a README, changelog, design diary, status file, or speculative support directory.
+Do not add process documents or speculative directories.
 
 ### 5. Draft the activation and default path
 
-Use portable frontmatter with matching directory and `name`. Write a compact description that names capability, concrete trigger situations, and important exclusions without summarizing the workflow.
+Use portable frontmatter with matching directory and `name`. Describe capability, triggers, and exclusions, not workflow.
 
-Keep the primitive decision, evidence brief, three answers, default procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Explain why where judgment is required. Reserve rigid language for rules with a named mechanism.
+Keep the decision, evidence, three answers, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Use rigid language only for mechanized rules.
 
 ### 6. Make script commands portable
 
-For any installed skill, resolve `<skill-dir>` from the loaded `SKILL.md` path before executing a bundled script. Treat it as an absolute directory passed as an argument, never as the task working directory and never as shell-expanded text. Use the equivalent `<target-skill-dir>` for the package being created.
+Resolve `<skill-dir>` from loaded `SKILL.md` as an absolute argument, never from cwd or shell expansion. Use `<target-skill-dir>` for the created package.
 
 Run this creator's validator from any working directory:
 
@@ -81,34 +78,32 @@ Run this creator's validator from any working directory:
 PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" "<target-skill-dir>"
 ```
 
-Pass explicit budget flags matching the design record when its defaults are not the intended contract. A generated example that addresses only `scripts/` is fragile and should be rewritten before delivery.
+Pass budget flags when defaults differ. Rewrite examples that address only `scripts/`.
 
 ### 7. Test in proportion to the claim
 
 - Validate structure and budgets for every package.
 - Syntax-check and behavior-test bundled deterministic scripts.
-- Run one realistic downstream smoke check for a nontrivial skill when the harness permits it.
-- Add pressure or repeated tests only for observed variance, discipline rules, high-risk behavior, or a strong reliability claim.
+- Smoke-check one realistic task for a nontrivial skill when possible.
+- Add pressure or repeated tests only for observed variance, high risk, or a strong claim.
 - Hand comparative claims to the benchmarking workflow.
-
-Keep test fixtures and comparative evidence outside the distributed package unless their runtime or maintenance benefit is explicit.
 
 ### 8. Delete, validate, and deliver
 
-Inspect the complete tree. Record description characters, core lines and bytes, always-read and conditional reference bytes, file count, script count, eval count, and package bytes. Name the evidence for every support file, delete files with only hypothetical benefit, then rerun validation and focused tests.
+Record description, core/reference bytes, line/file/script/eval counts, and package bytes. Delete unsupported files, then rerun checks.
 
-Inspect Git state only when the destination is a repository and the user requested Git delivery. Do not search ancestor repositories for a package-only task.
+Inspect Git state only when the user requested Git delivery. Do not search ancestors for package-only work.
 
 Report separately:
 
 - **Validated:** command and result;
-- **Tested:** checks run and any justified skips;
+- **Tested:** checks and justified skips;
 - **Committed:** commit only when Git delivery was requested;
 - **Pushed:** remote and ref only when Git delivery was requested.
 
 ## Gotchas
 
-- A passing validator proves package mechanics, not usefulness or triggering.
+- A passing validator proves mechanics, not usefulness or triggering.
 - An always-read reference belongs in activated-core cost even when stored in another file.
-- Optional sidecars are platform metadata, not portable invocation guarantees.
+- Sidecars are platform metadata, not portable invocation guarantees.
 - Rehearse executable snippets exactly as written and rerun checks after the final deletion pass.
