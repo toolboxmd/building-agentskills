@@ -121,11 +121,12 @@ def normalize_shell_continuations(text: str) -> str:
 
 def parse_metadata(
     lines: list[str], index: int, problems: list[dict[str, str]], allow_hermes: bool
-) -> tuple[dict[str, object], int]:
+) -> tuple[dict[str, object], int, bool]:
     def fail(code: str, message: str) -> None:
         problems.append(issue(code, "SKILL.md", message))
 
     mapping: dict[str, object] = {}
+    seen = False
     hermes = config = False
     entry_active = False
     entry_fields: set[str] = set()
@@ -134,6 +135,7 @@ def parse_metadata(
         index += 1
         if not line.strip() or line.lstrip().startswith("#"):
             continue
+        seen = True
         if "\t" in line[: len(line) - len(line.lstrip())]:
             fail("FRONTMATTER_INDENT", "metadata uses tab indentation")
             continue
@@ -188,7 +190,7 @@ def parse_metadata(
             fail("METADATA_SHAPE", "unsupported nesting")
     if hermes and (not config or not entry_active or "description" not in entry_fields):
         fail("METADATA_SHAPE", "Hermes config needs key + description")
-    return mapping, index
+    return mapping, index, seen
 
 
 def parse_frontmatter(lines: list[str], allow_hermes: bool) -> tuple[dict[str, object], list[dict[str, str]]]:
@@ -227,7 +229,9 @@ def parse_frontmatter(lines: list[str], allow_hermes: bool) -> tuple[dict[str, o
                 data[key] = {}
                 index += 1
                 continue
-            data[key], index = parse_metadata(lines, index + 1, problems, allow_hermes)
+            data[key], index, seen = parse_metadata(lines, index + 1, problems, allow_hermes)
+            if not seen:
+                fail("METADATA_EMPTY", "omit empty metadata")
             continue
         data[key] = parse_string(raw_value, key, problems) if key in STRING_FIELDS else raw_value
         index += 1

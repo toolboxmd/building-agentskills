@@ -40,7 +40,9 @@ physical line. The cumulative executable delta from the pre-revision freeze is
 10,137 bytes. A follow-up metadata-key correction added 273 executable bytes
 to require JSON-double-quoted user-defined portable keys and brought the
 cumulative delta to 10,410 bytes after a bounded deletion pass consolidated
-duplicate diagnostic paths without dropping contract fixtures.
+duplicate diagnostic paths without dropping contract fixtures. Empty and
+comment-only metadata hardening then added 142 executable bytes, bringing the
+cumulative delta to 10,552 bytes; optional metadata must be omitted when empty.
 
 Canonical subset v2 leaves only the exact `name` slug unquoted. Every other
 top-level string and every user-defined portable metadata key and value uses a
@@ -61,6 +63,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 35,196 bytes: 4,704 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 30,276-byte read-only checker. The executable is not
+The frozen package is 35,195 bytes: 4,561 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 30,418-byte read-only checker. The executable is not
 loaded as activated core.

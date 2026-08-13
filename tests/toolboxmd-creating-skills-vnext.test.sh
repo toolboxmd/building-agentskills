@@ -513,6 +513,36 @@ metadata:
 # Quoted portable metadata keys
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/quoted-portable-metadata-keys" > "$test_tmp/quoted-portable-metadata-keys.json"
+for variant in empty comment-only; do
+  mkdir -p "$test_tmp/$variant-metadata"
+done
+cat > "$test_tmp/empty-metadata/SKILL.md" <<'EOF'
+---
+name: empty-metadata
+description: "Reject a bare metadata field."
+metadata:
+---
+
+# Empty metadata
+EOF
+cat > "$test_tmp/comment-only-metadata/SKILL.md" <<'EOF'
+---
+name: comment-only-metadata
+description: "Reject metadata containing only comments."
+metadata:
+  # no semantic entries
+
+---
+
+# Comment-only metadata
+EOF
+for variant in empty comment-only; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$variant-metadata" > "$test_tmp/$variant-metadata.json"
+  set -e
+done
+make_fixture "$test_tmp/metadata-omitted" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/metadata-omitted" > "$test_tmp/metadata-omitted.json"
 for name in portable-hermes-sequence hermes-config-sequence hermes-child-sequence; do
   set +e
   PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --allow-hermes-metadata "$test_tmp/$name" > "$test_tmp/$name.json"
@@ -971,6 +1001,8 @@ const metadataSequenceLevels = ["portable-hermes-sequence", "hermes-config-seque
 const unquotedPortableMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "unquoted-portable-metadata.json")));
 const metadataKeyFailures = ["ordinary", "boolean", "date", "numeric"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `unquoted-${name}-metadata-key.json`))));
 const quotedPortableMetadataKeys = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-portable-metadata-keys.json")));
+const emptyMetadata = ["empty", "comment-only"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}-metadata.json`))));
+const metadataOmitted = JSON.parse(fs.readFileSync(path.join(temporary, "metadata-omitted.json")));
 const scalarKinds = ["ordinary", "date", "hex", "octal", "boolean", "null", "numeric", "nan", "positive-inf", "negative-nan"];
 const unquotedScalars = scalarKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `unquoted-${name}-description.json`))));
 const quotedScalars = scalarKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `quoted-${name}-description.json`))));
@@ -1027,7 +1059,8 @@ assert(freeze.budgetRevision.latestExactHeadReviewExecutableDeltaBytes === 27, "
 assert(freeze.budgetRevision.sequenceAndCommandReviewExecutableDeltaBytes === 353, "sequence and command review delta changed");
 assert(freeze.budgetRevision.quoteOnlyCanonicalExecutableDeltaBytes === -312, "quote-only canonical executable delta changed");
 assert(freeze.budgetRevision.portableMetadataKeyExecutableDeltaBytes === 273, "portable metadata key executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 10410, "current executable delta changed");
+assert(freeze.budgetRevision.emptyMetadataExecutableDeltaBytes === 142, "empty metadata executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 10552, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1050,7 +1083,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 35196, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 35195, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -1087,6 +1120,8 @@ assert(metadataSequenceLevels.every(result => result.status === "fail" && result
 assert(unquotedPortableMetadata.status === "fail" && unquotedPortableMetadata.issues.some(item => item.code === "FRONTMATTER_STRING"), "portable metadata values must use JSON double quotes");
 assert(metadataKeyFailures.every(result => result.status === "fail" && result.issues.some(item => item.code === "METADATA_KEY")), "portable metadata keys must use JSON double quotes");
 assert(quotedPortableMetadataKeys.status === "pass", "quoted ordinary and scalar-looking portable metadata keys must pass");
+assert(emptyMetadata.every(result => result.status === "fail" && result.issues.some(item => item.code === "METADATA_EMPTY")), "empty or comment-only metadata must fail");
+assert(metadataOmitted.status === "pass", "omitting optional metadata must pass");
 assert(hermesInvalidSequences.every(result => result.status === "fail" && result.issues.some(item => item.code === "METADATA_SHAPE")), "Hermes config entries must start with a sequence key");
 assert(commentedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_STRING")), "trailing comments must not hide unquoted scalars");
 assert(quotedHash.status === "pass", "hashes inside quoted strings must remain content");

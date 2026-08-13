@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 35,196 bytes, aggregate SHA-256
-  `502162af79561e0ac45bfa8b584ab235cc17a4df461c1547cfbf0ccb2623184e`;
-- activated core: 77 lines and 4,704 bytes, with a 240-character
+- exact package: three files, 35,195 bytes, aggregate SHA-256
+  `ec5245b175bd6cebb01a757c0662884c609f52cdbd540821f73329bd5c8e371b`;
+- activated core: 76 lines and 4,561 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -141,6 +141,8 @@ Completion evidence, updated 2026-08-14:
   JSON-double-quoted user-defined portable metadata keys. The current
   cumulative executable delta is 10,410 bytes after consolidating duplicate
   diagnostic paths without dropping contract fixtures;
+- empty and comment-only metadata hardening added 142 executable bytes. The
+  cumulative executable delta is 10,552 bytes, and omission remains valid;
 - canonical subset v2 leaves only `name` unquoted. Every other top-level
   string and every user-defined portable metadata key and value uses one-line
   JSON double quotes.
@@ -187,6 +189,7 @@ Completion evidence, updated 2026-08-14:
   accepts the exact Hermes config extension only in explicit extension mode
   with double-quoted key-led sequence items and required descriptions, and
   rejects sequence markers and unquoted user-defined keys in portable metadata,
+  rejects bare and comment-only metadata while accepting omission,
   ignores link syntax inside Markdown code, validates canonical single-line
   reference destinations, warns when complex Markdown requires official
   coverage, detects POSIX, container, Windows, file URI, and shebang-local

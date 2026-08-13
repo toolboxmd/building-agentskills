@@ -41,9 +41,9 @@ Record job and value, triggers and close near misses, inputs and outputs, observ
 
 Start with `SKILL.md`. Add only evidenced support: always-needed rules inline; conditional knowledge in `references/`; repeated deterministic work or gates in `scripts/`; output inputs in `assets/`; sidecars for a stated target. Keep comparative evals outside. Add package tests only for a bundled script or distribution contract. Never add speculative directories.
 
-Leave only the exact `name` slug unquoted. JSON-quote all other top-level strings and every user-defined portable `metadata` key and value. Describe capability, triggers, and exclusions, not workflow. Keep decisions, evidence, three answers, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
+Leave only the exact `name` slug unquoted. JSON-quote all other top-level strings and each portable `metadata` key and value. Omit empty `metadata`. Describe capability, triggers, and exclusions, not workflow. Keep decisions, evidence, three answers, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
 
-Use `metadata.hermes.config` only for an explicit Hermes target and pass `--allow-hermes-metadata`. Leave `hermes`, `config`, `key`, `description`, `default`, and `prompt` names unquoted. Start each item with `- key: "..."` and JSON-quote every supplied value. Do not call Hermes nesting portable core.
+Explicit `metadata.hermes.config`: pass `--allow-hermes-metadata`; keep `hermes`, `config`, `key`, `description`, `default`, and `prompt` unquoted; start items with `- key: "..."`; JSON-quote values. It is not portable core.
 
 ### 5. Make scripts portable
 
@@ -71,7 +71,6 @@ Report the canonical check and official-validator availability/result separately
 ## Gotchas
 
 - A passing validator proves mechanics, not usefulness or triggering.
-- JSON-quote portable metadata keys and values; Hermes nesting is opt-in.
 - An always-read reference belongs in activated-core cost even when stored in another file.
 - Sidecars are platform metadata, not portable invocation guarantees.
 - Rehearse executable snippets exactly as written and rerun checks after the final deletion pass.

@@ -57,7 +57,9 @@
     "quoteOnlyCanonicalReason": "Exact-HEAD review replaced partial implicit-YAML classification with JSON-double-quoted generated strings, mapping-only portable metadata, and parity-aware shell-continuation normalization.",
     "portableMetadataKeyExecutableDeltaBytes": 273,
     "portableMetadataKeyReason": "Exact-HEAD review required JSON-double-quoted user-defined portable metadata keys so YAML cannot implicitly type boolean, date, or numeric-looking keys.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10410,
+    "emptyMetadataExecutableDeltaBytes": 142,
+    "emptyMetadataReason": "Exact-HEAD review required bare and comment-only metadata blocks to fail while omission remains valid.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10552,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -71,22 +73,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "502162af79561e0ac45bfa8b584ab235cc17a4df461c1547cfbf0ccb2623184e",
+    "aggregateSha256": "ec5245b175bd6cebb01a757c0662884c609f52cdbd540821f73329bd5c8e371b",
     "fileCount": 3,
-    "packageBytes": 35196,
+    "packageBytes": 35195,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4704,
-      "lines": 77,
+      "bytes": 4561,
+      "lines": 76,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4704,
-        "sha256": "7bda018a332876061ed250caebecae84f9af618306f122bfc18620da3b8b0f44"
+        "bytes": 4561,
+        "sha256": "3ab17ed5ee8358d9c9d3c1b43d1c4d63c1eda61dfe9f9fec8d7fcea75a9ffa85"
       },
       {
         "path": "agents/openai.yaml",
@@ -95,8 +97,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 30276,
-        "sha256": "2eecd8817c7881a5f77ffdb9dbf4c0ea630298e488bb77c337dd482939a97b32"
+        "bytes": 30418,
+        "sha256": "0845817fad8c75926b23972c26bb5545659015ddd8142a22c99235a6105945a1"
       }
     ]
   },
@@ -114,6 +116,7 @@
       "name is the sole unquoted scalar while all other top-level strings require one-line JSON double quotes",
       "the quote-only contract rejects plain prose, dates, hexadecimal, octal, collections, booleans, nulls, numbers, special floats, single quotes, block scalars, tags, nested scalar syntax, and invalid quotes without partial implicit-YAML classification",
       "portable metadata uses JSON-double-quoted user-defined keys and values with no sequence markers, while explicit Hermes mode keeps fixed schema fields unquoted and requires double-quoted user-provided values",
+      "bare and comment-only metadata blocks fail while omitting optional metadata passes",
       "canonical Markdown links ignore code and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",
