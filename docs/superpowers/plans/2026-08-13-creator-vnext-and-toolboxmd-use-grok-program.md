@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 45,941 bytes, aggregate SHA-256
-  `99bfa6c33cf8229521b8d2883f9ed6a96067ab1e9196ad90a8ce6999ccf28d77`;
+- exact package: three files, 45,976 bytes, aggregate SHA-256
+  `2515fc3495597e4b8442ebaab997414df115dbf70af864b5db457d617b135eed`;
 - activated core: 74 lines and 3,973 bytes, with a 226-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -290,6 +290,13 @@ Completion evidence, updated 2026-08-14:
   portable punctuation and after an unquoted comma within the same path
   component. A bounded wording pass removed 67 activated-core bytes without
   changing the workflow. The 46,000-byte cap and all budgets remain unchanged;
+- the next exact-HEAD correction adds 35 executable bytes and brings the
+  cumulative delta to 21,921 bytes. Direct Windows drive-user paths accept
+  slash or backslash independently around `Users`, the exact `127.0.0.1` file
+  URI authority is local, and single-line CommonMark reference labels collapse
+  internal whitespace before case-insensitive matching. POSIX roots remain
+  case-sensitive and other file authorities remain remote. The 46,000-byte cap
+  and all budgets remain unchanged;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.

@@ -115,7 +115,9 @@
     "iconCaseAndTildeSegmentReason": "Exact-HEAD review required host-independent exact component spelling for declared sidecar icon paths and required embedded tilde characters in ordinary static segments to remain within task-relative helper detection. Independent audit kept icon symlink loops as structured package-level failures without resolving them. A bounded deletion pass removed 169 activated-core bytes without changing the workflow; only a standalone leading tilde home segment remains excluded.",
     "scriptComponentBoundaryExecutableDeltaBytes": 162,
     "scriptComponentBoundaryReason": "Exact-HEAD review required the target scripts component to match case-insensitively after one lexical token boundary without matching scripts as a substring of an ordinary path component, including quoted portable punctuation and an unquoted comma inside a path component. A bounded wording pass removed 67 activated-core bytes without changing the workflow; budgets are unchanged.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21886,
+    "pathAndReferenceNormalizationExecutableDeltaBytes": 35,
+    "pathAndReferenceNormalizationReason": "Exact-HEAD review required mixed direct Windows user-path separators, the exact IPv4 loopback authority for local file URIs, and internal-whitespace normalization for single-line CommonMark reference labels.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21921,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -129,9 +131,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "99bfa6c33cf8229521b8d2883f9ed6a96067ab1e9196ad90a8ce6999ccf28d77",
+    "aggregateSha256": "2515fc3495597e4b8442ebaab997414df115dbf70af864b5db457d617b135eed",
     "fileCount": 3,
-    "packageBytes": 45941,
+    "packageBytes": 45976,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -153,8 +155,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 41752,
-        "sha256": "2948136c36230e93a56d20ef4f15e793bd84d7a4f1ed4abb43f9ab1a5f3857df"
+        "bytes": 41787,
+        "sha256": "93a62614be4564a66494499f9fd924b0c5f17960569b8de6c0c1cbff7a277047"
       }
     ]
   },
@@ -172,7 +174,7 @@
       "Codex interface, policy, and dependencies sections are independently optional in general mode; present interface strings require non-whitespace text, and creation mode accepts an absent optional sidecar but requires both UI fields when one is present",
       "exact-case relative file and directory links plus anchors pass, while case-only component mismatches fail independent of host filesystem casing and missing or escaping targets retain their diagnostics",
       "malformed HTTP and file URI destinations each produce one stable URI_SYNTAX package issue while valid remote and local destinations retain their prior behavior",
-      "single-line CommonMark reference definitions support zero to three leading spaces, angle-bracket destinations, and optional titles while four-space indented code is masked and missing or escaping targets fail",
+      "single-line CommonMark reference definitions support zero to three leading spaces, angle-bracket destinations, optional titles, and case-insensitive labels with collapsed internal whitespace while four-space indented code is masked and missing or escaping targets fail",
       "skill names containing reserved provider strings fail",
       "every top-level string, including name, requires one-line JSON double quotes before slug, reserved-name, length, and directory checks",
       "YAML-invalid lone and paired JSON surrogate escapes fail through the shared canonical scalar decoder across top-level fields, portable metadata keys and values, Hermes values, and OpenAI sidecars while literal Unicode scalar values and escaped backslash text remain valid",
@@ -183,7 +185,7 @@
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
       "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus inline, indented, and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "blank lines retain root, blockquote, list, and nested blockquote-list fence state without waiving required blockquote markers or nonblank container exits",
-      "common POSIX, container, file URI, and Windows workstation paths are detected, including percent-decoded lexically bounded local single-slash or empty/localhost file URI paths with mixed-separator Windows drive-user roots, case-insensitive file schemes and localhost authorities, shebangs, and direct case-insensitive Windows drive-user roots, while decoded POSIX root spelling stays case-sensitive and embedded file text, remote file authorities, and remote or anchor destinations remain nonlocal",
+      "common POSIX, container, file URI, and Windows workstation paths are detected, including percent-decoded lexically bounded local single-slash or empty/localhost/127.0.0.1 file URI paths with mixed-separator Windows drive-user roots, case-insensitive file schemes and localhost authorities, shebangs, and direct case-insensitive mixed-separator Windows drive-user roots, while decoded POSIX root spelling stays case-sensitive and embedded file text, remote file authorities, and remote or anchor destinations remain nonlocal",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, invalid UTF-8 Python remains a single package-validation error before AST parsing, and binary assets are skipped",
       "executable or shebang helpers outside scripts/ fail canonical package policy while outside non-executable data without a shebang remains allowed",
       "Python helper syntax below scripts/ is checked through AST while non-Python helpers there require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",

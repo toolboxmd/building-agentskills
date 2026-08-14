@@ -36,10 +36,10 @@ SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
 SCRIPT_CONTEXT_HINT = f"{SCRIPT_ROOT_HINT} in a closed sh/bash/shell fence"
 LOCAL_ROOTS = "(?:Users|home|workspace|root)"
 LOCAL_PATH_RE = re.compile(
-    rf"(?<![A-Za-z0-9:/])(?:/{LOCAL_ROOTS}/|(?i:[A-Za-z]:(?:/Users/|(?:\\)+Users(?:\\)+)))[^\s'\"`]+"
+    rf"(?<![A-Za-z0-9:/])(?:/{LOCAL_ROOTS}/|(?i:[A-Za-z]:[/\\]+Users[/\\]+))[^\s'\"`]+"
 )
 URI_RE = re.compile(r'''(?i:file:)[^\s'"`<>()]+''')
-LOCAL_FILE_URI_RE = re.compile(r'''(?<![A-Za-z0-9+./:#?=&_-])(?i:file:(?:/(?!/)|//(?:localhost)?/))[^\s'"`<>()]+''')
+LOCAL_FILE_URI_RE = re.compile(r'''(?<![A-Za-z0-9+./:#?=&_-])(?i:file:(?:/(?!/)|//(?:localhost|127\.0\.0\.1)?/))[^\s'"`<>()]+''')
 REMOTE_RE = re.compile(r'''(?i:(?<![a-z0-9+./:-])(?:(?!file:|[a-z]:[/\\])[a-z][a-z0-9+.-]*:|//)[^\s'"`]+|#[^\s'"`]*file:[^\s'"`]*)''')
 LOCAL_FILE_PATH_RE = re.compile(rf"^/(?:{LOCAL_ROOTS}/|(?i:[A-Za-z]:[/\\]+Users[/\\]+))")
 PROCESS_NAMES = {"README.md", "CHANGELOG.md", "STATUS.md", "DESIGN.md", "NOTES.md"}
@@ -507,9 +507,9 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         for pattern in (LINK_RE, REFERENCE_DEFINITION_RE):
             for match in pattern.finditer(canonical_markdown):
                 validate_destination(match.group(1), relative, path.parent)
-        definitions = {match.group(0).lstrip().split("]:", 1)[0][1:].casefold() for match in REFERENCE_DEFINITION_RE.finditer(canonical_markdown)}
+        definitions = {" ".join(match.group(0).lstrip().split("]:", 1)[0][1:].split()).casefold() for match in REFERENCE_DEFINITION_RE.finditer(canonical_markdown)}
         for match in re.finditer(r"(?<!!)\[([^]\n]+)\]\[([^]\n]+)\]", canonical_markdown):
-            if match.group(2).casefold() not in definitions:
+            if " ".join(match.group(2).split()).casefold() not in definitions:
                 problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "undefined reference label needs an official validator", "warning"))
         residual = LINK_RE.sub("", REFERENCE_DEFINITION_RE.sub("", canonical_markdown))
         residual = re.sub(r"(?<!!)\[[^]\n]+\]\[[^]\n]+\]", "", residual)

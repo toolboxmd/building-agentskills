@@ -190,6 +190,13 @@ after an unquoted comma within the same path component. A bounded wording pass
 removed 67 activated-core bytes without changing the workflow. The cumulative
 executable delta is 21,886 bytes; the 46,000-byte cap
 and all budgets remain unchanged.
+The next exact-HEAD correction adds 35 executable bytes. Direct Windows
+drive-user paths accept slash or backslash independently around `Users`, the
+exact `127.0.0.1` file URI authority is local, and single-line CommonMark
+reference labels collapse internal whitespace before case-insensitive
+matching. POSIX roots remain case-sensitive and other file authorities remain
+remote. The cumulative executable delta is 21,921 bytes; the 46,000-byte cap
+and all budgets remain unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -219,6 +226,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 45,941 bytes: 3,973 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 41,752-byte read-only checker. The executable is not
+The frozen package is 45,976 bytes: 3,973 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 41,787-byte read-only checker. The executable is not
 loaded as activated core.

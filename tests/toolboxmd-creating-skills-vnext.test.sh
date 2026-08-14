@@ -757,6 +757,22 @@ cat >> "$test_tmp/reference-link-fixture/SKILL.md" <<'EOF'
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/reference-link-fixture" > "$test_tmp/reference-link.json"
 
+make_fixture "$test_tmp/reference-whitespace-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/reference-whitespace-fixture/references"
+printf '# Guide\n' > "$test_tmp/reference-whitespace-fixture/references/guide.md"
+cat >> "$test_tmp/reference-whitespace-fixture/SKILL.md" <<'EOF'
+
+[Spaces][GUIDE link]
+[Tabs][tab label]
+
+   [guide  link]: <references/guide.md> "Collapsed spaces"
+EOF
+printf '   [tab\t\tlabel]: <references/guide.md> "Collapsed tabs"\n' >> "$test_tmp/reference-whitespace-fixture/SKILL.md"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/reference-whitespace-fixture" > "$test_tmp/reference-whitespace.json"
+reference_whitespace_exit=$?
+set -e
+
 for name in exact-case-links case-mismatch-links; do
   make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
   mkdir -p "$test_tmp/$name/references" "$test_tmp/$name/Examples"
@@ -1694,6 +1710,13 @@ file_uri_local_authority_exit=$?
 set -e
 [[ $file_uri_local_authority_exit -eq 1 ]]
 
+make_fixture "$test_tmp/file-uri-loopback-authority" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\n[Loopback home](file://127.0.0.1/home/alice/input.json) and [loopback drive](file://127.0.0.1/C:/USERS/Alice/work/file.txt).\n' >> "$test_tmp/file-uri-loopback-authority/SKILL.md"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/file-uri-loopback-authority" > "$test_tmp/file-uri-loopback-authority.json"
+file_uri_loopback_exit=$?
+set -e
+
 make_fixture "$test_tmp/file-uri-remote-authority" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 printf '\n[Remote home](file://example.com/home/alice/input.json), file://files.example.com/Users/Alice/work/file.txt, and file://localhost/Home/alice/input.json.\n' >> "$test_tmp/file-uri-remote-authority/SKILL.md"
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/file-uri-remote-authority" > "$test_tmp/file-uri-remote-authority.json"
@@ -1776,19 +1799,20 @@ for name in file-uri-windows-empty file-uri-windows-localhost file-uri-windows-m
 done
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/file-uri-windows-safe" > "$test_tmp/file-uri-windows-safe.json"
 
-for name in windows-forward windows-escaped windows-lowercase-backslash windows-uppercase-forward; do
+for name in windows-forward windows-escaped windows-lowercase-backslash windows-uppercase-forward windows-mixed-backslash-forward windows-mixed-forward-backslash; do
   make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 done
 printf '\nRead C:/Users/Alice/project/input.json.\n' >> "$test_tmp/windows-forward/SKILL.md"
 printf '%s\n' '' 'Read C:\\Users\\Alice\\project\\input.json.' >> "$test_tmp/windows-escaped/SKILL.md"
 printf '%s\n' '' 'Read c:\users\alice\project\input.json.' >> "$test_tmp/windows-lowercase-backslash/SKILL.md"
 printf '\nRead C:/USERS/Alice/project/input.json.\n' >> "$test_tmp/windows-uppercase-forward/SKILL.md"
-for name in windows-forward windows-escaped windows-lowercase-backslash windows-uppercase-forward; do
+printf '%s\n' '' 'Read C:\Users/Alice\project/input.json.' >> "$test_tmp/windows-mixed-backslash-forward/SKILL.md"
+printf '%s\n' '' 'Read c:/uSeRs\Alice/project\input.json.' >> "$test_tmp/windows-mixed-forward-backslash/SKILL.md"
+for name in windows-forward windows-escaped windows-lowercase-backslash windows-uppercase-forward windows-mixed-backslash-forward windows-mixed-forward-backslash; do
   set +e
   PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
   windows_path_exit=$?
   set -e
-  [[ $windows_path_exit -eq 1 ]]
 done
 
 make_fixture "$test_tmp/web-root-link" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
@@ -1897,6 +1921,7 @@ const symlinkIcon = JSON.parse(fs.readFileSync(path.join(temporary, "symlink-ico
 const symlinkLoopIcons = ["symlink-loop-icon", "symlink-loop-icon-python39"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const titledLink = JSON.parse(fs.readFileSync(path.join(temporary, "titled-link.json")));
 const referenceLink = JSON.parse(fs.readFileSync(path.join(temporary, "reference-link.json")));
+const referenceWhitespace = JSON.parse(fs.readFileSync(path.join(temporary, "reference-whitespace.json")));
 const exactCaseLinks = JSON.parse(fs.readFileSync(path.join(temporary, "exact-case-links.json")));
 const caseMismatchLinks = JSON.parse(fs.readFileSync(path.join(temporary, "case-mismatch-links.json")));
 const symlinkLoopLink = JSON.parse(fs.readFileSync(path.join(temporary, "symlink-loop-link.json")));
@@ -1973,6 +1998,7 @@ const invalidShebang = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-
 const svgPath = JSON.parse(fs.readFileSync(path.join(temporary, "svg-local-path.json")));
 const fileUri = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-path.json")));
 const fileUriLocalAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-local-authority.json")));
+const fileUriLoopbackAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-loopback-authority.json")));
 const fileUriRemoteAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-remote-authority.json")));
 const fileUriCaseLocal = ["file-uri-uppercase-empty-authority", "file-uri-mixed-localhost"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const fileUriCaseSafe = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-case-safe.json")));
@@ -1982,7 +2008,7 @@ const encodedFileUriLocal = ["encoded-file-uri-local", "encoded-file-uri-localho
 const encodedFileUriSafe = JSON.parse(fs.readFileSync(path.join(temporary, "encoded-file-uri-safe.json")));
 const fileUriWindowsLocal = ["file-uri-windows-empty", "file-uri-windows-localhost", "file-uri-windows-mixed-forward-backslash", "file-uri-windows-mixed-backslash-forward", "file-uri-windows-mixed-localhost-one", "file-uri-windows-mixed-localhost-two"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const fileUriWindowsSafe = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-windows-safe.json")));
-const windowsPaths = ["windows-forward", "windows-escaped", "windows-lowercase-backslash", "windows-uppercase-forward"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const windowsPaths = ["windows-forward", "windows-escaped", "windows-lowercase-backslash", "windows-uppercase-forward", "windows-mixed-backslash-forward", "windows-mixed-forward-backslash"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const webRootLink = JSON.parse(fs.readFileSync(path.join(temporary, "web-root-link.json")));
 const remoteWindowsLinks = JSON.parse(fs.readFileSync(path.join(temporary, "remote-windows-links.json")));
 const localWindowsLinks = ["file-link", "windows-drive-link"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
@@ -2040,7 +2066,8 @@ assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeMalformedUri === 4
 assert(freeze.budgetRevision.caseExactLinkAndHermesKeyExecutableDeltaBytes === 524, "case-exact-link/Hermes-key executable delta changed");
 assert(freeze.budgetRevision.iconCaseAndTildeSegmentExecutableDeltaBytes === 98, "icon-case/tilde-segment executable delta changed");
 assert(freeze.budgetRevision.scriptComponentBoundaryExecutableDeltaBytes === 162, "script-component-boundary executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21886, "current executable delta changed");
+assert(freeze.budgetRevision.pathAndReferenceNormalizationExecutableDeltaBytes === 35, "path/reference normalization executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21921, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -2064,7 +2091,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45941, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45976, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -2086,6 +2113,7 @@ assert(symlinkLoopIcons.every(result => result.status === "fail" && result.issue
 assert(iconCaseMismatches.every(result => result.status === "fail" && result.issues.some(item => item.code === "OPENAI_ICON")), "case-only icon path component mismatches must fail deterministically");
 assert(titledLink.status === "pass" && titledLink.errorCount === 0, "valid local link with optional title must pass");
 assert(referenceLink.status === "pass" && referenceLink.errorCount === 0, "valid reference definition must pass");
+assert(referenceWhitespace.status === "pass" && referenceWhitespace.warningCount === 0, "reference labels must collapse internal ASCII whitespace before case-insensitive matching");
 assert(exactCaseLinks.status === "pass", "exact-case file, directory, and anchor links must pass");
 assert(caseMismatchLinks.status === "fail" && caseMismatchLinks.issues.filter(item => item.code === "BROKEN_LINK").length === 2, "case-only file and directory link mismatches must fail deterministically");
 assert(symlinkLoopLink.status === "fail" && symlinkLoopLink.issues.some(item => item.code === "SYMLINK") && symlinkLoopLink.issues.some(item => item.code === "BROKEN_LINK"), "symlink-loop links must remain structured failures without expansion");
@@ -2192,7 +2220,7 @@ assert(invalidPython.status === "fail" && invalidPython.issues.filter(item => it
 assert(validPython.status === "pass" && !validPython.issues.some(item => item.code === "PYTHON_SYNTAX"), "valid Python helpers must retain AST acceptance");
 assert(invalidShebang.issues.some(item => item.code === "UTF8"), "invalid UTF-8 shebang file must fail without executable mode");
 assert(svgPath.issues.some(item => item.code === "LOCAL_PATH") && fileUri.issues.some(item => item.code === "LOCAL_PATH"), "decodable asset and file URI path checks changed");
-assert([fileUri, fileUriLocalAuthority].every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "empty and localhost file URI authorities must remain local");
+assert([fileUri, fileUriLocalAuthority, fileUriLoopbackAuthority].every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "empty, localhost, and IPv4 loopback file URI authorities must remain local");
 assert(fileUriRemoteAuthority.status === "pass" && !fileUriRemoteAuthority.issues.some(item => item.code === "LOCAL_PATH"), "remote file URI authorities must remain nonlocal");
 assert(fileUriCaseLocal.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "file URI scheme and localhost matching must be case-insensitive");
 assert(fileUriCaseSafe.status === "pass" && !fileUriCaseSafe.issues.some(item => item.code === "LOCAL_PATH"), "remote file authorities and wrong-case POSIX roots must remain nonlocal");
