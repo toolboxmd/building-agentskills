@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-"""Read-only canonical ToolboxMD package checker."""
-
-from __future__ import annotations
-
 import argparse
 import ast
 import hashlib
@@ -69,7 +65,9 @@ def split_frontmatter(text: str) -> tuple[list[str], str]:
 
 def canonical_scalar(raw: str) -> str:
     value = raw.strip()
-    if len(value) < 2 or not value.startswith('"') or not value.endswith('"'):
+    if value[:1] != '"' or value[-1:] != '"':
+        raise ValueError
+    if re.search(r"(?<!\\)(?:\\\\)*\\u(?i:d[89a-f][0-9a-f]{2})", value):
         raise ValueError
     return json.loads(value)
 

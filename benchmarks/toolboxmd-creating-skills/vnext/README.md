@@ -108,6 +108,12 @@ to catch one-or-more parent-relative helper prefixes at the existing token
 boundary and empty or case-insensitive localhost file URI authorities. Embedded
 parent segments and remote file authorities remain outside those checks. The
 cumulative executable delta is 19,311 bytes.
+The following exact-HEAD correction rejects YAML-invalid lone and paired JSON
+surrogate escapes through the shared canonical scalar decoder while literal
+Unicode and escaped backslash text remain valid. Reusing the decoder and
+deleting redundant runtime annotation and module declarations reduces the
+executable by 25 bytes, bringing the cumulative executable delta to 19,286
+bytes.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -133,6 +139,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 43,915 bytes: 4,522 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 39,177-byte read-only checker. The executable is not
+The frozen package is 43,934 bytes: 4,566 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 39,152-byte read-only checker. The executable is not
 loaded as activated core.

@@ -41,7 +41,7 @@ Record job/value, triggers/near misses, inputs/outputs, mistakes, constraints, a
 
 Draft `SKILL.md` first. Keep core rules inline, conditional knowledge in `references/`, deterministic work in `scripts/`, output inputs in `assets/`, target metadata in sidecars, and evals external.
 
-JSON-quote every top-level string, including exact `name`, and every portable `metadata` key/value; omit empty `metadata`. Description states capability, triggers, exclusions. Keep decisions, evidence, procedure, I/O, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
+JSON-quote every top-level string, including exact `name`, and every portable `metadata` key/value; omit empty `metadata`. Use literal Unicode, not surrogate escapes. Description states capability, triggers, exclusions. Keep decisions, evidence, procedure, I/O, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
 
 Generated Codex sidecars require nonempty `display_name` and `short_description`; existing sidecars may use any supported nonempty interface subset.
 

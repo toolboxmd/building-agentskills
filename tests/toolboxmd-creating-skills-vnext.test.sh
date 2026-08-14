@@ -642,6 +642,83 @@ for name in angle-less-than-description angle-greater-than-description; do
 done
 PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --json "$test_tmp/angle-safe-description" > "$test_tmp/angle-safe-description.json"
 
+for name in surrogate-high-description surrogate-low-description surrogate-pair-metadata-value surrogate-pair-metadata-key; do
+  mkdir -p "$test_tmp/$name"
+done
+cat > "$test_tmp/surrogate-high-description/SKILL.md" <<'EOF'
+---
+name: "surrogate-high-description"
+description: "Reject a lone high surrogate \ud800 escape."
+---
+
+# High surrogate
+EOF
+cat > "$test_tmp/surrogate-low-description/SKILL.md" <<'EOF'
+---
+name: "surrogate-low-description"
+description: "Reject a lone low surrogate \udc00 escape."
+---
+
+# Low surrogate
+EOF
+cat > "$test_tmp/surrogate-pair-metadata-value/SKILL.md" <<'EOF'
+---
+name: "surrogate-pair-metadata-value"
+description: "Reject surrogate escapes in portable metadata values."
+metadata:
+  "emoji": "\ud83d\ude00"
+---
+
+# Surrogate pair metadata value
+EOF
+cat > "$test_tmp/surrogate-pair-metadata-key/SKILL.md" <<'EOF'
+---
+name: "surrogate-pair-metadata-key"
+description: "Reject surrogate escapes in portable metadata keys."
+metadata:
+  "\ud83d\ude00": "emoji"
+---
+
+# Surrogate pair metadata key
+EOF
+make_fixture "$test_tmp/surrogate-pair-sidecar" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/surrogate-pair-sidecar/agents"
+cat > "$test_tmp/surrogate-pair-sidecar/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Surrogate \ud83d\ude00"
+  short_description: "Reject escaped surrogate pairs here."
+EOF
+surrogate_exits=()
+for name in surrogate-high-description surrogate-low-description surrogate-pair-metadata-value surrogate-pair-metadata-key surrogate-pair-sidecar; do
+  set +e
+  PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
+  surrogate_exits+=("$?")
+  set -e
+done
+if [[ "${surrogate_exits[*]}" != "1 1 1 1 1" ]]; then
+  printf 'FAIL: YAML-invalid surrogate escapes passed: %s\n' "${surrogate_exits[*]}" >&2
+  exit 1
+fi
+
+mkdir -p "$test_tmp/unicode-safe/agents"
+cat > "$test_tmp/unicode-safe/SKILL.md" <<'EOF'
+---
+name: "unicode-safe"
+description: "Create a portable skill with literal Unicode 😀 content."
+metadata:
+  "emoji": "😀"
+  "literal_escape": "\\ud800"
+---
+
+# Unicode-safe skill
+EOF
+cat > "$test_tmp/unicode-safe/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Unicode 😀"
+  short_description: "Create a Unicode-safe skill package."
+EOF
+PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --creation-mode --warnings-as-errors --json "$test_tmp/unicode-safe" > "$test_tmp/unicode-safe.json"
+
 mkdir -p "$test_tmp/unquoted-date-description" "$test_tmp/quoted-name" "$test_tmp/portable-metadata-sequence" "$test_tmp/portable-hermes-sequence" "$test_tmp/hermes-config-sequence" "$test_tmp/hermes-child-sequence" "$test_tmp/unquoted-portable-metadata" "$test_tmp/quoted-portable-metadata-keys"
 cat > "$test_tmp/unquoted-date-description/SKILL.md" <<'EOF'
 ---
@@ -1385,6 +1462,12 @@ const listDescription = JSON.parse(fs.readFileSync(path.join(temporary, "list-de
 const quotedDescription = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-description.json")));
 const angleDescriptions = ["angle-less-than-description", "angle-greater-than-description"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const angleSafeDescription = JSON.parse(fs.readFileSync(path.join(temporary, "angle-safe-description.json")));
+const surrogateHigh = JSON.parse(fs.readFileSync(path.join(temporary, "surrogate-high-description.json")));
+const surrogateLow = JSON.parse(fs.readFileSync(path.join(temporary, "surrogate-low-description.json")));
+const surrogateMetadataValue = JSON.parse(fs.readFileSync(path.join(temporary, "surrogate-pair-metadata-value.json")));
+const surrogateMetadataKey = JSON.parse(fs.readFileSync(path.join(temporary, "surrogate-pair-metadata-key.json")));
+const surrogateSidecar = JSON.parse(fs.readFileSync(path.join(temporary, "surrogate-pair-sidecar.json")));
+const unicodeSafe = JSON.parse(fs.readFileSync(path.join(temporary, "unicode-safe.json")));
 const unquotedDateDescription = JSON.parse(fs.readFileSync(path.join(temporary, "unquoted-date-description.json")));
 const quotedName = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-name.json")));
 const nameForms = ["ordinary-name", "true", "null", "123", "2026-08-14"];
@@ -1481,7 +1564,8 @@ assert(freeze.budgetRevision.listContainerBlankLineExecutableDeltaBytes === 128,
 assert(freeze.budgetRevision.windowsAndCreationModeExecutableDeltaBytes === 119, "Windows/creation-mode executable delta changed");
 assert(freeze.budgetRevision.remoteLinkAndWhitespaceExecutableDeltaBytes === 277, "remote-link/whitespace executable delta changed");
 assert(freeze.budgetRevision.parentRelativeAndFileAuthorityExecutableDeltaBytes === 26, "parent-relative/file-authority executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19311, "current executable delta changed");
+assert(freeze.budgetRevision.unicodeSurrogateExecutableDeltaBytes === -25, "Unicode-surrogate executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19286, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1505,7 +1589,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43915, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43934, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1529,6 +1613,11 @@ assert(quotedDescription.status === "pass", "quoted collection-looking descripti
 assert(angleDescriptions.every(result => result.status === "fail" && result.issues.some(item => item.code === "DESCRIPTION_ANGLE_BRACKET")), "each description angle bracket must fail without skills-ref");
 assert(angleDescriptions.every(result => result.coverage.officialSkillsRef.status === "not_available"), "angle-bracket checks must not depend on skills-ref");
 assert(angleSafeDescription.status === "pass", "ordinary quoted description text must remain valid");
+assert([surrogateHigh, surrogateLow, surrogateMetadataValue].every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_STRING")), "surrogate escapes in canonical scalar values must fail without skills-ref");
+assert(surrogateMetadataKey.status === "fail" && surrogateMetadataKey.issues.some(item => item.code === "METADATA_KEY"), "surrogate escapes in portable metadata keys must fail");
+assert(surrogateSidecar.status === "fail" && surrogateSidecar.issues.some(item => item.code === "OPENAI_SHAPE"), "surrogate escapes in sidecar strings must fail");
+assert([surrogateHigh, surrogateLow, surrogateMetadataValue, surrogateMetadataKey, surrogateSidecar].every(result => result.coverage.officialSkillsRef.status === "not_available"), "surrogate checks must not depend on skills-ref");
+assert(unicodeSafe.status === "pass" && unicodeSafe.warningCount === 0, "literal Unicode scalar values must remain valid across canonical surfaces");
 assert(unquotedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_STRING")), "all unquoted description scalars must fail");
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
 assert(supportedPartialSidecars.every(result => result.status === "pass"), "supported partial sidecars are rejected");
@@ -1611,6 +1700,7 @@ assert(!/\bgit\s+(?:status|rev-parse|diff|log)\b/i.test(skillText), "creator emb
 assert(/Inspect Git state only when .*user requested Git delivery/.test(skillText), "conditional Git boundary missing");
 assert(skillText.includes('PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --creation-mode --warnings-as-errors "<target-skill-dir>"'), "strict creation-mode creator command missing");
 assert(skillText.includes("Task- and parent-relative helpers fail"), "parent-relative helper guidance missing");
+assert(skillText.includes("Use literal Unicode, not surrogate escapes"), "Unicode scalar guidance missing");
 assert(skillText.includes("--script-syntax-checked '<helper-path>=<lowercase-sha256>'"), "exact-digest non-Python syntax attestation flow missing");
 assert(skillText.includes("Generated Codex sidecars require nonempty `display_name` and `short_description`"), "creator sidecar policy missing");
 assert(/^\s{2}display_name:\s+".+"$/m.test(ownSidecar) && /^\s{2}short_description:\s+".+"$/m.test(ownSidecar), "creator sidecar must retain nonempty UI fields");

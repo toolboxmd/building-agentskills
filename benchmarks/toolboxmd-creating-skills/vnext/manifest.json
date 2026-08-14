@@ -89,7 +89,9 @@
     "remoteLinkAndWhitespaceReason": "Independent exact-current audit required remote and anchor Markdown destinations to hide URL query and fragment text from workstation-path scanning while file and drive-root links remain local, and required present sidecar interface strings to contain non-whitespace text.",
     "parentRelativeAndFileAuthorityExecutableDeltaBytes": 26,
     "parentRelativeAndFileAuthorityReason": "Exact-HEAD review required one-or-more parent-relative helper prefixes at the existing lexical token boundary and local file URI authorities with empty or case-insensitive localhost hosts, while embedded parent segments and remote file authorities stay outside those checks.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 19311,
+    "unicodeSurrogateExecutableDeltaBytes": -25,
+    "unicodeSurrogateReason": "Exact-HEAD review required the shared canonical scalar decoder to reject YAML-invalid JSON surrogate escapes across frontmatter, metadata, and sidecars while literal Unicode and escaped backslash text remain valid. Reusing that decoder and deleting redundant runtime annotation and module declarations reduced executable bytes.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 19286,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -103,22 +105,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "7f3b4d512258a2262193fe19af086f1a59bd606e0fed52020617004586fd3da0",
+    "aggregateSha256": "e438ab97147a56165ab3e2b40cdb439077d6d3bed1dada3d9a6cce0c3fda1efd",
     "fileCount": 3,
-    "packageBytes": 43915,
+    "packageBytes": 43934,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4522,
+      "bytes": 4566,
       "lines": 78,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4522,
-        "sha256": "1c04424605bec28b85da616833292cfccfc23347d5659e672b7717e29ae694ab"
+        "bytes": 4566,
+        "sha256": "1a07c08196c3529e98b321e7eae3d8d2395d7addcc52ac42da86f1ca3a4c233e"
       },
       {
         "path": "agents/openai.yaml",
@@ -127,8 +129,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 39177,
-        "sha256": "01b5659f839780525366bacbc31c9fb2bc429e939b3ff67694b22e69b553e075"
+        "bytes": 39152,
+        "sha256": "f217a4eedefea5382fc18e7027441186203c71678131b842cbb3786875d56b65"
       }
     ]
   },
@@ -148,6 +150,7 @@
       "single-line CommonMark reference-definition destinations support angle brackets and optional titles while missing and escaping targets fail",
       "skill names containing reserved provider strings fail",
       "every top-level string, including name, requires one-line JSON double quotes before slug, reserved-name, length, and directory checks",
+      "YAML-invalid lone and paired JSON surrogate escapes fail through the shared canonical scalar decoder across top-level fields, portable metadata keys and values, Hermes values, and OpenAI sidecars while literal Unicode scalar values and escaped backslash text remain valid",
       "the quote-only contract rejects plain prose, dates, hexadecimal, octal, collections, booleans, nulls, numbers, special floats, single quotes, block scalars, tags, nested scalar syntax, and invalid quotes without partial implicit-YAML classification",
       "description angle brackets fail the built-in host-validator compatibility check even when skills-ref is unavailable, while ordinary quoted prose passes",
       "portable metadata uses JSON-double-quoted user-defined keys and values with no sequence markers, while explicit Hermes mode keeps fixed schema fields unquoted and requires double-quoted user-provided values",
