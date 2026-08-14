@@ -155,6 +155,14 @@ deletion pass removed 87 activated-core bytes without changing the workflow.
 The executable avoids runtime-evaluated PEP 604 optional annotations so system
 Python 3.9 reaches the CLI. The cumulative executable delta is 20,507 bytes;
 package and activated-core budgets remain unchanged.
+The latest exact-HEAD correction adds 595 executable bytes. Malformed HTTP and
+file URI destinations now produce one stable `URI_SYNTAX` package issue across
+Markdown masking, destination validation, and local-file classification rather
+than an uncaught `urlsplit` traceback. A readable deletion pass removed 109
+activated-core bytes without changing the workflow. The cumulative executable
+delta is 21,102 bytes and the package cap is 46,000 bytes. Description,
+activated-core, file, reference, eval, and script budgets remain unchanged, and
+no lower package-cost, superiority, or promotion claim is made.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -184,6 +192,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 44,941 bytes: 4,352 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 40,373-byte read-only checker. The executable is not
+The frozen package is 45,427 bytes: 4,243 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 40,968-byte read-only checker. The executable is not
 loaded as activated core.

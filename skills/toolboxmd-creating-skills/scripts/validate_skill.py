@@ -406,13 +406,24 @@ def validate_markdown_script_paths(content: str, relative: str, problems: list[d
         add("MARKDOWN_FENCE", opener_line, "opens a recognized shell fence without a closing fence")
 
 
+def safe_urlsplit(raw: str, relative: str, problems: list[dict[str, str]]):
+    try:
+        return urlsplit(raw)
+    except ValueError:
+        malformed = issue("URI_SYNTAX", relative, f"malformed URI: {raw}")
+        if malformed not in problems:
+            problems.append(malformed)
+
+
 def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None:
     resolved_root = root.resolve()
 
     def validate_destination(raw: str, relative: str, parent: Path) -> None:
         if raw.startswith("<"):
             raw = raw[1:-1]
-        parsed = urlsplit(raw)
+        parsed = safe_urlsplit(raw, relative, problems)
+        if parsed is None:
+            return
         if parsed.scheme or raw.startswith(("#", "mailto:", "//")):
             return
         if raw.startswith("/"):
@@ -438,10 +449,13 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         searchable = content
         if path.suffix.lower() == ".md":
             def mask_destination(match):
-                raw = match.group(1).lstrip("<")
+                raw = match.group(1).strip("<>")
                 if re.match(r"(?i)^[a-z]:[/\\]", raw):
                     return match.group(0)
-                scheme = urlsplit(raw).scheme
+                parsed = safe_urlsplit(raw, relative, problems)
+                if parsed is None:
+                    return match.group(0).replace(match.group(1), "")
+                scheme = parsed.scheme
                 if raw.startswith(("/", "#")) or (scheme and scheme != "file"):
                     return match.group(0).replace(match.group(1), "")
                 return match.group(0)
@@ -449,10 +463,8 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
             for pattern in (LINK_RE, REFERENCE_DEFINITION_RE):
                 searchable = pattern.sub(mask_destination, searchable)
         searchable = REMOTE_RE.sub("", searchable)
-        local_uri = any(
-            LOCAL_FILE_PATH_RE.match(unquote(urlsplit(raw).path))
-            for raw in LOCAL_FILE_URI_RE.findall(searchable)
-        )
+        parsed_uris = (safe_urlsplit(raw, relative, problems) for raw in LOCAL_FILE_URI_RE.findall(searchable))
+        local_uri = any(parsed is not None and LOCAL_FILE_PATH_RE.match(unquote(parsed.path)) for parsed in parsed_uris)
         searchable = URI_RE.sub("", searchable)
         if LOCAL_PATH_RE.search(searchable) or local_uri:
             problems.append(issue("LOCAL_PATH", relative, "workstation path"))

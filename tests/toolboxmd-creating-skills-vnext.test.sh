@@ -51,7 +51,7 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-skill-lines 150 \
   --max-skill-bytes 10500 \
   --max-files 3 \
-  --max-package-bytes 45000 \
+  --max-package-bytes 46000 \
   --max-reference-files 0 \
   --max-eval-files 0 \
   --max-script-files 1 \
@@ -68,7 +68,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json \
   --max-skill-lines 150 \
   --max-skill-bytes 10500 \
   --max-files 3 \
-  --max-package-bytes 45000 \
+  --max-package-bytes 46000 \
   --max-reference-files 0 \
   --max-eval-files 0 \
   --max-script-files 1 \
@@ -627,6 +627,25 @@ cat >> "$test_tmp/reference-link-fixture/SKILL.md" <<'EOF'
    [guide]: <references/guide.md> "Read the guide"
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/reference-link-fixture" > "$test_tmp/reference-link.json"
+
+for name in malformed-http-destination malformed-file-destination uri-destination-controls; do
+  make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+done
+printf '\n[Malformed HTTP](http://[)\n' >> "$test_tmp/malformed-http-destination/SKILL.md"
+printf '\n[Malformed file](file://[)\n' >> "$test_tmp/malformed-file-destination/SKILL.md"
+printf '\n[Remote](https://example.com/docs) and [local](scripts/run.py).\n' >> "$test_tmp/uri-destination-controls/SKILL.md"
+for name in malformed-http-destination malformed-file-destination; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/$name" > "$test_tmp/$name.json" 2> "$test_tmp/$name.stderr"
+  malformed_uri_exit=$?
+  set -e
+  if [[ $malformed_uri_exit -ne 1 || -s "$test_tmp/$name.stderr" || ! -s "$test_tmp/$name.json" ]]; then
+    printf 'FAIL: malformed URI %s did not produce stable JSON validation exit 1\n' "$name" >&2
+    cat "$test_tmp/$name.stderr" >&2
+    exit 1
+  fi
+done
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/uri-destination-controls" > "$test_tmp/uri-destination-controls.json"
 
 make_fixture "$test_tmp/missing-reference-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 printf '\n [unused]: missing.md "Missing guide"\n' >> "$test_tmp/missing-reference-fixture/SKILL.md"
@@ -1678,6 +1697,8 @@ const badPrompt = JSON.parse(fs.readFileSync(path.join(temporary, "bad-prompt.js
 const missingIcon = JSON.parse(fs.readFileSync(path.join(temporary, "missing-icon.json")));
 const titledLink = JSON.parse(fs.readFileSync(path.join(temporary, "titled-link.json")));
 const referenceLink = JSON.parse(fs.readFileSync(path.join(temporary, "reference-link.json")));
+const malformedUris = ["http", "file"].map(scheme => JSON.parse(fs.readFileSync(path.join(temporary, `malformed-${scheme}-destination.json`))));
+const uriDestinationControls = JSON.parse(fs.readFileSync(path.join(temporary, "uri-destination-controls.json")));
 const missingReference = JSON.parse(fs.readFileSync(path.join(temporary, "missing-reference.json")));
 const escapingReference = JSON.parse(fs.readFileSync(path.join(temporary, "escaping-reference.json")));
 const indentedCodeReference = JSON.parse(fs.readFileSync(path.join(temporary, "indented-code-reference.json")));
@@ -1777,7 +1798,7 @@ function fileSha(relative) {
 assert(freeze.claimBoundary.newModelSessions === 0, "freeze must record zero model sessions");
 assert(freeze.claimBoundary.superiorityClaimAllowed === false, "freeze must forbid a superiority claim");
 assert(freeze.claimBoundary.promotionClaimAllowed === false, "freeze must forbid a promotion claim");
-assert(freeze.creatorBudgets.packageBytesMaximum === 45000, "reviewed package cap changed");
+assert(freeze.creatorBudgets.packageBytesMaximum === 46000, "reviewed package cap changed");
 assert(freeze.budgetRevision.deterministicExecutableDeltaBytes === 2256, "executable review delta changed");
 assert(freeze.budgetRevision.laterDeterministicExecutableDeltaBytes === 460, "later executable review delta changed");
 assert(freeze.budgetRevision.holisticReviewExecutableDeltaBytes === 7353, "holistic review delta changed");
@@ -1809,7 +1830,9 @@ assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeExtensionSkip === 
 assert(freeze.budgetRevision.descriptionAndEncodedFileUriExecutableDeltaBytes === 789, "description/file-URI executable delta changed");
 assert(freeze.budgetRevision.windowsHelperFileUriAndReferenceExecutableDeltaBytes === 57, "Windows-helper/file-URI/reference executable delta changed");
 assert(freeze.budgetRevision.singleSlashFileUriDependencyStaticPrefixAndExclusionsExecutableDeltaBytes === 167, "single-slash/dependency/static-prefix/exclusions executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 20507, "current executable delta changed");
+assert(freeze.budgetRevision.malformedUriExecutableDeltaBytes === 595, "malformed-URI executable delta changed");
+assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeMalformedUri === 45000, "pre-malformed-URI package cap changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21102, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1833,7 +1856,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 44941, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45427, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1851,6 +1874,8 @@ assert(badPrompt.issues.some(item => item.code === "OPENAI_DEFAULT_PROMPT"), "de
 assert(missingIcon.issues.some(item => item.code === "OPENAI_ICON"), "declared icon paths must resolve inside the package");
 assert(titledLink.status === "pass" && titledLink.errorCount === 0, "valid local link with optional title must pass");
 assert(referenceLink.status === "pass" && referenceLink.errorCount === 0, "valid reference definition must pass");
+assert(malformedUris.every(result => result.status === "fail" && result.errorCount === 1 && result.issues.length === 1 && result.issues[0].code === "URI_SYNTAX"), "malformed HTTP and file destinations must each produce one stable URI issue");
+assert(uriDestinationControls.status === "pass" && uriDestinationControls.errorCount === 0, "valid remote and local URI destinations changed");
 assert(missingReference.issues.some(item => item.code === "BROKEN_LINK"), "missing reference destination must fail");
 assert(escapingReference.issues.some(item => item.code === "LINK_ESCAPE"), "escaping reference destination must fail");
 assert(indentedCodeReference.status === "pass", "four-space indented code must not become a reference definition");

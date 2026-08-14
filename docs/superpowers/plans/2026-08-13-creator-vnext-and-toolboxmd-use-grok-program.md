@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 44,941 bytes, aggregate SHA-256
-  `1d7f8c46bf48e53d31477d4e48b1c68400a15e7f090da48bb9a804ba5a530f63`;
-- activated core: 78 lines and 4,352 bytes, with a 226-character
+- exact package: three files, 45,427 bytes, aggregate SHA-256
+  `4c949313679c98b592f2d0a4c49a7c0d1fa2672ecf60fd3f33a205e29b2a5350`;
+- activated core: 78 lines and 4,243 bytes, with a 226-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -255,6 +255,15 @@ Completion evidence, updated 2026-08-14:
   executable avoids runtime-evaluated PEP 604 optional annotations so system
   Python 3.9 reaches the CLI. The 45,000-byte cap and all activated-core budgets
   are unchanged;
+- the latest exact-HEAD correction adds 595 executable bytes and brings the
+  cumulative delta to 21,102 bytes. Malformed HTTP and file URI destinations
+  now produce one stable `URI_SYNTAX` package issue instead of an uncaught
+  `urlsplit` traceback across Markdown masking, destination validation, and
+  local-file classification. A readable deletion pass removed 109
+  activated-core bytes without changing its workflow. The package cap is now
+  46,000 bytes; description, activated-core, file, reference, eval, and script
+  budgets remain unchanged, with no lower-cost, superiority, or promotion
+  claim;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.

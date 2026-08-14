@@ -35,14 +35,14 @@
     "skillMdLinesMaximum": 150,
     "skillMdBytesMaximum": 10500,
     "fileCountMaximum": 3,
-    "packageBytesMaximum": 45000,
+    "packageBytesMaximum": 46000,
     "referenceFileCountMaximum": 0,
     "evalFileCountMaximum": 0,
     "scriptFileCount": 1
   },
   "budgetRevision": {
     "previousPackageBytesMaximum": 24000,
-    "currentPackageBytesMaximum": 45000,
+    "currentPackageBytesMaximum": 46000,
     "deterministicExecutableDeltaBytes": 2256,
     "reason": "Exact-HEAD review required quote-aware YAML comments and the then-reviewed metadata.hermes.config vendor surface.",
     "laterDeterministicExecutableDeltaBytes": 460,
@@ -105,7 +105,11 @@
     "windowsHelperFileUriAndReferenceReason": "Exact-HEAD review required slash or backslash task-relative helper separators, decoded local file URI classification for mixed-separator Windows drive-user roots, and indentation-neutral labels for canonical reference definitions.",
     "singleSlashFileUriDependencyStaticPrefixAndExclusionsExecutableDeltaBytes": 167,
     "singleSlashFileUriDependencyStaticPrefixAndExclusionsReason": "Exact-HEAD review required local single-slash file URI roots, non-whitespace MCP dependency values, and static task-relative segment prefixes including embedded dot-normalizing forms. Follow-up audit preserved literal skill-directory and home roots, URI and remote tokens, and ordinary Markdown link destinations, including links in Markdown helper sources. The executable avoids runtime-evaluated PEP 604 optional annotations so system Python 3.9 reaches its CLI. A readable deletion pass removed 87 activated-core bytes without changing its workflow or budgets.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 20507,
+    "malformedUriExecutableDeltaBytes": 595,
+    "malformedUriExecutableReason": "Exact-HEAD review required malformed HTTP and file URI destinations to produce one stable package-validation issue instead of an uncaught urlsplit traceback across Markdown masking, destination validation, and local-file classification.",
+    "previousPackageBytesMaximumBeforeMalformedUri": 45000,
+    "malformedUriCapRevisionReason": "The 1,000-byte package-cap revision preserves a readable executable-only shared URI guard after a bounded 109-byte activated-core deletion pass. Activated-core, description, file, reference, eval, and script budgets are unchanged, and no lower total package-size claim is allowed.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21102,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -119,22 +123,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "1d7f8c46bf48e53d31477d4e48b1c68400a15e7f090da48bb9a804ba5a530f63",
+    "aggregateSha256": "4c949313679c98b592f2d0a4c49a7c0d1fa2672ecf60fd3f33a205e29b2a5350",
     "fileCount": 3,
-    "packageBytes": 44941,
+    "packageBytes": 45427,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4352,
+      "bytes": 4243,
       "lines": 78,
       "descriptionCharacters": 226
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4352,
-        "sha256": "59a6ada129b67eee3adb6fdf90122de98bcf2033aad6e65834766ee2b07a138e"
+        "bytes": 4243,
+        "sha256": "3f79383d8aae1405d121fc3284db5e591ff00dbc3893d96be4286bd3b42a3721"
       },
       {
         "path": "agents/openai.yaml",
@@ -143,8 +147,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 40373,
-        "sha256": "93d0d0fd09359f683fa012b2495d005565c6755652e569cac8276c678f8bd20d"
+        "bytes": 40968,
+        "sha256": "2266d9a4c4aa75ef533e5582c9e9f9222a2b5b4b7a6e885ef5fb9a5c798478fa"
       }
     ]
   },
@@ -161,6 +165,7 @@
       "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, supported and bounded interface strings, assets-only icon paths, optional default_prompt, policy, non-whitespace MCP dependency values, and invalid UTF-8 as one package issue",
       "Codex interface, policy, and dependencies sections are independently optional in general mode; present interface strings require non-whitespace text, and creation mode accepts an absent optional sidecar but requires both UI fields when one is present",
       "valid Markdown links with optional titles pass",
+      "malformed HTTP and file URI destinations each produce one stable URI_SYNTAX package issue while valid remote and local destinations retain their prior behavior",
       "single-line CommonMark reference definitions support zero to three leading spaces, angle-bracket destinations, and optional titles while four-space indented code is masked and missing or escaping targets fail",
       "skill names containing reserved provider strings fail",
       "every top-level string, including name, requires one-line JSON double quotes before slug, reserved-name, length, and directory checks",
