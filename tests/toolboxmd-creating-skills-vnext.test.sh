@@ -1369,6 +1369,26 @@ make_fixture "$test_tmp/file-uri-remote-authority" 'PYTHONDONTWRITEBYTECODE=1 py
 printf '\n[Remote home](file://example.com/home/alice/input.json), file://files.example.com/Users/Alice/work/file.txt, and file://localhost/Home/alice/input.json.\n' >> "$test_tmp/file-uri-remote-authority/SKILL.md"
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/file-uri-remote-authority" > "$test_tmp/file-uri-remote-authority.json"
 
+for name in file-uri-uppercase-empty-authority file-uri-mixed-localhost; do
+  make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+done
+printf '\n[Local home](FILE:///home/alice/input.json).\n' >> "$test_tmp/file-uri-uppercase-empty-authority/SKILL.md"
+printf '\n[Local root](FiLe://LOCALHOST/root/alice/input.json).\n' >> "$test_tmp/file-uri-mixed-localhost/SKILL.md"
+for name in file-uri-uppercase-empty-authority file-uri-mixed-localhost; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
+  file_uri_case_exit=$?
+  set -e
+  if [[ $file_uri_case_exit -ne 1 ]]; then
+    printf 'FAIL: case-insensitive local file URI %s returned exit %s\n' "$name" "$file_uri_case_exit" >&2
+    exit 1
+  fi
+done
+
+make_fixture "$test_tmp/file-uri-case-safe" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\n[Remote](FILE://example.com/home/alice/input.json) and [wrong-case root](FiLe:///Home/alice/input.json).\n' >> "$test_tmp/file-uri-case-safe/SKILL.md"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/file-uri-case-safe" > "$test_tmp/file-uri-case-safe.json"
+
 for name in windows-forward windows-escaped windows-lowercase-backslash windows-uppercase-forward; do
   make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 done
@@ -1535,6 +1555,8 @@ const svgPath = JSON.parse(fs.readFileSync(path.join(temporary, "svg-local-path.
 const fileUri = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-path.json")));
 const fileUriLocalAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-local-authority.json")));
 const fileUriRemoteAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-remote-authority.json")));
+const fileUriCaseLocal = ["file-uri-uppercase-empty-authority", "file-uri-mixed-localhost"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const fileUriCaseSafe = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-case-safe.json")));
 const windowsPaths = ["windows-forward", "windows-escaped", "windows-lowercase-backslash", "windows-uppercase-forward"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const webRootLink = JSON.parse(fs.readFileSync(path.join(temporary, "web-root-link.json")));
 const remoteWindowsLinks = JSON.parse(fs.readFileSync(path.join(temporary, "remote-windows-links.json")));
@@ -1582,7 +1604,8 @@ assert(freeze.budgetRevision.remoteLinkAndWhitespaceExecutableDeltaBytes === 277
 assert(freeze.budgetRevision.parentRelativeAndFileAuthorityExecutableDeltaBytes === 26, "parent-relative/file-authority executable delta changed");
 assert(freeze.budgetRevision.unicodeSurrogateExecutableDeltaBytes === -25, "Unicode-surrogate executable delta changed");
 assert(freeze.budgetRevision.mixedDotAndPythonUtf8ExecutableDeltaBytes === 17, "mixed-dot/Python-UTF8 executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19303, "current executable delta changed");
+assert(freeze.budgetRevision.fileUriCaseExecutableDeltaBytes === 4, "file-URI-case executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19307, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1606,7 +1629,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43951, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43955, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1703,6 +1726,8 @@ assert(invalidShebang.issues.some(item => item.code === "UTF8"), "invalid UTF-8 
 assert(svgPath.issues.some(item => item.code === "LOCAL_PATH") && fileUri.issues.some(item => item.code === "LOCAL_PATH"), "decodable asset and file URI path checks changed");
 assert([fileUri, fileUriLocalAuthority].every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "empty and localhost file URI authorities must remain local");
 assert(fileUriRemoteAuthority.status === "pass" && !fileUriRemoteAuthority.issues.some(item => item.code === "LOCAL_PATH"), "remote file URI authorities must remain nonlocal");
+assert(fileUriCaseLocal.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "file URI scheme and localhost matching must be case-insensitive");
+assert(fileUriCaseSafe.status === "pass" && !fileUriCaseSafe.issues.some(item => item.code === "LOCAL_PATH"), "remote file authorities and wrong-case POSIX roots must remain nonlocal");
 assert(windowsPaths.every(result => result.issues.some(item => item.code === "LOCAL_PATH")), "Windows local path checks changed");
 assert(webRootLink.issues.some(item => item.code === "ROOT_LINK") && !webRootLink.issues.some(item => item.code === "LOCAL_PATH"), "web links must not be mistaken for workstation paths");
 assert(remoteWindowsLinks.status === "pass" && !remoteWindowsLinks.issues.some(item => item.code === "LOCAL_PATH"), "remote and anchor links must hide URL query or fragment text from workstation-path scanning");

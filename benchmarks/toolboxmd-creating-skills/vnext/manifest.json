@@ -93,7 +93,9 @@
     "unicodeSurrogateReason": "Exact-HEAD review required the shared canonical scalar decoder to reject YAML-invalid JSON surrogate escapes across frontmatter, metadata, and sidecars while literal Unicode and escaped backslash text remain valid. Reusing that decoder and deleting redundant runtime annotation and module declarations reduced executable bytes.",
     "mixedDotAndPythonUtf8ExecutableDeltaBytes": 17,
     "mixedDotAndPythonUtf8Reason": "Exact-HEAD review required arbitrary combinations of canonical ./ and ../ helper-path segments at the existing token boundary and required invalid UTF-8 Python helpers to remain package-validation failures instead of escaping through the later AST decode. Reusing the prefix rule and deleting a redundant subprocess default kept the executable delta bounded.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 19303,
+    "fileUriCaseExecutableDeltaBytes": 4,
+    "fileUriCaseReason": "Exact-HEAD review required the file URI scheme and localhost authority to be case-insensitive while POSIX root spelling remains case-sensitive and remote authorities remain nonlocal.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 19307,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -107,9 +109,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "f28a69fd7d20ac53e67c65b44696189b18435ade8244f38cdccd07fe5a4e7e9f",
+    "aggregateSha256": "e90c704488f51f2310c3e9280360a9424d693405e5f8f4003cc8b8be52f819ce",
     "fileCount": 3,
-    "packageBytes": 43951,
+    "packageBytes": 43955,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -131,8 +133,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 39169,
-        "sha256": "eafd9dbdd33a200683030675c7ccee50d3324c0e351f6d0ed5bf4bb440a0963d"
+        "bytes": 39173,
+        "sha256": "ed02bee5a5f684b0e334de1913914fd4b7d3c8509c557ba66adb6ba2f8bc633a"
       }
     ]
   },
@@ -159,7 +161,7 @@
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
       "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus inline, indented, and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "blank lines retain root, blockquote, list, and nested blockquote-list fence state without waiving required blockquote markers or nonblank container exits",
-      "common POSIX, container, file URI, and Windows workstation paths are detected, including empty or case-insensitive localhost file authorities, shebangs, and case-insensitive Windows drive-user roots, while remote file authorities and remote or anchor Markdown destinations remain nonlocal",
+      "common POSIX, container, file URI, and Windows workstation paths are detected, including case-insensitive file schemes, empty or case-insensitive localhost authorities, shebangs, and case-insensitive Windows drive-user roots, while POSIX root spelling stays case-sensitive and remote file authorities and remote or anchor Markdown destinations remain nonlocal",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, invalid UTF-8 Python remains a single package-validation error before AST parsing, and binary assets are skipped",
       "executable or shebang helpers outside scripts/ fail canonical package policy while outside non-executable data without a shebang remains allowed",
       "Python helper syntax below scripts/ is checked through AST while non-Python helpers there require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",

@@ -32,7 +32,7 @@ SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
 SCRIPT_CONTEXT_HINT = f"{SCRIPT_ROOT_HINT} in a closed sh/bash/shell fence"
 LOCAL_ROOTS = "(?:Users|home|workspace|root)"
 LOCAL_PATH_RE = re.compile(
-    rf"(?:file://(?i:localhost)?/{LOCAL_ROOTS}/|(?<![A-Za-z0-9:/])(?:/{LOCAL_ROOTS}/|"
+    rf"(?:(?i:file://(?:localhost)?/){LOCAL_ROOTS}/|(?<![A-Za-z0-9:/])(?:/{LOCAL_ROOTS}/|"
     rf"(?i:[A-Za-z]:(?:/Users/|(?:\\)+Users(?:\\)+))))[^\s'\"`]+"
 )
 PROCESS_NAMES = {"README.md", "CHANGELOG.md", "STATUS.md", "DESIGN.md", "NOTES.md"}

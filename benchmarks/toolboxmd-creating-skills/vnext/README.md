@@ -119,6 +119,10 @@ The next exact-HEAD correction accepts any combination of canonical `./` and
 UTF-8 Python helpers as package-validation failures rather than later AST
 inspection errors. Prefix-rule reuse and deletion of a redundant subprocess
 default add 17 executable bytes, bringing the cumulative delta to 19,303 bytes.
+The following exact-HEAD correction scopes case-insensitivity to the `file`
+scheme and optional localhost authority while retaining case-sensitive POSIX
+roots and remote-authority nonmatches. It adds 4 executable bytes, bringing the
+cumulative delta to 19,307 bytes.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -144,6 +148,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 43,951 bytes: 4,566 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 39,169-byte read-only checker. The executable is not
+The frozen package is 43,955 bytes: 4,566 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 39,173-byte read-only checker. The executable is not
 loaded as activated core.
