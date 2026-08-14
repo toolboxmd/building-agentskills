@@ -40,7 +40,7 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-skill-lines 150 \
   --max-skill-bytes 10500 \
   --max-files 3 \
-  --max-package-bytes 44000 \
+  --max-package-bytes 45000 \
   --max-reference-files 0 \
   --max-eval-files 0 \
   --max-script-files 1 \
@@ -57,7 +57,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json \
   --max-skill-lines 150 \
   --max-skill-bytes 10500 \
   --max-files 3 \
-  --max-package-bytes 44000 \
+  --max-package-bytes 45000 \
   --max-reference-files 0 \
   --max-eval-files 0 \
   --max-script-files 1 \
@@ -334,6 +334,18 @@ dependencies: # target tools
       url: "https://developers.openai.com/mcp#skills" # URL fragment
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/sidecar-fixture" > "$test_tmp/sidecar.json"
+
+make_fixture "$test_tmp/invalid-utf8-sidecar" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/invalid-utf8-sidecar/agents"
+printf '\377\n' > "$test_tmp/invalid-utf8-sidecar/agents/openai.yaml"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/invalid-utf8-sidecar" > "$test_tmp/invalid-utf8-sidecar.json"
+invalid_utf8_sidecar_exit=$?
+set -e
+if [[ $invalid_utf8_sidecar_exit -ne 1 ]]; then
+  echo "FAIL: invalid UTF-8 sidecar exited $invalid_utf8_sidecar_exit instead of 1" >&2
+  exit 1
+fi
 
 for name in policy-only dependencies-only display-only brand-only prompt-only blank-sidecar comment-only-sidecar; do
   make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
@@ -1066,7 +1078,18 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/hermes-metad
 hermes_default_exit=$?
 set -e
 [[ $hermes_default_exit -eq 1 ]]
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --allow-hermes-metadata "$test_tmp/hermes-metadata" > "$test_tmp/hermes-metadata.json"
+hermes_skills_ref_log="$test_tmp/hermes-skills-ref.log"
+hermes_skills_ref_before="$(sha256_file "$fake_bin/skills-ref")"
+node "$root/scripts/hash-tree.mjs" "$test_tmp/hermes-metadata" > "$test_tmp/hermes-before-official.json"
+PATH="$fake_bin:$PATH" SKILLS_REF_MODE=fail SKILLS_REF_LOG="$hermes_skills_ref_log" \
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --allow-hermes-metadata "$test_tmp/hermes-metadata" > "$test_tmp/hermes-metadata.json"
+PATH="$fake_bin:$PATH" SKILLS_REF_MODE=fail SKILLS_REF_LOG="$hermes_skills_ref_log" \
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --allow-hermes-metadata "$test_tmp/hermes-metadata" > "$test_tmp/hermes-metadata.out"
+[[ ! -e "$hermes_skills_ref_log" ]]
+[[ "$(sha256_file "$fake_bin/skills-ref")" == "$hermes_skills_ref_before" ]]
+node "$root/scripts/hash-tree.mjs" "$test_tmp/hermes-metadata" > "$test_tmp/hermes-after-official.json"
+cmp "$test_tmp/hermes-before-official.json" "$test_tmp/hermes-after-official.json"
+grep -Fq "official_skills_ref=skipped_extension" "$test_tmp/hermes-metadata.out"
 cat > "$test_tmp/hermes-mapping/SKILL.md" <<'EOF'
 ---
 name: "hermes-mapping"
@@ -1474,6 +1497,7 @@ const genericConfigSafe = JSON.parse(fs.readFileSync(path.join(temporary, "gener
 const portable = JSON.parse(fs.readFileSync(path.join(temporary, "portable.json")));
 const official = ["pass", "fail", "unexpected", "timeout"].map(mode => JSON.parse(fs.readFileSync(path.join(temporary, `skills-ref-${mode}.json`))));
 const sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "sidecar.json")));
+const invalidUtf8Sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-utf8-sidecar.json")));
 const supportedPartialSidecars = ["policy-only", "dependencies-only", "display-only", "brand-only", "prompt-only"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const creationPartialSidecars = ["policy-only", "dependencies-only", "display-only", "brand-only", "prompt-only"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `creation-${name}.json`))));
 const creationFullSidecar = JSON.parse(fs.readFileSync(path.join(temporary, "creation-full-sidecar.json")));
@@ -1578,7 +1602,7 @@ function fileSha(relative) {
 assert(freeze.claimBoundary.newModelSessions === 0, "freeze must record zero model sessions");
 assert(freeze.claimBoundary.superiorityClaimAllowed === false, "freeze must forbid a superiority claim");
 assert(freeze.claimBoundary.promotionClaimAllowed === false, "freeze must forbid a promotion claim");
-assert(freeze.creatorBudgets.packageBytesMaximum === 44000, "reviewed package cap changed");
+assert(freeze.creatorBudgets.packageBytesMaximum === 45000, "reviewed package cap changed");
 assert(freeze.budgetRevision.deterministicExecutableDeltaBytes === 2256, "executable review delta changed");
 assert(freeze.budgetRevision.laterDeterministicExecutableDeltaBytes === 460, "later executable review delta changed");
 assert(freeze.budgetRevision.holisticReviewExecutableDeltaBytes === 7353, "holistic review delta changed");
@@ -1605,7 +1629,9 @@ assert(freeze.budgetRevision.parentRelativeAndFileAuthorityExecutableDeltaBytes 
 assert(freeze.budgetRevision.unicodeSurrogateExecutableDeltaBytes === -25, "Unicode-surrogate executable delta changed");
 assert(freeze.budgetRevision.mixedDotAndPythonUtf8ExecutableDeltaBytes === 17, "mixed-dot/Python-UTF8 executable delta changed");
 assert(freeze.budgetRevision.fileUriCaseExecutableDeltaBytes === 4, "file-URI-case executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19307, "current executable delta changed");
+assert(freeze.budgetRevision.extensionSkipAndSidecarUtf8ExecutableDeltaBytes === 187, "extension-skip/sidecar-UTF8 executable delta changed");
+assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeExtensionSkip === 44000, "pre-extension-skip package cap changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19494, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1629,7 +1655,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43955, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 44015, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1637,6 +1663,7 @@ assert(official.map(result => result.coverage.officialSkillsRef.status).join(","
 assert(official[0].status === "pass" && official.slice(1).every(result => result.status === "fail"), "official validator exits changed");
 assert(official.every(result => result.coverage.officialSkillsRef.externalBehaviorAttested === false), "external validator behavior must remain unattested");
 assert(sidecar.status === "pass" && sidecar.errorCount === 0, "official nested sidecar must pass");
+assert(invalidUtf8Sidecar.status === "fail" && invalidUtf8Sidecar.issues.length === 1 && invalidUtf8Sidecar.issues[0].code === "UTF8", "invalid UTF-8 sidecar must produce one package issue");
 assert(policyCase.status === "fail" && sidecarEdges.every(result => result.status === "fail"), "sidecar canonical boundary changed");
 assert(minimalSidecar.status === "pass" && minimalSidecar.errorCount === 0, "default_prompt must remain optional");
 assert(whitespaceSidecars.every(result => result.status === "fail" && result.issues.some(item => item.code === "OPENAI_SHAPE")), "present sidecar strings must contain non-whitespace text");
@@ -1702,6 +1729,7 @@ assert(blockDescription.status === "fail" && blockDescription.issues.some(item =
 assert(doubledQuote.status === "fail" && doubledQuote.issues.some(item => item.code === "FRONTMATTER_STRING"), "single-quoted strings must fail the canonical contract");
 assert(hermesDefault.status === "fail", "portable-core mode must reject nested Hermes metadata");
 assert(hermesMetadata.status === "pass" && hermesMetadata.coverage.enabledExtensions.includes("hermes-metadata"), "explicit Hermes extension mode must pass");
+assert(hermesMetadata.coverage.officialSkillsRef.status === "skipped_extension" && hermesMetadata.coverage.officialSkillsRef.attempted === false, "portable skills-ref must be skipped for the Hermes extension");
 assert(unsupportedMetadata.status === "fail" && unsupportedMetadata.issues.some(item => item.code === "METADATA_SHAPE"), "unsupported nested metadata must fail");
 assert(nonStringMetadata.status === "fail" && nonStringMetadata.issues.some(item => item.code === "FRONTMATTER_STRING"), "Hermes config values must use JSON double quotes");
 const brokenLinks = codeLinks.issues.filter(item => item.code === "BROKEN_LINK");
@@ -1743,7 +1771,7 @@ const ownSidecar = fs.readFileSync(path.join(root, freeze.package.path, "agents/
 assert(!/\bgit\s+(?:status|rev-parse|diff|log)\b/i.test(skillText), "creator embeds an unconditional Git command");
 assert(/Inspect Git state only when .*user requested Git delivery/.test(skillText), "conditional Git boundary missing");
 assert(skillText.includes('PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --creation-mode --warnings-as-errors "<target-skill-dir>"'), "strict creation-mode creator command missing");
-assert(skillText.includes("Task- and parent-relative helpers fail"), "parent-relative helper guidance missing");
+assert(skillText.includes("Other task- or parent-relative helper paths fail in code."), "parent-relative helper guidance missing");
 assert(skillText.includes("Use literal Unicode, not surrogate escapes"), "Unicode scalar guidance missing");
 assert(skillText.includes("--script-syntax-checked '<helper-path>=<lowercase-sha256>'"), "exact-digest non-Python syntax attestation flow missing");
 assert(skillText.includes("Generated Codex sidecars require nonempty `display_name` and `short_description`"), "creator sidecar policy missing");

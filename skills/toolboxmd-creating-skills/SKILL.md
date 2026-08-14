@@ -29,7 +29,7 @@ A skill may coordinate these; prose does not fire them.
 
 ### 2. Build an evidence brief
 
-Record job/value, triggers/near misses, inputs/outputs, mistakes, constraints, and evidence gaps. Close critical gaps with questions or a representative task. Label hypotheses.
+Record job/value, triggers and near misses, I/O, mistakes, constraints, and evidence gaps. Close critical gaps with questions or a representative task; label hypotheses.
 
 ### 3. Answer three independent questions
 
@@ -39,9 +39,9 @@ Record job/value, triggers/near misses, inputs/outputs, mistakes, constraints, a
 
 ### 4. Plan and draft the package
 
-Draft `SKILL.md` first. Keep core rules inline, conditional knowledge in `references/`, deterministic work in `scripts/`, output inputs in `assets/`, target metadata in sidecars, and evals external.
+Draft `SKILL.md` first. Inline core rules; put conditional knowledge in `references/`, deterministic work in `scripts/`, output inputs in `assets/`, metadata in sidecars, and evals outside.
 
-JSON-quote every top-level string, including exact `name`, and every portable `metadata` key/value; omit empty `metadata`. Use literal Unicode, not surrogate escapes. Description states capability, triggers, exclusions. Keep decisions, evidence, procedure, I/O, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
+JSON-quote all top-level strings, exact `name`, and portable `metadata` keys/values; omit empty `metadata`. Use literal Unicode, not surrogate escapes. Describe capability, triggers, and exclusions. Keep decisions, evidence, procedure, I/O, and load-bearing gotchas in `SKILL.md`; use rigid language only for mechanized rules.
 
 Generated Codex sidecars require nonempty `display_name` and `short_description`; existing sidecars may use any supported nonempty interface subset.
 
@@ -55,9 +55,9 @@ Resolve `<skill-dir>` from loaded `SKILL.md` to an absolute argument, independen
 PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --creation-mode --warnings-as-errors "<target-skill-dir>"
 ```
 
-Pass nondefault budgets. Fence executable examples as `sh`, `bash`, or `shell` and use `<skill-dir>/scripts/<helper>`. Task- and parent-relative helpers fail in inline, indented, and other fences. The lexical check treats non-whitespace immediately after `scripts/` as a child; directory mentions and whitespace-leading child names are outside it.
+Pass nondefault budgets. Fence executable examples as `sh`, `bash`, or `shell`; use `<skill-dir>/scripts/<helper>`. Other task- or parent-relative helper paths fail in code. The lexical check treats non-whitespace after `scripts/` as a child; directory mentions and whitespace-leading names are outside scope.
 
-The checker covers ToolboxMD policy, not general YAML, CommonMark, shell, or helper syntax. Executable/shebang helpers belong in `scripts/`. Python uses AST. For other helpers, run and report a syntax command, hash current bytes, and pass `--script-syntax-checked '<helper-path>=<lowercase-sha256>'`. This binds path and digest, not execution. It runs but never installs `skills-ref validate <target-skill-dir>`; report it separately because external behavior is outside ToolboxMD.
+Checker scope is ToolboxMD policy, not general YAML, CommonMark, shell, or helper syntax. Put executable/shebang helpers in `scripts/`; Python uses AST. For others, run/report a syntax check, hash bytes, and pass `--script-syntax-checked '<helper-path>=<lowercase-sha256>'`; this attests bytes, not execution. It never installs `skills-ref`: portable mode uses an installed copy; Hermes reports `skipped_extension` and skips it.
 
 ### 6. Test, delete, and deliver
 

@@ -488,7 +488,11 @@ def validate_sidecar(root: Path, name: str, creation_mode: bool, problems: list[
     tool = None
     tools_seen = False
     policy_seen = False
-    for line in sidecar.read_text(encoding="utf-8").splitlines():
+    try:
+        lines = sidecar.read_bytes().decode().splitlines()
+    except UnicodeDecodeError:
+        return
+    for line in lines:
         if not line.strip() or line.lstrip().startswith("#"):
             continue
         if "\t" in line[: len(line) - len(line.lstrip())]:
@@ -653,14 +657,16 @@ def budget_problem(value: int, maximum: int | None, code: str, label: str, probl
         problems.append(issue(code, "SKILL.md" if label.startswith(("SKILL.md", "description")) else ".", f"{label}: {value} > {maximum}"))
 
 
-def run_official_validator(root: Path, problems: list[dict[str, str]]) -> dict[str, object]:
-    command = shutil.which("skills-ref")
+def run_official_validator(root: Path, hermes: bool, problems: list[dict[str, str]]) -> dict[str, object]:
     coverage: dict[str, object] = {
         "attempted": False,
-        "status": "not_available",
+        "status": "skipped_extension" if hermes else "not_available",
         "exitCode": None,
         "externalBehaviorAttested": False,
     }
+    if hermes:
+        return coverage
+    command = shutil.which("skills-ref")
     if not command:
         return coverage
     coverage["attempted"] = True
@@ -735,7 +741,7 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
     validate_links_and_paths(root, problems)
     validate_sidecar(root, name, args.creation_mode, problems)
     syntax_checks = validate_scripts(root, args.script_syntax_checked, problems)
-    official = run_official_validator(root, problems)
+    official = run_official_validator(root, args.allow_hermes_metadata, problems)
 
     skill_bytes = len(text.encode("utf-8"))
     skill_lines = len(text.splitlines())

@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 43,955 bytes, aggregate SHA-256
-  `e90c704488f51f2310c3e9280360a9424d693405e5f8f4003cc8b8be52f819ce`;
-- activated core: 78 lines and 4,566 bytes, with a 240-character
+- exact package: three files, 44,015 bytes, aggregate SHA-256
+  `3251b048c5c3746532cf7df8eb9ef9ffccc701f5290db9ab01ebf1c2e5293141`;
+- activated core: 78 lines and 4,439 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -221,12 +221,21 @@ Completion evidence, updated 2026-08-14:
   scheme and optional localhost authority while retaining case-sensitive POSIX
   roots and remote-authority nonmatches. It adds 4 executable bytes, bringing
   the cumulative delta to 19,307 bytes;
+- the current exact-HEAD correction keeps invalid UTF-8 OpenAI sidecars as one
+  package issue and reports `skipped_extension` without discovering or invoking
+  portable `skills-ref` in explicit Hermes extension mode. It adds 187
+  executable bytes, bringing the cumulative delta to 19,494 bytes. A bounded
+  active-core deletion pass removed 127 bytes without changing the workflow;
+  the package cap is now 45,000 bytes while activated-core, description, file,
+  reference, eval, and script budgets remain unchanged. No lower package-cost,
+  superiority, or promotion claim is allowed;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.
   The `metadata.hermes.config` vendor extension requires
   `--allow-hermes-metadata` and double-quoted key-led entries for an explicitly
-  Hermes-targeted package;
+  Hermes-targeted package; this mode reports `skipped_extension` and does not
+  run the portable `skills-ref` cross-check;
 - vNext retains a smaller activated core and fewer distributed files/artifacts
   than retained v1, but claims no lower total package bytes, eligible creator
   advantage, superiority, or promotion readiness;
@@ -272,7 +281,8 @@ Completion evidence, updated 2026-08-14:
   sections in general mode, including supported partial interfaces, while
   present interface strings require non-whitespace text, creation mode requires
   both UI fields in a present optional sidecar, and
-  both modes reject empty sections and empty sidecars; accepts
+  both modes reject empty sections and empty sidecars; invalid UTF-8 sidecars
+  remain one package issue with validation exit 1; accepts
   titled local links; rejects
   reserved provider names, single-quoted values, and every unquoted top-level
   string including names, prose, dates, hexadecimal, octal, and YAML typed scalars,
@@ -289,7 +299,9 @@ Completion evidence, updated 2026-08-14:
   requires an exact-current-byte operator
   attestation before a separately checked non-Python helper can pass strict
   mode, and reports that ToolboxMD did not execute the language-specific
-  command; exercises optional `skills-ref` pass/fail/error/timeout states,
+  command; exercises optional portable `skills-ref`
+  pass/fail/error/timeout states, proves explicit Hermes extension mode reports
+  `skipped_extension` without invoking it,
   records that the external validator's filesystem and network behavior is
   not attested by ToolboxMD,
   detects the retained meeting and deck baggage patterns,

@@ -123,6 +123,14 @@ The following exact-HEAD correction scopes case-insensitivity to the `file`
 scheme and optional localhost authority while retaining case-sensitive POSIX
 roots and remote-authority nonmatches. It adds 4 executable bytes, bringing the
 cumulative delta to 19,307 bytes.
+The current exact-HEAD correction keeps invalid UTF-8 OpenAI sidecars as one
+package-validation error and skips the portable `skills-ref` cross-check before
+executable discovery in explicit Hermes extension mode. It adds 187 executable
+bytes, bringing the cumulative executable delta to 19,494 bytes. A bounded
+active-core deletion pass removed 127 bytes without changing its workflow. The
+package cap is now 45,000 bytes, leaving readable headroom for the deterministic
+checker. Activated-core, description, file, reference, eval, and script budgets
+remain unchanged, and no lower total package-size claim is made.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -132,8 +140,10 @@ metadata key and value; portable metadata is mapping-only. The exact
 fixed unquoted schema field names and double-quoted user-provided values. The
 checker reports its canonical coverage, Python AST checks, accepted exact-byte
 operator attestations for separately checked non-Python helpers, and the
-availability/result of `skills-ref validate`; the frozen
-host recorded `not_available`, and no install or network fallback is used.
+availability/result of `skills-ref validate` in portable mode. Explicit Hermes
+extension mode reports `skipped_extension` and does not discover or invoke that
+portable cross-check. The frozen portable host recorded `not_available`, and no
+install or network fallback is used.
 ToolboxMD reports accepted helper paths but does not claim it executed their
 language-specific syntax commands. Executable and shebang helpers outside
 `scripts/` fail canonical package policy; non-executable data without a
@@ -148,6 +158,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 43,955 bytes: 4,566 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 39,173-byte read-only checker. The executable is not
+The frozen package is 44,015 bytes: 4,439 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 39,360-byte read-only checker. The executable is not
 loaded as activated core.
