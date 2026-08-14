@@ -212,7 +212,21 @@ embedded_relative_code_exit=$?
 set -e
 [[ $embedded_relative_code_exit -eq 1 ]]
 
-make_body_fixture "$test_tmp/parent-relative-safe" $'[Documented helper](foo/../scripts/run.py) remains a link destination.\n\n```bash\npython3 "<skill-dir>/scripts/run.py"\npython3 "<skill-dir>\\scripts\\run.py"\ncurl https://example.com/scripts/run.py\ncurl "https://example.com/?next=foo/../scripts/run.py"\ncurl "https://example.com/#foo/../scripts/run.py"\ncurl "https://example.com/path;next=foo/../scripts/run.py"\ncurl "//example.com/?next=foo/scripts/run.py"\nprintf "%s\\n" "file:foo/scripts/run.py"\nprintf "%s\\n" ~/project/scripts/run.py ~alice/project/scripts/run.py\n```'
+make_body_fixture "$test_tmp/tilde-segment-shell" $'```bash\npython3 foo~/./../scripts/run.py\npython3 ~foo/../scripts/run.py\npython3 foo~bar/../scripts/run.py\npython3 foo~\\.\\..\\scripts\\run.py\npython3 ~foo\\..\\scripts\\run.py\npython3 foo~bar/.\\..\\scripts/run.py\n```'
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/tilde-segment-shell" > "$test_tmp/tilde-segment-shell.json"
+tilde_segment_shell_exit=$?
+set -e
+[[ $tilde_segment_shell_exit -eq 1 ]]
+
+make_body_fixture "$test_tmp/tilde-segment-code" $'Run `python3 foo~/./../scripts/run.py` and `python3 ~foo\\.\\..\\scripts\\run.py`.\n\n```text\npython3 foo~bar/../scripts/run.py\npython3 foo~bar\\..\\scripts/run.py\n```'
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/tilde-segment-code" > "$test_tmp/tilde-segment-code.json"
+tilde_segment_code_exit=$?
+set -e
+[[ $tilde_segment_code_exit -eq 1 ]]
+
+make_body_fixture "$test_tmp/parent-relative-safe" $'[Documented helper](foo/../scripts/run.py) remains a link destination.\n\n```bash\npython3 "<skill-dir>/scripts/run.py"\npython3 "<skill-dir>\\scripts\\run.py"\ncurl https://example.com/scripts/run.py\ncurl "https://example.com/?next=foo/../scripts/run.py"\ncurl "https://example.com/#foo/../scripts/run.py"\ncurl "https://example.com/path;next=foo/../scripts/run.py"\ncurl "//example.com/?next=foo/scripts/run.py"\nprintf "%s\\n" "file:foo/scripts/run.py"\nprintf "%s\\n" ~/project/scripts/run.py ~\\project\\scripts\\run.py\n```'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/parent-relative-safe" > "$test_tmp/parent-relative-safe.json"
 
 make_body_fixture "$test_tmp/unfenced-helper-contexts" $'Run `env MODE=strict ./scripts/run.py`.\n\nLiteral `[helper](scripts/run.py)` code also fails.\n\n    env MODE=strict ./scripts/run.py\n    [helper](scripts/run.py)\n\n```text\nenv MODE=strict ./scripts/run.py\n[helper](scripts/run.py)\n```\n\n~~~python\nprint("scripts/run.py")\n~~~\n\n```\nenv MODE=strict ./scripts/run.py\n```'
@@ -279,6 +293,14 @@ helper_source_parent_exit=$?
 set -e
 [[ $helper_source_parent_exit -eq 1 ]]
 
+make_fixture "$test_tmp/helper-source-tilde-segments" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf 'SUFFIX = "foo~/./../scripts/child.py"\nPREFIX = "~foo/../scripts/child.py"\nMIDDLE = "foo~bar/../scripts/child.py"\nWINDOWS = "foo~\\\\.\\\\..\\\\scripts\\\\child.py"\nMIXED = "~foo/.\\\\..\\\\scripts/child.py"\n' > "$test_tmp/helper-source-tilde-segments/scripts/run.py"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/helper-source-tilde-segments" > "$test_tmp/helper-source-tilde-segments.json"
+helper_source_tilde_exit=$?
+set -e
+[[ $helper_source_tilde_exit -eq 1 ]]
+
 make_fixture "$test_tmp/helper-source-safe" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 cat > "$test_tmp/helper-source-safe/scripts/run.py" <<'EOF'
 SIBLING = "<skill-dir>/scripts/child.py"
@@ -289,6 +311,8 @@ CONFIG = {"root": "scripts/"}
 MIXED = ['a"b', "scripts/"]
 NOTE = ["helper directory: scripts/"]
 HELP = "Use scripts/ for helpers"
+HOME = "~/project/scripts/child.py"
+WINDOWS_HOME = "~\\project\\scripts\\child.py"
 # do not use scripts/ for generated files
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/helper-source-safe" > "$test_tmp/helper-source-safe.json"
@@ -610,6 +634,71 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/missing-icon
 missing_icon_exit=$?
 set -e
 [[ $missing_icon_exit -eq 1 ]]
+
+for name in exact-case-icon file-case-icon directory-case-icon symlink-icon symlink-loop-icon; do
+  make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+  mkdir -p "$test_tmp/$name/agents" "$test_tmp/$name/assets/Icons"
+  printf '<svg/>\n' > "$test_tmp/$name/assets/Icons/Small.svg"
+done
+cat > "$test_tmp/exact-case-icon/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Exact Case Icon"
+  short_description: "Accept exact icon path component casing"
+  icon_small: "./assets/Icons/Small.svg"
+EOF
+cat > "$test_tmp/file-case-icon/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "File Case Icon"
+  short_description: "Reject mismatched icon file casing"
+  icon_small: "./assets/Icons/small.svg"
+EOF
+cat > "$test_tmp/directory-case-icon/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Directory Case Icon"
+  short_description: "Reject mismatched icon directory casing"
+  icon_small: "./assets/icons/Small.svg"
+EOF
+ln -s "Icons/Small.svg" "$test_tmp/symlink-icon/assets/icon.svg"
+cat > "$test_tmp/symlink-icon/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Symlink Icon"
+  short_description: "Keep a contained icon symlink valid"
+  icon_small: "./assets/icon.svg"
+EOF
+ln -s "loop.svg" "$test_tmp/symlink-loop-icon/assets/loop.svg"
+cat > "$test_tmp/symlink-loop-icon/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Symlink Loop Icon"
+  short_description: "Keep an icon loop as a package symlink issue"
+  icon_small: "./assets/loop.svg"
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/exact-case-icon" > "$test_tmp/exact-case-icon.json"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/symlink-icon" > "$test_tmp/symlink-icon.json"
+symlink_icon_exit=$?
+set -e
+[[ $symlink_icon_exit -eq 1 ]]
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/symlink-loop-icon" > "$test_tmp/symlink-loop-icon.json"
+symlink_loop_icon_exit=$?
+set -e
+[[ $symlink_loop_icon_exit -eq 1 ]]
+if [[ -n "$python39" ]]; then
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 "$python39" -B "$validator" --json "$test_tmp/symlink-loop-icon" > "$test_tmp/symlink-loop-icon-python39.json"
+  symlink_loop_python39_exit=$?
+  set -e
+  [[ $symlink_loop_python39_exit -eq 1 ]]
+else
+  cp "$test_tmp/symlink-loop-icon.json" "$test_tmp/symlink-loop-icon-python39.json"
+fi
+for name in file-case-icon directory-case-icon; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
+  icon_case_exit=$?
+  set -e
+  [[ $icon_case_exit -eq 1 ]]
+done
 
 make_fixture "$test_tmp/titled-link-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 mkdir -p "$test_tmp/titled-link-fixture/references"
@@ -1719,6 +1808,8 @@ const windowsRelativeShell = JSON.parse(fs.readFileSync(path.join(temporary, "wi
 const windowsRelativeCode = JSON.parse(fs.readFileSync(path.join(temporary, "windows-relative-code.json")));
 const embeddedRelativeShell = JSON.parse(fs.readFileSync(path.join(temporary, "embedded-relative-shell.json")));
 const embeddedRelativeCode = JSON.parse(fs.readFileSync(path.join(temporary, "embedded-relative-code.json")));
+const tildeSegmentShell = JSON.parse(fs.readFileSync(path.join(temporary, "tilde-segment-shell.json")));
+const tildeSegmentCode = JSON.parse(fs.readFileSync(path.join(temporary, "tilde-segment-code.json")));
 const parentRelativeSafe = JSON.parse(fs.readFileSync(path.join(temporary, "parent-relative-safe.json")));
 const unfencedHelperContexts = JSON.parse(fs.readFileSync(path.join(temporary, "unfenced-helper-contexts.json")));
 const unclosedShellFence = JSON.parse(fs.readFileSync(path.join(temporary, "unclosed-shell-fence.json")));
@@ -1729,6 +1820,7 @@ const containerBoundarySafe = JSON.parse(fs.readFileSync(path.join(temporary, "c
 const containerBoundaryShell = JSON.parse(fs.readFileSync(path.join(temporary, "container-boundary-shell.json")));
 const helperSourceBare = JSON.parse(fs.readFileSync(path.join(temporary, "helper-source-bare.json")));
 const helperSourceParent = JSON.parse(fs.readFileSync(path.join(temporary, "helper-source-parent-relative.json")));
+const helperSourceTilde = JSON.parse(fs.readFileSync(path.join(temporary, "helper-source-tilde-segments.json")));
 const helperSourceSafe = JSON.parse(fs.readFileSync(path.join(temporary, "helper-source-safe.json")));
 const markdownHelperSource = JSON.parse(fs.readFileSync(path.join(temporary, "markdown-helper-source.json")));
 const markdownHelperLinksSafe = JSON.parse(fs.readFileSync(path.join(temporary, "markdown-helper-links-safe.json")));
@@ -1753,6 +1845,10 @@ const whitespaceSidecars = ["display", "short"].flatMap(field =>
 const whitespaceDependency = JSON.parse(fs.readFileSync(path.join(temporary, "whitespace-dependency.json")));
 const badPrompt = JSON.parse(fs.readFileSync(path.join(temporary, "bad-prompt.json")));
 const missingIcon = JSON.parse(fs.readFileSync(path.join(temporary, "missing-icon.json")));
+const exactCaseIcon = JSON.parse(fs.readFileSync(path.join(temporary, "exact-case-icon.json")));
+const iconCaseMismatches = ["file-case-icon", "directory-case-icon"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const symlinkIcon = JSON.parse(fs.readFileSync(path.join(temporary, "symlink-icon.json")));
+const symlinkLoopIcons = ["symlink-loop-icon", "symlink-loop-icon-python39"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const titledLink = JSON.parse(fs.readFileSync(path.join(temporary, "titled-link.json")));
 const referenceLink = JSON.parse(fs.readFileSync(path.join(temporary, "reference-link.json")));
 const exactCaseLinks = JSON.parse(fs.readFileSync(path.join(temporary, "exact-case-links.json")));
@@ -1896,7 +1992,8 @@ assert(freeze.budgetRevision.singleSlashFileUriDependencyStaticPrefixAndExclusio
 assert(freeze.budgetRevision.malformedUriExecutableDeltaBytes === 595, "malformed-URI executable delta changed");
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeMalformedUri === 45000, "pre-malformed-URI package cap changed");
 assert(freeze.budgetRevision.caseExactLinkAndHermesKeyExecutableDeltaBytes === 524, "case-exact-link/Hermes-key executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21626, "current executable delta changed");
+assert(freeze.budgetRevision.iconCaseAndTildeSegmentExecutableDeltaBytes === 98, "icon-case/tilde-segment executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21724, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1920,7 +2017,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45917, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45846, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1936,6 +2033,10 @@ assert(whitespaceSidecars.filter(result => result.coverage.creationMode).every(r
 assert(whitespaceDependency.status === "fail" && whitespaceDependency.issues.filter(item => item.code === "OPENAI_SHAPE").length === 1 && !whitespaceDependency.issues.some(item => item.code === "OPENAI_DEPENDENCY"), "whitespace-only MCP dependency values must fail once as malformed sidecar shape");
 assert(badPrompt.issues.some(item => item.code === "OPENAI_DEFAULT_PROMPT"), "default_prompt must be validated when present");
 assert(missingIcon.issues.some(item => item.code === "OPENAI_ICON"), "declared icon paths must resolve inside the package");
+assert(exactCaseIcon.status === "pass", "exact-case icon paths must pass");
+assert(symlinkIcon.status === "fail" && symlinkIcon.issues.some(item => item.code === "SYMLINK") && !symlinkIcon.issues.some(item => item.code === "OPENAI_ICON"), "contained icon symlinks must preserve package-level symlink behavior");
+assert(symlinkLoopIcons.every(result => result.status === "fail" && result.issues.some(item => item.code === "SYMLINK") && !result.issues.some(item => item.code === "OPENAI_ICON")), "icon symlink loops must remain one structured package-level boundary across supported Python runtimes");
+assert(iconCaseMismatches.every(result => result.status === "fail" && result.issues.some(item => item.code === "OPENAI_ICON")), "case-only icon path component mismatches must fail deterministically");
 assert(titledLink.status === "pass" && titledLink.errorCount === 0, "valid local link with optional title must pass");
 assert(referenceLink.status === "pass" && referenceLink.errorCount === 0, "valid reference definition must pass");
 assert(exactCaseLinks.status === "pass", "exact-case file, directory, and anchor links must pass");
@@ -1974,7 +2075,9 @@ assert(windowsRelativeShell.status === "fail" && windowsRelativeShell.issues.fil
 assert(windowsRelativeCode.status === "fail" && windowsRelativeCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 4, "Windows and mixed-separator task-relative helpers must fail in closed non-shell code surfaces");
 assert(embeddedRelativeShell.status === "fail" && embeddedRelativeShell.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 9, "static embedded task-relative prefixes must fail across slash, backslash, mixed, nested, and dot-normalizing shell forms");
 assert(embeddedRelativeCode.status === "fail" && embeddedRelativeCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 4, "static embedded task-relative prefixes must fail in closed non-shell code surfaces");
-assert(parentRelativeSafe.status === "pass", "literal skill roots, URL tokens, and ordinary link destinations must remain safe");
+assert(tildeSegmentShell.status === "fail" && tildeSegmentShell.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 6, "tildes inside ordinary path segments must not hide shell helper paths");
+assert(tildeSegmentCode.status === "fail" && tildeSegmentCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 4, "tildes inside ordinary path segments must not hide non-shell helper paths");
+assert(parentRelativeSafe.status === "pass", "literal skill roots, standalone home roots, URL tokens, and ordinary link destinations must remain safe");
 assert(unfencedHelperContexts.status === "fail" && unfencedHelperContexts.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 8, "single-line inline, indented, and fenced code outside recognized shell fences must fail closed");
 assert(unclosedShellFence.status === "fail" && unclosedShellFence.issues.some(item => item.code === "MARKDOWN_FENCE"), "unclosed recognized shell fences must fail");
 assert(containerShellFences.status === "fail" && containerShellFences.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3 && containerShellFences.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "nested blockquote/list fences and blockquote-indented code must preserve closed-surface checks");
@@ -1984,6 +2087,7 @@ assert(containerBoundarySafe.status === "pass" && containerBoundarySafe.warningC
 assert(containerBoundaryShell.status === "fail" && containerBoundaryShell.issues.filter(item => item.code === "MARKDOWN_FENCE").length === 1 && !containerBoundaryShell.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "recognized shell fences fail at their Markdown container boundary without consuming root prose");
 assert(helperSourceBare.status === "fail" && executableSourceBare.status === "fail" && [helperSourceBare, executableSourceBare].every(result => result.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH")), "helper and executable source files must reject bare helper paths");
 assert(helperSourceParent.status === "fail" && helperSourceParent.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 8, "helper sources must reject leading and embedded task-relative paths across separator forms");
+assert(helperSourceTilde.status === "fail" && helperSourceTilde.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "helper sources must reject task-relative paths with tildes inside ordinary segments");
 assert(executableSourceEmbedded.status === "fail" && executableSourceEmbedded.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3, "executable sources must reject embedded task-relative paths across separator forms");
 assert(markdownHelperSource.status === "fail" && markdownHelperSource.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "Markdown files below scripts must retain helper-source coverage");
 assert(markdownHelperLinksSafe.status === "pass" && !markdownHelperLinksSafe.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "ordinary link destinations in Markdown helper sources must remain safe");

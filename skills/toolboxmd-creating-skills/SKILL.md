@@ -7,7 +7,6 @@ description: "Create portable Agent Skills from needs, trigger/near-miss example
 
 ## Boundaries
 
-- Route existing skills to `toolboxmd-updating-skills` and comparisons to `toolboxmd-benchmarking-skills`.
 - Use examples to discover; verify claims with primary sources or evidence.
 
 ## Default path
@@ -29,7 +28,7 @@ Skills may coordinate them; prose cannot fire them.
 
 ### 2. Build an evidence brief
 
-Record value, triggers/near misses, I/O, artifacts, mistakes, constraints, gaps, and hypotheses. Resolve critical gaps with questions or a representative task.
+Record value, triggers/near misses, I/O, artifacts, mistakes, constraints, and gaps. Resolve critical gaps with questions or a representative task.
 
 ### 3. Answer three independent questions
 
@@ -41,7 +40,7 @@ Record value, triggers/near misses, I/O, artifacts, mistakes, constraints, gaps,
 
 Draft `SKILL.md` first. Inline core rules; use `references/` for conditional knowledge, `scripts/` for deterministic work, `assets/` for output inputs, sidecars for metadata, and keep evals outside.
 
-JSON-quote every top-level string, including exact `name`, and portable metadata keys/values; omit empty `metadata`. Use literal Unicode, not surrogate escapes. Keep capability, triggers, exclusions, load-bearing decisions, procedure, I/O, and gotchas in `SKILL.md`; reserve rigid terms for mechanisms.
+JSON-quote every top-level string, including exact `name`, and portable metadata keys/values; omit empty `metadata`. Use literal Unicode, not surrogate escapes. Keep capability, triggers, exclusions, decisions, procedure, I/O, and gotchas in `SKILL.md`; reserve rigid terms for mechanisms.
 
 Generated Codex sidecars require nonempty `display_name` and `short_description`; existing sidecars may use any supported nonempty interface subset.
 
@@ -63,7 +62,6 @@ Checker scope is ToolboxMD policy, not general YAML, CommonMark, shell, or helpe
 
 - Validate structure/budgets and test bundled scripts.
 - Smoke-check a realistic task when possible. Add pressure only for observed variance, risk, or strong claims.
-- Route comparisons to benchmarking.
 - Record description, core/reference/package bytes and line/file/script/eval counts. Delete unsupported files; rerun.
 
 Inspect Git state only when the user requests Git delivery. Do not search ancestors for package-only work.

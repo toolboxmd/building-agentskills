@@ -111,7 +111,9 @@
     "malformedUriCapRevisionReason": "The 1,000-byte package-cap revision preserves a readable executable-only shared URI guard after a bounded 109-byte activated-core deletion pass. Activated-core, description, file, reference, eval, and script budgets are unchanged, and no lower total package-size claim is allowed.",
     "caseExactLinkAndHermesKeyExecutableDeltaBytes": 524,
     "caseExactLinkAndHermesKeyReason": "Exact-HEAD review required host-independent exact component spelling for local Markdown link targets and required canonical Hermes config keys to decode to non-whitespace text before an entry becomes valid. A bounded 34-byte activated-core deletion pass preserved the workflow and unchanged budgets.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21626,
+    "iconCaseAndTildeSegmentExecutableDeltaBytes": 98,
+    "iconCaseAndTildeSegmentReason": "Exact-HEAD review required host-independent exact component spelling for declared sidecar icon paths and required embedded tilde characters in ordinary static segments to remain within task-relative helper detection. Independent audit kept icon symlink loops as structured package-level failures without resolving them. A bounded deletion pass removed 169 activated-core bytes without changing the workflow; only a standalone leading tilde home segment remains excluded.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21724,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -125,22 +127,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "26bd1d28a316171e457e4fc0144a6d413c92f3bfa221d808b0f129afaa63cc81",
+    "aggregateSha256": "5dc775441ec8392d242c5a9cdf15761271d97c0d94e7b0a5b98cc581474f37f6",
     "fileCount": 3,
-    "packageBytes": 45917,
+    "packageBytes": 45846,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4209,
-      "lines": 78,
+      "bytes": 4040,
+      "lines": 76,
       "descriptionCharacters": 226
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4209,
-        "sha256": "84fa1800a64b9d9bfbac4d02175263c30775e93dba4f4584ac182c7a69de7595"
+        "bytes": 4040,
+        "sha256": "e477d275bad3fd2faf358e3a903542941f7aa6d1540282e71e01383cd93c8d78"
       },
       {
         "path": "agents/openai.yaml",
@@ -149,8 +151,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 41492,
-        "sha256": "0a2bb751ce414c00bc36637e4fb3461280d4794d45eb108ff8e08eb034bf60c6"
+        "bytes": 41590,
+        "sha256": "babede7d3128af5853f57117f2dd6fa8c5d6917db8f46a77d2be799eefdb2e6d"
       }
     ]
   },
@@ -160,11 +162,11 @@
       "the frozen product package and exact creator budgets reproduce",
       "the validator runs from outside the package without Python bytecode writes",
       "immediate non-whitespace helper children with bare, leading-dot, or embedded static task-relative segment prefixes using slash or backslash separators fail in root, blockquote, and list closed case-insensitive sh, bash, and shell fences without interpreting commands, strings, comments, heredocs, wrappers, assignments, or continuations",
-      "single-line inline code, indented code, and non-shell or unknown fences containing that lexical helper shape fail with a context error, while ordinary prose, Markdown link destinations, directory-only mentions, leading-whitespace child names, literal skill-directory and home roots, and URI tokens remain accepted",
+      "single-line inline code, indented code, and non-shell or unknown fences containing that lexical helper shape fail with a context error, while ordinary prose, Markdown link destinations, directory-only mentions, leading-whitespace child names, literal skill-directory and standalone leading home roots, and URI tokens remain accepted",
       "all UTF-8 files below scripts/ and executable or shebang files reject leading or embedded static task- and parent-relative helper paths, while ordinary Markdown link destinations and generic configuration files remain outside this policy absent a schema",
       "recognized shell fences must close and the prescribed validator command enables warnings-as-errors",
       "explicit skill-directory script examples pass",
-      "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, supported and bounded interface strings, assets-only icon paths, optional default_prompt, policy, non-whitespace MCP dependency values, and invalid UTF-8 as one package issue",
+      "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, supported and bounded interface strings, assets-only icon paths with exact component spelling, optional default_prompt, policy, non-whitespace MCP dependency values, and invalid UTF-8 as one package issue",
       "Codex interface, policy, and dependencies sections are independently optional in general mode; present interface strings require non-whitespace text, and creation mode accepts an absent optional sidecar but requires both UI fields when one is present",
       "exact-case relative file and directory links plus anchors pass, while case-only component mismatches fail independent of host filesystem casing and missing or escaping targets retain their diagnostics",
       "malformed HTTP and file URI destinations each produce one stable URI_SYNTAX package issue while valid remote and local destinations retain their prior behavior",

@@ -149,8 +149,9 @@ The next exact-HEAD correction adds 167 executable bytes. Local single-slash
 `file:/...` roots now share the decoded local-file check, MCP dependency values
 must contain non-whitespace text, and the closed lexical helper rule rejects
 bare, leading-dot, or embedded static task-relative segment prefixes. Literal
-`<skill-dir>` and home roots, URI and remote tokens, and ordinary Markdown link
-destinations, including those in helper-source Markdown, stay safe. A readable
+`<skill-dir>` and standalone leading home roots, URI and remote tokens, and
+ordinary Markdown link destinations, including those in helper-source
+Markdown, stay safe. A readable
 deletion pass removed 87 activated-core bytes without changing the workflow.
 The executable avoids runtime-evaluated PEP 604 optional annotations so system
 Python 3.9 reaches the CLI. The cumulative executable delta is 20,507 bytes;
@@ -170,6 +171,17 @@ symlinks. Hermes config entries decode `key` before accepting it and reject
 empty or whitespace-only text once. A bounded deletion pass removed 34
 activated-core bytes without changing the workflow. The cumulative executable
 delta is 21,626 bytes; the 46,000-byte cap and all other budgets are unchanged.
+The next exact-HEAD correction adds 98 executable bytes. Declared sidecar icon
+paths now reuse the exact component-name walk, so file or directory casing
+cannot vary by host while the prior assets-root, missing, escape, and symlink
+outcomes remain unchanged. Independent audit keeps icon symlink loops as
+structured package-level failures without resolving them. Static helper
+detection includes `foo~`, `~foo`, and `foo~bar` ordinary segments across slash
+and backslash forms; only a
+standalone leading `~/` or `~\` home segment remains excluded. A bounded
+deletion pass removed 169 activated-core bytes without changing the workflow.
+The cumulative executable delta is 21,724 bytes; the 46,000-byte cap and all
+other budgets are unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -199,6 +211,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 45,917 bytes: 4,209 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 41,492-byte read-only checker. The executable is not
+The frozen package is 45,846 bytes: 4,040 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 41,590-byte read-only checker. The executable is not
 loaded as activated core.

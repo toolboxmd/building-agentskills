@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 45,917 bytes, aggregate SHA-256
-  `26bd1d28a316171e457e4fc0144a6d413c92f3bfa221d808b0f129afaa63cc81`;
-- activated core: 78 lines and 4,209 bytes, with a 226-character
+- exact package: three files, 45,846 bytes, aggregate SHA-256
+  `5dc775441ec8392d242c5a9cdf15761271d97c0d94e7b0a5b98cc581474f37f6`;
+- activated core: 76 lines and 4,040 bytes, with a 226-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -249,8 +249,8 @@ Completion evidence, updated 2026-08-14:
   the decoded local-file check, MCP dependency values require non-whitespace
   text, and the closed lexical helper rule rejects bare, leading-dot, or
   embedded static task-relative segment prefixes. Literal `<skill-dir>` and
-  home roots, URI and remote tokens, and ordinary Markdown link destinations,
-  including those in helper-source Markdown, remain safe. A readable deletion
+  standalone leading home roots, URI and remote tokens, and ordinary Markdown
+  link destinations, including those in helper-source Markdown, remain safe. A readable deletion
   pass removed 87 activated-core bytes without changing the workflow. The
   executable avoids runtime-evaluated PEP 604 optional annotations so system
   Python 3.9 reaches the CLI. The 45,000-byte cap and all activated-core budgets
@@ -271,6 +271,17 @@ Completion evidence, updated 2026-08-14:
   validity and empty or whitespace-only text fails once. A bounded deletion
   pass removed 34 activated-core bytes without changing the workflow. The
   46,000-byte cap and all non-package-byte budgets remain unchanged;
+- the next exact-HEAD correction adds 98 executable bytes and brings the
+  cumulative delta to 21,724 bytes. Declared sidecar icon paths compare exact
+  file and directory component spelling while retaining existing assets-root,
+  missing, escape, and symlink outcomes. Independent audit keeps icon symlink
+  loops as structured package-level failures without resolving them. Static
+  task-relative helper detection includes `foo~`, `~foo`, and `foo~bar`
+  ordinary segments across slash,
+  backslash, mixed, and dot forms; only a standalone leading `~/` or `~\` home
+  segment remains excluded. A bounded deletion pass removed 169 activated-core
+  bytes without changing the workflow. The 46,000-byte cap and all other
+  budgets remain unchanged;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.
@@ -344,8 +355,9 @@ Completion evidence, updated 2026-08-14:
   workstation-path scanning;
   recognizes slash and backslash task-relative helper separators across bare,
   leading-dot, embedded, mixed, and nested static segment prefixes while
-  keeping literal skill and home roots, URI tokens, remote contexts, and
-  ordinary Markdown link destinations safe, including in helper sources,
+  keeping literal skill and standalone leading home roots, URI tokens, remote
+  contexts, and ordinary Markdown link destinations safe, including in helper
+  sources,
   classifies decoded Windows drive-user paths in empty or localhost file URIs,
   and extracts canonical reference labels independently of their permitted
   zero-to-three-space indentation while masking four-space indented code;

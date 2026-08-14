@@ -28,7 +28,7 @@ OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 SHELL_FENCE_LANGUAGES = {"sh", "bash", "shell"}
-BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./\\~\-])(?:[^/\\\s'\"`;&|(){}\[\]<>:,~]+[/\\]+)*scripts[/\\]+")
+BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./\\~-])(?!~[/\\])(?:[^/\\\s'\"`;&|(){}\[\]<>:,]+[/\\]+)*scripts[/\\]+")
 SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
 SCRIPT_CONTEXT_HINT = f"{SCRIPT_ROOT_HINT} in a closed sh/bash/shell fence"
 LOCAL_ROOTS = "(?:Users|home|workspace|root)"
@@ -420,12 +420,14 @@ def safe_urlsplit(raw: str, relative: str, problems: list[dict[str, str]]):
             problems.append(malformed)
 
 
-def exact_exists(parent, target):
+def exact_path(parent, target):
     for part in PurePosixPath(target).parts:
         try:
-            parent = next(entry for entry in parent.iterdir() if entry.name == part and not entry.is_symlink())
+            parent = next(entry for entry in parent.iterdir() if entry.name == part)
         except (OSError, StopIteration):
             return False
+        if parent.is_symlink():
+            return None
     return True
 
 
@@ -447,7 +449,7 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         target_text = posixpath.normpath(posixpath.join(parent.relative_to(root).as_posix(), target_text))
         if target_text.partition("/")[0] in {"", ".."}:
             problems.append(issue("LINK_ESCAPE", relative, f"link escapes package: {raw}"))
-        elif not exact_exists(root, target_text):
+        elif not exact_path(root, target_text):
             problems.append(issue("BROKEN_LINK", relative, f"missing link target: {raw}"))
 
     for path in sorted(item for item in root.rglob("*") if item.is_file() and not item.is_symlink()):
@@ -622,9 +624,11 @@ def validate_sidecar(root: Path, name: str, creation_mode: bool, problems: list[
         fail("OPENAI_BRAND_COLOR", "brand_color needs six hex digits")
     for key in ("icon_small", "icon_large"):
         value = values.get(key, "")
-        target = (root / value).resolve()
-        assets = (root / "assets").resolve()
-        if value and (value.startswith("/") or not target.is_relative_to(assets) or not target.is_file()):
+        target = posixpath.normpath(value)
+        exact = exact_path(root, target)
+        if exact is None:
+            continue
+        if value and (value.startswith("/") or not target.startswith("assets/") or not exact or not (root / target).is_file()):
             fail("OPENAI_ICON", f"invalid {key}")
     if any(tool.get("type") != "mcp" or not tool.get("value") for tool in tools):
         fail("OPENAI_DEPENDENCY", "each tool needs type mcp and value")

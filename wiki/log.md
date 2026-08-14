@@ -61,3 +61,7 @@ Superseded the remaining unquoted-name exception in [[benchmark-integrity-for-ag
 ## [2026-08-14] correction | ToolboxMD static task-relative helper boundary
 
 Reconciled the active creator promise with the closed lexical checker in [[benchmark-integrity-for-agent-skills]]. Bare, leading-dot, and embedded static segment prefixes that reach `scripts/` now fail across slash, backslash, mixed, nested, and dot-normalizing forms, while literal `<skill-dir>` and home roots, URI and remote tokens, and ordinary Markdown link destinations, including links in Markdown helper sources, remain safe. The same bounded correction covers decoded local single-slash `file:/...` roots, whitespace-only MCP dependency values, and system Python 3.9 CLI startup without runtime-evaluated PEP 604 optional annotations. It does not add general shell parsing, run a model session, change a benchmark verdict, or ingest any pending capture.
+
+## [2026-08-14] correction | ToolboxMD exact icons and tilde segments
+
+Clarified [[benchmark-integrity-for-agent-skills]] after exact-HEAD review. Sidecar icon paths now compare stored component spelling independently of host filesystem casing. The closed static helper rule treats `foo~`, `~foo`, and `foo~bar` as ordinary checked segments while excluding only a standalone leading `~/` or `~\` home segment. Literal skill roots, URLs, and ordinary Markdown link destinations remain outside the failure surface. No model session ran, no benchmark verdict changed, and no pending capture was ingested.
