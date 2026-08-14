@@ -30,16 +30,10 @@ OPENAI_FIELD_RE = re.compile(r'^([a-z_]+):\s*("(?:[^"\\]|\\.)*")$')
 OPENAI_INTERFACE_FIELDS = {"display_name", "short_description", "icon_small", "icon_large", "brand_color", "default_prompt"}
 OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
-FRAGILE_SCRIPT_RE = re.compile(
-    r"\b(?:python(?:3(?:\.\d+)?)?|node|bash|sh|ruby)\b"
-    r"[^\r\n;&|]*?[ \t]+[\"']?(?:\./)?scripts/"
-)
-ASSIGNMENT_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
-SHELL_CONTROL_PREFIXES = {
-    "if": "then", "while": "do", "until": "do", "then": "fi",
-    "do": "done", "elif": "then", "else": "fi", "!": "",
-}
-SHELL_CONTINUATION_RE = re.compile(r"(\\+)(?:\r\n|\n)[ \t]*")
+SHELL_FENCE_LANGUAGES = {"sh", "bash", "shell"}
+BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./-])(?:\./)?scripts/")
+SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
+SCRIPT_CONTEXT_HINT = f"{SCRIPT_ROOT_HINT} in a closed sh/bash/shell fence"
 ROOT_NAMES = ("Users", "home", "workspace", "root")
 POSIX_ROOTS = "|".join(re.escape(f"/{name}/") for name in ROOT_NAMES)
 LOCAL_PATH_RE = re.compile(
@@ -114,116 +108,6 @@ def parse_string(raw: str, field: str, problems: list[dict[str, str]]) -> str:
     except ValueError:
         problems.append(issue("FRONTMATTER_STRING", "SKILL.md", f"{field} must be a JSON double-quoted one-line string"))
     return ""
-
-
-def normalize_shell_continuations(text: str) -> str:
-    def replace(match: re.Match[str]) -> str:
-        backslashes = match.group(1)
-        return backslashes[:-1] + " " if len(backslashes) % 2 else match.group(0)
-
-    return SHELL_CONTINUATION_RE.sub(replace, text)
-
-
-def has_direct_task_script(line: str) -> bool:
-    word: list[tuple[str, bool]] = []
-    command = True
-    redirect = False
-    control_close = ""
-    control_direct = False
-
-    def finish() -> bool:
-        nonlocal word, command, redirect, control_close, control_direct
-        if not word:
-            return False
-        if redirect:
-            word, redirect = [], False
-            return False
-        value = "".join(char for char, _ in word)
-        equals = next((at for at, pair in enumerate(word) if pair == ("=", False)), -1)
-        assignment = equals > 0 and all(not marked for _, marked in word[:equals]) and ASSIGNMENT_NAME_RE.fullmatch(
-            value[:equals]
-        )
-        plain = all(not marked for _, marked in word)
-        boundary = command and plain and (
-            value == control_close or control_close == "fi" and value in {"elif", "else"}
-        )
-        if boundary and control_direct:
-            return True
-        control = command and plain and value in SHELL_CONTROL_PREFIXES
-        if control:
-            expected = SHELL_CONTROL_PREFIXES[value]
-            if expected:
-                control_close, control_direct = expected, False
-            word = []
-            return False
-        if boundary:
-            control_close = ""
-        inspect = command and not assignment and not control
-        if inspect:
-            command = False
-        word = []
-        direct = inspect and value.startswith(("scripts/", "./scripts/"))
-        if direct and control_close:
-            control_direct = True
-            return False
-        return direct
-
-    quote = ""
-    escaped = False
-    index = 0
-    while index < len(line):
-        char = line[index]
-        if escaped:
-            word.append((char, True))
-            escaped = False
-        elif quote:
-            if char == quote:
-                quote = ""
-            elif quote == '"' and char == "\\":
-                escaped = True
-            else:
-                word.append((char, True))
-        elif char == "\\":
-            escaped = True
-        elif char in "\"'":
-            quote = char
-            word.append(("", True))
-        elif char.isspace():
-            if finish():
-                return True
-        elif char == "#" and not word:
-            break
-        elif char in "()":
-            if finish():
-                return True
-            command, redirect = True, False
-        elif char in "{}" and command and not word and (
-            index + 1 == len(line) or line[index + 1].isspace() or line[index + 1] in "();&|<>"
-        ):
-            command, redirect = True, False
-        elif char in ";&|<>":
-            io_number = char in "<>" and word and all(not marked for _, marked in word) and all(
-                digit.isdigit() for digit, _ in word
-            )
-            if io_number:
-                word = []
-            elif finish():
-                return True
-            pair = line[index : index + 2]
-            if char in "<>":
-                redirect = True
-            elif pair in {"&>", "|&"}:
-                redirect = pair == "&>"
-                if not redirect:
-                    command = True
-            else:
-                command, redirect = True, False
-            if pair in {"&&", "||", "|&", ">&", "&>", ">>", ">|", "<&", "<>"}:
-                index += 1
-        else:
-            word.append((char, False))
-        index += 1
-    return False if quote or escaped else finish()
 
 
 def parse_metadata(
@@ -387,6 +271,130 @@ def markdown_without_code(text: str) -> str:
     return re.sub(r"\\\[[^]\n]*\](?:\([^\n)]*\)|\[[^]\n]*\])", "", result)
 
 
+def has_bare_script_path(text: str) -> bool:
+    def active_quote(stop: int) -> str:
+        quote = ""
+        escaped = False
+        for char in text[:stop]:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif quote and char == quote:
+                quote = ""
+            elif not quote and char in "\"'`":
+                quote = char
+        return quote
+
+    for match in BARE_SCRIPT_PREFIX_RE.finditer(text):
+        index = match.end()
+        quote = active_quote(match.start())
+        while index < len(text) and text[index] in "\"'`":
+            marker = text[index]
+            if quote and marker != quote:
+                return True
+            quote = "" if marker == quote else marker
+            index += 1
+        if index >= len(text):
+            continue
+        if text[index].isspace():
+            continue
+        if quote:
+            return True
+        if text[index] == "<" and re.match(r"<[^>\s;&|]+>", text[index:]):
+            return True
+        if text[index] not in ";&|)<>]},:":
+            return True
+    return False
+
+
+def fence_candidate(line: str) -> tuple[str, list[int]]:
+    view = line
+    containers: list[int] = []
+    while True:
+        if match := re.match(r"^ {0,3}>[ \t]?", view):
+            containers.append(0)
+        elif match := re.match(r"^ {0,3}(?:[-+*]|[0-9]{1,9}[.)])[ \t]+", view):
+            containers.append(match.end())
+        else:
+            break
+        view = view[match.end() :]
+    return view, containers
+
+
+def fenced_line_view(line: str, containers: list[int]) -> str | None:
+    view = line
+    for width in containers:
+        if not width:
+            match = re.match(r"^ {0,3}>[ \t]?", view)
+            if not match:
+                return None
+            view = view[match.end() :]
+        elif view.startswith(" " * width):
+            view = view[width:]
+        else:
+            return None
+    return view
+
+
+def validate_markdown_script_paths(content: str, relative: str, problems: list[dict[str, str]]) -> None:
+    fence = ""
+    shell_fence = False
+    opener_line = 0
+    containers: list[int] = []
+
+    def add(code: str, line_number: int, message: str = SCRIPT_CONTEXT_HINT) -> None:
+        problems.append(issue(code, relative, f"line {line_number} {message}"))
+
+    for line_number, line in enumerate(content.splitlines(), 1):
+        container_view = fenced_line_view(line, containers) if fence else line
+        if fence and container_view is None:
+            if shell_fence:
+                add("MARKDOWN_FENCE", opener_line, "leaves its Markdown container without a closing fence")
+            fence = ""
+            shell_fence = False
+            containers = []
+            container_view = line
+        view = container_view if container_view is not None else line
+        marker = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", view) if container_view is not None else None
+        if fence:
+            if (
+                marker
+                and marker.group(1)[0] == fence[0]
+                and len(marker.group(1)) >= len(fence)
+                and not marker.group(2).strip()
+            ):
+                fence = ""
+                shell_fence = False
+                continue
+            if has_bare_script_path(view):
+                code = "FRAGILE_SCRIPT_PATH" if shell_fence else "UNFENCED_SCRIPT_EXAMPLE"
+                add(code, line_number, SCRIPT_ROOT_HINT if shell_fence else SCRIPT_CONTEXT_HINT)
+            continue
+        view, candidate_containers = fence_candidate(line)
+        marker = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", view)
+        if marker and (marker.group(1)[0] == "~" or "`" not in marker.group(2)):
+            fence = marker.group(1)
+            language = marker.group(2).strip().split(maxsplit=1)[0].casefold() if marker.group(2).strip() else ""
+            shell_fence = language in SHELL_FENCE_LANGUAGES
+            opener_line = line_number
+            containers = candidate_containers
+            continue
+        if view.startswith(("    ", "\t")):
+            if has_bare_script_path(view):
+                add("UNFENCED_SCRIPT_EXAMPLE", line_number)
+            continue
+        for match in CODE_SPAN_RE.finditer(view):
+            marker = match.group(1)
+            literal = match.group(0)[len(marker) : -len(marker)]
+            prefix = view[: match.start()]
+            escaped = (len(prefix) - len(prefix.rstrip("\\"))) % 2
+            if not escaped and has_bare_script_path(literal):
+                add("UNFENCED_SCRIPT_EXAMPLE", line_number)
+    if fence and shell_fence:
+        add("MARKDOWN_FENCE", opener_line, "opens a recognized shell fence without a closing fence")
+
+
 def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None:
     resolved_root = root.resolve()
 
@@ -413,7 +421,7 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         try:
             content = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
-            if path.suffix.lower() in TEXT_SUFFIXES or os.access(path, os.X_OK):
+            if path.suffix.lower() in TEXT_SUFFIXES or os.access(path, os.X_OK) or path.read_bytes().startswith(b"#!"):
                 problems.append(issue("UTF8", relative, "text file is not UTF-8"))
             continue
         path_searchable = content
@@ -425,8 +433,15 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
                 )
         if LOCAL_PATH_RE.search(path_searchable):
             problems.append(issue("LOCAL_PATH", relative, "workstation path"))
+        source_surface = relative.startswith("scripts/") or os.access(path, os.X_OK) or content.startswith("#!")
+        if source_surface:
+            for line_number, line in enumerate(content.splitlines(), 1):
+                if has_bare_script_path(line):
+                    problems.append(issue("FRAGILE_SCRIPT_PATH", relative, f"line {line_number} {SCRIPT_ROOT_HINT}"))
         if path.suffix.lower() != ".md":
             continue
+        if not source_surface:
+            validate_markdown_script_paths(content, relative, problems)
         markdown = markdown_without_code(content)
         complex_link = re.compile(r"!?\[[^]\n]*\]\([^\n)]*\([^\n]*\)[^\n]*\)")
         unsupported_markdown = bool(re.search(r"(?m)^ {0,3}\[[^]\n]+\]:\s*$", markdown) or complex_link.search(markdown))
@@ -444,11 +459,6 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         residual = re.sub(r"(?<!!)\[[^]\n]+\]\[[^]\n]+\]", "", residual)
         if not unsupported_markdown and ("](" in residual or "][" in residual):
             problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "nested Markdown link shape needs an official validator", "warning"))
-        command_source = LINK_RE.sub("", content) if path.suffix.lower() == ".md" else content
-        command_text = normalize_shell_continuations(command_source)
-        for line_number, line in enumerate(command_text.splitlines(), 1):
-            if FRAGILE_SCRIPT_RE.search(line) or has_direct_task_script(line):
-                problems.append(issue("FRAGILE_SCRIPT_PATH", relative, f"line {line_number} uses task-relative scripts/", "warning"))
 
 
 def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> None:
@@ -573,7 +583,7 @@ def validate_scripts(
     for value in declared:
         relative, separator, digest = value.rpartition("=")
         if not separator or not relative or not re.fullmatch(r"[0-9a-f]{64}", digest):
-            problems.append(issue("SCRIPT_SYNTAX_CHECK", ".", "expected <scripts/relative-path>=<lowercase-sha256>"))
+            problems.append(issue("SCRIPT_SYNTAX_CHECK", ".", "expected <helper-path>=<lowercase-sha256>"))
             continue
         if relative in seen:
             problems.append(issue("SCRIPT_SYNTAX_CHECK", relative, "duplicate syntax-check attestation"))
@@ -752,6 +762,11 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
             "canonicalSubset": "toolboxmd-portable-core-v2",
             "enabledExtensions": ["hermes-metadata"] if args.allow_hermes_metadata else [],
             "markdown": "canonical inline links and single-line reference definitions",
+            "scriptPaths": {
+                "markdown": "closed fences, single-line inline, and other code; no shell parse",
+                "sources": "UTF-8 helpers, executables, and shebang files",
+                "shellParsed": False,
+            },
             "scriptSyntax": "Python .py via AST; non-Python helpers need exact-digest operator attestation",
             "scriptSyntaxChecks": {
                 "acceptedPaths": syntax_checks,
@@ -806,7 +821,7 @@ def main() -> int:
         coverage = result["coverage"]
         official = coverage["officialSkillsRef"]
         extensions = ",".join(coverage["enabledExtensions"]) or "none"
-        print(f"COVERAGE: canonical={coverage['canonicalSubset']} extensions={extensions} script_syntax=python-ast+exact-digest-attestation official_skills_ref={official['status']} official_external_attested=false")
+        print(f"COVERAGE: canonical={coverage['canonicalSubset']} extensions={extensions} script_paths=closed-surfaces shell_parsed=false script_syntax=python-ast+exact-digest-attestation official_skills_ref={official['status']} official_external_attested=false")
         checks = coverage["scriptSyntaxChecks"]
         print(f"SCRIPT_SYNTAX_CHECKS: accepted_paths={json.dumps(checks['acceptedPaths'])} execution_verified_by_toolboxmd=false")
         labels = (("description_chars", "descriptionCharacters"), ("skill_lines", "skillMdLines"),

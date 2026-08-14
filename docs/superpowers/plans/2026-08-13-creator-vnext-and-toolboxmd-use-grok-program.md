@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 42,567 bytes, aggregate SHA-256
-  `9b97a110b8d92b24a2787750effb99ffe5469a42e6163c4f7c7b149a97234ee2`;
-- activated core: 78 lines and 5,061 bytes, with a 240-character
+- exact package: three files, 43,397 bytes, aggregate SHA-256
+  `60ecdce8622c63c4cab4bf041515cee8d6891f47888df5e55b4c744b25cfa915`;
+- activated core: 78 lines and 4,702 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -170,7 +170,18 @@ Completion evidence, updated 2026-08-14:
   real separator. Multiline and nested shell parsing remain outside scope;
 - built-in host-validator compatibility added 132 executable bytes to reject
   `<` or `>` in descriptions even when `skills-ref` is unavailable. The
-  cumulative executable delta is 17,424 bytes;
+  cumulative executable delta was 17,424 bytes;
+- an exact-HEAD `env` bypass and Grok architecture audit then retired the
+  arbitrary shell lexer. Root, blockquote, and list fence handling plus
+  explicit context diagnostics added 1,189 executable bytes overall, so the
+  current cumulative executable delta is 18,613 bytes without changing the 44,000-byte
+  cap. Closed case-insensitive `sh`, `bash`, and `shell` fences reject
+  immediate non-whitespace task-relative helper children without interpreting shell syntax. Single-line inline,
+  indented, and other fenced code produce a context error; all UTF-8 files below
+  `scripts/` plus executable or shebang files are scanned; ordinary prose, link
+  destinations, directory-only mentions, and generic configs without a schema
+  remain outside the rule. Leading-whitespace child names and multiline inline
+  spans are outside the custom lexical subset;
 - canonical subset v2 leaves only `name` unquoted. Every other top-level
   string and every user-defined portable metadata key and value uses one-line
   JSON double quotes.
@@ -205,14 +216,17 @@ Completion evidence, updated 2026-08-14:
 - `tests/toolboxmd-creating-skills-vnext.test.sh` passes from an external
   working directory;
 - the test reproduces the package freeze and budgets, checks exit codes 0/1/2,
-  blocks fragile interpreter-prefixed and direct command-position task-relative
-  helpers, including quoted, dot-relative, option-bearing, separator-led,
-  grouping-parenthesis, grouping-brace, and
-  odd-backslash shell-line-continued forms, without joining even-backslash or
-  ordinary newlines, including bounded assignment and same-line fixed shell
-  control-prefix handling. Quoted, escaped, and prose lookalikes remain safe;
-  `fi` and `done` require a real separator, while the prescribed command makes
-  warnings fatal,
+  rejects immediate non-whitespace task-relative helper children in root, blockquote, and list
+  closed case-insensitive `sh`, `bash`, and `shell` fences without parsing
+  commands, strings, comments, heredocs, wrappers, assignments, continuations,
+  or control flow; rejects the same shape in single-line inline, indented, and non-shell
+  fenced code with a context error; requires recognized shell fences to close;
+  scans all UTF-8 files below `scripts/` plus executable or shebang files; and
+  keeps ordinary prose,
+  Markdown link destinations, directory-only mentions, leading-whitespace child
+  names, explicit skill roots,
+  and generic configs without a schema outside the rule. The prescribed
+  command makes warnings fatal,
   validates the real copyable minimal-skill example under explicit budgets,
   accepts the explicit `<skill-dir>` contract,
   accepts independently optional Codex interface, policy, and dependency

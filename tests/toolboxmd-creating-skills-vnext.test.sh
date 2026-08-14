@@ -8,7 +8,12 @@ validator="$package/scripts/validate_skill.py"
 freeze="$root/benchmarks/toolboxmd-creating-skills/vnext/manifest.json"
 minimal_example="$root/examples/minimal-skill"
 test_tmp="$(mktemp -d "${TMPDIR:-/tmp}/toolboxmd-creator-vnext.XXXXXX")"
-trap 'rm -rf "$test_tmp"' EXIT
+cleanup() {
+  local test_exit=$?
+  rm -rf "$test_tmp"
+  return "$test_exit"
+}
+trap cleanup EXIT
 
 retained=(
   "$root/benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/candidate/toolboxmd-creating-skills"
@@ -38,7 +43,7 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-eval-files 0 \
   --max-script-files 1 \
   "$package")"
-[[ "$human_output" == *"COVERAGE: canonical=toolboxmd-portable-core-v2 extensions=none script_syntax=python-ast+exact-digest-attestation official_skills_ref=not_available official_external_attested=false"* ]]
+[[ "$human_output" == *"COVERAGE: canonical=toolboxmd-portable-core-v2 extensions=none script_paths=closed-surfaces shell_parsed=false script_syntax=python-ast+exact-digest-attestation official_skills_ref=not_available official_external_attested=false"* ]]
 [[ "$human_output" == *"SCRIPT_SYNTAX_CHECKS: accepted_paths=[] execution_verified_by_toolboxmd=false"* ]]
 [[ "$human_output" == *"PASS: canonical ToolboxMD package checks succeeded"* ]]
 
@@ -94,90 +99,131 @@ EOF
   printf 'print("ok")\n' > "$directory/scripts/run.py"
 }
 
+make_body_fixture() {
+  local directory="$1"
+  local body="$2"
+  mkdir -p "$directory/scripts"
+  cat > "$directory/SKILL.md" <<EOF
+---
+name: $(basename "$directory")
+description: "Run a deterministic fixture when testing closed Markdown and helper-source surfaces."
+---
+
+# Fixture
+
+$body
+EOF
+  printf 'print("ok")\n' > "$directory/scripts/run.py"
+}
+
 sha256_file() {
   node -e 'const c=require("node:crypto"),f=require("node:fs");process.stdout.write(c.createHash("sha256").update(f.readFileSync(process.argv[1])).digest("hex"))' "$1"
 }
 
-make_fixture "$test_tmp/bare-fixture" $'python3 scripts/run.py\nnode scripts/run.js\nbash scripts/run.sh\nsh scripts/run.sh\nruby scripts/run.py'
+
+make_body_fixture "$test_tmp/closed-shell-bare" $'```bash\nenv MODE=strict ./scripts/run.py\necho scripts/run.py\nprintf "scripts/run.py"\n# scripts/run.py\ncat <<\'PAYLOAD\'\nscripts/run.py\nPAYLOAD\n>scripts/run.py\n<scripts/run.py\n2>scripts/run.py\necho scripts/"run.py"\necho scripts/\'run.py\'\necho scripts/""run.py\necho "scripts/"run.py\necho \'a"b\' scripts/"run.py"\necho "scripts/>out"\necho "scripts/<in"\necho "scripts/;child"\necho "scripts/,child"\necho "scripts/:child"\necho scripts/<helper>\necho scripts/<child.py>\necho scripts/{run.py}\necho scripts/*.py\necho [helper](scripts/run.py)\n```\n\n~~~Sh\ntrue && ./scripts/run.py\n~~~\n\n```SHELL\n./scripts/run.py\n```'
 set +e
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/bare-fixture" > "$test_tmp/bare.json"
-bare_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/closed-shell-bare" > "$test_tmp/closed-shell-bare.json"
+closed_shell_bare_exit=$?
 set -e
-[[ $bare_exit -eq 1 ]]
+[[ $closed_shell_bare_exit -eq 1 ]]
 
-make_fixture "$test_tmp/dot-bare-fixture" $'python3 ./scripts/run.py\nnode ./scripts/run.js\nbash ./scripts/run.sh\nsh ./scripts/run.sh\nruby ./scripts/run.py'
+make_body_fixture "$test_tmp/closed-shell-safe" $'An unmatched ` in one paragraph must not absorb later prose.\n\nOrdinary prose may name scripts/run.py and [link a helper](scripts/run.py) without presenting executable code.\n\nA multiline span `\nscripts/run.py\n` stays outside the single-line custom check.\n\nUse the directory `scripts/` for helpers. Inline `[scripts/]` and `{scripts/}` stay directory-only. Literal \\`scripts/run.py\\` is escaped prose.\n\n```bash\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\necho scripts/\necho "scripts/"\necho "helper directory: scripts/";\necho "Use scripts/ for helpers"\necho "scripts/ run.py"\necho scripts/" run.py"\necho \'a"b\' "scripts/";\n# don\'t use scripts/ for generated files\necho scripts/;\necho scripts/&&\necho scripts/|\necho scripts/>out\necho scripts/<in\n```'
 set +e
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/dot-bare-fixture" > "$test_tmp/dot-bare.json"
-dot_bare_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/closed-shell-safe" > "$test_tmp/closed-shell-safe.json"
+closed_shell_safe_exit=$?
 set -e
-[[ $dot_bare_exit -eq 1 ]]
+if [[ $closed_shell_safe_exit -ne 0 ]]; then
+  sed -n '1,200p' "$test_tmp/closed-shell-safe.json" >&2
+  exit 1
+fi
 
-make_fixture "$test_tmp/direct-bare-fixture" $'scripts/run.py\n./scripts/run.py\n"scripts/run.py"\n\'./scripts/run.py\'\ntrue; scripts/run.py\ntrue && "./scripts/run.py"\ntrue || ./scripts/run.py\ntrue | \'scripts/run.py\'\ntrue & ./scripts/run.py\necho hi |& ./scripts/run.py\necho foo#bar && ./scripts/run.py\n> /tmp/log ./scripts/run.py\necho hi 2>&1 && ./scripts/run.py\n2>&1 ./scripts/run.py\n2>/tmp/log ./scripts/run.py\n2> /tmp/log ./scripts/run.py\n2>out ./scripts/run.py\n2>>out ./scripts/run.py\n2>|out ./scripts/run.py\n0<&1 ./scripts/run.py\n0<>data ./scripts/run.py\nMODE=strict 2>&1 ./scripts/run.py\n2>&1 MODE=strict ./scripts/run.py\n(./scripts/run.py)\n( ./scripts/run.py )\ntrue && (MODE=strict ./scripts/run.py)\n{ ./scripts/run.py; }\ntrue && { MODE=strict ./scripts/run.py; }\nPATH=${PATH}:/bin ./scripts/run.py'
+make_body_fixture "$test_tmp/unfenced-helper-contexts" $'Run `env MODE=strict ./scripts/run.py`.\n\nLiteral `[helper](scripts/run.py)` code also fails.\n\n    env MODE=strict ./scripts/run.py\n    [helper](scripts/run.py)\n\n```text\nenv MODE=strict ./scripts/run.py\n[helper](scripts/run.py)\n```\n\n~~~python\nprint("scripts/run.py")\n~~~\n\n```\nenv MODE=strict ./scripts/run.py\n```'
 set +e
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --warnings-as-errors "$test_tmp/direct-bare-fixture" > "$test_tmp/direct-strict.out" 2>&1
-direct_strict_exit=$?
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/direct-bare-fixture" > "$test_tmp/direct-bare.json"
-direct_bare_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/unfenced-helper-contexts" > "$test_tmp/unfenced-helper-contexts.json"
+unfenced_context_exit=$?
 set -e
-[[ $direct_strict_exit -eq 1 && $direct_bare_exit -eq 1 ]]
-grep -Fq "FRAGILE_SCRIPT_PATH" "$test_tmp/direct-strict.out"
+[[ $unfenced_context_exit -eq 1 ]]
 
-make_fixture "$test_tmp/direct-safe-fixture" $'See scripts/run.py for details.\ncat scripts/run.py\n[helper](scripts/run.py)\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\necho hi >& ./scripts/run.log\necho hi &> ./scripts/run.log\necho hi > ./scripts/run.log\necho hi >> ./scripts/run.log\n2 > ./scripts/run.log ./scripts/run.py\necho "(./scripts/run.py)"\necho \\(./scripts/run.py\\)\nprintf "%s" "inside (./scripts/run.py) text"\necho "{ ./scripts/run.py; }"\necho \\{./scripts/run.py\\}\necho {} ./scripts/run.py\necho {word} ./scripts/run.py\necho prefix{a,b} ./scripts/run.py\necho ${VALUE} ./scripts/run.py\nfind . -exec echo {} ./scripts/run.py \\;'
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/direct-safe-fixture" > "$test_tmp/direct-safe.json"
-
-make_fixture "$test_tmp/control-prefix-direct-fixture" $'if ./scripts/run.py; then echo ok; fi\nwhile ./scripts/run.py; do echo ok; done\nuntil ./scripts/run.py; do echo ok; done\nthen ./scripts/run.py; fi\ndo ./scripts/run.py; done\nelif ./scripts/run.py; then echo ok; fi\nelse ./scripts/run.py; fi\n! ./scripts/run.py\nif ! ./scripts/run.py; then echo ok; fi\nfi; ./scripts/run.py\ndone && ./scripts/run.py'
+make_body_fixture "$test_tmp/unclosed-shell-fence" $'```bash\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 set +e
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/control-prefix-direct-fixture" > "$test_tmp/control-prefix-direct.json"
-control_prefix_direct_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/unclosed-shell-fence" > "$test_tmp/unclosed-shell-fence.json"
+unclosed_fence_exit=$?
 set -e
-[[ $control_prefix_direct_exit -eq 1 ]]
+[[ $unclosed_fence_exit -eq 1 ]]
 
-make_fixture "$test_tmp/control-prefix-safe-fixture" $'echo if ./scripts/run.py\n"if" ./scripts/run.py\n\\if ./scripts/run.py\n"while" ./scripts/run.py\n"!" ./scripts/run.py\nifx ./scripts/run.py\nfi ./scripts/run.py\ndone ./scripts/run.py\nUse if before ./scripts/run.py.\ncat then ./scripts/run.py\necho "do" ./scripts/run.py\nif ./scripts/run.py is unavailable, use the fallback.\nwhile ./scripts/run.py remains the documented helper, keep this note.\nuntil ./scripts/run.py changes, no migration is needed.\nthen ./scripts/run.py is the next file to review.\nelse ./scripts/run.py remains an example path.'
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/control-prefix-safe-fixture" > "$test_tmp/control-prefix-safe.json"
-
-make_fixture "$test_tmp/assignment-direct-fixture" $'MODE=strict ./scripts/run.py\nA=1 B="two words" scripts/run.py\ntrue && MODE=strict ./scripts/run.py\nCONFIG=\'{"mode":"strict"}\' scripts/run.py\nprintf "%s" "#"; MODE=strict ./scripts/run.py\nMODE=strict \\\n  ./scripts/run.py'
+make_body_fixture "$test_tmp/container-shell-fences" $'> ```bash\n> env MODE=strict scripts/run.py\n> PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n> ```\n\n- ~~~Sh\n  ./scripts/run.py\n  <skill-dir>/scripts/run.py\n  ~~~\n\n- > ```shell\n  > scripts/run.py\n  > ```\n\n>     scripts/run.py'
 set +e
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/assignment-direct-fixture" > "$test_tmp/assignment-direct.json"
-assignment_direct_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/container-shell-fences" > "$test_tmp/container-shell-fences.json"
+container_fence_exit=$?
 set -e
-[[ $assignment_direct_exit -eq 1 ]]
+[[ $container_fence_exit -eq 1 ]]
 
-make_fixture "$test_tmp/assignment-safe-fixture" $'# ./scripts/run.py\ntrue; # do not run; ./scripts/run.py\nSet MODE=strict before using scripts/run.py.\nTARGET=./scripts/run.py\ncat MODE=strict scripts/run.py\nMODE=strict cat scripts/run.py\nprintf "%s" "a|b"\necho "a && b"\necho "https://example.com/?a=1&b=2"\necho ";" ./scripts/run.py\necho \\; ./scripts/run.py\n"MODE=strict" ./scripts/run.py\nMODE\\=strict ./scripts/run.py\n[helper](scripts/run.py)\nMODE=strict python3 -B "<skill-dir>/scripts/run.py"'
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/assignment-safe-fixture" > "$test_tmp/assignment-safe.json"
+for name in blockquote list; do
+  if [[ "$name" == blockquote ]]; then
+    body=$'> ```bash\n> PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n```'
+  else
+    body=$'- ```bash\n  PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n```'
+  fi
+  make_body_fixture "$test_tmp/container-missing-closer-$name" "$body"
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/container-missing-closer-$name" > "$test_tmp/container-missing-closer-$name.json"
+  container_close_exit=$?
+  set -e
+  [[ $container_close_exit -eq 1 ]]
+done
 
-make_fixture "$test_tmp/option-bare-fixture" $'python3 -X dev scripts/run.py\nnode --require loader "./scripts/run.js"\nbash --init-file profile scripts/run.sh\nsh -o errexit scripts/run.sh\nruby -I lib scripts/run.py'
+make_body_fixture "$test_tmp/container-boundary-safe" $'> ```text\n> harmless code\nOrdinary prose scripts/run.py\n\n- ~~~text\n  harmless code\nOrdinary prose scripts/run.py'
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/container-boundary-safe" > "$test_tmp/container-boundary-safe.json"
+
+make_body_fixture "$test_tmp/container-boundary-shell" $'> ```bash\n> <skill-dir>/scripts/run.py\nOrdinary prose scripts/run.py'
 set +e
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/option-bare-fixture" > "$test_tmp/option-bare.json"
-option_bare_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/container-boundary-shell" > "$test_tmp/container-boundary-shell.json"
+container_boundary_shell_exit=$?
 set -e
+[[ $container_boundary_shell_exit -eq 1 ]]
 
-make_fixture "$test_tmp/separator-safe-fixture" $'python3 -X dev; echo scripts/run.py\nnode --require loader & cat ./scripts/run.js\nbash --init-file profile | printf scripts/run.sh\nsh -o errexit && cat ./scripts/run.sh\nruby -I lib; echo scripts/run.py\nUse scripts/run.py before python3.\npython3 -B\ncat scripts/run.py'
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/separator-safe-fixture" > "$test_tmp/separator-safe.json"
+make_fixture "$test_tmp/helper-source-bare" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf 'SIBLING = "scripts/child.py"\n' > "$test_tmp/helper-source-bare/scripts/run.py"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/helper-source-bare" > "$test_tmp/helper-source-bare.json"
+helper_source_bare_exit=$?
+set -e
+[[ $helper_source_bare_exit -eq 1 ]]
 
-make_fixture "$test_tmp/continued-bare-fixture" $'python3 -B \\\n  scripts/run.py\nnode --trace-warnings \\\r\n  ./scripts/run.js'
-cat >> "$test_tmp/continued-bare-fixture/SKILL.md" <<'EOF'
-
-```bash
-ruby -I lib \\\
-  scripts/run.py
-```
+make_fixture "$test_tmp/helper-source-safe" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+cat > "$test_tmp/helper-source-safe/scripts/run.py" <<'EOF'
+SIBLING = "<skill-dir>/scripts/child.py"
+DIRECTORY = "scripts/"
+DIRECTORIES = ["scripts/"]
+CONFIG = {"root": "scripts/"}
+MIXED = ['a"b', "scripts/"]
+NOTE = ["helper directory: scripts/"]
+HELP = "Use scripts/ for helpers"
+# do not use scripts/ for generated files
 EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/helper-source-safe" > "$test_tmp/helper-source-safe.json"
+
+make_fixture "$test_tmp/markdown-helper-source" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf 'Helper source mentions scripts/child.py outside Markdown code.\n' > "$test_tmp/markdown-helper-source/scripts/notes.md"
 set +e
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/continued-bare-fixture" > "$test_tmp/continued-bare.json"
-continued_bare_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/markdown-helper-source" > "$test_tmp/markdown-helper-source.json"
+markdown_helper_exit=$?
 set -e
+[[ $markdown_helper_exit -eq 1 ]]
 
-make_fixture "$test_tmp/even-backslash-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
-cat >> "$test_tmp/even-backslash-fixture/SKILL.md" <<'EOF'
+make_fixture "$test_tmp/executable-source-bare" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '#!/bin/sh\necho scripts/run.py\n' > "$test_tmp/executable-source-bare/run-helper"
+chmod +x "$test_tmp/executable-source-bare/run-helper"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/executable-source-bare" > "$test_tmp/executable-source-bare.json"
+executable_source_bare_exit=$?
+set -e
+[[ $executable_source_bare_exit -eq 1 ]]
 
-```bash
-python3 -B \\
-  cat scripts/run.py
-node \\\\
-  cat ./scripts/run.js
-```
-EOF
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/even-backslash-fixture" > "$test_tmp/even-backslash.json"
+make_fixture "$test_tmp/generic-config-safe" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '{"helper":"scripts/run.py"}\n' > "$test_tmp/generic-config-safe/config.json"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/generic-config-safe" > "$test_tmp/generic-config-safe.json"
 
 make_fixture "$test_tmp/portable-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/portable-fixture" > "$test_tmp/portable.json"
@@ -1070,6 +1116,14 @@ invalid_script_exit=$?
 set -e
 [[ $invalid_script_exit -eq 1 ]]
 
+make_fixture "$test_tmp/invalid-shebang-bytes" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '#!/bin/sh\n\377\n' > "$test_tmp/invalid-shebang-bytes/shebang-helper"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/invalid-shebang-bytes" > "$test_tmp/invalid-shebang-bytes.json"
+invalid_shebang_exit=$?
+set -e
+[[ $invalid_shebang_exit -eq 1 ]]
+
 make_fixture "$test_tmp/svg-local-path" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 mkdir -p "$test_tmp/svg-local-path/assets"
 printf '<svg><text>/workspace/alice/logo.svg</text></svg>\n' > "$test_tmp/svg-local-path/assets/logo.svg"
@@ -1125,18 +1179,19 @@ const [root, freezePath, temporary] = process.argv.slice(2);
 const freeze = JSON.parse(fs.readFileSync(freezePath));
 const product = JSON.parse(fs.readFileSync(path.join(temporary, "product.json")));
 const minimalExample = JSON.parse(fs.readFileSync(path.join(temporary, "minimal-example.json")));
-const bare = JSON.parse(fs.readFileSync(path.join(temporary, "bare.json")));
-const dotBare = JSON.parse(fs.readFileSync(path.join(temporary, "dot-bare.json")));
-const directBare = JSON.parse(fs.readFileSync(path.join(temporary, "direct-bare.json")));
-const directSafe = JSON.parse(fs.readFileSync(path.join(temporary, "direct-safe.json")));
-const controlPrefixDirect = JSON.parse(fs.readFileSync(path.join(temporary, "control-prefix-direct.json")));
-const controlPrefixSafe = JSON.parse(fs.readFileSync(path.join(temporary, "control-prefix-safe.json")));
-const assignmentDirect = JSON.parse(fs.readFileSync(path.join(temporary, "assignment-direct.json")));
-const assignmentSafe = JSON.parse(fs.readFileSync(path.join(temporary, "assignment-safe.json")));
-const optionBare = JSON.parse(fs.readFileSync(path.join(temporary, "option-bare.json")));
-const separatorSafe = JSON.parse(fs.readFileSync(path.join(temporary, "separator-safe.json")));
-const continuedBare = JSON.parse(fs.readFileSync(path.join(temporary, "continued-bare.json")));
-const evenBackslash = JSON.parse(fs.readFileSync(path.join(temporary, "even-backslash.json")));
+const closedShellBare = JSON.parse(fs.readFileSync(path.join(temporary, "closed-shell-bare.json")));
+const closedShellSafe = JSON.parse(fs.readFileSync(path.join(temporary, "closed-shell-safe.json")));
+const unfencedHelperContexts = JSON.parse(fs.readFileSync(path.join(temporary, "unfenced-helper-contexts.json")));
+const unclosedShellFence = JSON.parse(fs.readFileSync(path.join(temporary, "unclosed-shell-fence.json")));
+const containerShellFences = JSON.parse(fs.readFileSync(path.join(temporary, "container-shell-fences.json")));
+const containerMissingClosers = ["blockquote", "list"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `container-missing-closer-${name}.json`))));
+const containerBoundarySafe = JSON.parse(fs.readFileSync(path.join(temporary, "container-boundary-safe.json")));
+const containerBoundaryShell = JSON.parse(fs.readFileSync(path.join(temporary, "container-boundary-shell.json")));
+const helperSourceBare = JSON.parse(fs.readFileSync(path.join(temporary, "helper-source-bare.json")));
+const helperSourceSafe = JSON.parse(fs.readFileSync(path.join(temporary, "helper-source-safe.json")));
+const markdownHelperSource = JSON.parse(fs.readFileSync(path.join(temporary, "markdown-helper-source.json")));
+const executableSourceBare = JSON.parse(fs.readFileSync(path.join(temporary, "executable-source-bare.json")));
+const genericConfigSafe = JSON.parse(fs.readFileSync(path.join(temporary, "generic-config-safe.json")));
 const portable = JSON.parse(fs.readFileSync(path.join(temporary, "portable.json")));
 const official = ["pass", "fail", "unexpected", "timeout"].map(mode => JSON.parse(fs.readFileSync(path.join(temporary, `skills-ref-${mode}.json`))));
 const sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "sidecar.json")));
@@ -1196,6 +1251,7 @@ const binaryAsset = JSON.parse(fs.readFileSync(path.join(temporary, "binary-asse
 const systemShebang = JSON.parse(fs.readFileSync(path.join(temporary, "system-shebang.json")));
 const localShebangs = ["workspace", "root"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}-shebang.json`))));
 const invalidScript = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-extensionless-script.json")));
+const invalidShebang = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-shebang-bytes.json")));
 const svgPath = JSON.parse(fs.readFileSync(path.join(temporary, "svg-local-path.json")));
 const fileUri = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-path.json")));
 const windowsPaths = ["windows-forward", "windows-escaped"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
@@ -1234,7 +1290,8 @@ assert(freeze.budgetRevision.scriptSyntaxAttestationExecutableDeltaBytes === 267
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeSyntaxAttestation === 40000, "pre-attestation package cap changed");
 assert(freeze.budgetRevision.shellControlPrefixExecutableDeltaBytes === 959, "shell control-prefix executable delta changed");
 assert(freeze.budgetRevision.descriptionAngleBracketExecutableDeltaBytes === 132, "description angle-bracket executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 17424, "current executable delta changed");
+assert(freeze.budgetRevision.closedSurfaceScriptPathExecutableDeltaBytes === 1189, "closed-surface migration executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 18613, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1245,6 +1302,7 @@ for (const source of [freeze.source.v1ResultManifest, freeze.source.v2ResultMani
 assert(product.status === "pass" && product.errorCount === 0 && product.warningCount === 0, "product validation failed");
 assert(minimalExample.status === "pass" && minimalExample.metrics.fileCount === 1 && minimalExample.metrics.referenceFileCount === 0 && minimalExample.metrics.scriptFileCount === 0, "real minimal example must pass canonical budgets");
 assert(product.coverage.canonicalSubset === "toolboxmd-portable-core-v2", "canonical subset version changed");
+assert(product.coverage.scriptPaths.shellParsed === false && product.coverage.scriptPaths.markdown.includes("no shell parse"), "closed-surface script-path coverage changed");
 assert(product.aggregateSha256 === freeze.package.aggregateSha256, "package aggregate differs from freeze");
 assert(product.files.length === freeze.package.files.length, "per-file package count changed");
 for (const actual of product.files) {
@@ -1257,11 +1315,9 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 42567, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43397, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
-assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
-assert(bare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all bare interpreter examples must be detected");
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
 assert(official.map(result => result.coverage.officialSkillsRef.status).join(",") === "pass,fail,error,timeout", "official validator outcomes changed");
 assert(official[0].status === "pass" && official.slice(1).every(result => result.status === "fail"), "official validator exits changed");
@@ -1283,22 +1339,19 @@ assert(angleDescriptions.every(result => result.coverage.officialSkillsRef.statu
 assert(angleSafeDescription.status === "pass", "ordinary quoted description text must remain valid");
 assert(unquotedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_STRING")), "all unquoted description scalars must fail");
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
-assert(dotBare.status === "fail", "dot-relative script fixture must fail under warnings-as-errors");
-assert(dotBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all dot-relative interpreter examples must be detected");
-assert(directBare.status === "fail" && directBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 29, "direct task-relative commands must fail at command and grouping boundaries");
-assert(directSafe.status === "pass" && directSafe.warningCount === 0, "prose, arguments, links, and explicit skill paths must not look executable");
-assert(controlPrefixDirect.status === "fail" && controlPrefixDirect.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 11, "shell control prefixes and real separators must preserve command position");
-assert(controlPrefixSafe.status === "pass" && controlPrefixSafe.warningCount === 0, "quoted, escaped, prose, argument, fi, and done lookalikes must remain safe");
-const newContractFailures = [];
-if (assignmentDirect.status !== "fail" || assignmentDirect.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length !== 6) newContractFailures.push("assignment-prefixed direct helpers are not all rejected");
-if (assignmentSafe.status !== "pass" || assignmentSafe.warningCount !== 0) newContractFailures.push("assignment safe boundaries changed");
-if (!supportedPartialSidecars.every(result => result.status === "pass")) newContractFailures.push("supported partial sidecars are rejected");
-if (!blankSidecars.every(result => result.status === "fail" && result.issues.some(item => item.code === "OPENAI_SHAPE"))) newContractFailures.push("blank sidecar lacks semantic-section error");
-assert(newContractFailures.length === 0, newContractFailures.join("; "));
-assert(optionBare.status === "fail" && optionBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "option operands must not hide fragile script paths");
-assert(separatorSafe.status === "pass" && separatorSafe.warningCount === 0, "later-command arguments and reverse prose direction must remain safe");
-assert(continuedBare.status === "fail" && continuedBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3, "one and three backslashes across LF or CRLF must preserve continuation detection");
-assert(evenBackslash.status === "pass" && evenBackslash.warningCount === 0, "two and four backslashes must not join ordinary newlines");
+assert(supportedPartialSidecars.every(result => result.status === "pass"), "supported partial sidecars are rejected");
+assert(blankSidecars.every(result => result.status === "fail" && result.issues.some(item => item.code === "OPENAI_SHAPE")), "blank sidecar lacks semantic-section error");
+assert(closedShellBare.status === "fail" && closedShellBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 25, "closed shell fences must reject every lexically adjacent bare helper path without shell parsing");
+assert(closedShellSafe.status === "pass" && closedShellSafe.warningCount === 0, "explicit skill roots, prose, links, directory-only mentions, and leading-whitespace child names must remain safe");
+assert(unfencedHelperContexts.status === "fail" && unfencedHelperContexts.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 8, "single-line inline, indented, and fenced code outside recognized shell fences must fail closed");
+assert(unclosedShellFence.status === "fail" && unclosedShellFence.issues.some(item => item.code === "MARKDOWN_FENCE"), "unclosed recognized shell fences must fail");
+assert(containerShellFences.status === "fail" && containerShellFences.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3 && containerShellFences.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "nested blockquote/list fences and blockquote-indented code must preserve closed-surface checks");
+assert(containerMissingClosers.every(result => result.issues.some(item => item.code === "MARKDOWN_FENCE")), "container fences must not accept a root-level closer");
+assert(containerBoundarySafe.status === "pass" && containerBoundarySafe.warningCount === 0, "non-shell fences end at their Markdown container boundary without consuming root prose");
+assert(containerBoundaryShell.status === "fail" && containerBoundaryShell.issues.filter(item => item.code === "MARKDOWN_FENCE").length === 1 && !containerBoundaryShell.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "recognized shell fences fail at their Markdown container boundary without consuming root prose");
+assert(helperSourceBare.status === "fail" && executableSourceBare.status === "fail" && [helperSourceBare, executableSourceBare].every(result => result.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH")), "helper and executable source files must reject bare helper paths");
+assert(markdownHelperSource.status === "fail" && markdownHelperSource.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "Markdown files below scripts must retain helper-source coverage");
+assert(helperSourceSafe.status === "pass" && genericConfigSafe.status === "pass", "explicit helper roots must pass and generic configs must stay outside command scanning");
 assert(unquotedDateDescription.status === "fail" && unquotedDateDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted dates must fail the canonical string contract");
 assert(quotedName.status === "fail" && quotedName.issues.some(item => item.code === "NAME_FORMAT"), "name must remain an unquoted slug");
 assert(portableMetadataSequence.status === "fail" && portableMetadataSequence.issues.some(item => item.code === "METADATA_SHAPE"), "portable metadata sequences must fail");
@@ -1333,6 +1386,7 @@ assert(invalidAttestations.every(result => result.status === "fail" && result.is
 assert(binaryAsset.status === "pass" && !binaryAsset.issues.some(item => item.code === "UTF8"), "binary assets must not be decoded as declared text");
 assert(systemShebang.status === "pass" && localShebangs.every(result => result.issues.some(item => item.code === "LOCAL_PATH")), "shebang path boundary changed");
 assert(invalidScript.issues.some(item => item.code === "UTF8"), "invalid UTF-8 executable must fail");
+assert(invalidShebang.issues.some(item => item.code === "UTF8"), "invalid UTF-8 shebang file must fail without executable mode");
 assert(svgPath.issues.some(item => item.code === "LOCAL_PATH") && fileUri.issues.some(item => item.code === "LOCAL_PATH"), "decodable asset and file URI path checks changed");
 assert(windowsPaths.every(result => result.issues.some(item => item.code === "LOCAL_PATH")), "Windows local path checks changed");
 assert(webRootLink.issues.some(item => item.code === "ROOT_LINK") && !webRootLink.issues.some(item => item.code === "LOCAL_PATH"), "web links must not be mistaken for workstation paths");
@@ -1347,7 +1401,7 @@ const ownSidecar = fs.readFileSync(path.join(root, freeze.package.path, "agents/
 assert(!/\bgit\s+(?:status|rev-parse|diff|log)\b/i.test(skillText), "creator embeds an unconditional Git command");
 assert(/Inspect Git state only when .*user requested Git delivery/.test(skillText), "conditional Git boundary missing");
 assert(skillText.includes('PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --warnings-as-errors "<target-skill-dir>"'), "strict portable creator command missing");
-assert(skillText.includes("--script-syntax-checked 'scripts/check.sh=<lowercase-sha256>'"), "exact-digest non-Python syntax attestation flow missing");
+assert(skillText.includes("--script-syntax-checked '<helper-path>=<lowercase-sha256>'"), "exact-digest non-Python syntax attestation flow missing");
 assert(skillText.includes("Generated Codex sidecars require nonempty `display_name` and `short_description`"), "creator sidecar policy missing");
 assert(/^\s{2}display_name:\s+".+"$/m.test(ownSidecar) && /^\s{2}short_description:\s+".+"$/m.test(ownSidecar), "creator sidecar must retain nonempty UI fields");
 assert(skillText.includes("always-read reference belongs in activated-core cost"), "always-read cost rule missing");

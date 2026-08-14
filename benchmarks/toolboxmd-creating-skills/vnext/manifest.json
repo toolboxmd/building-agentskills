@@ -75,7 +75,9 @@
     "shellControlPrefixReason": "Exact-HEAD review required bounded same-line shell clause state for a fixed unquoted control-prefix set, preserving command position without treating quoted, escaped, prose, argument, fi, or done tokens as command boundaries.",
     "descriptionAngleBracketExecutableDeltaBytes": 132,
     "descriptionAngleBracketReason": "Exact-HEAD review required built-in host-validator compatibility for descriptions containing angle brackets when the optional skills-ref executable is unavailable.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 17424,
+    "closedSurfaceScriptPathExecutableDeltaBytes": 1189,
+    "closedSurfaceScriptPathReason": "A Grok architecture audit and exact-HEAD review replaced the open-ended shell lexer with a closed-surface portability rule for root, blockquote, and list shell fences, single-line inline and other Markdown code contexts, UTF-8 helper sources, and executable or shebang files. A path-bearing child is an immediate non-whitespace lexical child after scripts/; leading-whitespace child names are outside this checker. The executable-only delta includes explicit context diagnostics and does not parse shell or full CommonMark grammar.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 18613,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -89,22 +91,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "9b97a110b8d92b24a2787750effb99ffe5469a42e6163c4f7c7b149a97234ee2",
+    "aggregateSha256": "60ecdce8622c63c4cab4bf041515cee8d6891f47888df5e55b4c744b25cfa915",
     "fileCount": 3,
-    "packageBytes": 42567,
+    "packageBytes": 43397,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 5061,
+      "bytes": 4702,
       "lines": 78,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 5061,
-        "sha256": "f7a7a258cf39c7fe5d62983df60d39a6e4416ba198f7823bd10be0978f9e33b4"
+        "bytes": 4702,
+        "sha256": "3738bf2d3fddc118bc0ed34f6cf700fc318757baf2d0f60b4d80748e98f85df0"
       },
       {
         "path": "agents/openai.yaml",
@@ -113,8 +115,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 37290,
-        "sha256": "bcd0304dda3c0fb1455527a0554b3cca664107284f387e03b332d2dfa086422f"
+        "bytes": 38479,
+        "sha256": "b8eeee38f8f632bb9bb1a40cca5108def0bae5dc3277a348dbd027c7befe31c0"
       }
     ]
   },
@@ -123,10 +125,10 @@
     "proves": [
       "the frozen product package and exact creator budgets reproduce",
       "the validator runs from outside the package without Python bytecode writes",
-      "bare interpreter-prefixed and direct command-position task-relative helpers fail, including quoted, dot-relative, option-bearing, separator-led, grouping-parenthesis, grouping-brace, and odd-backslash shell-line-continued forms, without joining even-backslash or ordinary newlines",
-      "bounded same-line shell clause state for a fixed unquoted control-prefix set preserves command position while quoted, escaped, prose, argument, fi, and done lookalikes remain safe unless a real separator follows",
-      "the prescribed validator command enables warnings-as-errors while prose, argument, Markdown-link, and explicit skill-directory script paths remain accepted",
-      "direct helpers after bounded empty, unquoted, single-quoted, and double-quoted POSIX assignment words fail while assignment prose and intervening commands remain accepted",
+      "immediate non-whitespace task-relative helper children fail in root, blockquote, and list closed case-insensitive sh, bash, and shell fences without interpreting commands, strings, comments, heredocs, wrappers, assignments, or continuations",
+      "single-line inline code, indented code, and non-shell or unknown fences containing that lexical helper shape fail with a context error, while ordinary prose, Markdown link destinations, directory-only mentions, leading-whitespace child names, and explicit skill-directory paths remain accepted",
+      "all UTF-8 files below scripts/ and executable or shebang files reject task-relative helper paths, while generic configuration files remain outside this policy absent a schema",
+      "recognized shell fences must close and the prescribed validator command enables warnings-as-errors",
       "explicit skill-directory script examples pass",
       "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, supported and bounded interface strings, assets-only icon paths, optional default_prompt, policy, and current tool dependencies",
       "Codex interface, policy, and dependencies sections are independently optional; present sections must be nonempty and valid, while generated ToolboxMD sidecars retain nonempty UI fields",
@@ -152,6 +154,8 @@
     "doesNotProve": [
       "implicit skill activation",
       "arbitrary YAML or full CommonMark validity",
+      "multiline inline code spans or task-relative helper child names whose first character is whitespace",
+      "shell command parsing or wrapper, assignment, quoting, comment, heredoc, continuation, and control-flow semantics",
       "execution of language-specific checks or syntax validity of non-Python helper scripts",
       "semantic downstream utility",
       "creator superiority",

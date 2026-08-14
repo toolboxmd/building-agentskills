@@ -7,8 +7,8 @@ description: "Create portable Agent Skills from needs, trigger and near-miss exa
 
 ## Boundaries
 
-- For new skills. Route existing skills to `toolboxmd-updating-skills` and comparisons to `toolboxmd-benchmarking-skills`.
-- Use examples for discovery; confirm rules with authoritative sources and evidence.
+- Route existing skills to `toolboxmd-updating-skills` and comparisons to `toolboxmd-benchmarking-skills`.
+- Use examples to discover; confirm rules with primary sources or evidence.
 
 ## Default path
 
@@ -29,7 +29,7 @@ A skill may coordinate these; prose does not fire them.
 
 ### 2. Build an evidence brief
 
-Record job and value, triggers and close near misses, inputs and outputs, observed mistakes, constraints, and evidence gaps. Ask questions or do a representative task to close load-bearing gaps. Label hypotheses.
+Record job and value, triggers and near misses, inputs and outputs, mistakes, constraints, and evidence gaps. Close load-bearing gaps with questions or a representative task. Label hypotheses.
 
 ### 3. Answer three independent questions
 
@@ -39,40 +39,40 @@ Record job and value, triggers and close near misses, inputs and outputs, observ
 
 ### 4. Plan and draft the package
 
-Start with `SKILL.md`. Add only evidenced support: always-needed rules inline; conditional knowledge in `references/`; repeated deterministic work or gates in `scripts/`; output inputs in `assets/`; sidecars for a stated target. Keep comparative evals outside. Add package tests only for a bundled script or distribution contract. Never add speculative directories.
+Start with `SKILL.md`. Keep always-needed rules inline; put conditional knowledge in `references/`, deterministic work in `scripts/`, output inputs in `assets/`, and target metadata in sidecars. Keep evals external. Test scripts and distribution contracts. Do not add speculative files.
 
-Leave only the exact `name` slug unquoted. JSON-quote all other top-level strings and each portable `metadata` key and value. Omit empty `metadata`. Describe capability, triggers, and exclusions, not workflow. Keep decisions, evidence, three answers, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
+Leave only the exact `name` slug unquoted. JSON-quote other top-level strings and portable `metadata` keys and values; omit empty `metadata`. Description states capability, triggers, and exclusions. `SKILL.md` holds decisions, evidence, procedure, inputs, outputs, and load-bearing gotchas. Use rigid language only for mechanized rules.
 
-Generated Codex sidecars require nonempty `display_name` and `short_description`. The validator also accepts official-compatible supported partial interface fields when validating an existing sidecar.
+Generated Codex sidecars require nonempty `display_name` and `short_description`; existing sidecars may use any supported nonempty interface subset.
 
-Explicit `metadata.hermes.config`: pass `--allow-hermes-metadata`; keep `hermes`, `config`, `key`, `description`, `default`, and `prompt` unquoted; start items with `- key: "..."`; JSON-quote values. It is not portable core.
+For explicit `metadata.hermes.config`, pass `--allow-hermes-metadata`. Keep its schema keys unquoted, start items with `- key: "..."`, and JSON-quote values. This is not portable core.
 
 ### 5. Make scripts portable
 
-Resolve `<skill-dir>` from loaded `SKILL.md` as an absolute argument, never from cwd or shell expansion. Use `<target-skill-dir>` for the created package.
+Resolve `<skill-dir>` from loaded `SKILL.md` as an absolute argument, not from cwd or shell expansion. Use `<target-skill-dir>` for the new package.
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --warnings-as-errors "<target-skill-dir>"
 ```
 
-Pass budget flags when defaults differ. Rewrite examples that address only `scripts/`.
+Pass budget flags when defaults differ. Fence executable examples as `sh`, `bash`, or `shell` and use `<skill-dir>/scripts/<helper>`. Task-relative helpers fail in single-line inline, indented, or other fenced code. The lexical check treats immediate non-whitespace content after `scripts/` as a child. Directory-only mentions and child names starting with whitespace are outside it.
 
-The checker covers the canonical ToolboxMD subset and package policy, not arbitrary YAML or CommonMark. It checks Python through AST and warns on other helper syntax. For each non-Python helper, run an appropriate syntax check separately, retain and report its exact command and zero result, and compute the current lowercase SHA-256 of its exact bytes. Then repeat `--script-syntax-checked 'scripts/check.sh=<lowercase-sha256>'` with each package-relative path and digest. The validator verifies only that binding; it does not execute or prove the reported command. When available, the checker runs local external `skills-ref validate <target-skill-dir>` without installing it. ToolboxMD does not attest or constrain that executable's filesystem or network behavior. Report coverage and official status separately.
+The checker covers the ToolboxMD subset and policy, not arbitrary YAML, CommonMark, or shell. It checks Python with AST. For each non-Python helper, run and report a syntax command, hash current bytes, and pass `--script-syntax-checked '<helper-path>=<lowercase-sha256>'`. This binds path to digest; it does not prove execution. If installed, external `skills-ref validate <target-skill-dir>` runs without an install fallback. Report its result separately; ToolboxMD does not constrain its behavior.
 
 ### 6. Test, delete, and deliver
 
 - Validate structure and budgets. Test bundled scripts.
-- Smoke-check one realistic task when possible. Add pressure or repetition only for observed variance, high risk, or a strong claim.
+- Smoke-check one realistic task when possible. Add pressure only for observed variance, high risk, or a strong claim.
 - Hand comparisons to the benchmarking workflow.
 - Record description, core/reference bytes, line/file/script/eval counts, and package bytes. Delete unsupported files and rerun checks.
 
 Inspect Git state only when the user requested Git delivery. Do not search ancestors for package-only work.
 
-Report the canonical check and official-validator availability/result separately, plus tested checks/skips. Report committed/pushed only when Git delivery was requested.
+Report canonical and official results, tested checks/skips, and committed/pushed only for requested Git delivery.
 
 ## Gotchas
 
 - A passing validator proves mechanics, not usefulness or triggering.
 - An always-read reference belongs in activated-core cost even when stored in another file.
 - Sidecars are platform metadata, not portable invocation guarantees.
-- Rehearse executable snippets exactly as written and rerun checks after the final deletion pass.
+- Rehearse executable snippets exactly; rerun after the final deletion pass.
