@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 45,942 bytes, aggregate SHA-256
-  `8ee6432214b626a2d40b3c8e7192e366f38297c8314dc773a45bf11e5b2e6a64`;
+- exact package: three files, 45,941 bytes, aggregate SHA-256
+  `99bfa6c33cf8229521b8d2883f9ed6a96067ab1e9196ad90a8ce6999ccf28d77`;
 - activated core: 74 lines and 3,973 bytes, with a 226-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -282,14 +282,14 @@ Completion evidence, updated 2026-08-14:
   segment remains excluded. A bounded deletion pass removed 169 activated-core
   bytes without changing the workflow. The 46,000-byte cap and all other
   budgets remain unchanged;
-- the next exact-HEAD correction adds 163 executable bytes and brings the
-  cumulative delta to 21,887 bytes. The target `scripts` component matches
+- the next exact-HEAD correction adds 162 executable bytes and brings the
+  cumulative delta to 21,886 bytes. The target `scripts` component matches
   case-insensitively after one lexical token boundary across slash, backslash,
   nested, and dot forms, but `scripts` text inside an ordinary component such
   as `foo+scripts` remains outside the helper rule, including around quoted
-  portable punctuation. A bounded wording pass removed 67 activated-core
-  bytes without changing the workflow. The 46,000-byte cap and all budgets
-  remain unchanged;
+  portable punctuation and after an unquoted comma within the same path
+  component. A bounded wording pass removed 67 activated-core bytes without
+  changing the workflow. The 46,000-byte cap and all budgets remain unchanged;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.

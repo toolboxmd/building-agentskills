@@ -113,9 +113,9 @@
     "caseExactLinkAndHermesKeyReason": "Exact-HEAD review required host-independent exact component spelling for local Markdown link targets and required canonical Hermes config keys to decode to non-whitespace text before an entry becomes valid. A bounded 34-byte activated-core deletion pass preserved the workflow and unchanged budgets.",
     "iconCaseAndTildeSegmentExecutableDeltaBytes": 98,
     "iconCaseAndTildeSegmentReason": "Exact-HEAD review required host-independent exact component spelling for declared sidecar icon paths and required embedded tilde characters in ordinary static segments to remain within task-relative helper detection. Independent audit kept icon symlink loops as structured package-level failures without resolving them. A bounded deletion pass removed 169 activated-core bytes without changing the workflow; only a standalone leading tilde home segment remains excluded.",
-    "scriptComponentBoundaryExecutableDeltaBytes": 163,
-    "scriptComponentBoundaryReason": "Exact-HEAD review required the target scripts component to match case-insensitively after one lexical token boundary without matching scripts as a substring of an ordinary path component, including quoted portable punctuation. A bounded wording pass removed 67 activated-core bytes without changing the workflow; budgets are unchanged.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21887,
+    "scriptComponentBoundaryExecutableDeltaBytes": 162,
+    "scriptComponentBoundaryReason": "Exact-HEAD review required the target scripts component to match case-insensitively after one lexical token boundary without matching scripts as a substring of an ordinary path component, including quoted portable punctuation and an unquoted comma inside a path component. A bounded wording pass removed 67 activated-core bytes without changing the workflow; budgets are unchanged.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21886,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -129,9 +129,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "8ee6432214b626a2d40b3c8e7192e366f38297c8314dc773a45bf11e5b2e6a64",
+    "aggregateSha256": "99bfa6c33cf8229521b8d2883f9ed6a96067ab1e9196ad90a8ce6999ccf28d77",
     "fileCount": 3,
-    "packageBytes": 45942,
+    "packageBytes": 45941,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -153,8 +153,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 41753,
-        "sha256": "a36898930b0bc9bc30ffdcbc43b2a5f44bdbc27774a7dc5aa2daa0593b64b656"
+        "bytes": 41752,
+        "sha256": "2948136c36230e93a56d20ef4f15e793bd84d7a4f1ed4abb43f9ab1a5f3857df"
       }
     ]
   },

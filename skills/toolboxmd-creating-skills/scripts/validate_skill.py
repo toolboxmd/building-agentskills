@@ -28,7 +28,7 @@ OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 SHELL_FENCE_LANGUAGES = {"sh", "bash", "shell"}
-SCRIPT_BREAKS = r"\s'\"`;&|(){}\[\]<>:,"
+SCRIPT_BREAKS = r"\s'\"`;&|(){}\[\]<>:"
 BARE_SCRIPT_PREFIX_RE = re.compile(
     rf"(?:^|(?<=[{SCRIPT_BREAKS}]))(?!~[/\\])(?:[^/\\\s'\"`<>]+[/\\]+)*scripts[/\\]+", re.I
 )

@@ -182,12 +182,13 @@ remains excluded. A bounded
 deletion pass removed 169 activated-core bytes without changing the workflow.
 The cumulative executable delta is 21,724 bytes; the 46,000-byte cap and all
 other budgets are unchanged.
-The next exact-HEAD correction adds 163 executable bytes. The target `scripts`
+The next exact-HEAD correction adds 162 executable bytes. The target `scripts`
 component now matches case-insensitively after one lexical token boundary,
 while `scripts` text inside ordinary components such as `foo+scripts` remains
-outside the helper-path rule, including around quoted portable punctuation. A
-bounded wording pass removed 67 activated-core bytes without changing the
-workflow. The cumulative executable delta is 21,887 bytes; the 46,000-byte cap
+outside the helper-path rule, including around quoted portable punctuation and
+after an unquoted comma within the same path component. A bounded wording pass
+removed 67 activated-core bytes without changing the workflow. The cumulative
+executable delta is 21,886 bytes; the 46,000-byte cap
 and all budgets remain unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
@@ -218,6 +219,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 45,942 bytes: 3,973 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 41,753-byte read-only checker. The executable is not
+The frozen package is 45,941 bytes: 3,973 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 41,752-byte read-only checker. The executable is not
 loaded as activated core.

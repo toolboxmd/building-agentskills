@@ -212,19 +212,19 @@ embedded_relative_code_exit=$?
 set -e
 [[ $embedded_relative_code_exit -eq 1 ]]
 
-make_body_fixture "$test_tmp/scripts-component-shell" $'```bash\npython3 Scripts/run.py\npython3 ./SCRIPTS\\run.py\npython3 foo+/Scripts/run.py\npython3 foo+/bar/../ScRiPtS\\run.py\npython3 foo+\\.\\..\\sCrIpTs/run.py\npython3 "foo&/Scripts/run.py"\npython3 "foo,/Scripts/run.py"\npython3 "foo;/Scripts/run.py"\npython3 "foo(/Scripts/run.py"\npython3 "foo[/Scripts/run.py"\npython3 "foo{/Scripts/run.py"\n```'
+make_body_fixture "$test_tmp/scripts-component-shell" $'```bash\npython3 Scripts/run.py\npython3 ./SCRIPTS\\run.py\npython3 foo+/Scripts/run.py\npython3 foo+/bar/../ScRiPtS\\run.py\npython3 foo+\\.\\..\\sCrIpTs/run.py\npython3 "foo&/Scripts/run.py"\npython3 "foo,/Scripts/run.py"\npython3 "foo;/Scripts/run.py"\npython3 "foo(/Scripts/run.py"\npython3 "foo[/Scripts/run.py"\npython3 "foo{/Scripts/run.py"\npython3 foo,/Scripts/run.py\npython3 foo,\\SCRIPTS\\run.py\npython3 foo,/bar/../sCrIpTs\\run.py\n```'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/scripts-component-shell" > "$test_tmp/scripts-component-shell.json"
 scripts_component_shell_exit=$?
 set -e
 
-make_body_fixture "$test_tmp/scripts-component-code" $'Run `python3 Scripts/run.py` and `python3 foo+/SCRIPTS\\run.py`.\n\n```text\npython3 foo+/bar/../ScRiPtS/run.py\npython3 foo+\\.\\..\\sCrIpTs\\run.py\npython3 "foo&/Scripts/run.py"\npython3 "foo,/Scripts/run.py"\npython3 "foo;/Scripts/run.py"\npython3 "foo(/Scripts/run.py"\npython3 "foo[/Scripts/run.py"\npython3 "foo{/Scripts/run.py"\n```'
+make_body_fixture "$test_tmp/scripts-component-code" $'Run `python3 Scripts/run.py` and `python3 foo+/SCRIPTS\\run.py`.\n\n```text\npython3 foo+/bar/../ScRiPtS/run.py\npython3 foo+\\.\\..\\sCrIpTs\\run.py\npython3 "foo&/Scripts/run.py"\npython3 "foo,/Scripts/run.py"\npython3 "foo;/Scripts/run.py"\npython3 "foo(/Scripts/run.py"\npython3 "foo[/Scripts/run.py"\npython3 "foo{/Scripts/run.py"\npython3 foo,/Scripts/run.py\npython3 foo,\\SCRIPTS\\run.py\npython3 foo,/.\\../sCrIpTs\\run.py\n```'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/scripts-component-code" > "$test_tmp/scripts-component-code.json"
 scripts_component_code_exit=$?
 set -e
 
-make_body_fixture "$test_tmp/scripts-substring-safe" $'Run `python3 foo+scripts/run.py`, `python3 foo@scripts/run.py`, `python3 foo=scripts/run.py`, and `python3 foo%scripts/run.py`.\n\n```bash\npython3 foo#scripts/run.py\npython3 foo_scripts/run.py\npython3 fooscripts/run.py\npython3 "foo&scripts/run.py"\npython3 "foo,scripts/run.py"\npython3 "foo;scripts/run.py"\npython3 "foo(scripts/run.py"\npython3 "foo[scripts/run.py"\npython3 "foo{scripts/run.py"\n```\n\n```text\npython3 foo+scripts\\run.py\npython3 foo@scripts\\run.py\npython3 foo=scripts\\run.py\npython3 foo%scripts\\run.py\npython3 foo#scripts\\run.py\npython3 foo_scripts\\run.py\npython3 fooscripts\\run.py\npython3 "foo&scripts\\run.py"\npython3 "foo,scripts\\run.py"\npython3 "foo;scripts\\run.py"\npython3 "foo(scripts\\run.py"\npython3 "foo[scripts\\run.py"\npython3 "foo{scripts\\run.py"\n```'
+make_body_fixture "$test_tmp/scripts-substring-safe" $'Run `python3 foo+scripts/run.py`, `python3 foo@scripts/run.py`, `python3 foo=scripts/run.py`, and `python3 foo%scripts/run.py`.\n\n```bash\npython3 foo#scripts/run.py\npython3 foo_scripts/run.py\npython3 fooscripts/run.py\npython3 foo,scripts/run.py\npython3 foo,Scripts/run.py\npython3 foo,sCrIpTs\\run.py\npython3 "foo&scripts/run.py"\npython3 "foo,scripts/run.py"\npython3 "foo;scripts/run.py"\npython3 "foo(scripts/run.py"\npython3 "foo[scripts/run.py"\npython3 "foo{scripts/run.py"\n```\n\n```text\npython3 foo+scripts\\run.py\npython3 foo@scripts\\run.py\npython3 foo=scripts\\run.py\npython3 foo%scripts\\run.py\npython3 foo#scripts\\run.py\npython3 foo_scripts\\run.py\npython3 fooscripts\\run.py\npython3 foo,scripts\\run.py\npython3 foo,Scripts/run.py\npython3 foo,sCrIpTs\\run.py\npython3 "foo&scripts\\run.py"\npython3 "foo,scripts\\run.py"\npython3 "foo;scripts\\run.py"\npython3 "foo(scripts\\run.py"\npython3 "foo[scripts\\run.py"\npython3 "foo{scripts\\run.py"\n```'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/scripts-substring-safe" > "$test_tmp/scripts-substring-safe.json"
 scripts_substring_safe_exit=$?
@@ -320,14 +320,14 @@ set -e
 [[ $helper_source_tilde_exit -eq 1 ]]
 
 make_fixture "$test_tmp/helper-source-script-case" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
-printf 'BARE = "Scripts/child.py"\nNESTED = "foo+/ScRiPtS/child.py"\nWINDOWS = "foo+\\\\SCRIPTS\\\\child.py"\nDOT = "foo+/bar/../sCrIpTs\\\\child.py"\nMIXED = "foo+\\\\.\\\\..\\\\Scripts/child.py"\nAMP = "foo&/Scripts/child.py"\nCOMMA = "foo,/Scripts/child.py"\nSEMI = "foo;/Scripts/child.py"\nPAREN = "foo(/Scripts/child.py"\nBRACKET = "foo[/Scripts/child.py"\nBRACE = "foo{/Scripts/child.py"\n' > "$test_tmp/helper-source-script-case/scripts/run.py"
+printf 'BARE = "Scripts/child.py"\nNESTED = "foo+/ScRiPtS/child.py"\nWINDOWS = "foo+\\\\SCRIPTS\\\\child.py"\nDOT = "foo+/bar/../sCrIpTs\\\\child.py"\nMIXED = "foo+\\\\.\\\\..\\\\Scripts/child.py"\nAMP = "foo&/Scripts/child.py"\nCOMMA = "foo,/Scripts/child.py"\nSEMI = "foo;/Scripts/child.py"\nPAREN = "foo(/Scripts/child.py"\nBRACKET = "foo[/Scripts/child.py"\nBRACE = "foo{/Scripts/child.py"\n# foo,/Scripts/child.py\n# foo,\\\\SCRIPTS\\\\child.py\n# foo,/bar/../sCrIpTs\\\\child.py\n' > "$test_tmp/helper-source-script-case/scripts/run.py"
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/helper-source-script-case" > "$test_tmp/helper-source-script-case.json"
 helper_source_script_case_exit=$?
 set -e
 
 make_fixture "$test_tmp/helper-source-script-substrings" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
-printf 'PLUS = "foo+scripts/child.py"\nAT = "foo@scripts/child.py"\nEQUALS = "foo=scripts/child.py"\nPERCENT = "foo%%scripts/child.py"\nHASH = "foo#scripts/child.py"\nUNDERSCORE = "foo_scripts/child.py"\nJOINED = "fooscripts/child.py"\nAMP = "foo&scripts/child.py"\nCOMMA = "foo,scripts/child.py"\nSEMI = "foo;scripts/child.py"\nPAREN = "foo(scripts/child.py"\nBRACKET = "foo[scripts/child.py"\nBRACE = "foo{scripts/child.py"\n' > "$test_tmp/helper-source-script-substrings/scripts/run.py"
+printf 'PLUS = "foo+scripts/child.py"\nAT = "foo@scripts/child.py"\nEQUALS = "foo=scripts/child.py"\nPERCENT = "foo%%scripts/child.py"\nHASH = "foo#scripts/child.py"\nUNDERSCORE = "foo_scripts/child.py"\nJOINED = "fooscripts/child.py"\nAMP = "foo&scripts/child.py"\nCOMMA = "foo,scripts/child.py"\nSEMI = "foo;scripts/child.py"\nPAREN = "foo(scripts/child.py"\nBRACKET = "foo[scripts/child.py"\nBRACE = "foo{scripts/child.py"\n# foo,scripts/child.py\n# foo,Scripts/child.py\n# foo,sCrIpTs\\\\child.py\n' > "$test_tmp/helper-source-script-substrings/scripts/run.py"
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/helper-source-script-substrings" > "$test_tmp/helper-source-script-substrings.json"
 helper_source_script_substrings_exit=$?
@@ -371,13 +371,21 @@ set -e
 [[ $executable_source_bare_exit -eq 1 ]]
 
 make_fixture "$test_tmp/executable-source-embedded" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
-printf '#!/bin/sh\necho foo/../scripts/run.py\necho foo\\\\..\\\\scripts\\\\run.py\necho foo/bar\\\\..\\\\../scripts/run.py\n' > "$test_tmp/executable-source-embedded/run-helper"
+printf '#!/bin/sh\necho foo/../scripts/run.py\necho foo\\\\..\\\\scripts\\\\run.py\necho foo/bar\\\\..\\\\../scripts/run.py\necho foo,/Scripts/run.py\necho foo,\\\\SCRIPTS\\\\run.py\necho foo,/bar/../sCrIpTs\\\\run.py\n' > "$test_tmp/executable-source-embedded/run-helper"
 chmod +x "$test_tmp/executable-source-embedded/run-helper"
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/executable-source-embedded" > "$test_tmp/executable-source-embedded.json"
 executable_source_embedded_exit=$?
 set -e
 [[ $executable_source_embedded_exit -eq 1 ]]
+
+make_fixture "$test_tmp/executable-source-comma-safe" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '#!/bin/sh\necho foo,scripts/run.py\necho foo,Scripts/run.py\necho foo,sCrIpTs\\\\run.py\n' > "$test_tmp/executable-source-comma-safe/scripts/comma-safe"
+chmod +x "$test_tmp/executable-source-comma-safe/scripts/comma-safe"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/executable-source-comma-safe" > "$test_tmp/executable-source-comma-safe.json"
+executable_source_comma_safe_exit=$?
+set -e
 
 make_fixture "$test_tmp/generic-config-safe" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 printf '{"helper":"scripts/run.py"}\n' > "$test_tmp/generic-config-safe/config.json"
@@ -1863,6 +1871,7 @@ const markdownHelperSource = JSON.parse(fs.readFileSync(path.join(temporary, "ma
 const markdownHelperLinksSafe = JSON.parse(fs.readFileSync(path.join(temporary, "markdown-helper-links-safe.json")));
 const executableSourceBare = JSON.parse(fs.readFileSync(path.join(temporary, "executable-source-bare.json")));
 const executableSourceEmbedded = JSON.parse(fs.readFileSync(path.join(temporary, "executable-source-embedded.json")));
+const executableSourceCommaSafe = JSON.parse(fs.readFileSync(path.join(temporary, "executable-source-comma-safe.json")));
 const genericConfigSafe = JSON.parse(fs.readFileSync(path.join(temporary, "generic-config-safe.json")));
 const portable = JSON.parse(fs.readFileSync(path.join(temporary, "portable.json")));
 const official = ["pass", "fail", "unexpected", "timeout"].map(mode => JSON.parse(fs.readFileSync(path.join(temporary, `skills-ref-${mode}.json`))));
@@ -2030,8 +2039,8 @@ assert(freeze.budgetRevision.malformedUriExecutableDeltaBytes === 595, "malforme
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeMalformedUri === 45000, "pre-malformed-URI package cap changed");
 assert(freeze.budgetRevision.caseExactLinkAndHermesKeyExecutableDeltaBytes === 524, "case-exact-link/Hermes-key executable delta changed");
 assert(freeze.budgetRevision.iconCaseAndTildeSegmentExecutableDeltaBytes === 98, "icon-case/tilde-segment executable delta changed");
-assert(freeze.budgetRevision.scriptComponentBoundaryExecutableDeltaBytes === 163, "script-component-boundary executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21887, "current executable delta changed");
+assert(freeze.budgetRevision.scriptComponentBoundaryExecutableDeltaBytes === 162, "script-component-boundary executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21886, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -2055,7 +2064,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45942, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45941, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -2113,9 +2122,9 @@ assert(windowsRelativeShell.status === "fail" && windowsRelativeShell.issues.fil
 assert(windowsRelativeCode.status === "fail" && windowsRelativeCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 4, "Windows and mixed-separator task-relative helpers must fail in closed non-shell code surfaces");
 assert(embeddedRelativeShell.status === "fail" && embeddedRelativeShell.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 9, "static embedded task-relative prefixes must fail across slash, backslash, mixed, nested, and dot-normalizing shell forms");
 assert(embeddedRelativeCode.status === "fail" && embeddedRelativeCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 4, "static embedded task-relative prefixes must fail in closed non-shell code surfaces");
-assert(scriptsComponentShell.status === "fail" && scriptsComponentShell.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 11, "the scripts path component must match case-insensitively across shell separator and static-prefix forms");
-assert(scriptsComponentCode.status === "fail" && scriptsComponentCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 10, "the scripts path component must match case-insensitively in closed non-shell code surfaces");
-assert(scriptsSubstringSafe.status === "pass", "scripts text inside an ordinary path component must not become a helper path");
+assert(scriptsComponentShell.status === "fail" && scriptsComponentShell.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 14, "the scripts path component must match case-insensitively across shell separator and static-prefix forms, including comma-bearing components");
+assert(scriptsComponentCode.status === "fail" && scriptsComponentCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 13, "the scripts path component must match case-insensitively in closed non-shell code surfaces, including comma-bearing components");
+assert(scriptsSubstringSafe.status === "pass", "scripts text after a comma inside an ordinary path component must not become a helper path");
 assert(tildeSegmentShell.status === "fail" && tildeSegmentShell.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 6, "tildes inside ordinary path segments must not hide shell helper paths");
 assert(tildeSegmentCode.status === "fail" && tildeSegmentCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 4, "tildes inside ordinary path segments must not hide non-shell helper paths");
 assert(parentRelativeSafe.status === "pass", "literal skill roots, standalone home roots, URL tokens, and ordinary link destinations must remain safe");
@@ -2129,9 +2138,10 @@ assert(containerBoundaryShell.status === "fail" && containerBoundaryShell.issues
 assert(helperSourceBare.status === "fail" && executableSourceBare.status === "fail" && [helperSourceBare, executableSourceBare].every(result => result.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH")), "helper and executable source files must reject bare helper paths");
 assert(helperSourceParent.status === "fail" && helperSourceParent.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 8, "helper sources must reject leading and embedded task-relative paths across separator forms");
 assert(helperSourceTilde.status === "fail" && helperSourceTilde.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "helper sources must reject task-relative paths with tildes inside ordinary segments");
-assert(helperSourceScriptCase.status === "fail" && helperSourceScriptCase.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 11, "helper sources must match the scripts path component case-insensitively");
-assert(helperSourceScriptSubstrings.status === "pass", "helper sources must not match scripts text inside an ordinary path component");
-assert(executableSourceEmbedded.status === "fail" && executableSourceEmbedded.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3, "executable sources must reject embedded task-relative paths across separator forms");
+assert(helperSourceScriptCase.status === "fail" && helperSourceScriptCase.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 14, "helper sources must match the scripts path component case-insensitively across comma-bearing path segments");
+assert(helperSourceScriptSubstrings.status === "pass", "helper sources must not match scripts text after a comma inside an ordinary path component");
+assert(executableSourceEmbedded.status === "fail" && executableSourceEmbedded.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 6, "executable sources must reject embedded task-relative paths across separator and comma-bearing segment forms");
+assert(executableSourceCommaSafe.status === "pass" && !executableSourceCommaSafe.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "executable sources must keep unquoted comma-plus-scripts text inside one path component");
 assert(markdownHelperSource.status === "fail" && markdownHelperSource.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "Markdown files below scripts must retain helper-source coverage");
 assert(markdownHelperLinksSafe.status === "pass" && !markdownHelperLinksSafe.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "ordinary link destinations in Markdown helper sources must remain safe");
 assert(helperSourceSafe.status === "pass" && genericConfigSafe.status === "pass", "explicit helper roots must pass and generic configs must stay outside command scanning");
