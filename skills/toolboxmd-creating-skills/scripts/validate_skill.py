@@ -27,16 +27,16 @@ OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 SHELL_FENCE_LANGUAGES = {"sh", "bash", "shell"}
-BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./\\-])(?:\.\.?[/\\]+)*scripts[/\\]+")
+BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./\\~\-])(?:[^/\\\s'\"`;&|(){}\[\]<>:,~]+[/\\]+)*scripts[/\\]+")
 SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
 SCRIPT_CONTEXT_HINT = f"{SCRIPT_ROOT_HINT} in a closed sh/bash/shell fence"
 LOCAL_ROOTS = "(?:Users|home|workspace|root)"
 LOCAL_PATH_RE = re.compile(
     rf"(?<![A-Za-z0-9:/])(?:/{LOCAL_ROOTS}/|(?i:[A-Za-z]:(?:/Users/|(?:\\)+Users(?:\\)+)))[^\s'\"`]+"
 )
-FILE_URI_RE = re.compile(r'''(?i:file://)[^\s'"`<>()]+''')
-LOCAL_FILE_URI_RE = re.compile(r'''(?<![A-Za-z0-9+./:#?=&_-])(?i:file://(?:localhost)?/)[^\s'"`<>()]+''')
-REMOTE_URI_CONTEXT_RE = re.compile(r'''(?i:(?:https?://)[^\s'"`]+|#[^\s'"`]*file://[^\s'"`]*)''')
+URI_RE = re.compile(r'''(?i:file:)[^\s'"`<>()]+''')
+LOCAL_FILE_URI_RE = re.compile(r'''(?<![A-Za-z0-9+./:#?=&_-])(?i:file:(?:/(?!/)|//(?:localhost)?/))[^\s'"`<>()]+''')
+REMOTE_RE = re.compile(r'''(?i:(?<![a-z0-9+./:-])(?:(?!file:|[a-z]:[/\\])[a-z][a-z0-9+.-]*:|//)[^\s'"`]+|#[^\s'"`]*file:[^\s'"`]*)''')
 LOCAL_FILE_PATH_RE = re.compile(rf"^/(?:{LOCAL_ROOTS}/|(?i:[A-Za-z]:[/\\]+Users[/\\]+))")
 PROCESS_NAMES = {"README.md", "CHANGELOG.md", "STATUS.md", "DESIGN.md", "NOTES.md"}
 TEXT_SUFFIXES = {
@@ -279,6 +279,8 @@ def markdown_without_code(text: str) -> str:
 
 
 def has_bare_script_path(text: str) -> bool:
+    text = URI_RE.sub("", REMOTE_RE.sub("", text))
+
     def active_quote(stop: int) -> str:
         quote = ""
         escaped = False
@@ -329,7 +331,7 @@ def fence_candidate(line: str) -> tuple[str, list[int]]:
     return view, containers
 
 
-def fenced_line_view(line: str, containers: list[int]) -> str | None:
+def fenced_line_view(line: str, containers: list[int]):
     view = line
     for index, width in enumerate(containers):
         if not view.strip() and all(remaining > 0 for remaining in containers[index:]):
@@ -433,7 +435,7 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
             if path.suffix.lower() in TEXT_SUFFIXES or os.access(path, os.X_OK) or path.read_bytes().startswith(b"#!"):
                 problems.append(issue("UTF8", relative, "text file is not UTF-8"))
             continue
-        path_searchable = content
+        searchable = content
         if path.suffix.lower() == ".md":
             def mask_destination(match):
                 raw = match.group(1).lstrip("<")
@@ -445,24 +447,26 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
                 return match.group(0)
 
             for pattern in (LINK_RE, REFERENCE_DEFINITION_RE):
-                path_searchable = pattern.sub(mask_destination, path_searchable)
-        path_searchable = REMOTE_URI_CONTEXT_RE.sub("", path_searchable)
-        local_file_uri = any(
+                searchable = pattern.sub(mask_destination, searchable)
+        searchable = REMOTE_RE.sub("", searchable)
+        local_uri = any(
             LOCAL_FILE_PATH_RE.match(unquote(urlsplit(raw).path))
-            for raw in LOCAL_FILE_URI_RE.findall(path_searchable)
+            for raw in LOCAL_FILE_URI_RE.findall(searchable)
         )
-        path_searchable = FILE_URI_RE.sub("", path_searchable)
-        if LOCAL_PATH_RE.search(path_searchable) or local_file_uri:
+        searchable = URI_RE.sub("", searchable)
+        if LOCAL_PATH_RE.search(searchable) or local_uri:
             problems.append(issue("LOCAL_PATH", relative, "workstation path"))
-        source_surface = relative.startswith("scripts/") or os.access(path, os.X_OK) or content.startswith("#!")
-        if source_surface:
-            for line_number, line in enumerate(content.splitlines(), 1):
+        source_file = relative.startswith("scripts/") or os.access(path, os.X_OK) or content.startswith("#!")
+        scan = content
+        if source_file and path.suffix.lower() == ".md":
+            scan = REFERENCE_DEFINITION_RE.sub("", LINK_RE.sub("", markdown_without_code(content)))
+        if source_file:
+            for number, line in enumerate(scan.splitlines(), 1):
                 if has_bare_script_path(line):
-                    problems.append(issue("FRAGILE_SCRIPT_PATH", relative, f"line {line_number} {SCRIPT_ROOT_HINT}"))
+                    problems.append(issue("FRAGILE_SCRIPT_PATH", relative, f"line {number} {SCRIPT_ROOT_HINT}"))
         if path.suffix.lower() != ".md":
             continue
-        if not source_surface:
-            validate_markdown_script_paths(content, relative, problems)
+        validate_markdown_script_paths(content, relative, problems)
         markdown = markdown_without_code(content)
         complex_link = re.compile(r"!?\[[^]\n]*\]\([^\n)]*\([^\n]*\)[^\n]*\)")
         unsupported_markdown = bool(re.search(r"(?m)^ {0,3}\[[^]\n]+\]:\s*$", markdown) or complex_link.search(markdown))
@@ -566,7 +570,7 @@ def validate_sidecar(root: Path, name: str, creation_mode: bool, problems: list[
         except (TypeError, ValueError):
             fail("OPENAI_SHAPE", f"invalid quoted string: {key}")
         else:
-            if target is values and not target[key].strip():
+            if (target is values or key == "value") and not target[key].strip():
                 fail("OPENAI_SHAPE", f"{key} must be nonempty")
     if not sections:
         fail("OPENAI_SHAPE", "no recognized semantic section")
@@ -662,7 +666,7 @@ def validate_scripts(
     return sorted(accepted)
 
 
-def budget_problem(value: int, maximum: int | None, code: str, label: str, problems: list[dict[str, str]]) -> None:
+def budget_problem(value: int, maximum, code: str, label: str, problems: list[dict[str, str]]) -> None:
     if maximum is not None and value > maximum:
         problems.append(issue(code, "SKILL.md" if label.startswith(("SKILL.md", "description")) else ".", f"{label}: {value} > {maximum}"))
 

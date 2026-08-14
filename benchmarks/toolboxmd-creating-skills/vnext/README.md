@@ -145,6 +145,16 @@ URIs classify mixed-separator Windows drive-user roots, and reference labels
 discard their permitted zero-to-three-space definition indentation. The
 cumulative executable delta is 20,340 bytes; package and activated-core budgets
 remain unchanged.
+The next exact-HEAD correction adds 167 executable bytes. Local single-slash
+`file:/...` roots now share the decoded local-file check, MCP dependency values
+must contain non-whitespace text, and the closed lexical helper rule rejects
+bare, leading-dot, or embedded static task-relative segment prefixes. Literal
+`<skill-dir>` and home roots, URI and remote tokens, and ordinary Markdown link
+destinations, including those in helper-source Markdown, stay safe. A readable
+deletion pass removed 87 activated-core bytes without changing the workflow.
+The executable avoids runtime-evaluated PEP 604 optional annotations so system
+Python 3.9 reaches the CLI. The cumulative executable delta is 20,507 bytes;
+package and activated-core budgets remain unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -174,6 +184,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 44,861 bytes: 4,439 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 40,206-byte read-only checker. The executable is not
+The frozen package is 44,941 bytes: 4,352 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 40,373-byte read-only checker. The executable is not
 loaded as activated core.
