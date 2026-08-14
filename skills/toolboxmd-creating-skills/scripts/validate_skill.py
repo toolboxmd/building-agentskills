@@ -30,6 +30,7 @@ OPENAI_FIELD_RE = re.compile(r'^([a-z_]+):\s*("(?:[^"\\]|\\.)*")$')
 OPENAI_INTERFACE_FIELDS = {"display_name", "short_description", "icon_small", "icon_large", "brand_color", "default_prompt"}
 OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
+FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 SHELL_FENCE_LANGUAGES = {"sh", "bash", "shell"}
 BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./-])(?:\./)?scripts/")
 SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
@@ -258,14 +259,24 @@ def collect_files(root: Path) -> tuple[list[dict[str, object]], list[dict[str, s
 def markdown_without_code(text: str) -> str:
     output: list[str] = []
     fence = ""
+    containers: list[int] = []
     for line in text.splitlines(keepends=True):
-        marker = re.match(r"^ {0,3}(`{3,}|~{3,})", line)
+        view = fenced_line_view(line, containers) if fence else line
+        if fence and view is None:
+            fence = ""
+            containers = []
+            view = line
+        marker = FENCE_RE.match(view)
         if fence:
-            if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence) and not line[marker.end(1) :].strip():
+            if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence) and not marker.group(2).strip():
                 fence = ""
-        elif marker and (marker.group(1)[0] == "~" or "`" not in line[marker.end(1) :]):
+            continue
+        view, candidate_containers = fence_candidate(line)
+        marker = FENCE_RE.match(view)
+        if marker and (marker.group(1)[0] == "~" or "`" not in marker.group(2)):
             fence = marker.group(1)
-        elif not line.startswith(("    ", "\t")):
+            containers = candidate_containers
+        elif not view.startswith(("    ", "\t")):
             output.append(line)
     result = CODE_SPAN_RE.sub("", "".join(output))
     return re.sub(r"\\\[[^]\n]*\](?:\([^\n)]*\)|\[[^]\n]*\])", "", result)
@@ -356,7 +367,7 @@ def validate_markdown_script_paths(content: str, relative: str, problems: list[d
             containers = []
             container_view = line
         view = container_view if container_view is not None else line
-        marker = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", view) if container_view is not None else None
+        marker = FENCE_RE.match(view) if container_view is not None else None
         if fence:
             if (
                 marker
@@ -372,7 +383,7 @@ def validate_markdown_script_paths(content: str, relative: str, problems: list[d
                 add(code, line_number, SCRIPT_ROOT_HINT if shell_fence else SCRIPT_CONTEXT_HINT)
             continue
         view, candidate_containers = fence_candidate(line)
-        marker = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", view)
+        marker = FENCE_RE.match(view)
         if marker and (marker.group(1)[0] == "~" or "`" not in marker.group(2)):
             fence = marker.group(1)
             language = marker.group(2).strip().split(maxsplit=1)[0].casefold() if marker.group(2).strip() else ""

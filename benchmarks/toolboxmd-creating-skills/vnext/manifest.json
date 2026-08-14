@@ -77,7 +77,9 @@
     "descriptionAngleBracketReason": "Exact-HEAD review required built-in host-validator compatibility for descriptions containing angle brackets when the optional skills-ref executable is unavailable.",
     "closedSurfaceScriptPathExecutableDeltaBytes": 1189,
     "closedSurfaceScriptPathReason": "A Grok architecture audit and exact-HEAD review replaced the open-ended shell lexer with a closed-surface portability rule for root, blockquote, and list shell fences, single-line inline and other Markdown code contexts, UTF-8 helper sources, and executable or shebang files. A path-bearing child is an immediate non-whitespace lexical child after scripts/; leading-whitespace child names are outside this checker. The executable-only delta includes explicit context diagnostics and does not parse shell or full CommonMark grammar.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 18613,
+    "containerFenceLinkMaskingExecutableDeltaBytes": 345,
+    "containerFenceLinkMaskingReason": "Exact-HEAD review reused the declared root, blockquote, and list fence state for Markdown link masking so missing example links inside those code surfaces do not become package link errors. The real-interpreter shim regression is test-only and does not affect package bytes.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 18958,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -91,9 +93,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "60ecdce8622c63c4cab4bf041515cee8d6891f47888df5e55b4c744b25cfa915",
+    "aggregateSha256": "5de8fd61d030e4fecb8d1a8a8cb154482594ec1ccebe5bfb7b2b6b9902a11aa8",
     "fileCount": 3,
-    "packageBytes": 43397,
+    "packageBytes": 43742,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -115,8 +117,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 38479,
-        "sha256": "b8eeee38f8f632bb9bb1a40cca5108def0bae5dc3277a348dbd027c7befe31c0"
+        "bytes": 38824,
+        "sha256": "7e6965a22cd884bdc1338c5427fc490b0fda952af51b3156ccae181ee79e4945"
       }
     ]
   },
@@ -140,7 +142,7 @@
       "description angle brackets fail the built-in host-validator compatibility check even when skills-ref is unavailable, while ordinary quoted prose passes",
       "portable metadata uses JSON-double-quoted user-defined keys and values with no sequence markers, while explicit Hermes mode keeps fixed schema fields unquoted and requires double-quoted user-provided values",
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
-      "canonical Markdown links ignore code and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
+      "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus inline, indented, and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",
       "Python helper syntax is checked through AST while non-Python helpers require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",

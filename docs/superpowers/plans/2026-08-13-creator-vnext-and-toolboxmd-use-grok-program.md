@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 43,397 bytes, aggregate SHA-256
-  `60ecdce8622c63c4cab4bf041515cee8d6891f47888df5e55b4c744b25cfa915`;
+- exact package: three files, 43,742 bytes, aggregate SHA-256
+  `5de8fd61d030e4fecb8d1a8a8cb154482594ec1ccebe5bfb7b2b6b9902a11aa8`;
 - activated core: 78 lines and 4,702 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -174,7 +174,7 @@ Completion evidence, updated 2026-08-14:
 - an exact-HEAD `env` bypass and Grok architecture audit then retired the
   arbitrary shell lexer. Root, blockquote, and list fence handling plus
   explicit context diagnostics added 1,189 executable bytes overall, so the
-  current cumulative executable delta is 18,613 bytes without changing the 44,000-byte
+  cumulative executable delta at that stage was 18,613 bytes without changing the 44,000-byte
   cap. Closed case-insensitive `sh`, `bash`, and `shell` fences reject
   immediate non-whitespace task-relative helper children without interpreting shell syntax. Single-line inline,
   indented, and other fenced code produce a context error; all UTF-8 files below
@@ -182,6 +182,10 @@ Completion evidence, updated 2026-08-14:
   destinations, directory-only mentions, and generic configs without a schema
   remain outside the rule. Leading-whitespace child names and multiline inline
   spans are outside the custom lexical subset;
+- exact-HEAD review then reused the same root, blockquote, and list fence state
+  for Markdown link masking. It added 345 executable bytes and brings the current
+  cumulative executable delta to 18,958 bytes. The real-interpreter shim test is
+  test-only;
 - canonical subset v2 leaves only `name` unquoted. Every other top-level
   string and every user-defined portable metadata key and value uses one-line
   JSON double quotes.

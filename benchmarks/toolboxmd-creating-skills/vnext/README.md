@@ -74,8 +74,8 @@ delta was 17,424 bytes. Those shell-scanner stages are retained here as review
 history, not as the current checker contract. A later exact-HEAD `env` bypass
 and Grok architecture audit replaced the open-ended shell lexer with a closed
 surface rule. Root, blockquote, and list fence handling plus explicit context
-diagnostics added 1,189 executable bytes overall, bringing the current cumulative
-delta to 18,613 bytes without changing the 44,000-byte cap. The checker now treats
+diagnostics added 1,189 executable bytes overall, bringing the cumulative
+delta at that stage to 18,613 bytes without changing the 44,000-byte cap. The checker now treats
 an immediate non-whitespace child after a task-relative `scripts/` prefix as a portability error inside closed
 case-insensitive `sh`, `bash`, or `shell` fences, without interpreting strings,
 comments, heredocs, wrappers, or control flow. It also fails helper paths in
@@ -84,6 +84,10 @@ all UTF-8 files below `scripts/` plus executable or shebang files, and ignores
 ordinary prose, Markdown link destinations, directory-only mentions, and
 generic configuration files without a schema. Child names beginning with whitespace
 and multiline inline code spans are explicitly outside the custom lexical subset.
+A later exact-HEAD correction reused those root, blockquote, and list fence
+surfaces when masking Markdown links and added 345 executable bytes. The current
+cumulative executable delta is 18,958 bytes. Its real-interpreter shim regression
+is test-only.
 
 Canonical subset v2 leaves only the exact `name` slug unquoted. Every other
 top-level string and every user-defined portable metadata key and value uses a
@@ -107,6 +111,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 43,397 bytes: 4,702 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 38,479-byte read-only checker. The executable is not
+The frozen package is 43,742 bytes: 4,702 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 38,824-byte read-only checker. The executable is not
 loaded as activated core.

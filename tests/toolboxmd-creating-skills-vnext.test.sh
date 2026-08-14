@@ -533,8 +533,15 @@ description: "Use when processing ordinary tagged input."
 
 # Safe description
 EOF
-python_bin="$(command -v python3)"
+python_bin="$(python3 -c 'import os, sys; print(os.path.realpath(sys.executable))')"
+[[ "$python_bin" == /* && -x "$python_bin" ]]
 mkdir -p "$test_tmp/no-skills-ref-bin"
+cat > "$test_tmp/no-skills-ref-bin/python3" <<'EOF'
+#!/usr/bin/env bash
+exit 97
+EOF
+chmod +x "$test_tmp/no-skills-ref-bin/python3"
+[[ "$(PATH="$test_tmp/no-skills-ref-bin:$PATH" command -v python3)" == "$test_tmp/no-skills-ref-bin/python3" ]]
 for name in angle-less-than-description angle-greater-than-description; do
   set +e
   PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
@@ -958,6 +965,14 @@ cat >> "$test_tmp/code-links-fixture/SKILL.md" <<'EOF'
 [fenced]: fenced-definition-missing.md
 ```
 
+> ~~~markdown
+> [Blockquote fenced example](blockquote-fenced-missing.md)
+> ~~~
+
+- ```markdown
+  [List fenced example](list-fenced-missing.md)
+  ```
+
 `[inline]: inline-definition-missing.md`
 
 [Real link](real-missing.md)
@@ -1291,7 +1306,8 @@ assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeSyntaxAttestation 
 assert(freeze.budgetRevision.shellControlPrefixExecutableDeltaBytes === 959, "shell control-prefix executable delta changed");
 assert(freeze.budgetRevision.descriptionAngleBracketExecutableDeltaBytes === 132, "description angle-bracket executable delta changed");
 assert(freeze.budgetRevision.closedSurfaceScriptPathExecutableDeltaBytes === 1189, "closed-surface migration executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 18613, "current executable delta changed");
+assert(freeze.budgetRevision.containerFenceLinkMaskingExecutableDeltaBytes === 345, "container fence link-masking executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 18958, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1315,7 +1331,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43397, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43742, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1371,7 +1387,7 @@ assert(hermesMetadata.status === "pass" && hermesMetadata.coverage.enabledExtens
 assert(unsupportedMetadata.status === "fail" && unsupportedMetadata.issues.some(item => item.code === "METADATA_SHAPE"), "unsupported nested metadata must fail");
 assert(nonStringMetadata.status === "fail" && nonStringMetadata.issues.some(item => item.code === "FRONTMATTER_STRING"), "Hermes config values must use JSON double quotes");
 const brokenLinks = codeLinks.issues.filter(item => item.code === "BROKEN_LINK");
-assert(brokenLinks.length === 1 && brokenLinks[0].message.includes("real-missing.md"), "code links must be ignored while a real broken link fails");
+assert(brokenLinks.length === 1 && brokenLinks[0].message.includes("real-missing.md"), "root, blockquote, and list-contained code links must be ignored while a real broken link fails");
 assert(markdownBoundaries.status === "pass", "escaped, indented-code, and protocol-relative Markdown boundaries changed");
 assert(complexMarkdown.status === "pass" && complexMarkdown.warningCount === 2 && complexMarkdownStrict.status === "fail", "complex Markdown must require official coverage without false broken-link errors");
 assert(nestedImage.status === "pass" && nestedImage.warningCount === 1 && nestedImageStrict.status === "fail", "nested image links must require official coverage");
