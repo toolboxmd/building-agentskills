@@ -7,7 +7,7 @@ description: "Create portable Agent Skills from needs, trigger/near-miss example
 
 ## Boundaries
 
-- Route existing skills to `toolboxmd-updating-skills`; route comparisons to `toolboxmd-benchmarking-skills`.
+- Route existing skills to `toolboxmd-updating-skills` and comparisons to `toolboxmd-benchmarking-skills`.
 - Use examples to discover; verify claims with primary sources or evidence.
 
 ## Default path
@@ -33,11 +33,11 @@ Record value, triggers/near misses, I/O, artifacts, mistakes, constraints, gaps,
 
 ### 3. Answer three independent questions
 
-1. **Who invokes?** Record agent, user, or both and the mechanism.
-2. **What fires on each invariant?** Mark it advisory or name its mechanism and checked artifact.
+1. **Who invokes?** Record agent, user, or both, plus mechanism.
+2. **What fires on each invariant?** Mark advisory, or name its mechanism and checked artifact.
 3. **What is the token budget?** Cap description, activated core, files, and package.
 
-### 4. Plan and draft the package
+### 4. Draft the package
 
 Draft `SKILL.md` first. Inline core rules; use `references/` for conditional knowledge, `scripts/` for deterministic work, `assets/` for output inputs, sidecars for metadata, and keep evals outside.
 
@@ -45,7 +45,7 @@ JSON-quote every top-level string, including exact `name`, and portable metadata
 
 Generated Codex sidecars require nonempty `display_name` and `short_description`; existing sidecars may use any supported nonempty interface subset.
 
-For `metadata.hermes.config`, pass `--allow-hermes-metadata`. Keep schema keys unquoted, start items with `- key: "..."`, and JSON-quote values. This is outside portable core.
+For non-portable `metadata.hermes.config`, pass `--allow-hermes-metadata`. Keep schema keys unquoted, start items with `- key: "..."`, and JSON-quote values.
 
 ### 5. Make scripts portable
 
@@ -68,7 +68,7 @@ Checker scope is ToolboxMD policy, not general YAML, CommonMark, shell, or helpe
 
 Inspect Git state only when the user requests Git delivery. Do not search ancestors for package-only work.
 
-Report canonical/official results and skips. Report committed/pushed only for requested Git delivery.
+Report canonical/official results and skips; report committed/pushed only for requested Git delivery.
 
 ## Gotchas
 

@@ -163,6 +163,13 @@ activated-core bytes without changing the workflow. The cumulative executable
 delta is 21,102 bytes and the package cap is 46,000 bytes. Description,
 activated-core, file, reference, eval, and script budgets remain unchanged, and
 no lower package-cost, superiority, or promotion claim is made.
+The following exact-HEAD correction adds 524 executable bytes. Relative file
+and directory links now compare every lexically normalized component with its
+stored spelling, independent of host filesystem casing, without expanding
+symlinks. Hermes config entries decode `key` before accepting it and reject
+empty or whitespace-only text once. A bounded deletion pass removed 34
+activated-core bytes without changing the workflow. The cumulative executable
+delta is 21,626 bytes; the 46,000-byte cap and all other budgets are unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -192,6 +199,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 45,427 bytes: 4,243 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 40,968-byte read-only checker. The executable is not
+The frozen package is 45,917 bytes: 4,209 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 41,492-byte read-only checker. The executable is not
 loaded as activated core.

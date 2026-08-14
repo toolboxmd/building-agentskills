@@ -628,6 +628,33 @@ cat >> "$test_tmp/reference-link-fixture/SKILL.md" <<'EOF'
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/reference-link-fixture" > "$test_tmp/reference-link.json"
 
+for name in exact-case-links case-mismatch-links; do
+  make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+  mkdir -p "$test_tmp/$name/references" "$test_tmp/$name/Examples"
+  printf '# Guide\n' > "$test_tmp/$name/references/Guide.md"
+done
+printf '\n[Guide](references/Guide.md), [examples](Examples/), and [anchor](#fixture).\n' >> "$test_tmp/exact-case-links/SKILL.md"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/exact-case-links" > "$test_tmp/exact-case-links.json"
+printf '\n[Guide](References/Guide.md) and [examples](examples/).\n' >> "$test_tmp/case-mismatch-links/SKILL.md"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/case-mismatch-links" > "$test_tmp/case-mismatch-links.json"
+case_mismatch_links_exit=$?
+set -e
+
+make_fixture "$test_tmp/symlink-loop-link" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+ln -s loop "$test_tmp/symlink-loop-link/loop"
+printf '\n[Loop](loop/guide.md).\n' >> "$test_tmp/symlink-loop-link/SKILL.md"
+link_python="${python39:-$(command -v python3)}"
+set +e
+PYTHONDONTWRITEBYTECODE=1 "$link_python" -B "$validator" --json "$test_tmp/symlink-loop-link" > "$test_tmp/symlink-loop-link.json" 2> "$test_tmp/symlink-loop-link.stderr"
+symlink_loop_exit=$?
+set -e
+if [[ $symlink_loop_exit -ne 1 || ! -s "$test_tmp/symlink-loop-link.json" || -s "$test_tmp/symlink-loop-link.stderr" ]]; then
+  printf 'FAIL: symlink-loop link did not remain a structured package failure\n' >&2
+  cat "$test_tmp/symlink-loop-link.stderr" >&2
+  exit 1
+fi
+
 for name in malformed-http-destination malformed-file-destination uri-destination-controls; do
   make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 done
@@ -662,6 +689,14 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/escaping-ref
 escaping_reference_exit=$?
 set -e
 [[ $escaping_reference_exit -eq 1 ]]
+
+make_fixture "$test_tmp/encoded-absolute-link" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\n[Encoded escape](%%2Fetc/passwd)\n' >> "$test_tmp/encoded-absolute-link/SKILL.md"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/encoded-absolute-link" > "$test_tmp/encoded-absolute-link.json"
+encoded_absolute_exit=$?
+set -e
+[[ $encoded_absolute_exit -eq 1 ]]
 
 make_fixture "$test_tmp/indented-code-reference" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 printf '\n    [code-only]: missing.md "Indented code, not a definition"\n' >> "$test_tmp/indented-code-reference/SKILL.md"
@@ -1172,7 +1207,7 @@ under_indented_exit=$?
 set -e
 [[ $under_indented_exit -eq 1 ]]
 
-mkdir -p "$test_tmp/hermes-metadata" "$test_tmp/hermes-mapping" "$test_tmp/hermes-bad-list-start" "$test_tmp/unsupported-metadata" "$test_tmp/non-string-metadata"
+mkdir -p "$test_tmp/hermes-metadata" "$test_tmp/hermes-mapping" "$test_tmp/hermes-bad-list-start" "$test_tmp/hermes-empty-key" "$test_tmp/hermes-whitespace-key" "$test_tmp/unsupported-metadata" "$test_tmp/non-string-metadata"
 cat > "$test_tmp/hermes-metadata/SKILL.md" <<'EOF'
 ---
 name: "hermes-metadata"
@@ -1243,6 +1278,29 @@ set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --allow-hermes-metadata "$test_tmp/hermes-bad-list-start" > "$test_tmp/hermes-bad-list-start.json"
 hermes_bad_list_start_exit=$?
 set -e
+for name in hermes-empty-key hermes-whitespace-key; do
+  key='""'
+  if [[ $name == hermes-whitespace-key ]]; then
+    key='"   "'
+  fi
+  cat > "$test_tmp/$name/SKILL.md" <<EOF
+---
+name: "$name"
+description: "Reject a Hermes configuration entry with no usable key text."
+metadata:
+  hermes:
+    config:
+      - key: $key
+        description: "Path to the main wiki"
+---
+
+# Hermes empty key
+EOF
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --allow-hermes-metadata "$test_tmp/$name" > "$test_tmp/$name.json"
+  hermes_key_exit=$?
+  set -e
+done
 cat > "$test_tmp/unsupported-metadata/SKILL.md" <<'EOF'
 ---
 name: "unsupported-metadata"
@@ -1697,10 +1755,14 @@ const badPrompt = JSON.parse(fs.readFileSync(path.join(temporary, "bad-prompt.js
 const missingIcon = JSON.parse(fs.readFileSync(path.join(temporary, "missing-icon.json")));
 const titledLink = JSON.parse(fs.readFileSync(path.join(temporary, "titled-link.json")));
 const referenceLink = JSON.parse(fs.readFileSync(path.join(temporary, "reference-link.json")));
+const exactCaseLinks = JSON.parse(fs.readFileSync(path.join(temporary, "exact-case-links.json")));
+const caseMismatchLinks = JSON.parse(fs.readFileSync(path.join(temporary, "case-mismatch-links.json")));
+const symlinkLoopLink = JSON.parse(fs.readFileSync(path.join(temporary, "symlink-loop-link.json")));
 const malformedUris = ["http", "file"].map(scheme => JSON.parse(fs.readFileSync(path.join(temporary, `malformed-${scheme}-destination.json`))));
 const uriDestinationControls = JSON.parse(fs.readFileSync(path.join(temporary, "uri-destination-controls.json")));
 const missingReference = JSON.parse(fs.readFileSync(path.join(temporary, "missing-reference.json")));
 const escapingReference = JSON.parse(fs.readFileSync(path.join(temporary, "escaping-reference.json")));
+const encodedAbsoluteLink = JSON.parse(fs.readFileSync(path.join(temporary, "encoded-absolute-link.json")));
 const indentedCodeReference = JSON.parse(fs.readFileSync(path.join(temporary, "indented-code-reference.json")));
 const reserved = ["claude-helper", "anthropic-helper"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const listDescription = JSON.parse(fs.readFileSync(path.join(temporary, "list-description.json")));
@@ -1740,6 +1802,7 @@ const description1025Raised = JSON.parse(fs.readFileSync(path.join(temporary, "d
 const description1024Lowered = JSON.parse(fs.readFileSync(path.join(temporary, "description-1024-lowered.json")));
 const doubledQuote = JSON.parse(fs.readFileSync(path.join(temporary, "doubled-quote-budget.json")));
 const hermesMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "hermes-metadata.json")));
+const hermesEmptyKeys = ["hermes-empty-key", "hermes-whitespace-key"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const hermesDefault = JSON.parse(fs.readFileSync(path.join(temporary, "hermes-default.json")));
 const hermesInvalidSequences = ["hermes-mapping", "hermes-bad-list-start"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const unsupportedMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "unsupported-metadata.json")));
@@ -1832,7 +1895,8 @@ assert(freeze.budgetRevision.windowsHelperFileUriAndReferenceExecutableDeltaByte
 assert(freeze.budgetRevision.singleSlashFileUriDependencyStaticPrefixAndExclusionsExecutableDeltaBytes === 167, "single-slash/dependency/static-prefix/exclusions executable delta changed");
 assert(freeze.budgetRevision.malformedUriExecutableDeltaBytes === 595, "malformed-URI executable delta changed");
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeMalformedUri === 45000, "pre-malformed-URI package cap changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21102, "current executable delta changed");
+assert(freeze.budgetRevision.caseExactLinkAndHermesKeyExecutableDeltaBytes === 524, "case-exact-link/Hermes-key executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21626, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1856,7 +1920,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45427, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45917, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1874,10 +1938,14 @@ assert(badPrompt.issues.some(item => item.code === "OPENAI_DEFAULT_PROMPT"), "de
 assert(missingIcon.issues.some(item => item.code === "OPENAI_ICON"), "declared icon paths must resolve inside the package");
 assert(titledLink.status === "pass" && titledLink.errorCount === 0, "valid local link with optional title must pass");
 assert(referenceLink.status === "pass" && referenceLink.errorCount === 0, "valid reference definition must pass");
+assert(exactCaseLinks.status === "pass", "exact-case file, directory, and anchor links must pass");
+assert(caseMismatchLinks.status === "fail" && caseMismatchLinks.issues.filter(item => item.code === "BROKEN_LINK").length === 2, "case-only file and directory link mismatches must fail deterministically");
+assert(symlinkLoopLink.status === "fail" && symlinkLoopLink.issues.some(item => item.code === "SYMLINK") && symlinkLoopLink.issues.some(item => item.code === "BROKEN_LINK"), "symlink-loop links must remain structured failures without expansion");
 assert(malformedUris.every(result => result.status === "fail" && result.errorCount === 1 && result.issues.length === 1 && result.issues[0].code === "URI_SYNTAX"), "malformed HTTP and file destinations must each produce one stable URI issue");
 assert(uriDestinationControls.status === "pass" && uriDestinationControls.errorCount === 0, "valid remote and local URI destinations changed");
 assert(missingReference.issues.some(item => item.code === "BROKEN_LINK"), "missing reference destination must fail");
 assert(escapingReference.issues.some(item => item.code === "LINK_ESCAPE"), "escaping reference destination must fail");
+assert(encodedAbsoluteLink.issues.some(item => item.code === "LINK_ESCAPE") && !encodedAbsoluteLink.issues.some(item => item.code === "BROKEN_LINK"), "percent-decoded absolute destinations must retain link-escape diagnostics");
 assert(indentedCodeReference.status === "pass", "four-space indented code must not become a reference definition");
 assert(reserved.every(result => result.status === "fail" && result.issues.some(item => item.code === "NAME_RESERVED")), "reserved provider names must fail");
 assert(listDescription.status === "fail" && listDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted collection description must fail");
@@ -1944,6 +2012,7 @@ assert(doubledQuote.status === "fail" && doubledQuote.issues.some(item => item.c
 assert(hermesDefault.status === "fail", "portable-core mode must reject nested Hermes metadata");
 assert(hermesMetadata.status === "pass" && hermesMetadata.coverage.enabledExtensions.includes("hermes-metadata"), "explicit Hermes extension mode must pass");
 assert(hermesMetadata.coverage.officialSkillsRef.status === "skipped_extension" && hermesMetadata.coverage.officialSkillsRef.attempted === false, "portable skills-ref must be skipped for the Hermes extension");
+assert(hermesEmptyKeys.every(result => result.status === "fail" && result.issues.length === 1 && result.issues[0].code === "METADATA_SHAPE"), "empty and whitespace-only Hermes keys must fail once with a stable shape diagnostic");
 assert(unsupportedMetadata.status === "fail" && unsupportedMetadata.issues.some(item => item.code === "METADATA_SHAPE"), "unsupported nested metadata must fail");
 assert(nonStringMetadata.status === "fail" && nonStringMetadata.issues.some(item => item.code === "FRONTMATTER_STRING"), "Hermes config values must use JSON double quotes");
 const brokenLinks = codeLinks.issues.filter(item => item.code === "BROKEN_LINK");

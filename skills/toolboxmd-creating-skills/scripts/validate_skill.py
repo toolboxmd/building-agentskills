@@ -4,6 +4,7 @@ import ast
 import hashlib
 import json
 import os
+import posixpath
 import re
 import shutil
 import subprocess
@@ -114,7 +115,7 @@ def parse_metadata(
     mapping: dict[str, object] = {}
     seen = False
     hermes = config = False
-    entry_active = False
+    entry_open = False
     entry_fields: set[str] = set()
     while index < len(lines) and (not lines[index].strip() or lines[index].lstrip().startswith("#") or lines[index].startswith((" ", "\t"))):
         line = lines[index]
@@ -134,7 +135,7 @@ def parse_metadata(
         value = without_comment(raw)
         if indent == 2 and mapping_match and key == "hermes":
             if value or not allow_hermes:
-                fail("METADATA_SHAPE", "Hermes metadata requires --allow-hermes-metadata" if not allow_hermes else "Hermes metadata needs a nested config")
+                fail("METADATA_SHAPE", "Hermes needs --allow-hermes-metadata" if not allow_hermes else "Hermes needs a nested config")
             elif key in mapping:
                 fail("FRONTMATTER_DUPLICATE", f"duplicate metadata key: {key}")
             else:
@@ -148,7 +149,7 @@ def parse_metadata(
             except ValueError:
                 portable_key = None
             if portable_key is None:
-                fail("METADATA_KEY", "portable metadata keys need JSON double quotes")
+                fail("METADATA_KEY", "portable keys need JSON double quotes")
             elif portable_key in mapping:
                 fail("FRONTMATTER_DUPLICATE", f"duplicate metadata key: {portable_key}")
             elif not value:
@@ -158,23 +159,27 @@ def parse_metadata(
         elif indent == 4 and hermes and mapping_match and key == "config" and not value and not config:
             config = True
         elif config and sequence_match and indent == 6:
-            if entry_active and "description" not in entry_fields:
+            if entry_open and "description" not in entry_fields:
                 fail("METADATA_SHAPE", "Hermes entry needs description")
             entry_fields = set()
-            entry_active = key == "key" and bool(value)
-            if not entry_active:
+            entry_open = bool(value)
+            if not entry_open:
                 fail("METADATA_SHAPE", "Hermes entry must start with - key")
             else:
-                entry_fields.add(key)
-                parse_string(value, f"metadata.hermes.config.{key}", problems)
-        elif config and entry_active and mapping_match and indent == 8 and key in {"description", "default", "prompt"} and value:
+                before = len(problems)
+                decoded = parse_string(value, f"metadata.hermes.config.{key}", problems)
+                if len(problems) == before and decoded.strip():
+                    entry_fields.add(key)
+                elif len(problems) == before:
+                    fail("METADATA_SHAPE", "Hermes key must not be blank")
+        elif config and entry_open and mapping_match and indent == 8 and key in {"description", "default", "prompt"} and value:
             if key in entry_fields:
                 fail("FRONTMATTER_DUPLICATE", f"duplicate Hermes field: {key}")
             entry_fields.add(key)
             parse_string(value, f"metadata.hermes.config.{key}", problems)
         else:
             fail("METADATA_SHAPE", "unsupported nesting")
-    if hermes and (not config or not entry_active or "description" not in entry_fields):
+    if hermes and (not config or not entry_open or "description" not in entry_fields):
         fail("METADATA_SHAPE", "Hermes config needs key + description")
     return mapping, index, seen
 
@@ -415,9 +420,16 @@ def safe_urlsplit(raw: str, relative: str, problems: list[dict[str, str]]):
             problems.append(malformed)
 
 
-def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None:
-    resolved_root = root.resolve()
+def exact_exists(parent, target):
+    for part in PurePosixPath(target).parts:
+        try:
+            parent = next(entry for entry in parent.iterdir() if entry.name == part and not entry.is_symlink())
+        except (OSError, StopIteration):
+            return False
+    return True
 
+
+def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None:
     def validate_destination(raw: str, relative: str, parent: Path) -> None:
         if raw.startswith("<"):
             raw = raw[1:-1]
@@ -432,10 +444,10 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         target_text = unquote(parsed.path)
         if not target_text:
             return
-        target = (parent / target_text).resolve()
-        if not target.is_relative_to(resolved_root):
+        target_text = posixpath.normpath(posixpath.join(parent.relative_to(root).as_posix(), target_text))
+        if target_text.partition("/")[0] in {"", ".."}:
             problems.append(issue("LINK_ESCAPE", relative, f"link escapes package: {raw}"))
-        elif not target.exists():
+        elif not exact_exists(root, target_text):
             problems.append(issue("BROKEN_LINK", relative, f"missing link target: {raw}"))
 
     for path in sorted(item for item in root.rglob("*") if item.is_file() and not item.is_symlink()):

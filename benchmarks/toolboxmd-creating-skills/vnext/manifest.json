@@ -109,7 +109,9 @@
     "malformedUriExecutableReason": "Exact-HEAD review required malformed HTTP and file URI destinations to produce one stable package-validation issue instead of an uncaught urlsplit traceback across Markdown masking, destination validation, and local-file classification.",
     "previousPackageBytesMaximumBeforeMalformedUri": 45000,
     "malformedUriCapRevisionReason": "The 1,000-byte package-cap revision preserves a readable executable-only shared URI guard after a bounded 109-byte activated-core deletion pass. Activated-core, description, file, reference, eval, and script budgets are unchanged, and no lower total package-size claim is allowed.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21102,
+    "caseExactLinkAndHermesKeyExecutableDeltaBytes": 524,
+    "caseExactLinkAndHermesKeyReason": "Exact-HEAD review required host-independent exact component spelling for local Markdown link targets and required canonical Hermes config keys to decode to non-whitespace text before an entry becomes valid. A bounded 34-byte activated-core deletion pass preserved the workflow and unchanged budgets.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21626,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -123,22 +125,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "4c949313679c98b592f2d0a4c49a7c0d1fa2672ecf60fd3f33a205e29b2a5350",
+    "aggregateSha256": "26bd1d28a316171e457e4fc0144a6d413c92f3bfa221d808b0f129afaa63cc81",
     "fileCount": 3,
-    "packageBytes": 45427,
+    "packageBytes": 45917,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4243,
+      "bytes": 4209,
       "lines": 78,
       "descriptionCharacters": 226
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4243,
-        "sha256": "3f79383d8aae1405d121fc3284db5e591ff00dbc3893d96be4286bd3b42a3721"
+        "bytes": 4209,
+        "sha256": "84fa1800a64b9d9bfbac4d02175263c30775e93dba4f4584ac182c7a69de7595"
       },
       {
         "path": "agents/openai.yaml",
@@ -147,8 +149,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 40968,
-        "sha256": "2266d9a4c4aa75ef533e5582c9e9f9222a2b5b4b7a6e885ef5fb9a5c798478fa"
+        "bytes": 41492,
+        "sha256": "0a2bb751ce414c00bc36637e4fb3461280d4794d45eb108ff8e08eb034bf60c6"
       }
     ]
   },
@@ -164,7 +166,7 @@
       "explicit skill-directory script examples pass",
       "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, supported and bounded interface strings, assets-only icon paths, optional default_prompt, policy, non-whitespace MCP dependency values, and invalid UTF-8 as one package issue",
       "Codex interface, policy, and dependencies sections are independently optional in general mode; present interface strings require non-whitespace text, and creation mode accepts an absent optional sidecar but requires both UI fields when one is present",
-      "valid Markdown links with optional titles pass",
+      "exact-case relative file and directory links plus anchors pass, while case-only component mismatches fail independent of host filesystem casing and missing or escaping targets retain their diagnostics",
       "malformed HTTP and file URI destinations each produce one stable URI_SYNTAX package issue while valid remote and local destinations retain their prior behavior",
       "single-line CommonMark reference definitions support zero to three leading spaces, angle-bracket destinations, and optional titles while four-space indented code is masked and missing or escaping targets fail",
       "skill names containing reserved provider strings fail",
@@ -173,7 +175,7 @@
       "the quote-only contract rejects plain prose, dates, hexadecimal, octal, collections, booleans, nulls, numbers, special floats, single quotes, block scalars, tags, nested scalar syntax, and invalid quotes without partial implicit-YAML classification",
       "the portable description ceiling is 1,024 characters regardless of a looser package-budget flag, while callers may impose a stricter budget",
       "description angle brackets fail the built-in host-validator compatibility check even when skills-ref is unavailable, while ordinary quoted prose passes",
-      "portable metadata uses JSON-double-quoted user-defined keys and values with no sequence markers, while explicit Hermes mode keeps fixed schema fields unquoted and requires double-quoted user-provided values",
+      "portable metadata uses JSON-double-quoted user-defined keys and values with no sequence markers, while explicit Hermes mode keeps fixed schema fields unquoted and requires double-quoted user-provided values plus a decoded non-whitespace key for every config entry",
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
       "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus inline, indented, and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "blank lines retain root, blockquote, list, and nested blockquote-list fence state without waiving required blockquote markers or nonblank container exits",

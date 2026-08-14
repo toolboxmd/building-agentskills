@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 45,427 bytes, aggregate SHA-256
-  `4c949313679c98b592f2d0a4c49a7c0d1fa2672ecf60fd3f33a205e29b2a5350`;
-- activated core: 78 lines and 4,243 bytes, with a 226-character
+- exact package: three files, 45,917 bytes, aggregate SHA-256
+  `26bd1d28a316171e457e4fc0144a6d413c92f3bfa221d808b0f129afaa63cc81`;
+- activated core: 78 lines and 4,209 bytes, with a 226-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -264,6 +264,13 @@ Completion evidence, updated 2026-08-14:
   46,000 bytes; description, activated-core, file, reference, eval, and script
   budgets remain unchanged, with no lower-cost, superiority, or promotion
   claim;
+- the following exact-HEAD correction adds 524 executable bytes and brings the
+  cumulative delta to 21,626 bytes. Lexically normalized relative link targets
+  compare exact stored component spelling independent of host filesystem
+  casing, without symlink expansion. Hermes config keys decode before entry
+  validity and empty or whitespace-only text fails once. A bounded deletion
+  pass removed 34 activated-core bytes without changing the workflow. The
+  46,000-byte cap and all non-package-byte budgets remain unchanged;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.
