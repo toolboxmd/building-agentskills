@@ -94,6 +94,16 @@ current cumulative executable delta at that stage was 18,761 bytes. A bounded
 follow-up preserves blank lines inside list-contained fences for both script
 checks and link masking without waiving blockquote markers or nonblank exits.
 It added 128 executable bytes, bringing the cumulative delta to 18,889 bytes.
+A current exact-HEAD correction makes only the Windows drive-user path branch
+case-insensitive and adds an explicit creation mode. General validation still
+accepts supported partial or policy-only existing sidecars; creation mode
+requires both nonempty UI fields when the optional sidecar is present. This
+adds 119 executable bytes, bringing the cumulative delta to 19,008 bytes.
+An independent exact-current audit then added 277 executable bytes. Remote and
+anchor Markdown destinations now hide query and fragment text from workstation
+path scanning while file and drive-root destinations remain local, and present
+sidecar interface strings must contain non-whitespace text. The cumulative
+delta is 19,285 bytes.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -119,6 +129,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 43,611 bytes: 4,640 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 38,755-byte read-only checker. The executable is not
+The frozen package is 43,877 bytes: 4,510 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 39,151-byte read-only checker. The executable is not
 loaded as activated core.

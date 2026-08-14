@@ -83,7 +83,11 @@
     "quotedNameAndScriptLocationReason": "Exact-HEAD review removed the remaining unquoted-name exception and rejects executable or shebang helpers outside scripts/. Reusing package collection for the location check and deleting obsolete scalar special cases reduced executable bytes without weakening the canonical fixture matrix.",
     "listContainerBlankLineExecutableDeltaBytes": 128,
     "listContainerBlankLineReason": "Exact-HEAD review required blank lines inside list-contained fences to retain shared script-path and Markdown-link masking state without waiving blockquote markers or nonblank container exits.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 18889,
+    "windowsAndCreationModeExecutableDeltaBytes": 119,
+    "windowsAndCreationModeReason": "Exact-HEAD review required case-insensitive Windows drive-user paths and an explicit creation mode that enforces generated sidecar UI fields without rejecting supported partial existing sidecars in general mode.",
+    "remoteLinkAndWhitespaceExecutableDeltaBytes": 277,
+    "remoteLinkAndWhitespaceReason": "Independent exact-current audit required remote and anchor Markdown destinations to hide URL query and fragment text from workstation-path scanning while file and drive-root links remain local, and required present sidecar interface strings to contain non-whitespace text.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 19285,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -97,22 +101,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "847853736703ea42193234a25d78e5696b7337d05db9f63723fa48865f059ee6",
+    "aggregateSha256": "2a2bf3e39f7c4c495bc888062fe41f8110c00ae00f0d9a26086782acb63fe5e4",
     "fileCount": 3,
-    "packageBytes": 43611,
+    "packageBytes": 43877,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4640,
+      "bytes": 4510,
       "lines": 78,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4640,
-        "sha256": "fbe642ea437e9a807806671374968f118d5f28da06030da328e18f4009029074"
+        "bytes": 4510,
+        "sha256": "2f2f730116f885dc2cf7844a2ccc370b0dbfa39b2240fb9b896ebe87c8d242be"
       },
       {
         "path": "agents/openai.yaml",
@@ -121,8 +125,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 38755,
-        "sha256": "fc06311d949cccc96388c30c5391c9844b8f91a2f2ef913c028bc1722a602e21"
+        "bytes": 39151,
+        "sha256": "aa8dbe4a56d7073a157c09e0409dc670a8ec22aa1e85fff9cd2a7e206800686e"
       }
     ]
   },
@@ -137,7 +141,7 @@
       "recognized shell fences must close and the prescribed validator command enables warnings-as-errors",
       "explicit skill-directory script examples pass",
       "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, supported and bounded interface strings, assets-only icon paths, optional default_prompt, policy, and current tool dependencies",
-      "Codex interface, policy, and dependencies sections are independently optional; present sections must be nonempty and valid, while generated ToolboxMD sidecars retain nonempty UI fields",
+      "Codex interface, policy, and dependencies sections are independently optional in general mode; present interface strings require non-whitespace text, and creation mode accepts an absent optional sidecar but requires both UI fields when one is present",
       "valid Markdown links with optional titles pass",
       "single-line CommonMark reference-definition destinations support angle brackets and optional titles while missing and escaping targets fail",
       "skill names containing reserved provider strings fail",
@@ -148,7 +152,7 @@
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
       "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus inline, indented, and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "blank lines retain root, blockquote, list, and nested blockquote-list fence state without waiving required blockquote markers or nonblank container exits",
-      "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs",
+      "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs and case-insensitive Windows drive-user roots, while remote and anchor Markdown destinations hide query and fragment text",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",
       "executable or shebang helpers outside scripts/ fail canonical package policy while outside non-executable data without a shebang remains allowed",
       "Python helper syntax below scripts/ is checked through AST while non-Python helpers there require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",

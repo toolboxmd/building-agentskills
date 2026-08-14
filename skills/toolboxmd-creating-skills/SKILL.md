@@ -29,7 +29,7 @@ A skill may coordinate these; prose does not fire them.
 
 ### 2. Build an evidence brief
 
-Record job/value, triggers/near misses, inputs/outputs, mistakes, constraints, and evidence gaps. Close load-bearing gaps with questions or a representative task. Label hypotheses.
+Record job/value, triggers/near misses, inputs/outputs, mistakes, constraints, and evidence gaps. Close critical gaps with questions or a representative task. Label hypotheses.
 
 ### 3. Answer three independent questions
 
@@ -39,25 +39,25 @@ Record job/value, triggers/near misses, inputs/outputs, mistakes, constraints, a
 
 ### 4. Plan and draft the package
 
-Start with `SKILL.md`. Keep core rules inline. Put conditional knowledge in `references/`, deterministic work in `scripts/`, output inputs in `assets/`, and target metadata in sidecars. Keep evals external. Test scripts and distribution contracts. Delete speculative files.
+Draft `SKILL.md` first. Keep core rules inline, conditional knowledge in `references/`, deterministic work in `scripts/`, output inputs in `assets/`, target metadata in sidecars, and evals external.
 
-JSON-quote all top-level strings, including exact `name`, and all portable `metadata` keys/values. Omit empty `metadata`. Description states capability, triggers, and exclusions. Keep decisions, evidence, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Use rigid language only for mechanized rules.
+JSON-quote every top-level string, including exact `name`, and every portable `metadata` key/value; omit empty `metadata`. Description states capability, triggers, exclusions. Keep decisions, evidence, procedure, I/O, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
 
 Generated Codex sidecars require nonempty `display_name` and `short_description`; existing sidecars may use any supported nonempty interface subset.
 
-For explicit `metadata.hermes.config`, pass `--allow-hermes-metadata`. Keep its schema keys unquoted, start items with `- key: "..."`, and JSON-quote values. This is not portable core.
+For `metadata.hermes.config`, pass `--allow-hermes-metadata`. Keep schema keys unquoted, start items with `- key: "..."`, and JSON-quote values. It is outside portable core.
 
 ### 5. Make scripts portable
 
-Resolve `<skill-dir>` from loaded `SKILL.md` to an absolute argument independent of cwd and shell expansion. Use `<target-skill-dir>` for the new package.
+Resolve `<skill-dir>` from loaded `SKILL.md` to an absolute argument, independent of cwd and shell expansion. `<target-skill-dir>` names the new package.
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --warnings-as-errors "<target-skill-dir>"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --creation-mode --warnings-as-errors "<target-skill-dir>"
 ```
 
-Pass nondefault budgets. Fence executable examples as `sh`, `bash`, or `shell`; use `<skill-dir>/scripts/<helper>`. Task-relative helpers fail in single-line inline, indented, or other fences. The lexical check treats immediate non-whitespace content after `scripts/` as a child; directory-only mentions and whitespace-leading child names are outside it.
+Pass nondefault budgets. Fence executable examples as `sh`, `bash`, or `shell` and use `<skill-dir>/scripts/<helper>`. Task-relative helpers fail in inline, indented, and other fences. The lexical check treats non-whitespace immediately after `scripts/` as a child; directory mentions and whitespace-leading child names are outside it.
 
-The checker covers ToolboxMD policy, not arbitrary YAML, CommonMark, shell, or helper syntax. Executable/shebang helpers belong in `scripts/`. Python uses AST. For each other helper, run and report a syntax command, hash current bytes, and pass `--script-syntax-checked '<helper-path>=<lowercase-sha256>'`. This binds path to digest, not execution. It runs installed `skills-ref validate <target-skill-dir>` but never installs it. Report that result separately; external behavior is outside ToolboxMD.
+The checker covers ToolboxMD policy, not general YAML, CommonMark, shell, or helper syntax. Executable/shebang helpers belong in `scripts/`. Python uses AST. For other helpers, run and report a syntax command, hash current bytes, and pass `--script-syntax-checked '<helper-path>=<lowercase-sha256>'`. This binds path and digest, not execution. It runs but never installs `skills-ref validate <target-skill-dir>`; report it separately because external behavior is outside ToolboxMD.
 
 ### 6. Test, delete, and deliver
 

@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 43,611 bytes, aggregate SHA-256
-  `847853736703ea42193234a25d78e5696b7337d05db9f63723fa48865f059ee6`;
-- activated core: 78 lines and 4,640 bytes, with a 240-character
+- exact package: three files, 43,877 bytes, aggregate SHA-256
+  `2a2bf3e39f7c4c495bc888062fe41f8110c00ae00f0d9a26086782acb63fe5e4`;
+- activated core: 78 lines and 4,510 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -192,8 +192,16 @@ Completion evidence, updated 2026-08-14:
   18,761 bytes;
 - a bounded exact-HEAD correction then preserved blank lines inside
   list-contained fences in the shared script-path and link-masking state. It
-  added 128 executable bytes, bringing the current cumulative delta to 18,889
+  added 128 executable bytes, bringing the cumulative delta to 18,889
   bytes, without waiving blockquote markers or nonblank container exits;
+- the current exact-HEAD correction adds 119 executable bytes for
+  case-insensitive Windows drive-user paths and explicit creation-mode sidecar
+  UI requirements, bringing the cumulative delta to 19,008 bytes. General
+  validation still accepts supported partial existing sidecars;
+- independent exact-current audit added 277 executable bytes to hide remote
+  and anchor-link query or fragment text from workstation-path scanning while
+  preserving file and drive-root local links, and to reject whitespace-only
+  present interface strings. The cumulative delta is 19,285 bytes;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.
@@ -242,8 +250,10 @@ Completion evidence, updated 2026-08-14:
   validates the real copyable minimal-skill example under explicit budgets,
   accepts the explicit `<skill-dir>` contract,
   accepts independently optional Codex interface, policy, and dependency
-  sections, including supported partial interfaces, while rejecting empty
-  sections and empty sidecars; accepts
+  sections in general mode, including supported partial interfaces, while
+  present interface strings require non-whitespace text, creation mode requires
+  both UI fields in a present optional sidecar, and
+  both modes reject empty sections and empty sidecars; accepts
   titled local links; rejects
   reserved provider names, single-quoted values, and every unquoted top-level
   string including names, prose, dates, hexadecimal, octal, and YAML typed scalars,
@@ -254,8 +264,10 @@ Completion evidence, updated 2026-08-14:
   rejects bare and comment-only metadata while accepting omission,
   ignores link syntax inside Markdown code, validates canonical single-line
   reference destinations, warns when complex Markdown requires official
-  coverage, detects POSIX, container, Windows, file URI, and shebang-local
-  paths in decodable package files, requires an exact-current-byte operator
+  coverage, detects POSIX, container, case-insensitive Windows drive-user,
+  file URI, and shebang-local paths while ignoring remote and anchor-link
+  query or fragment text during workstation-path scanning;
+  requires an exact-current-byte operator
   attestation before a separately checked non-Python helper can pass strict
   mode, and reports that ToolboxMD did not execute the language-specific
   command; exercises optional `skills-ref` pass/fail/error/timeout states,

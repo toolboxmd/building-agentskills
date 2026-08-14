@@ -31,8 +31,10 @@ done
 help_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --help)"
 [[ "$help_output" == *"Exit: 0 valid, 1 invalid, 2 inspection error."* ]]
 [[ "$help_output" == *"--script-syntax-checked PATH=SHA256"* ]]
+[[ "$help_output" == *"--creation-mode"* ]]
 
 human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" \
+  --creation-mode \
   --warnings-as-errors \
   --max-description-chars 300 \
   --max-skill-lines 150 \
@@ -43,12 +45,13 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-eval-files 0 \
   --max-script-files 1 \
   "$package")"
-[[ "$human_output" == *"COVERAGE: canonical=toolboxmd-portable-core-v2 extensions=none script_paths=closed-surfaces shell_parsed=false script_syntax=python-ast+exact-digest-attestation official_skills_ref=not_available official_external_attested=false"* ]]
+[[ "$human_output" == *"COVERAGE: canonical=toolboxmd-portable-core-v2 extensions=none creation_mode=true script_paths=closed-surfaces shell_parsed=false script_syntax=python-ast+exact-digest-attestation official_skills_ref=not_available official_external_attested=false"* ]]
 [[ "$human_output" == *"SCRIPT_SYNTAX_CHECKS: accepted_paths=[] execution_verified_by_toolboxmd=false"* ]]
 [[ "$human_output" == *"PASS: canonical ToolboxMD package checks succeeded"* ]]
 
 cd "$test_tmp"
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json \
+  --creation-mode \
   --warnings-as-errors \
   --max-description-chars 300 \
   --max-skill-lines 150 \
@@ -307,7 +310,7 @@ dependencies: # target tools
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/sidecar-fixture" > "$test_tmp/sidecar.json"
 
-for name in policy-only dependencies-only display-only brand-only blank-sidecar comment-only-sidecar; do
+for name in policy-only dependencies-only display-only brand-only prompt-only blank-sidecar comment-only-sidecar; do
   make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
   mkdir -p "$test_tmp/$name/agents"
 done
@@ -329,13 +332,27 @@ cat > "$test_tmp/brand-only/agents/openai.yaml" <<'EOF'
 interface:
   brand_color: "#3B82F6"
 EOF
+cat > "$test_tmp/prompt-only/agents/openai.yaml" <<'EOF'
+interface:
+  default_prompt: "Use $prompt-only to run this task."
+EOF
 : > "$test_tmp/blank-sidecar/agents/openai.yaml"
 printf '# no semantic section\n' > "$test_tmp/comment-only-sidecar/agents/openai.yaml"
-for name in policy-only dependencies-only display-only brand-only blank-sidecar comment-only-sidecar; do
+for name in policy-only dependencies-only display-only brand-only prompt-only blank-sidecar comment-only-sidecar; do
   set +e
   PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/$name" > "$test_tmp/$name.json"
   set -e
 done
+
+for name in policy-only dependencies-only display-only brand-only prompt-only; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --creation-mode --warnings-as-errors "$test_tmp/$name" > "$test_tmp/creation-$name.json"
+  creation_partial_exit=$?
+  set -e
+  [[ $creation_partial_exit -eq 1 ]]
+done
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --creation-mode --warnings-as-errors "$test_tmp/sidecar-fixture" > "$test_tmp/creation-full-sidecar.json"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --creation-mode --warnings-as-errors "$test_tmp/portable-fixture" > "$test_tmp/creation-no-sidecar.json"
 
 make_fixture "$test_tmp/policy-case-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 mkdir -p "$test_tmp/policy-case-fixture/agents"
@@ -429,6 +446,34 @@ interface:
   short_description: "Validate a minimal Codex sidecar"
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/minimal-sidecar-fixture" > "$test_tmp/minimal-sidecar.json"
+
+for name in whitespace-display whitespace-short; do
+  make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+  mkdir -p "$test_tmp/$name/agents"
+done
+cat > "$test_tmp/whitespace-display/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "                         "
+  short_description: "Reject a whitespace-only display name"
+EOF
+cat > "$test_tmp/whitespace-short/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Whitespace Short"
+  short_description: "                         "
+EOF
+for name in whitespace-display whitespace-short; do
+  for mode in general creation; do
+    set +e
+    if [[ $mode == creation ]]; then
+      PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --creation-mode "$test_tmp/$name" > "$test_tmp/$mode-$name.json"
+    else
+      PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$mode-$name.json"
+    fi
+    whitespace_sidecar_exit=$?
+    set -e
+    [[ $whitespace_sidecar_exit -eq 1 ]]
+  done
+done
 
 make_fixture "$test_tmp/bad-prompt-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 mkdir -p "$test_tmp/bad-prompt-fixture/agents"
@@ -1196,12 +1241,14 @@ file_uri_exit=$?
 set -e
 [[ $file_uri_exit -eq 1 ]]
 
-for name in windows-forward windows-escaped; do
+for name in windows-forward windows-escaped windows-lowercase-backslash windows-uppercase-forward; do
   make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 done
 printf '\nRead C:/Users/Alice/project/input.json.\n' >> "$test_tmp/windows-forward/SKILL.md"
 printf '%s\n' '' 'Read C:\\Users\\Alice\\project\\input.json.' >> "$test_tmp/windows-escaped/SKILL.md"
-for name in windows-forward windows-escaped; do
+printf '%s\n' '' 'Read c:\users\alice\project\input.json.' >> "$test_tmp/windows-lowercase-backslash/SKILL.md"
+printf '\nRead C:/USERS/Alice/project/input.json.\n' >> "$test_tmp/windows-uppercase-forward/SKILL.md"
+for name in windows-forward windows-escaped windows-lowercase-backslash windows-uppercase-forward; do
   set +e
   PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
   windows_path_exit=$?
@@ -1216,6 +1263,30 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/web-root-lin
 web_root_exit=$?
 set -e
 [[ $web_root_exit -eq 1 ]]
+
+make_fixture "$test_tmp/remote-windows-links" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+cat >> "$test_tmp/remote-windows-links/SKILL.md" <<'EOF'
+
+[HTTP query](http://example.com/?next=C:/USERS/Alice/work/file.txt)
+[HTTPS query](https://example.com/?next=C:/USERS/Alice/work/file.txt)
+[HTTP fragment](http://example.com/#C:/USERS/Alice/work/file.txt)
+[HTTPS fragment](https://example.com/#C:/USERS/Alice/work/file.txt)
+[Local anchor](#C:/USERS/Alice/work/file.txt)
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/remote-windows-links" > "$test_tmp/remote-windows-links.json"
+
+for name in file-link windows-drive-link; do
+  make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+done
+printf '\n[Local file](file:///Users/Alice/work/file.txt)\n' >> "$test_tmp/file-link/SKILL.md"
+printf '\n[Local drive](C:/USERS/Alice/work/file.txt)\n' >> "$test_tmp/windows-drive-link/SKILL.md"
+for name in file-link windows-drive-link; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
+  local_link_exit=$?
+  set -e
+  [[ $local_link_exit -eq 1 ]]
+done
 
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$root/benchmarks/toolboxmd-creating-skills/v2/results/2026-08-13/cases/meeting-followups/toolboxmd/skill" > "$test_tmp/meeting.json"
@@ -1251,11 +1322,17 @@ const genericConfigSafe = JSON.parse(fs.readFileSync(path.join(temporary, "gener
 const portable = JSON.parse(fs.readFileSync(path.join(temporary, "portable.json")));
 const official = ["pass", "fail", "unexpected", "timeout"].map(mode => JSON.parse(fs.readFileSync(path.join(temporary, `skills-ref-${mode}.json`))));
 const sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "sidecar.json")));
-const supportedPartialSidecars = ["policy-only", "dependencies-only", "display-only", "brand-only"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const supportedPartialSidecars = ["policy-only", "dependencies-only", "display-only", "brand-only", "prompt-only"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const creationPartialSidecars = ["policy-only", "dependencies-only", "display-only", "brand-only", "prompt-only"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `creation-${name}.json`))));
+const creationFullSidecar = JSON.parse(fs.readFileSync(path.join(temporary, "creation-full-sidecar.json")));
+const creationNoSidecar = JSON.parse(fs.readFileSync(path.join(temporary, "creation-no-sidecar.json")));
 const blankSidecars = ["blank-sidecar", "comment-only-sidecar"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const policyCase = JSON.parse(fs.readFileSync(path.join(temporary, "policy-case.json")));
 const sidecarEdges = ["empty-interface", "empty-interface-value", "empty-policy", "empty-dependencies", "empty-tools", "duplicate-sidecar", "duplicate-tools", "long-display", "long-prompt", "outside-icon", "token-boundary", "invalid-sidecar-string"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const minimalSidecar = JSON.parse(fs.readFileSync(path.join(temporary, "minimal-sidecar.json")));
+const whitespaceSidecars = ["display", "short"].flatMap(field =>
+  ["general", "creation"].map(mode => JSON.parse(fs.readFileSync(path.join(temporary, `${mode}-whitespace-${field}.json`))))
+);
 const badPrompt = JSON.parse(fs.readFileSync(path.join(temporary, "bad-prompt.json")));
 const missingIcon = JSON.parse(fs.readFileSync(path.join(temporary, "missing-icon.json")));
 const titledLink = JSON.parse(fs.readFileSync(path.join(temporary, "titled-link.json")));
@@ -1316,8 +1393,10 @@ const invalidScript = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-e
 const invalidShebang = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-shebang-bytes.json")));
 const svgPath = JSON.parse(fs.readFileSync(path.join(temporary, "svg-local-path.json")));
 const fileUri = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-path.json")));
-const windowsPaths = ["windows-forward", "windows-escaped"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const windowsPaths = ["windows-forward", "windows-escaped", "windows-lowercase-backslash", "windows-uppercase-forward"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const webRootLink = JSON.parse(fs.readFileSync(path.join(temporary, "web-root-link.json")));
+const remoteWindowsLinks = JSON.parse(fs.readFileSync(path.join(temporary, "remote-windows-links.json")));
+const localWindowsLinks = ["file-link", "windows-drive-link"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const meeting = JSON.parse(fs.readFileSync(path.join(temporary, "meeting.json")));
 const deck = JSON.parse(fs.readFileSync(path.join(temporary, "deck.json")));
 
@@ -1356,7 +1435,9 @@ assert(freeze.budgetRevision.closedSurfaceScriptPathExecutableDeltaBytes === 118
 assert(freeze.budgetRevision.containerFenceLinkMaskingExecutableDeltaBytes === 345, "container fence link-masking executable delta changed");
 assert(freeze.budgetRevision.quotedNameAndScriptLocationExecutableDeltaBytes === -197, "quoted-name/location executable delta changed");
 assert(freeze.budgetRevision.listContainerBlankLineExecutableDeltaBytes === 128, "list-container blank-line executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 18889, "current executable delta changed");
+assert(freeze.budgetRevision.windowsAndCreationModeExecutableDeltaBytes === 119, "Windows/creation-mode executable delta changed");
+assert(freeze.budgetRevision.remoteLinkAndWhitespaceExecutableDeltaBytes === 277, "remote-link/whitespace executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19285, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1380,7 +1461,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43611, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43877, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1390,6 +1471,8 @@ assert(official.every(result => result.coverage.officialSkillsRef.externalBehavi
 assert(sidecar.status === "pass" && sidecar.errorCount === 0, "official nested sidecar must pass");
 assert(policyCase.status === "fail" && sidecarEdges.every(result => result.status === "fail"), "sidecar canonical boundary changed");
 assert(minimalSidecar.status === "pass" && minimalSidecar.errorCount === 0, "default_prompt must remain optional");
+assert(whitespaceSidecars.every(result => result.status === "fail" && result.issues.some(item => item.code === "OPENAI_SHAPE")), "present sidecar strings must contain non-whitespace text");
+assert(whitespaceSidecars.filter(result => result.coverage.creationMode).every(result => result.issues.some(item => item.code === "TOOLBOXMD_GENERATED_SIDECAR")), "creation mode must reject whitespace-only UI fields as missing");
 assert(badPrompt.issues.some(item => item.code === "OPENAI_DEFAULT_PROMPT"), "default_prompt must be validated when present");
 assert(missingIcon.issues.some(item => item.code === "OPENAI_ICON"), "declared icon paths must resolve inside the package");
 assert(titledLink.status === "pass" && titledLink.errorCount === 0, "valid local link with optional title must pass");
@@ -1405,6 +1488,10 @@ assert(angleSafeDescription.status === "pass", "ordinary quoted description text
 assert(unquotedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_STRING")), "all unquoted description scalars must fail");
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
 assert(supportedPartialSidecars.every(result => result.status === "pass"), "supported partial sidecars are rejected");
+assert(supportedPartialSidecars.every(result => result.coverage.creationMode === false), "general sidecar mode coverage changed");
+assert(creationPartialSidecars.every(result => result.status === "fail" && result.issues.some(item => item.code === "TOOLBOXMD_GENERATED_SIDECAR")), "creation mode must reject generated sidecars without both UI fields");
+assert(creationPartialSidecars.every(result => result.coverage.creationMode === true), "creation sidecar mode coverage changed");
+assert(creationFullSidecar.status === "pass" && creationNoSidecar.status === "pass", "creation mode must accept a full generated sidecar or no optional sidecar");
 assert(blankSidecars.every(result => result.status === "fail" && result.issues.some(item => item.code === "OPENAI_SHAPE")), "blank sidecar lacks semantic-section error");
 assert(closedShellBare.status === "fail" && closedShellBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 25, "closed shell fences must reject every lexically adjacent bare helper path without shell parsing");
 assert(closedShellSafe.status === "pass" && closedShellSafe.warningCount === 0, "explicit skill roots, prose, links, directory-only mentions, and leading-whitespace child names must remain safe");
@@ -1460,6 +1547,8 @@ assert(invalidShebang.issues.some(item => item.code === "UTF8"), "invalid UTF-8 
 assert(svgPath.issues.some(item => item.code === "LOCAL_PATH") && fileUri.issues.some(item => item.code === "LOCAL_PATH"), "decodable asset and file URI path checks changed");
 assert(windowsPaths.every(result => result.issues.some(item => item.code === "LOCAL_PATH")), "Windows local path checks changed");
 assert(webRootLink.issues.some(item => item.code === "ROOT_LINK") && !webRootLink.issues.some(item => item.code === "LOCAL_PATH"), "web links must not be mistaken for workstation paths");
+assert(remoteWindowsLinks.status === "pass" && !remoteWindowsLinks.issues.some(item => item.code === "LOCAL_PATH"), "remote and anchor links must hide URL query or fragment text from workstation-path scanning");
+assert(localWindowsLinks.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "file URI and drive-root Markdown links must remain local paths");
 for (const [name, result, expectedEvals] of [["meeting", meeting, 1], ["deck", deck, 2]]) {
   assert(result.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), `${name}: retained bare script pattern not detected`);
   assert(result.metrics.referenceFileCount === 1, `${name}: retained always-read reference pattern changed`);
@@ -1470,7 +1559,7 @@ const skillText = fs.readFileSync(path.join(root, freeze.package.path, "SKILL.md
 const ownSidecar = fs.readFileSync(path.join(root, freeze.package.path, "agents/openai.yaml"), "utf8");
 assert(!/\bgit\s+(?:status|rev-parse|diff|log)\b/i.test(skillText), "creator embeds an unconditional Git command");
 assert(/Inspect Git state only when .*user requested Git delivery/.test(skillText), "conditional Git boundary missing");
-assert(skillText.includes('PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --warnings-as-errors "<target-skill-dir>"'), "strict portable creator command missing");
+assert(skillText.includes('PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --creation-mode --warnings-as-errors "<target-skill-dir>"'), "strict creation-mode creator command missing");
 assert(skillText.includes("--script-syntax-checked '<helper-path>=<lowercase-sha256>'"), "exact-digest non-Python syntax attestation flow missing");
 assert(skillText.includes("Generated Codex sidecars require nonempty `display_name` and `short_description`"), "creator sidecar policy missing");
 assert(/^\s{2}display_name:\s+".+"$/m.test(ownSidecar) && /^\s{2}short_description:\s+".+"$/m.test(ownSidecar), "creator sidecar must retain nonempty UI fields");

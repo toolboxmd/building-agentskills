@@ -34,11 +34,10 @@ SHELL_FENCE_LANGUAGES = {"sh", "bash", "shell"}
 BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./-])(?:\./)?scripts/")
 SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
 SCRIPT_CONTEXT_HINT = f"{SCRIPT_ROOT_HINT} in a closed sh/bash/shell fence"
-ROOT_NAMES = ("Users", "home", "workspace", "root")
-POSIX_ROOTS = "|".join(re.escape(f"/{name}/") for name in ROOT_NAMES)
+LOCAL_ROOTS = "(?:Users|home|workspace|root)"
 LOCAL_PATH_RE = re.compile(
-    rf"(?:file:///(?:{'|'.join(ROOT_NAMES)})/|(?<![A-Za-z0-9:/])(?:{POSIX_ROOTS}|"
-    rf"[A-Za-z]:(?:{re.escape('/' + 'Users/')}|(?:\\)+{'Users'}(?:\\)+)))[^\s'\"`]+"
+    rf"(?:file:///{LOCAL_ROOTS}/|(?<![A-Za-z0-9:/])(?:/{LOCAL_ROOTS}/|"
+    rf"(?i:[A-Za-z]:(?:/Users/|(?:\\)+Users(?:\\)+))))[^\s'\"`]+"
 )
 PROCESS_NAMES = {"README.md", "CHANGELOG.md", "STATUS.md", "DESIGN.md", "NOTES.md"}
 TEXT_SUFFIXES = {
@@ -434,11 +433,17 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
             continue
         path_searchable = content
         if path.suffix.lower() == ".md":
+            def mask_destination(match):
+                raw = match.group(1).lstrip("<")
+                if re.match(r"(?i)^[a-z]:[/\\]", raw):
+                    return match.group(0)
+                scheme = urlsplit(raw).scheme
+                if raw.startswith(("/", "#")) or (scheme and scheme != "file"):
+                    return match.group(0).replace(match.group(1), "")
+                return match.group(0)
+
             for pattern in (LINK_RE, REFERENCE_DEFINITION_RE):
-                path_searchable = pattern.sub(
-                    lambda match: match.group(0).replace(match.group(1), "") if match.group(1).lstrip("<").startswith("/") else match.group(0),
-                    path_searchable,
-                )
+                path_searchable = pattern.sub(mask_destination, path_searchable)
         if LOCAL_PATH_RE.search(path_searchable):
             problems.append(issue("LOCAL_PATH", relative, "workstation path"))
         source_surface = relative.startswith("scripts/") or os.access(path, os.X_OK) or content.startswith("#!")
@@ -469,7 +474,7 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
             problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "nested Markdown link shape needs an official validator", "warning"))
 
 
-def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> None:
+def validate_sidecar(root: Path, name: str, creation_mode: bool, problems: list[dict[str, str]]) -> None:
     sidecar = root / "agents" / "openai.yaml"
     if not sidecar.exists():
         return
@@ -549,7 +554,7 @@ def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> N
         except (TypeError, ValueError):
             fail("OPENAI_SHAPE", f"invalid quoted string: {key}")
         else:
-            if target is values and not target[key]:
+            if target is values and not target[key].strip():
                 fail("OPENAI_SHAPE", f"{key} must be nonempty")
     if not sections:
         fail("OPENAI_SHAPE", "no recognized semantic section")
@@ -565,6 +570,8 @@ def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> N
     short = values.get("short_description", "")
     if short and not 25 <= len(short) <= 64:
         fail("TOOLBOXMD_SHORT_DESCRIPTION", "ToolboxMD policy requires short_description length 25-64")
+    if creation_mode and not all(values.get(key, "").strip() for key in ("display_name", "short_description")):
+        fail("TOOLBOXMD_GENERATED_SIDECAR", "creation needs nonempty display_name and short_description")
     prompt = values.get("default_prompt", "")
     if len(prompt) > 1024:
         fail("OPENAI_DEFAULT_PROMPT", "default_prompt length must be at most 1024")
@@ -727,7 +734,7 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
         fail("BODY_EMPTY", "empty body")
 
     validate_links_and_paths(root, problems)
-    validate_sidecar(root, name, problems)
+    validate_sidecar(root, name, args.creation_mode, problems)
     syntax_checks = validate_scripts(root, args.script_syntax_checked, problems)
     official = run_official_validator(root, problems)
 
@@ -737,24 +744,19 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
     reference_files = sum(str(record["path"]).startswith("references/") for record in files)
     eval_files = sum(str(record["path"]).startswith("evals/") for record in files)
     script_files = sum(str(record["path"]).startswith("scripts/") for record in files)
-    metrics = {
-        "descriptionCharacters": len(description),
-        "skillMdLines": skill_lines,
-        "skillMdBytes": skill_bytes,
-        "fileCount": len(files),
-        "packageBytes": package_bytes,
-        "referenceFileCount": reference_files,
-        "evalFileCount": eval_files,
-        "scriptFileCount": script_files,
-    }
-    budget_problem(len(description), args.max_description_chars, "DESCRIPTION_BUDGET", "description characters", problems)
-    budget_problem(skill_lines, args.max_skill_lines, "SKILL_LINES_BUDGET", "SKILL.md lines", problems)
-    budget_problem(skill_bytes, args.max_skill_bytes, "SKILL_BYTES_BUDGET", "SKILL.md bytes", problems)
-    budget_problem(len(files), args.max_files, "FILE_COUNT_BUDGET", "package files", problems)
-    budget_problem(package_bytes, args.max_package_bytes, "PACKAGE_BYTES_BUDGET", "package bytes", problems)
-    budget_problem(reference_files, args.max_reference_files, "REFERENCE_COUNT_BUDGET", "reference files", problems)
-    budget_problem(eval_files, args.max_eval_files, "EVAL_COUNT_BUDGET", "eval files", problems)
-    budget_problem(script_files, args.max_script_files, "SCRIPT_COUNT_BUDGET", "script files", problems)
+    metric_rows = (
+        ("descriptionCharacters", len(description), args.max_description_chars, "DESCRIPTION_BUDGET", "description characters"),
+        ("skillMdLines", skill_lines, args.max_skill_lines, "SKILL_LINES_BUDGET", "SKILL.md lines"),
+        ("skillMdBytes", skill_bytes, args.max_skill_bytes, "SKILL_BYTES_BUDGET", "SKILL.md bytes"),
+        ("fileCount", len(files), args.max_files, "FILE_COUNT_BUDGET", "package files"),
+        ("packageBytes", package_bytes, args.max_package_bytes, "PACKAGE_BYTES_BUDGET", "package bytes"),
+        ("referenceFileCount", reference_files, args.max_reference_files, "REFERENCE_COUNT_BUDGET", "reference files"),
+        ("evalFileCount", eval_files, args.max_eval_files, "EVAL_COUNT_BUDGET", "eval files"),
+        ("scriptFileCount", script_files, args.max_script_files, "SCRIPT_COUNT_BUDGET", "script files"),
+    )
+    metrics = {key: value for key, value, *_ in metric_rows}
+    for _, value, maximum, code, label in metric_rows:
+        budget_problem(value, maximum, code, label, problems)
 
     aggregate = hashlib.sha256(
         "".join(f"{record['sha256']}  {record['path']}\n" for record in files).encode("utf-8")
@@ -769,13 +771,14 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
         "coverage": {
             "canonicalSubset": "toolboxmd-portable-core-v2",
             "enabledExtensions": ["hermes-metadata"] if args.allow_hermes_metadata else [],
-            "markdown": "canonical inline links and single-line reference definitions",
+            "creationMode": args.creation_mode,
+            "markdown": "inline links and one-line reference definitions",
             "scriptPaths": {
                 "markdown": "closed fences, single-line inline, and other code; no shell parse",
                 "sources": "UTF-8 helpers, executables, and shebang files",
                 "shellParsed": False,
             },
-            "scriptSyntax": "Python .py via AST; non-Python helpers need exact-digest operator attestation",
+            "scriptSyntax": "Python .py AST; other helpers need exact-digest attestation",
             "scriptSyntaxChecks": {
                 "acceptedPaths": syntax_checks,
                 "executionVerifiedByToolboxMD": False,
@@ -793,15 +796,16 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
 
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(
-        description="Check a canonical ToolboxMD Agent Skill package read-only.",
+        description="Read-only canonical ToolboxMD package checker.",
         epilog="Exit: 0 valid, 1 invalid, 2 inspection error.",
     )
     result.add_argument("skill_root", nargs="?", default=".", help="skill root")
     result.add_argument("--json", action="store_true", help="JSON")
     result.add_argument("--warnings-as-errors", action="store_true", help="fail warnings")
+    result.add_argument("--creation-mode", action="store_true", help="require generated UI pair")
     result.add_argument("--script-syntax-checked", action="append", default=[], metavar="PATH=SHA256",
-                        help="attest separately checked non-Python helper bytes")
-    result.add_argument("--allow-hermes-metadata", action="store_true", help="allow canonical metadata.hermes.config extension")
+                        help="attest checked non-Python helper bytes")
+    result.add_argument("--allow-hermes-metadata", action="store_true", help="allow canonical Hermes config")
     limits = (("description-chars", 1024), ("skill-lines", 499), ("skill-bytes", None), ("files", None),
               ("package-bytes", None), ("reference-files", None), ("eval-files", None), ("script-files", None))
     for name, default in limits:
@@ -829,7 +833,7 @@ def main() -> int:
         coverage = result["coverage"]
         official = coverage["officialSkillsRef"]
         extensions = ",".join(coverage["enabledExtensions"]) or "none"
-        print(f"COVERAGE: canonical={coverage['canonicalSubset']} extensions={extensions} script_paths=closed-surfaces shell_parsed=false script_syntax=python-ast+exact-digest-attestation official_skills_ref={official['status']} official_external_attested=false")
+        print(f"COVERAGE: canonical={coverage['canonicalSubset']} extensions={extensions} creation_mode={json.dumps(coverage['creationMode'])} script_paths=closed-surfaces shell_parsed=false script_syntax=python-ast+exact-digest-attestation official_skills_ref={official['status']} official_external_attested=false")
         checks = coverage["scriptSyntaxChecks"]
         print(f"SCRIPT_SYNTAX_CHECKS: accepted_paths={json.dumps(checks['acceptedPaths'])} execution_verified_by_toolboxmd=false")
         labels = (("description_chars", "descriptionCharacters"), ("skill_lines", "skillMdLines"),
