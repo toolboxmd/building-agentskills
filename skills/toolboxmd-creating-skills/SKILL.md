@@ -5,9 +5,7 @@ description: "Create portable Agent Skills from needs, trigger/near-miss example
 
 # Creating Skills
 
-## Boundaries
-
-- Use examples to discover; verify claims with primary sources or evidence.
+Use examples to discover; verify claims with primary sources or evidence.
 
 ## Default path
 
@@ -22,13 +20,13 @@ Read project instructions, then choose the smallest mechanism:
 | Event enforcement | Hook or CI gate |
 | Deterministic work | Script or program |
 | User-started operation | Command or user-invoked skill |
-| Installation/lifecycle wiring | Plugin or extension |
+| Installation/lifecycle | Plugin or extension |
 
 Skills may coordinate them; prose cannot fire them.
 
 ### 2. Build an evidence brief
 
-Record value, triggers/near misses, I/O, artifacts, mistakes, constraints, and gaps. Resolve critical gaps with questions or a representative task.
+Record value, triggers/near misses, I/O, artifacts, failures, constraints, and gaps. Resolve critical gaps with a question or representative task.
 
 ### 3. Answer three independent questions
 
@@ -40,7 +38,7 @@ Record value, triggers/near misses, I/O, artifacts, mistakes, constraints, and g
 
 Draft `SKILL.md` first. Inline core rules; use `references/` for conditional knowledge, `scripts/` for deterministic work, `assets/` for output inputs, sidecars for metadata, and keep evals outside.
 
-JSON-quote every top-level string, including exact `name`, and portable metadata keys/values; omit empty `metadata`. Use literal Unicode, not surrogate escapes. Keep capability, triggers, exclusions, decisions, procedure, I/O, and gotchas in `SKILL.md`; reserve rigid terms for mechanisms.
+JSON-quote every top-level string, including `name`, and portable metadata keys/values; omit empty `metadata`. Use literal Unicode, not surrogate escapes. Keep capability, triggers, exclusions, decisions, procedure, I/O, and gotchas in `SKILL.md`; reserve rigid terms for mechanisms.
 
 Generated Codex sidecars require nonempty `display_name` and `short_description`; existing sidecars may use any supported nonempty interface subset.
 
@@ -48,7 +46,7 @@ For non-portable `metadata.hermes.config`, pass `--allow-hermes-metadata`. Keep 
 
 ### 5. Make scripts portable
 
-Resolve `<skill-dir>` from loaded `SKILL.md` to an absolute path independent of cwd or shell expansion; `<target-skill-dir>` is the new package.
+Resolve `<skill-dir>` from loaded `SKILL.md` to an absolute cwd-independent path; `<target-skill-dir>` is the new package.
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --creation-mode --warnings-as-errors "<target-skill-dir>"
@@ -66,7 +64,7 @@ Checker scope is ToolboxMD policy, not general YAML, CommonMark, shell, or helpe
 
 Inspect Git state only when the user requests Git delivery. Do not search ancestors for package-only work.
 
-Report canonical/official results and skips; report committed/pushed only for requested Git delivery.
+Report canonical/official results and skips; report commits/pushes only when requested.
 
 ## Gotchas
 

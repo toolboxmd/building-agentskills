@@ -28,7 +28,10 @@ OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 SHELL_FENCE_LANGUAGES = {"sh", "bash", "shell"}
-BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./\\~-])(?!~[/\\])(?:[^/\\\s'\"`;&|(){}\[\]<>:,]+[/\\]+)*scripts[/\\]+")
+SCRIPT_BREAKS = r"\s'\"`;&|(){}\[\]<>:,"
+BARE_SCRIPT_PREFIX_RE = re.compile(
+    rf"(?:^|(?<=[{SCRIPT_BREAKS}]))(?!~[/\\])(?:[^/\\\s'\"`<>]+[/\\]+)*scripts[/\\]+", re.I
+)
 SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
 SCRIPT_CONTEXT_HINT = f"{SCRIPT_ROOT_HINT} in a closed sh/bash/shell fence"
 LOCAL_ROOTS = "(?:Users|home|workspace|root)"
@@ -303,6 +306,8 @@ def has_bare_script_path(text: str) -> bool:
     for match in BARE_SCRIPT_PREFIX_RE.finditer(text):
         index = match.end()
         quote = active_quote(match.start())
+        if quote and text[match.start() - 1] != quote and not text[match.start() - 1].isspace():
+            continue
         while index < len(text) and text[index] in "\"'`":
             marker = text[index]
             if quote and marker != quote:

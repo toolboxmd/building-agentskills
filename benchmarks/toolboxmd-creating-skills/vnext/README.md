@@ -177,11 +177,18 @@ cannot vary by host while the prior assets-root, missing, escape, and symlink
 outcomes remain unchanged. Independent audit keeps icon symlink loops as
 structured package-level failures without resolving them. Static helper
 detection includes `foo~`, `~foo`, and `foo~bar` ordinary segments across slash
-and backslash forms; only a
-standalone leading `~/` or `~\` home segment remains excluded. A bounded
+and backslash forms; only a standalone leading `~/` or `~\` home segment
+remains excluded. A bounded
 deletion pass removed 169 activated-core bytes without changing the workflow.
 The cumulative executable delta is 21,724 bytes; the 46,000-byte cap and all
 other budgets are unchanged.
+The next exact-HEAD correction adds 163 executable bytes. The target `scripts`
+component now matches case-insensitively after one lexical token boundary,
+while `scripts` text inside ordinary components such as `foo+scripts` remains
+outside the helper-path rule, including around quoted portable punctuation. A
+bounded wording pass removed 67 activated-core bytes without changing the
+workflow. The cumulative executable delta is 21,887 bytes; the 46,000-byte cap
+and all budgets remain unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -211,6 +218,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 45,846 bytes: 4,040 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 41,590-byte read-only checker. The executable is not
+The frozen package is 45,942 bytes: 3,973 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 41,753-byte read-only checker. The executable is not
 loaded as activated core.

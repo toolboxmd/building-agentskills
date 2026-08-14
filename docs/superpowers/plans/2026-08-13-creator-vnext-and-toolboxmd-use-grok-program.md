@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 45,846 bytes, aggregate SHA-256
-  `5dc775441ec8392d242c5a9cdf15761271d97c0d94e7b0a5b98cc581474f37f6`;
-- activated core: 76 lines and 4,040 bytes, with a 226-character
+- exact package: three files, 45,942 bytes, aggregate SHA-256
+  `8ee6432214b626a2d40b3c8e7192e366f38297c8314dc773a45bf11e5b2e6a64`;
+- activated core: 74 lines and 3,973 bytes, with a 226-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -282,6 +282,14 @@ Completion evidence, updated 2026-08-14:
   segment remains excluded. A bounded deletion pass removed 169 activated-core
   bytes without changing the workflow. The 46,000-byte cap and all other
   budgets remain unchanged;
+- the next exact-HEAD correction adds 163 executable bytes and brings the
+  cumulative delta to 21,887 bytes. The target `scripts` component matches
+  case-insensitively after one lexical token boundary across slash, backslash,
+  nested, and dot forms, but `scripts` text inside an ordinary component such
+  as `foo+scripts` remains outside the helper rule, including around quoted
+  portable punctuation. A bounded wording pass removed 67 activated-core
+  bytes without changing the workflow. The 46,000-byte cap and all budgets
+  remain unchanged;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.
