@@ -106,7 +106,7 @@ dot_bare_exit=$?
 set -e
 [[ $dot_bare_exit -eq 1 ]]
 
-make_fixture "$test_tmp/direct-bare-fixture" $'scripts/run.py\n./scripts/run.py\n"scripts/run.py"\n\'./scripts/run.py\'\ntrue; scripts/run.py\ntrue && "./scripts/run.py"\ntrue || ./scripts/run.py\ntrue | \'scripts/run.py\'\ntrue & ./scripts/run.py\necho hi |& ./scripts/run.py\necho foo#bar && ./scripts/run.py\n> /tmp/log ./scripts/run.py\necho hi 2>&1 && ./scripts/run.py\n2>&1 ./scripts/run.py\n2>/tmp/log ./scripts/run.py\n2> /tmp/log ./scripts/run.py\n2>out ./scripts/run.py\n2>>out ./scripts/run.py\n2>|out ./scripts/run.py\n0<&1 ./scripts/run.py\n0<>data ./scripts/run.py\nMODE=strict 2>&1 ./scripts/run.py\n2>&1 MODE=strict ./scripts/run.py'
+make_fixture "$test_tmp/direct-bare-fixture" $'scripts/run.py\n./scripts/run.py\n"scripts/run.py"\n\'./scripts/run.py\'\ntrue; scripts/run.py\ntrue && "./scripts/run.py"\ntrue || ./scripts/run.py\ntrue | \'scripts/run.py\'\ntrue & ./scripts/run.py\necho hi |& ./scripts/run.py\necho foo#bar && ./scripts/run.py\n> /tmp/log ./scripts/run.py\necho hi 2>&1 && ./scripts/run.py\n2>&1 ./scripts/run.py\n2>/tmp/log ./scripts/run.py\n2> /tmp/log ./scripts/run.py\n2>out ./scripts/run.py\n2>>out ./scripts/run.py\n2>|out ./scripts/run.py\n0<&1 ./scripts/run.py\n0<>data ./scripts/run.py\nMODE=strict 2>&1 ./scripts/run.py\n2>&1 MODE=strict ./scripts/run.py\n(./scripts/run.py)\n( ./scripts/run.py )\ntrue && (MODE=strict ./scripts/run.py)'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --warnings-as-errors "$test_tmp/direct-bare-fixture" > "$test_tmp/direct-strict.out" 2>&1
 direct_strict_exit=$?
@@ -116,7 +116,7 @@ set -e
 [[ $direct_strict_exit -eq 1 && $direct_bare_exit -eq 1 ]]
 grep -Fq "FRAGILE_SCRIPT_PATH" "$test_tmp/direct-strict.out"
 
-make_fixture "$test_tmp/direct-safe-fixture" $'See scripts/run.py for details.\ncat scripts/run.py\n[helper](scripts/run.py)\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\necho hi >& ./scripts/run.log\necho hi &> ./scripts/run.log\necho hi > ./scripts/run.log\necho hi >> ./scripts/run.log\n2 > ./scripts/run.log ./scripts/run.py'
+make_fixture "$test_tmp/direct-safe-fixture" $'See scripts/run.py for details.\ncat scripts/run.py\n[helper](scripts/run.py)\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\necho hi >& ./scripts/run.log\necho hi &> ./scripts/run.log\necho hi > ./scripts/run.log\necho hi >> ./scripts/run.log\n2 > ./scripts/run.log ./scripts/run.py\necho "(./scripts/run.py)"\necho \\(./scripts/run.py\\)\nprintf "%s" "inside (./scripts/run.py) text"'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/direct-safe-fixture" > "$test_tmp/direct-safe.json"
 
 make_fixture "$test_tmp/assignment-direct-fixture" $'MODE=strict ./scripts/run.py\nA=1 B="two words" scripts/run.py\ntrue && MODE=strict ./scripts/run.py\nCONFIG=\'{"mode":"strict"}\' scripts/run.py\nprintf "%s" "#"; MODE=strict ./scripts/run.py\nMODE=strict \\\n  ./scripts/run.py'
@@ -1112,7 +1112,8 @@ assert(freeze.budgetRevision.emptyMetadataExecutableDeltaBytes === 142, "empty m
 assert(freeze.budgetRevision.directCommandExecutableDeltaBytes === 116, "direct command executable delta changed");
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeLexicalScanner === 36000, "pre-lexer package cap changed");
 assert(freeze.budgetRevision.optionalSidecarAndAssignmentExecutableDeltaBytes === 2766, "optional sidecar and assignment executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 13434, "current executable delta changed");
+assert(freeze.budgetRevision.groupingOperatorExecutableDeltaBytes === 226, "grouping operator executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 13660, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1135,7 +1136,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 38168, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 38394, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -1160,7 +1161,7 @@ assert(unquotedScalars.every(result => result.status === "fail" && result.issues
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
 assert(dotBare.status === "fail", "dot-relative script fixture must fail under warnings-as-errors");
 assert(dotBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all dot-relative interpreter examples must be detected");
-assert(directBare.status === "fail" && directBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 23, "direct task-relative commands must fail in command position");
+assert(directBare.status === "fail" && directBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 26, "direct task-relative commands must fail in command position");
 assert(directSafe.status === "pass" && directSafe.warningCount === 0, "prose, arguments, links, and explicit skill paths must not look executable");
 const newContractFailures = [];
 if (assignmentDirect.status !== "fail" || assignmentDirect.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length !== 6) newContractFailures.push("assignment-prefixed direct helpers are not all rejected");

@@ -52,6 +52,9 @@ revision preserves the readable activated workflow and an executable-only
 scanner with quote, escape, operator, redirection, comment, command-position,
 and assignment provenance. Activated-core, description, file, reference, eval,
 and script budgets are unchanged, and no lower total package-size claim is made.
+Grouping-operator hardening then added 226 executable bytes for unquoted shell
+parentheses and canonical Markdown-link masking, bringing the cumulative
+executable delta to 13,660 bytes.
 
 Canonical subset v2 leaves only the exact `name` slug unquoted. Every other
 top-level string and every user-defined portable metadata key and value uses a
@@ -72,6 +75,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 38,168 bytes: 4,652 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 33,300-byte read-only checker. The executable is not
+The frozen package is 38,394 bytes: 4,652 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 33,526-byte read-only checker. The executable is not
 loaded as activated core.

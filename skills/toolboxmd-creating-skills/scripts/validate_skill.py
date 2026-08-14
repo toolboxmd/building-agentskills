@@ -168,6 +168,10 @@ def has_direct_task_script(line: str) -> bool:
                 return True
         elif char == "#" and not word:
             break
+        elif char in "()":
+            if finish():
+                return True
+            command, redirect = True, False
         elif char in ";&|<>":
             io_number = char in "<>" and word and all(not marked for _, marked in word) and all(
                 digit.isdigit() for digit, _ in word
@@ -411,7 +415,8 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         residual = re.sub(r"(?<!!)\[[^]\n]+\]\[[^]\n]+\]", "", residual)
         if not unsupported_markdown and ("](" in residual or "][" in residual):
             problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "nested Markdown link shape needs an official validator", "warning"))
-        command_text = normalize_shell_continuations(content)
+        command_source = LINK_RE.sub("", content) if path.suffix.lower() == ".md" else content
+        command_text = normalize_shell_continuations(command_source)
         for line_number, line in enumerate(command_text.splitlines(), 1):
             if FRAGILE_SCRIPT_RE.search(line) or has_direct_task_script(line):
                 problems.append(issue("FRAGILE_SCRIPT_PATH", relative, f"line {line_number} uses task-relative scripts/", "warning"))

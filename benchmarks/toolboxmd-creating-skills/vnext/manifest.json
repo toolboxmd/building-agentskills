@@ -65,7 +65,9 @@
     "optionalSidecarAndAssignmentReason": "Exact-HEAD review aligned independently optional Codex sidecar sections and replaced library shell tokenization with a bounded readable lexical scanner preserving quote, escape, operator, redirection, comment, command-position, and assignment provenance.",
     "previousPackageBytesMaximumBeforeLexicalScanner": 36000,
     "lexicalScannerCapRevisionReason": "The 4,000-byte cap revision preserves readable activated-core doctrine and an executable-only bounded lexical scanner required by exact-HEAD review; activated-core, description, file, reference, eval, and script budgets are unchanged.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 13434,
+    "groupingOperatorExecutableDeltaBytes": 226,
+    "groupingOperatorReason": "Exact-HEAD review required unquoted shell grouping parentheses to create command boundaries while quoted and escaped parentheses remain word data; canonical inline Markdown links are masked before command scanning to preserve the existing link-destination false-positive boundary.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 13660,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -79,9 +81,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "220dd7cd4abb2c8eb17b35889f04b6d2603a663b7f7dfcf451180a56bcaa1377",
+    "aggregateSha256": "6e03170c168ecd2c9ec1e6b8aee2011b70c70b743e6fcb75f85e9cad977130d5",
     "fileCount": 3,
-    "packageBytes": 38168,
+    "packageBytes": 38394,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -103,8 +105,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 33300,
-        "sha256": "dc7f8c0b22f4aec26828ca28ac2612260795ddc6ecafc6ccfba81f1f737fd8ae"
+        "bytes": 33526,
+        "sha256": "d37be35eaa219cbb550f90f94727dd12b843d5b6f94704dd7d4b9b6de75efb7c"
       }
     ]
   },
