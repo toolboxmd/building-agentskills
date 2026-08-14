@@ -50,12 +50,12 @@ Explicit `metadata.hermes.config`: pass `--allow-hermes-metadata`; keep `hermes`
 Resolve `<skill-dir>` from loaded `SKILL.md` as an absolute argument, never from cwd or shell expansion. Use `<target-skill-dir>` for the created package.
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" "<target-skill-dir>"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --warnings-as-errors "<target-skill-dir>"
 ```
 
 Pass budget flags when defaults differ. Rewrite examples that address only `scripts/`.
 
-The bundled checker covers the canonical ToolboxMD-generated subset and package policy, not arbitrary YAML or CommonMark. It checks Python syntax through AST and warns that other helpers need their own syntax tests. It also runs `skills-ref validate <target-skill-dir>` when `skills-ref` is already available, with no install or network step. That call executes a local external program; ToolboxMD does not attest or constrain its filesystem or network behavior. Treat the coverage line and official-validator status as separate evidence.
+The checker covers the canonical ToolboxMD subset and package policy, not arbitrary YAML or CommonMark. It checks Python through AST and warns on other helper syntax. When available, it runs local external `skills-ref validate <target-skill-dir>` without installing it. ToolboxMD does not attest or constrain that executable's filesystem or network behavior. Report coverage and official status separately.
 
 ### 6. Test, delete, and deliver
 

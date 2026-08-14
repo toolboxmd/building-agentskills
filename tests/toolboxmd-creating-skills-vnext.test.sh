@@ -106,13 +106,26 @@ dot_bare_exit=$?
 set -e
 [[ $dot_bare_exit -eq 1 ]]
 
+make_fixture "$test_tmp/direct-bare-fixture" $'scripts/run.py\n./scripts/run.py\n"scripts/run.py"\n\'./scripts/run.py\'\ntrue; scripts/run.py\ntrue && "./scripts/run.py"\ntrue || ./scripts/run.py\ntrue | \'scripts/run.py\'\ntrue & ./scripts/run.py'
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --warnings-as-errors "$test_tmp/direct-bare-fixture" > "$test_tmp/direct-strict.out" 2>&1
+direct_strict_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/direct-bare-fixture" > "$test_tmp/direct-bare.json"
+direct_bare_exit=$?
+set -e
+[[ $direct_strict_exit -eq 1 && $direct_bare_exit -eq 1 ]]
+grep -Fq "FRAGILE_SCRIPT_PATH" "$test_tmp/direct-strict.out"
+
+make_fixture "$test_tmp/direct-safe-fixture" $'See scripts/run.py for details.\ncat scripts/run.py\n[helper](scripts/run.py)\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/direct-safe-fixture" > "$test_tmp/direct-safe.json"
+
 make_fixture "$test_tmp/option-bare-fixture" $'python3 -X dev scripts/run.py\nnode --require loader "./scripts/run.js"\nbash --init-file profile scripts/run.sh\nsh -o errexit scripts/run.sh\nruby -I lib scripts/run.py'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/option-bare-fixture" > "$test_tmp/option-bare.json"
 option_bare_exit=$?
 set -e
 
-make_fixture "$test_tmp/separator-safe-fixture" $'python3 -X dev; scripts/run.py\nnode --require loader & ./scripts/run.js\nbash --init-file profile | scripts/run.sh\nsh -o errexit && ./scripts/run.sh\nruby -I lib; scripts/run.py\nUse scripts/run.py before python3.\npython3 -B\nscripts/run.py'
+make_fixture "$test_tmp/separator-safe-fixture" $'python3 -X dev; echo scripts/run.py\nnode --require loader & cat ./scripts/run.js\nbash --init-file profile | printf scripts/run.sh\nsh -o errexit && cat ./scripts/run.sh\nruby -I lib; echo scripts/run.py\nUse scripts/run.py before python3.\npython3 -B\ncat scripts/run.py'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/separator-safe-fixture" > "$test_tmp/separator-safe.json"
 
 make_fixture "$test_tmp/continued-bare-fixture" $'python3 -B \\\n  scripts/run.py\nnode --trace-warnings \\\r\n  ./scripts/run.js'
@@ -133,9 +146,9 @@ cat >> "$test_tmp/even-backslash-fixture/SKILL.md" <<'EOF'
 
 ```bash
 python3 -B \\
-  scripts/run.py
+  cat scripts/run.py
 node \\\\
-  ./scripts/run.js
+  cat ./scripts/run.js
 ```
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/even-backslash-fixture" > "$test_tmp/even-backslash.json"
@@ -974,6 +987,8 @@ const product = JSON.parse(fs.readFileSync(path.join(temporary, "product.json"))
 const minimalExample = JSON.parse(fs.readFileSync(path.join(temporary, "minimal-example.json")));
 const bare = JSON.parse(fs.readFileSync(path.join(temporary, "bare.json")));
 const dotBare = JSON.parse(fs.readFileSync(path.join(temporary, "dot-bare.json")));
+const directBare = JSON.parse(fs.readFileSync(path.join(temporary, "direct-bare.json")));
+const directSafe = JSON.parse(fs.readFileSync(path.join(temporary, "direct-safe.json")));
 const optionBare = JSON.parse(fs.readFileSync(path.join(temporary, "option-bare.json")));
 const separatorSafe = JSON.parse(fs.readFileSync(path.join(temporary, "separator-safe.json")));
 const continuedBare = JSON.parse(fs.readFileSync(path.join(temporary, "continued-bare.json")));
@@ -1060,7 +1075,8 @@ assert(freeze.budgetRevision.sequenceAndCommandReviewExecutableDeltaBytes === 35
 assert(freeze.budgetRevision.quoteOnlyCanonicalExecutableDeltaBytes === -312, "quote-only canonical executable delta changed");
 assert(freeze.budgetRevision.portableMetadataKeyExecutableDeltaBytes === 273, "portable metadata key executable delta changed");
 assert(freeze.budgetRevision.emptyMetadataExecutableDeltaBytes === 142, "empty metadata executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 10552, "current executable delta changed");
+assert(freeze.budgetRevision.directCommandExecutableDeltaBytes === 116, "direct command executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 10668, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1083,7 +1099,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 35195, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 35200, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -1109,8 +1125,10 @@ assert(unquotedScalars.every(result => result.status === "fail" && result.issues
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
 assert(dotBare.status === "fail", "dot-relative script fixture must fail under warnings-as-errors");
 assert(dotBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all dot-relative interpreter examples must be detected");
+assert(directBare.status === "fail" && directBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 9, "direct task-relative commands must fail in command position");
+assert(directSafe.status === "pass" && directSafe.warningCount === 0, "prose, arguments, links, and explicit skill paths must not look executable");
 assert(optionBare.status === "fail" && optionBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "option operands must not hide fragile script paths");
-assert(separatorSafe.status === "pass" && separatorSafe.warningCount === 0, "fragile script detection must not cross command separators or reverse direction");
+assert(separatorSafe.status === "pass" && separatorSafe.warningCount === 0, "later-command arguments and reverse prose direction must remain safe");
 assert(continuedBare.status === "fail" && continuedBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3, "one and three backslashes across LF or CRLF must preserve continuation detection");
 assert(evenBackslash.status === "pass" && evenBackslash.warningCount === 0, "two and four backslashes must not join ordinary newlines");
 assert(unquotedDateDescription.status === "fail" && unquotedDateDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted dates must fail the canonical string contract");
@@ -1154,7 +1172,7 @@ for (const [name, result, expectedEvals] of [["meeting", meeting, 1], ["deck", d
 const skillText = fs.readFileSync(path.join(root, freeze.package.path, "SKILL.md"), "utf8");
 assert(!/\bgit\s+(?:status|rev-parse|diff|log)\b/i.test(skillText), "creator embeds an unconditional Git command");
 assert(/Inspect Git state only when .*user requested Git delivery/.test(skillText), "conditional Git boundary missing");
-assert(skillText.includes('"<skill-dir>/scripts/validate_skill.py"'), "portable creator command missing");
+assert(skillText.includes('PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --warnings-as-errors "<target-skill-dir>"'), "strict portable creator command missing");
 assert(skillText.includes("always-read reference belongs in activated-core cost"), "always-read cost rule missing");
 NODE
 

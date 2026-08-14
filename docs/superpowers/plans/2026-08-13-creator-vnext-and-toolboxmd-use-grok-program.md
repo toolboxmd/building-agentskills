@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 35,195 bytes, aggregate SHA-256
-  `ec5245b175bd6cebb01a757c0662884c609f52cdbd540821f73329bd5c8e371b`;
-- activated core: 76 lines and 4,561 bytes, with a 240-character
+- exact package: three files, 35,200 bytes, aggregate SHA-256
+  `769454c45a6836319ea7d2828172fa59139f261c8f19b977aa06e8e93d812e64`;
+- activated core: 76 lines and 4,450 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -143,6 +143,8 @@ Completion evidence, updated 2026-08-14:
   diagnostic paths without dropping contract fixtures;
 - empty and comment-only metadata hardening added 142 executable bytes. The
   cumulative executable delta is 10,552 bytes, and omission remains valid;
+- strict delivery-command and direct task-relative helper hardening added 116
+  executable bytes. The cumulative executable delta is 10,668 bytes;
 - canonical subset v2 leaves only `name` unquoted. Every other top-level
   string and every user-defined portable metadata key and value uses one-line
   JSON double quotes.
@@ -177,9 +179,10 @@ Completion evidence, updated 2026-08-14:
 - `tests/toolboxmd-creating-skills-vnext.test.sh` passes from an external
   working directory;
 - the test reproduces the package freeze and budgets, checks exit codes 0/1/2,
-  blocks fragile bare, dot-relative, option-bearing, and odd-backslash
-  shell-line-continued script paths without joining even-backslash or ordinary
-  newlines or crossing command separators,
+  blocks fragile interpreter-prefixed and direct command-position task-relative
+  helpers, including quoted, dot-relative, option-bearing, separator-led, and
+  odd-backslash shell-line-continued forms, without joining even-backslash or
+  ordinary newlines, while the prescribed command makes warnings fatal,
   validates the real copyable minimal-skill example under explicit budgets,
   accepts the explicit `<skill-dir>` contract,
   accepts supported Codex sidecar sections and titled local links, rejects

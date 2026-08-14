@@ -34,6 +34,7 @@ FRAGILE_SCRIPT_RE = re.compile(
     r"\b(?:python(?:3(?:\.\d+)?)?|node|bash|sh|ruby)\b"
     r"[^\r\n;&|]*?[ \t]+[\"']?(?:\./)?scripts/"
 )
+DIRECT_SCRIPT_RE = re.compile(r'(?:^|;|&&|\|\||[|&])[ \t]*["\']?(?:\./)?scripts/')
 SHELL_CONTINUATION_RE = re.compile(r"(\\+)(?:\r\n|\n)[ \t]*")
 ROOT_NAMES = ("Users", "home", "workspace", "root")
 POSIX_ROOTS = "|".join(re.escape(f"/{name}/") for name in ROOT_NAMES)
@@ -339,7 +340,7 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
             problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "nested Markdown link shape needs an official validator", "warning"))
         command_text = normalize_shell_continuations(content)
         for line_number, line in enumerate(command_text.splitlines(), 1):
-            if FRAGILE_SCRIPT_RE.search(line):
+            if FRAGILE_SCRIPT_RE.search(line) or DIRECT_SCRIPT_RE.search(line):
                 problems.append(issue("FRAGILE_SCRIPT_PATH", relative, f"line {line_number} uses task-relative scripts/", "warning"))
 
 

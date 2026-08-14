@@ -59,7 +59,9 @@
     "portableMetadataKeyReason": "Exact-HEAD review required JSON-double-quoted user-defined portable metadata keys so YAML cannot implicitly type boolean, date, or numeric-looking keys.",
     "emptyMetadataExecutableDeltaBytes": 142,
     "emptyMetadataReason": "Exact-HEAD review required bare and comment-only metadata blocks to fail while omission remains valid.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10552,
+    "directCommandExecutableDeltaBytes": 116,
+    "directCommandReason": "Exact-HEAD review required command-position detection for direct task-relative helpers; the prescribed validator command now treats warnings as errors.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10668,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -73,22 +75,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "ec5245b175bd6cebb01a757c0662884c609f52cdbd540821f73329bd5c8e371b",
+    "aggregateSha256": "769454c45a6836319ea7d2828172fa59139f261c8f19b977aa06e8e93d812e64",
     "fileCount": 3,
-    "packageBytes": 35195,
+    "packageBytes": 35200,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4561,
+      "bytes": 4450,
       "lines": 76,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4561,
-        "sha256": "3ab17ed5ee8358d9c9d3c1b43d1c4d63c1eda61dfe9f9fec8d7fcea75a9ffa85"
+        "bytes": 4450,
+        "sha256": "f56d4b7f960e813a10f214aa9d8e3a4138f618db69b97f9a5286239b61d79527"
       },
       {
         "path": "agents/openai.yaml",
@@ -97,8 +99,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 30418,
-        "sha256": "0845817fad8c75926b23972c26bb5545659015ddd8142a22c99235a6105945a1"
+        "bytes": 30534,
+        "sha256": "96f6b163a1c523d94b800cad8ebad5120091e24664653e5cbbc07744de23361d"
       }
     ]
   },
@@ -107,7 +109,8 @@
     "proves": [
       "the frozen product package and exact creator budgets reproduce",
       "the validator runs from outside the package without Python bytecode writes",
-      "bare, dot-relative, option-bearing, and odd-backslash shell-line-continued working-directory script examples fail without joining even-backslash or ordinary newlines or crossing command separators",
+      "bare interpreter-prefixed and direct command-position task-relative helpers fail, including quoted, dot-relative, option-bearing, separator-led, and odd-backslash shell-line-continued forms, without joining even-backslash or ordinary newlines",
+      "the prescribed validator command enables warnings-as-errors while prose, argument, Markdown-link, and explicit skill-directory script paths remain accepted",
       "explicit skill-directory script examples pass",
       "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, required and bounded interface strings, assets-only icon paths, optional default_prompt, policy, and current tool dependencies",
       "valid Markdown links with optional titles pass",
