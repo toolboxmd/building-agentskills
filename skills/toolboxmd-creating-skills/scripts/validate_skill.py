@@ -12,7 +12,7 @@ import re
 import shutil
 import subprocess
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
 
 
@@ -171,6 +171,10 @@ def has_direct_task_script(line: str) -> bool:
         elif char in "()":
             if finish():
                 return True
+            command, redirect = True, False
+        elif char in "{}" and command and not word and (
+            index + 1 == len(line) or line[index + 1].isspace() or line[index + 1] in "();&|<>"
+        ):
             command, redirect = True, False
         elif char in ";&|<>":
             io_number = char in "<>" and word and all(not marked for _, marked in word) and all(
@@ -536,7 +540,44 @@ def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> N
         fail("OPENAI_DEPENDENCY", "each tool needs type mcp and value")
 
 
-def validate_scripts(root: Path, problems: list[dict[str, str]]) -> None:
+def validate_scripts(
+    root: Path, declared: list[str], problems: list[dict[str, str]]
+) -> list[str]:
+    accepted: set[str] = set()
+    seen: set[str] = set()
+    for value in declared:
+        relative, separator, digest = value.rpartition("=")
+        if not separator or not relative or not re.fullmatch(r"[0-9a-f]{64}", digest):
+            problems.append(issue("SCRIPT_SYNTAX_CHECK", ".", "expected <scripts/relative-path>=<lowercase-sha256>"))
+            continue
+        if relative in seen:
+            problems.append(issue("SCRIPT_SYNTAX_CHECK", relative, "duplicate syntax-check attestation"))
+            continue
+        seen.add(relative)
+        parsed = PurePosixPath(relative)
+        if (
+            parsed.is_absolute()
+            or parsed.as_posix() != relative
+            or not parsed.parts
+            or parsed.parts[0] != "scripts"
+            or len(parsed.parts) < 2
+            or any(part in {".", ".."} for part in parsed.parts)
+            or "\\" in relative
+        ):
+            problems.append(issue("SCRIPT_SYNTAX_CHECK", relative, "path must be normalized and relative below scripts/"))
+            continue
+        path = root.joinpath(*parsed.parts)
+        if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(root):
+            problems.append(issue("SCRIPT_SYNTAX_CHECK", relative, "path must be a regular non-symlink package file"))
+            continue
+        if path.suffix.lower() == ".py":
+            problems.append(issue("SCRIPT_SYNTAX_CHECK", relative, "Python helpers are checked through AST"))
+            continue
+        if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+            problems.append(issue("SCRIPT_SYNTAX_CHECK_STALE", relative, "sha256 does not match current file bytes"))
+            continue
+        accepted.add(relative)
+
     scripts = root / "scripts"
     for path in sorted(scripts.rglob("*")) if scripts.is_dir() else []:
         if not path.is_file() or path.is_symlink():
@@ -547,12 +588,14 @@ def validate_scripts(root: Path, problems: list[dict[str, str]]) -> None:
                 path.read_text(encoding="utf-8")
             except UnicodeDecodeError:
                 continue
-            problems.append(issue("SCRIPT_SYNTAX_UNCHECKED", relative, "non-Python helper needs its own syntax test", "warning"))
+            if relative not in accepted:
+                problems.append(issue("SCRIPT_SYNTAX_UNCHECKED", relative, "non-Python helper needs its own syntax test", "warning"))
             continue
         try:
             ast.parse(path.read_text(encoding="utf-8"), filename=relative)
         except SyntaxError as exc:
             problems.append(issue("PYTHON_SYNTAX", relative, f"{exc.msg} at line {exc.lineno}"))
+    return sorted(accepted)
 
 
 def budget_problem(value: int, maximum: int | None, code: str, label: str, problems: list[dict[str, str]]) -> None:
@@ -640,7 +683,7 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
 
     validate_links_and_paths(root, problems)
     validate_sidecar(root, name, problems)
-    validate_scripts(root, problems)
+    syntax_checks = validate_scripts(root, args.script_syntax_checked, problems)
     official = run_official_validator(root, problems)
 
     skill_bytes = len(text.encode("utf-8"))
@@ -682,7 +725,11 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
             "canonicalSubset": "toolboxmd-portable-core-v2",
             "enabledExtensions": ["hermes-metadata"] if args.allow_hermes_metadata else [],
             "markdown": "canonical inline links and single-line reference definitions",
-            "scriptSyntax": "Python .py files via AST; other helper syntax unchecked",
+            "scriptSyntax": "Python .py via AST; non-Python helpers need exact-digest operator attestation",
+            "scriptSyntaxChecks": {
+                "acceptedPaths": syntax_checks,
+                "executionVerifiedByToolboxMD": False,
+            },
             "officialSkillsRef": official,
         },
         "aggregateSha256": aggregate,
@@ -702,6 +749,8 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("skill_root", nargs="?", default=".", help="skill root")
     result.add_argument("--json", action="store_true", help="JSON")
     result.add_argument("--warnings-as-errors", action="store_true", help="fail warnings")
+    result.add_argument("--script-syntax-checked", action="append", default=[], metavar="PATH=SHA256",
+                        help="attest separately checked non-Python helper bytes")
     result.add_argument("--allow-hermes-metadata", action="store_true", help="allow canonical metadata.hermes.config extension")
     limits = (("description-chars", 1024), ("skill-lines", 499), ("skill-bytes", None), ("files", None),
               ("package-bytes", None), ("reference-files", None), ("eval-files", None), ("script-files", None))
@@ -730,7 +779,9 @@ def main() -> int:
         coverage = result["coverage"]
         official = coverage["officialSkillsRef"]
         extensions = ",".join(coverage["enabledExtensions"]) or "none"
-        print(f"COVERAGE: canonical={coverage['canonicalSubset']} extensions={extensions} script_syntax=python-ast-only official_skills_ref={official['status']} official_external_attested=false")
+        print(f"COVERAGE: canonical={coverage['canonicalSubset']} extensions={extensions} script_syntax=python-ast+exact-digest-attestation official_skills_ref={official['status']} official_external_attested=false")
+        checks = coverage["scriptSyntaxChecks"]
+        print(f"SCRIPT_SYNTAX_CHECKS: accepted_paths={json.dumps(checks['acceptedPaths'])} execution_verified_by_toolboxmd=false")
         labels = (("description_chars", "descriptionCharacters"), ("skill_lines", "skillMdLines"),
                   ("skill_bytes", "skillMdBytes"), ("files", "fileCount"), ("package_bytes", "packageBytes"),
                   ("references", "referenceFileCount"), ("evals", "evalFileCount"), ("scripts", "scriptFileCount"))

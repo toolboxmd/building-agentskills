@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 38,394 bytes, aggregate SHA-256
-  `6e03170c168ecd2c9ec1e6b8aee2011b70c70b743e6fcb75f85e9cad977130d5`;
-- activated core: 78 lines and 4,652 bytes, with a 240-character
+- exact package: three files, 41,476 bytes, aggregate SHA-256
+  `e3b3ba814facb28590970e46ecfb04b9867664bb4166d789f913c6fb6ea33084`;
+- activated core: 78 lines and 5,061 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -147,7 +147,8 @@ Completion evidence, updated 2026-08-14:
   executable bytes. The cumulative executable delta is 10,668 bytes;
 - optional Codex sidecar subsets and a bounded lexical command scanner added
   2,766 executable bytes. The cumulative delta is 13,434 bytes. The package
-  cap is now 40,000 bytes, restoring the readable accepted workflow while the
+  cap became 40,000 bytes at that stage, restoring the readable accepted
+  workflow while the
   executable-only scanner preserves quote, escape, operator, redirection,
   comment, command-position, and assignment provenance. Activated-core,
   description, file, reference, eval, and script budgets remain unchanged,
@@ -155,6 +156,13 @@ Completion evidence, updated 2026-08-14:
 - grouping-operator hardening added 226 executable bytes for unquoted shell
   parentheses and canonical Markdown-link masking, bringing the cumulative
   executable delta to 13,660 bytes;
+- exact-digest operator attestation and grouping-brace hardening added 2,673
+  executable bytes. The cumulative executable delta is 16,333 bytes and the
+  package cap is 44,000 bytes. Non-Python helpers can pass strict validation
+  only when the operator separately checks them, reports that command, and
+  binds the current bytes through a repeated `--script-syntax-checked`
+  argument. ToolboxMD verifies the binding, not command execution. Activated
+  core and all non-package-byte budgets remain unchanged;
 - canonical subset v2 leaves only `name` unquoted. Every other top-level
   string and every user-defined portable metadata key and value uses one-line
   JSON double quotes.
@@ -190,7 +198,8 @@ Completion evidence, updated 2026-08-14:
   working directory;
 - the test reproduces the package freeze and budgets, checks exit codes 0/1/2,
   blocks fragile interpreter-prefixed and direct command-position task-relative
-  helpers, including quoted, dot-relative, option-bearing, separator-led, and
+  helpers, including quoted, dot-relative, option-bearing, separator-led,
+  grouping-parenthesis, grouping-brace, and
   odd-backslash shell-line-continued forms, without joining even-backslash or
   ordinary newlines, including bounded assignment prefixes, while the
   prescribed command makes warnings fatal,
@@ -210,8 +219,10 @@ Completion evidence, updated 2026-08-14:
   ignores link syntax inside Markdown code, validates canonical single-line
   reference destinations, warns when complex Markdown requires official
   coverage, detects POSIX, container, Windows, file URI, and shebang-local
-  paths in decodable package files, reports non-Python helper syntax as
-  unchecked, exercises optional `skills-ref` pass/fail/error/timeout states,
+  paths in decodable package files, requires an exact-current-byte operator
+  attestation before a separately checked non-Python helper can pass strict
+  mode, and reports that ToolboxMD did not execute the language-specific
+  command; exercises optional `skills-ref` pass/fail/error/timeout states,
   records that the external validator's filesystem and network behavior is
   not attested by ToolboxMD,
   detects the retained meeting and deck baggage patterns,

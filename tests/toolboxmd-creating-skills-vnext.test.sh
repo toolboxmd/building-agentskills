@@ -25,6 +25,7 @@ done
 
 help_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --help)"
 [[ "$help_output" == *"Exit: 0 valid, 1 invalid, 2 inspection error."* ]]
+[[ "$help_output" == *"--script-syntax-checked PATH=SHA256"* ]]
 
 human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" \
   --warnings-as-errors \
@@ -32,12 +33,13 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-skill-lines 150 \
   --max-skill-bytes 10500 \
   --max-files 3 \
-  --max-package-bytes 40000 \
+  --max-package-bytes 44000 \
   --max-reference-files 0 \
   --max-eval-files 0 \
   --max-script-files 1 \
   "$package")"
-[[ "$human_output" == *"COVERAGE: canonical=toolboxmd-portable-core-v2 extensions=none script_syntax=python-ast-only official_skills_ref=not_available official_external_attested=false"* ]]
+[[ "$human_output" == *"COVERAGE: canonical=toolboxmd-portable-core-v2 extensions=none script_syntax=python-ast+exact-digest-attestation official_skills_ref=not_available official_external_attested=false"* ]]
+[[ "$human_output" == *"SCRIPT_SYNTAX_CHECKS: accepted_paths=[] execution_verified_by_toolboxmd=false"* ]]
 [[ "$human_output" == *"PASS: canonical ToolboxMD package checks succeeded"* ]]
 
 cd "$test_tmp"
@@ -47,7 +49,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json \
   --max-skill-lines 150 \
   --max-skill-bytes 10500 \
   --max-files 3 \
-  --max-package-bytes 40000 \
+  --max-package-bytes 44000 \
   --max-reference-files 0 \
   --max-eval-files 0 \
   --max-script-files 1 \
@@ -92,6 +94,10 @@ EOF
   printf 'print("ok")\n' > "$directory/scripts/run.py"
 }
 
+sha256_file() {
+  node -e 'const c=require("node:crypto"),f=require("node:fs");process.stdout.write(c.createHash("sha256").update(f.readFileSync(process.argv[1])).digest("hex"))' "$1"
+}
+
 make_fixture "$test_tmp/bare-fixture" $'python3 scripts/run.py\nnode scripts/run.js\nbash scripts/run.sh\nsh scripts/run.sh\nruby scripts/run.py'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/bare-fixture" > "$test_tmp/bare.json"
@@ -106,7 +112,7 @@ dot_bare_exit=$?
 set -e
 [[ $dot_bare_exit -eq 1 ]]
 
-make_fixture "$test_tmp/direct-bare-fixture" $'scripts/run.py\n./scripts/run.py\n"scripts/run.py"\n\'./scripts/run.py\'\ntrue; scripts/run.py\ntrue && "./scripts/run.py"\ntrue || ./scripts/run.py\ntrue | \'scripts/run.py\'\ntrue & ./scripts/run.py\necho hi |& ./scripts/run.py\necho foo#bar && ./scripts/run.py\n> /tmp/log ./scripts/run.py\necho hi 2>&1 && ./scripts/run.py\n2>&1 ./scripts/run.py\n2>/tmp/log ./scripts/run.py\n2> /tmp/log ./scripts/run.py\n2>out ./scripts/run.py\n2>>out ./scripts/run.py\n2>|out ./scripts/run.py\n0<&1 ./scripts/run.py\n0<>data ./scripts/run.py\nMODE=strict 2>&1 ./scripts/run.py\n2>&1 MODE=strict ./scripts/run.py\n(./scripts/run.py)\n( ./scripts/run.py )\ntrue && (MODE=strict ./scripts/run.py)'
+make_fixture "$test_tmp/direct-bare-fixture" $'scripts/run.py\n./scripts/run.py\n"scripts/run.py"\n\'./scripts/run.py\'\ntrue; scripts/run.py\ntrue && "./scripts/run.py"\ntrue || ./scripts/run.py\ntrue | \'scripts/run.py\'\ntrue & ./scripts/run.py\necho hi |& ./scripts/run.py\necho foo#bar && ./scripts/run.py\n> /tmp/log ./scripts/run.py\necho hi 2>&1 && ./scripts/run.py\n2>&1 ./scripts/run.py\n2>/tmp/log ./scripts/run.py\n2> /tmp/log ./scripts/run.py\n2>out ./scripts/run.py\n2>>out ./scripts/run.py\n2>|out ./scripts/run.py\n0<&1 ./scripts/run.py\n0<>data ./scripts/run.py\nMODE=strict 2>&1 ./scripts/run.py\n2>&1 MODE=strict ./scripts/run.py\n(./scripts/run.py)\n( ./scripts/run.py )\ntrue && (MODE=strict ./scripts/run.py)\n{ ./scripts/run.py; }\ntrue && { MODE=strict ./scripts/run.py; }\nPATH=${PATH}:/bin ./scripts/run.py'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --warnings-as-errors "$test_tmp/direct-bare-fixture" > "$test_tmp/direct-strict.out" 2>&1
 direct_strict_exit=$?
@@ -116,7 +122,7 @@ set -e
 [[ $direct_strict_exit -eq 1 && $direct_bare_exit -eq 1 ]]
 grep -Fq "FRAGILE_SCRIPT_PATH" "$test_tmp/direct-strict.out"
 
-make_fixture "$test_tmp/direct-safe-fixture" $'See scripts/run.py for details.\ncat scripts/run.py\n[helper](scripts/run.py)\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\necho hi >& ./scripts/run.log\necho hi &> ./scripts/run.log\necho hi > ./scripts/run.log\necho hi >> ./scripts/run.log\n2 > ./scripts/run.log ./scripts/run.py\necho "(./scripts/run.py)"\necho \\(./scripts/run.py\\)\nprintf "%s" "inside (./scripts/run.py) text"'
+make_fixture "$test_tmp/direct-safe-fixture" $'See scripts/run.py for details.\ncat scripts/run.py\n[helper](scripts/run.py)\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\necho hi >& ./scripts/run.log\necho hi &> ./scripts/run.log\necho hi > ./scripts/run.log\necho hi >> ./scripts/run.log\n2 > ./scripts/run.log ./scripts/run.py\necho "(./scripts/run.py)"\necho \\(./scripts/run.py\\)\nprintf "%s" "inside (./scripts/run.py) text"\necho "{ ./scripts/run.py; }"\necho \\{./scripts/run.py\\}\necho {} ./scripts/run.py\necho {word} ./scripts/run.py\necho prefix{a,b} ./scripts/run.py\necho ${VALUE} ./scripts/run.py\nfind . -exec echo {} ./scripts/run.py \\;'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/direct-safe-fixture" > "$test_tmp/direct-safe.json"
 
 make_fixture "$test_tmp/assignment-direct-fixture" $'MODE=strict ./scripts/run.py\nA=1 B="two words" scripts/run.py\ntrue && MODE=strict ./scripts/run.py\nCONFIG=\'{"mode":"strict"}\' scripts/run.py\nprintf "%s" "#"; MODE=strict ./scripts/run.py\nMODE=strict \\\n  ./scripts/run.py'
@@ -934,6 +940,61 @@ unchecked_shell_exit=$?
 set -e
 [[ $unchecked_shell_exit -eq 1 ]]
 
+make_fixture "$test_tmp/attested-helpers" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '#!/usr/bin/env bash\nset -eu\nprintf "ok\\n"\n' > "$test_tmp/attested-helpers/scripts/check.sh"
+printf 'console.log("ok");\n' > "$test_tmp/attested-helpers/scripts/check.js"
+printf 'puts "ok"\n' > "$test_tmp/attested-helpers/scripts/check.rb"
+shell_sha="$(sha256_file "$test_tmp/attested-helpers/scripts/check.sh")"
+node_sha="$(sha256_file "$test_tmp/attested-helpers/scripts/check.js")"
+ruby_sha="$(sha256_file "$test_tmp/attested-helpers/scripts/check.rb")"
+python_sha="$(sha256_file "$test_tmp/attested-helpers/scripts/run.py")"
+node "$root/scripts/hash-tree.mjs" "$test_tmp/attested-helpers" > "$test_tmp/attested-before.json"
+
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/attested-helpers" > "$test_tmp/attestation-missing.json"
+attestation_missing_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors \
+  --script-syntax-checked "scripts/check.sh=$shell_sha" \
+  "$test_tmp/attested-helpers" > "$test_tmp/attestation-partial.json"
+attestation_partial_exit=$?
+set -e
+[[ $attestation_missing_exit -eq 1 && $attestation_partial_exit -eq 1 ]]
+
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors \
+  --script-syntax-checked "scripts/check.sh=$shell_sha" \
+  --script-syntax-checked "scripts/check.js=$node_sha" \
+  --script-syntax-checked "scripts/check.rb=$ruby_sha" \
+  "$test_tmp/attested-helpers" > "$test_tmp/attestation-valid.json"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --warnings-as-errors \
+  --script-syntax-checked "scripts/check.sh=$shell_sha" \
+  --script-syntax-checked "scripts/check.js=$node_sha" \
+  --script-syntax-checked "scripts/check.rb=$ruby_sha" \
+  "$test_tmp/attested-helpers" > "$test_tmp/attestation-valid-human.out"
+
+bad_attestation() {
+  local name="$1"
+  shift
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$@" \
+    "$test_tmp/attested-helpers" > "$test_tmp/$name.json"
+  local status=$?
+  set -e
+  [[ $status -eq 1 ]]
+}
+bad_attestation attestation-malformed --script-syntax-checked "scripts/check.sh"
+bad_attestation attestation-stale --script-syntax-checked "scripts/check.sh=$(printf '0%.0s' {1..64})"
+bad_attestation attestation-parent --script-syntax-checked "../outside.sh=$shell_sha"
+bad_attestation attestation-absolute --script-syntax-checked "/tmp/outside.sh=$shell_sha"
+bad_attestation attestation-missing-path --script-syntax-checked "scripts/missing.sh=$shell_sha"
+bad_attestation attestation-python --script-syntax-checked "scripts/run.py=$python_sha"
+bad_attestation attestation-duplicate \
+  --script-syntax-checked "scripts/check.sh=$shell_sha" \
+  --script-syntax-checked "scripts/check.sh=$shell_sha"
+
+grep -Fq 'accepted_paths=["scripts/check.js", "scripts/check.rb", "scripts/check.sh"] execution_verified_by_toolboxmd=false' "$test_tmp/attestation-valid-human.out"
+node "$root/scripts/hash-tree.mjs" "$test_tmp/attested-helpers" > "$test_tmp/attested-after.json"
+cmp "$test_tmp/attested-before.json" "$test_tmp/attested-after.json"
+
 make_fixture "$test_tmp/system-shebang" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 printf '#!/usr/bin/env python3\nprint("ok")\n' > "$test_tmp/system-shebang/scripts/run.py"
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/system-shebang" > "$test_tmp/system-shebang.json"
@@ -1075,6 +1136,10 @@ const localPaths = ["workspace-path", "root-path"].map(name => JSON.parse(fs.rea
 const nodeHelper = JSON.parse(fs.readFileSync(path.join(temporary, "node-helper-path.json")));
 const uncheckedShell = JSON.parse(fs.readFileSync(path.join(temporary, "unchecked-shell.json")));
 const uncheckedShellStrict = JSON.parse(fs.readFileSync(path.join(temporary, "unchecked-shell-strict.json")));
+const attestationMissing = JSON.parse(fs.readFileSync(path.join(temporary, "attestation-missing.json")));
+const attestationPartial = JSON.parse(fs.readFileSync(path.join(temporary, "attestation-partial.json")));
+const attestationValid = JSON.parse(fs.readFileSync(path.join(temporary, "attestation-valid.json")));
+const invalidAttestations = ["malformed", "stale", "parent", "absolute", "missing-path", "python", "duplicate"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `attestation-${name}.json`))));
 const binaryAsset = JSON.parse(fs.readFileSync(path.join(temporary, "binary-asset.json")));
 const systemShebang = JSON.parse(fs.readFileSync(path.join(temporary, "system-shebang.json")));
 const localShebangs = ["workspace", "root"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}-shebang.json`))));
@@ -1100,7 +1165,7 @@ function fileSha(relative) {
 assert(freeze.claimBoundary.newModelSessions === 0, "freeze must record zero model sessions");
 assert(freeze.claimBoundary.superiorityClaimAllowed === false, "freeze must forbid a superiority claim");
 assert(freeze.claimBoundary.promotionClaimAllowed === false, "freeze must forbid a promotion claim");
-assert(freeze.creatorBudgets.packageBytesMaximum === 40000, "reviewed package cap changed");
+assert(freeze.creatorBudgets.packageBytesMaximum === 44000, "reviewed package cap changed");
 assert(freeze.budgetRevision.deterministicExecutableDeltaBytes === 2256, "executable review delta changed");
 assert(freeze.budgetRevision.laterDeterministicExecutableDeltaBytes === 460, "later executable review delta changed");
 assert(freeze.budgetRevision.holisticReviewExecutableDeltaBytes === 7353, "holistic review delta changed");
@@ -1113,7 +1178,9 @@ assert(freeze.budgetRevision.directCommandExecutableDeltaBytes === 116, "direct 
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeLexicalScanner === 36000, "pre-lexer package cap changed");
 assert(freeze.budgetRevision.optionalSidecarAndAssignmentExecutableDeltaBytes === 2766, "optional sidecar and assignment executable delta changed");
 assert(freeze.budgetRevision.groupingOperatorExecutableDeltaBytes === 226, "grouping operator executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 13660, "current executable delta changed");
+assert(freeze.budgetRevision.scriptSyntaxAttestationExecutableDeltaBytes === 2673, "script syntax attestation executable delta changed");
+assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeSyntaxAttestation === 40000, "pre-attestation package cap changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 16333, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1136,7 +1203,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 38394, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 41476, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -1161,7 +1228,7 @@ assert(unquotedScalars.every(result => result.status === "fail" && result.issues
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
 assert(dotBare.status === "fail", "dot-relative script fixture must fail under warnings-as-errors");
 assert(dotBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all dot-relative interpreter examples must be detected");
-assert(directBare.status === "fail" && directBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 26, "direct task-relative commands must fail in command position");
+assert(directBare.status === "fail" && directBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 29, "direct task-relative commands must fail at command and grouping boundaries");
 assert(directSafe.status === "pass" && directSafe.warningCount === 0, "prose, arguments, links, and explicit skill paths must not look executable");
 const newContractFailures = [];
 if (assignmentDirect.status !== "fail" || assignmentDirect.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length !== 6) newContractFailures.push("assignment-prefixed direct helpers are not all rejected");
@@ -1199,6 +1266,11 @@ assert(nestedImage.status === "pass" && nestedImage.warningCount === 1 && nested
 assert(localPaths.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "common container-local roots must fail");
 assert(nodeHelper.status === "fail" && nodeHelper.issues.some(item => item.code === "LOCAL_PATH"), "Node helpers must be scanned for local paths");
 assert(uncheckedShell.status === "pass" && uncheckedShell.issues.some(item => item.code === "SCRIPT_SYNTAX_UNCHECKED") && uncheckedShellStrict.status === "fail", "non-Python script syntax boundary changed");
+assert(attestationMissing.status === "fail" && attestationMissing.issues.filter(item => item.code === "SCRIPT_SYNTAX_UNCHECKED").length === 3, "strict mode must fail without non-Python syntax attestations");
+assert(attestationPartial.status === "fail" && attestationPartial.issues.filter(item => item.code === "SCRIPT_SYNTAX_UNCHECKED").length === 2, "an attestation must suppress only its exact helper warning");
+assert(attestationValid.status === "pass" && attestationValid.warningCount === 0, "exact-digest attestations must let separately checked helpers pass strict mode");
+assert(attestationValid.coverage.scriptSyntaxChecks.acceptedPaths.join(",") === "scripts/check.js,scripts/check.rb,scripts/check.sh" && attestationValid.coverage.scriptSyntaxChecks.executionVerifiedByToolboxMD === false, "syntax-attestation coverage must remain explicit and bounded");
+assert(invalidAttestations.every(result => result.status === "fail" && result.issues.some(item => item.code.startsWith("SCRIPT_SYNTAX_CHECK"))), "invalid, stale, outside, Python, missing, and duplicate attestations must fail");
 assert(binaryAsset.status === "pass" && !binaryAsset.issues.some(item => item.code === "UTF8"), "binary assets must not be decoded as declared text");
 assert(systemShebang.status === "pass" && localShebangs.every(result => result.issues.some(item => item.code === "LOCAL_PATH")), "shebang path boundary changed");
 assert(invalidScript.issues.some(item => item.code === "UTF8"), "invalid UTF-8 executable must fail");
@@ -1216,6 +1288,7 @@ const ownSidecar = fs.readFileSync(path.join(root, freeze.package.path, "agents/
 assert(!/\bgit\s+(?:status|rev-parse|diff|log)\b/i.test(skillText), "creator embeds an unconditional Git command");
 assert(/Inspect Git state only when .*user requested Git delivery/.test(skillText), "conditional Git boundary missing");
 assert(skillText.includes('PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --warnings-as-errors "<target-skill-dir>"'), "strict portable creator command missing");
+assert(skillText.includes("--script-syntax-checked 'scripts/check.sh=<lowercase-sha256>'"), "exact-digest non-Python syntax attestation flow missing");
 assert(skillText.includes("Generated Codex sidecars require nonempty `display_name` and `short_description`"), "creator sidecar policy missing");
 assert(/^\s{2}display_name:\s+".+"$/m.test(ownSidecar) && /^\s{2}short_description:\s+".+"$/m.test(ownSidecar), "creator sidecar must retain nonempty UI fields");
 assert(skillText.includes("always-read reference belongs in activated-core cost"), "always-read cost rule missing");

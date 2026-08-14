@@ -57,7 +57,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --w
 
 Pass budget flags when defaults differ. Rewrite examples that address only `scripts/`.
 
-The checker covers the canonical ToolboxMD subset and package policy, not arbitrary YAML or CommonMark. It checks Python through AST and warns on other helper syntax. When available, it runs local external `skills-ref validate <target-skill-dir>` without installing it. ToolboxMD does not attest or constrain that executable's filesystem or network behavior. Report coverage and official status separately.
+The checker covers the canonical ToolboxMD subset and package policy, not arbitrary YAML or CommonMark. It checks Python through AST and warns on other helper syntax. For each non-Python helper, run an appropriate syntax check separately, retain and report its exact command and zero result, and compute the current lowercase SHA-256 of its exact bytes. Then repeat `--script-syntax-checked 'scripts/check.sh=<lowercase-sha256>'` with each package-relative path and digest. The validator verifies only that binding; it does not execute or prove the reported command. When available, the checker runs local external `skills-ref validate <target-skill-dir>` without installing it. ToolboxMD does not attest or constrain that executable's filesystem or network behavior. Report coverage and official status separately.
 
 ### 6. Test, delete, and deliver
 

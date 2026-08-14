@@ -35,14 +35,14 @@
     "skillMdLinesMaximum": 150,
     "skillMdBytesMaximum": 10500,
     "fileCountMaximum": 3,
-    "packageBytesMaximum": 40000,
+    "packageBytesMaximum": 44000,
     "referenceFileCountMaximum": 0,
     "evalFileCountMaximum": 0,
     "scriptFileCount": 1
   },
   "budgetRevision": {
     "previousPackageBytesMaximum": 24000,
-    "currentPackageBytesMaximum": 40000,
+    "currentPackageBytesMaximum": 44000,
     "deterministicExecutableDeltaBytes": 2256,
     "reason": "Exact-HEAD review required quote-aware YAML comments and the then-reviewed metadata.hermes.config vendor surface.",
     "laterDeterministicExecutableDeltaBytes": 460,
@@ -67,7 +67,11 @@
     "lexicalScannerCapRevisionReason": "The 4,000-byte cap revision preserves readable activated-core doctrine and an executable-only bounded lexical scanner required by exact-HEAD review; activated-core, description, file, reference, eval, and script budgets are unchanged.",
     "groupingOperatorExecutableDeltaBytes": 226,
     "groupingOperatorReason": "Exact-HEAD review required unquoted shell grouping parentheses to create command boundaries while quoted and escaped parentheses remain word data; canonical inline Markdown links are masked before command scanning to preserve the existing link-destination false-positive boundary.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 13660,
+    "scriptSyntaxAttestationExecutableDeltaBytes": 2673,
+    "scriptSyntaxAttestationReason": "Exact-HEAD review required standalone unquoted shell grouping braces, without treating ordinary brace words as commands, and a no-execution, exact-digest operator attestation that lets separately checked non-Python helpers pass strict validation without claiming ToolboxMD ran their syntax commands.",
+    "previousPackageBytesMaximumBeforeSyntaxAttestation": 40000,
+    "syntaxAttestationCapRevisionReason": "The 4,000-byte cap revision preserves readable deterministic path, file-type, duplicate, and stale-digest diagnostics. Activated-core, description, file, reference, eval, and script budgets are unchanged, and no extra evidence artifact is required.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 16333,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -81,22 +85,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "6e03170c168ecd2c9ec1e6b8aee2011b70c70b743e6fcb75f85e9cad977130d5",
+    "aggregateSha256": "e3b3ba814facb28590970e46ecfb04b9867664bb4166d789f913c6fb6ea33084",
     "fileCount": 3,
-    "packageBytes": 38394,
+    "packageBytes": 41476,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4652,
+      "bytes": 5061,
       "lines": 78,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4652,
-        "sha256": "c3e95b95330f2588802edaf13a501ef14ae7858b01798d017bea7259da6ad342"
+        "bytes": 5061,
+        "sha256": "f7a7a258cf39c7fe5d62983df60d39a6e4416ba198f7823bd10be0978f9e33b4"
       },
       {
         "path": "agents/openai.yaml",
@@ -105,8 +109,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 33526,
-        "sha256": "d37be35eaa219cbb550f90f94727dd12b843d5b6f94704dd7d4b9b6de75efb7c"
+        "bytes": 36199,
+        "sha256": "5cb6a808f4921ea0481aac264236928687ac7ab79e702d40108f44b2258c88b8"
       }
     ]
   },
@@ -115,7 +119,7 @@
     "proves": [
       "the frozen product package and exact creator budgets reproduce",
       "the validator runs from outside the package without Python bytecode writes",
-      "bare interpreter-prefixed and direct command-position task-relative helpers fail, including quoted, dot-relative, option-bearing, separator-led, and odd-backslash shell-line-continued forms, without joining even-backslash or ordinary newlines",
+      "bare interpreter-prefixed and direct command-position task-relative helpers fail, including quoted, dot-relative, option-bearing, separator-led, grouping-parenthesis, grouping-brace, and odd-backslash shell-line-continued forms, without joining even-backslash or ordinary newlines",
       "the prescribed validator command enables warnings-as-errors while prose, argument, Markdown-link, and explicit skill-directory script paths remain accepted",
       "direct helpers after bounded empty, unquoted, single-quoted, and double-quoted POSIX assignment words fail while assignment prose and intervening commands remain accepted",
       "explicit skill-directory script examples pass",
@@ -131,7 +135,7 @@
       "canonical Markdown links ignore code and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",
-      "Python helper syntax is checked through AST while non-Python helpers receive an explicit unchecked-syntax warning",
+      "Python helper syntax is checked through AST while non-Python helpers require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",
       "an already-installed skills-ref is called without a shell using exact validate argv and a bounded timeout, with pass, invalid, unexpected, timeout, unavailable, and unattested external-behavior states reported separately",
       "root-relative and remote web links are not misclassified as workstation paths",
       "the real copyable minimal-skill example passes the canonical checker under an explicit package budget",
@@ -142,7 +146,7 @@
     "doesNotProve": [
       "implicit skill activation",
       "arbitrary YAML or full CommonMark validity",
-      "syntax validity of non-Python helper scripts",
+      "execution of language-specific checks or syntax validity of non-Python helper scripts",
       "semantic downstream utility",
       "creator superiority",
       "promotion readiness"
