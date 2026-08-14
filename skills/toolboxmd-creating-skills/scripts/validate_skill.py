@@ -40,7 +40,7 @@ LOCAL_PATH_RE = re.compile(
     rf"(?<![A-Za-z0-9:/])(?:/{LOCAL_ROOTS}/|(?i:[A-Za-z]:[/\\]+Users[/\\]+))[^\s'\"`]+"
 )
 URI_RE = re.compile(r'''(?i:file:)[^\s'"`<>()]+''')
-LOCAL_FILE_URI_RE = re.compile(r'''(?<![A-Za-z0-9+./:#?=&_-])(?i:file:(?:/(?!/)|//(?:localhost|127\.0\.0\.1)?/))[^\s'"`<>()]+''')
+LOCAL_FILE_URI_RE = re.compile(r'''(?<![A-Za-z0-9+./:#?=&_-])(?i:file:(?:/(?!/)|//(?:localhost|127\.0\.0\.1|\[::1\])?/))[^\s'"`<>()]+''')
 REMOTE_RE = re.compile(r'''(?i:(?<![a-z0-9+./:-])(?:(?!file:|[a-z]:[/\\])[a-z][a-z0-9+.-]*:|//)[^\s'"`]+|#[^\s'"`]*file:[^\s'"`]*)''')
 LOCAL_FILE_PATH_RE = re.compile(rf"^/(?:{LOCAL_ROOTS}/|(?i:[A-Za-z]:[/\\]+Users[/\\]+))")
 PROCESS_NAMES = {"README.md", "CHANGELOG.md", "STATUS.md", "DESIGN.md", "NOTES.md"}
@@ -53,11 +53,10 @@ OFFICIAL_TIMEOUT_SECONDS = 2
 PORTABLE_DESCRIPTION_MAX = 1024
 
 
-class InspectionError(Exception):
-    pass
+class InspectionError(Exception): pass
 
 
-def issue(code: str, path: str, message: str, severity: str = "error") -> dict[str, str]:
+def issue(code: str, path: str, message: str, severity: str = "error"):
     return dict(severity=severity, code=code, path=path, message=message)
 
 
@@ -284,7 +283,7 @@ def markdown_without_code(text: str) -> str:
             containers = candidate_containers
         elif not view.startswith(("    ", "\t")):
             output.append(line)
-    return re.sub(r"\\\[[^]\n]*\](?:\([^\n)]*\)|\[[^]\n]*\])", "", CODE_SPAN_RE.sub(r"\1", "".join(output)))
+    return re.sub(r"((?<!\\)(?:\\\\)*)\\\[[^]\n]*\](?:\([^\n)]*\)|\[[^]\n]*\])", r"\1", CODE_SPAN_RE.sub(r"\1", "".join(output)))
 
 
 def has_bare_script_path(text: str) -> bool:

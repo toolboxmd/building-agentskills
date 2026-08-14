@@ -1635,6 +1635,39 @@ cat >> "$test_tmp/backtick-code-controls/SKILL.md" <<'EOF'
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/backtick-code-controls" > "$test_tmp/backtick-code-controls.json"
 
+make_fixture "$test_tmp/escaped-link-parity-active" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+cat >> "$test_tmp/escaped-link-parity-active/SKILL.md" <<'EOF'
+
+[Zero inline](zero-missing.md)
+
+\\[Two inline](two-missing.md)
+
+\\\\[Four inline](four-missing.md)
+
+[Zero reference][zero-reference]
+
+\\[Two reference][two-reference]
+
+\\\\[Four reference][four-reference]
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/escaped-link-parity-active" > "$test_tmp/escaped-link-parity-active.json"
+escaped_link_parity_exit=$?
+set -e
+
+make_fixture "$test_tmp/escaped-link-parity-safe" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+cat >> "$test_tmp/escaped-link-parity-safe/SKILL.md" <<'EOF'
+
+\[One escaped inline](one-missing.md)
+
+\\\[Three escaped inline](three-missing.md)
+
+\[One escaped reference][one-reference]
+
+\\\[Three escaped reference][three-reference]
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/escaped-link-parity-safe" > "$test_tmp/escaped-link-parity-safe.json"
+
 make_fixture "$test_tmp/markdown-boundaries" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 cat >> "$test_tmp/markdown-boundaries/SKILL.md" <<'EOF'
 
@@ -1836,6 +1869,18 @@ set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/file-uri-loopback-authority" > "$test_tmp/file-uri-loopback-authority.json"
 file_uri_loopback_exit=$?
 set -e
+
+make_fixture "$test_tmp/file-uri-ipv6-loopback" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\n[IPv6 loopback](file://[::1]/home/alice/input.json).\n' >> "$test_tmp/file-uri-ipv6-loopback/SKILL.md"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/file-uri-ipv6-loopback" > "$test_tmp/file-uri-ipv6-loopback.json"
+file_uri_ipv6_loopback_exit=$?
+set -e
+
+make_fixture "$test_tmp/file-uri-ipv6-safe" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\n[Remote IPv6](file://[2001:db8::1]/home/alice/input.json), [other IPv6](file://[::2]/root/input.json), and [zone IPv6](file://[fe80::1%%25en0]/workspace/input.json).\n' >> "$test_tmp/file-uri-ipv6-safe/SKILL.md"
+printf '[Outer query](https://example.com/?next=file://[::1]/home/alice/input.json), [outer fragment](https://example.com/#file://[::1]/root/input.json), and [anchor](#file://[::1]/workspace/input.json) remain nonlocal.\n' >> "$test_tmp/file-uri-ipv6-safe/SKILL.md"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/file-uri-ipv6-safe" > "$test_tmp/file-uri-ipv6-safe.json"
 
 make_fixture "$test_tmp/file-uri-remote-authority" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 printf '\n[Remote home](file://example.com/home/alice/input.json), file://files.example.com/Users/Alice/work/file.txt, and file://localhost/Home/alice/input.json.\n' >> "$test_tmp/file-uri-remote-authority/SKILL.md"
@@ -2053,6 +2098,8 @@ const encodedAbsoluteLink = JSON.parse(fs.readFileSync(path.join(temporary, "enc
 const indentedCodeReference = JSON.parse(fs.readFileSync(path.join(temporary, "indented-code-reference.json")));
 const escapedBacktickLink = JSON.parse(fs.readFileSync(path.join(temporary, "escaped-backtick-link.json")));
 const backtickCodeControls = JSON.parse(fs.readFileSync(path.join(temporary, "backtick-code-controls.json")));
+const escapedLinkParityActive = JSON.parse(fs.readFileSync(path.join(temporary, "escaped-link-parity-active.json")));
+const escapedLinkParitySafe = JSON.parse(fs.readFileSync(path.join(temporary, "escaped-link-parity-safe.json")));
 const reserved = ["claude-helper", "anthropic-helper"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const listDescription = JSON.parse(fs.readFileSync(path.join(temporary, "list-description.json")));
 const quotedDescription = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-description.json")));
@@ -2129,6 +2176,8 @@ const svgPath = JSON.parse(fs.readFileSync(path.join(temporary, "svg-local-path.
 const fileUri = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-path.json")));
 const fileUriLocalAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-local-authority.json")));
 const fileUriLoopbackAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-loopback-authority.json")));
+const fileUriIpv6Loopback = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-ipv6-loopback.json")));
+const fileUriIpv6Safe = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-ipv6-safe.json")));
 const fileUriRemoteAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-remote-authority.json")));
 const fileUriCaseLocal = ["file-uri-uppercase-empty-authority", "file-uri-mixed-localhost"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const fileUriCaseSafe = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-case-safe.json")));
@@ -2198,7 +2247,8 @@ assert(freeze.budgetRevision.iconCaseAndTildeSegmentExecutableDeltaBytes === 98,
 assert(freeze.budgetRevision.scriptComponentBoundaryExecutableDeltaBytes === 162, "script-component-boundary executable delta changed");
 assert(freeze.budgetRevision.pathAndReferenceNormalizationExecutableDeltaBytes === 35, "path/reference normalization executable delta changed");
 assert(freeze.budgetRevision.yamlPrintableAndEscapedBacktickExecutableDeltaBytes === 6, "YAML-printable/escaped-backtick executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21927, "current executable delta changed");
+assert(freeze.budgetRevision.escapedLinkParityAndIpv6LoopbackExecutableDeltaBytes === 7, "escaped-link/IPv6-loopback executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21934, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -2222,7 +2272,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45982, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45989, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -2256,6 +2306,8 @@ assert(encodedAbsoluteLink.issues.some(item => item.code === "LINK_ESCAPE") && !
 assert(indentedCodeReference.status === "pass", "four-space indented code must not become a reference definition");
 assert(escapedBacktickLink.status === "fail" && escapedBacktickLink.issues.filter(item => item.code === "BROKEN_LINK").length === 1, "escaped backtick delimiters must not mask an active missing link");
 assert(backtickCodeControls.status === "pass", "real single- and multi-backtick code spans must keep links masked across backslash parity");
+assert(escapedLinkParityActive.status === "fail" && escapedLinkParityActive.issues.filter(item => item.code === "BROKEN_LINK").length === 3 && escapedLinkParityActive.issues.filter(item => item.code === "OFFICIAL_VALIDATOR_REQUIRED").length === 3, "zero and even backslashes must keep inline and reference links active");
+assert(escapedLinkParitySafe.status === "pass", "one and odd backslashes must keep inline and reference links escaped");
 assert(reserved.every(result => result.status === "fail" && result.issues.some(item => item.code === "NAME_RESERVED")), "reserved provider names must fail");
 assert(listDescription.status === "fail" && listDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted collection description must fail");
 assert(quotedDescription.status === "pass", "quoted collection-looking description must remain a string");
@@ -2360,7 +2412,8 @@ assert(invalidPython.status === "fail" && invalidPython.issues.filter(item => it
 assert(validPython.status === "pass" && !validPython.issues.some(item => item.code === "PYTHON_SYNTAX"), "valid Python helpers must retain AST acceptance");
 assert(invalidShebang.issues.some(item => item.code === "UTF8"), "invalid UTF-8 shebang file must fail without executable mode");
 assert(svgPath.issues.some(item => item.code === "LOCAL_PATH") && fileUri.issues.some(item => item.code === "LOCAL_PATH"), "decodable asset and file URI path checks changed");
-assert([fileUri, fileUriLocalAuthority, fileUriLoopbackAuthority].every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "empty, localhost, and IPv4 loopback file URI authorities must remain local");
+assert([fileUri, fileUriLocalAuthority, fileUriLoopbackAuthority, fileUriIpv6Loopback].every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "empty, localhost, IPv4, and IPv6 loopback file URI authorities must remain local");
+assert(fileUriIpv6Safe.status === "pass", "remote, zone-scoped, other IPv6 authorities and outer remote contexts must remain nonlocal");
 assert(fileUriRemoteAuthority.status === "pass" && !fileUriRemoteAuthority.issues.some(item => item.code === "LOCAL_PATH"), "remote file URI authorities must remain nonlocal");
 assert(fileUriCaseLocal.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "file URI scheme and localhost matching must be case-insensitive");
 assert(fileUriCaseSafe.status === "pass" && !fileUriCaseSafe.issues.some(item => item.code === "LOCAL_PATH"), "remote file authorities and wrong-case POSIX roots must remain nonlocal");

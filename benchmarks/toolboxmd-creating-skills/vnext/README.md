@@ -207,6 +207,13 @@ only CRLF, CR, and LF, preserving printable NEL, LS, PS, BMP, and non-BMP
 Unicode as scalar content and physical-line metrics count only those three
 break forms. The cumulative executable delta is 21,927
 bytes; the 46,000-byte cap and all budgets remain unchanged.
+The next exact-HEAD correction adds 7 executable bytes. Escaped inline and
+reference links now honor backslash parity: odd runs remain escaped, while zero
+or even runs preserve an active link. The exact bracketed IPv6 loopback
+authority `[::1]` joins the existing local file URI authorities without making
+remote IPv6 or outer URL contexts local. A bounded readable deletion pass keeps
+the cumulative executable delta at 21,934 bytes and the fixed 46,000-byte cap
+with all other budgets unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -236,6 +243,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 45,982 bytes: 3,973 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 41,793-byte read-only checker. The executable is not
+The frozen package is 45,989 bytes: 3,973 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 41,800-byte read-only checker. The executable is not
 loaded as activated core.

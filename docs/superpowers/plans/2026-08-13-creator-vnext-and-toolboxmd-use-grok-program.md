@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 45,982 bytes, aggregate SHA-256
-  `dda5d4f47a7d810ccf021eee8d43ff480983a4ce47f82d4ad87de8fee9117d1b`;
+- exact package: three files, 45,989 bytes, aggregate SHA-256
+  `3ecd13a7588c40cfb5cb372a4125240e45773d1813e096cf6689e4eff18c25e9`;
 - activated core: 74 lines and 3,973 bytes, with a 226-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -307,6 +307,12 @@ Completion evidence, updated 2026-08-14:
   Unicode remain scalar content, and physical-line metrics count only those
   three break forms. Reusing the parity-aware matcher removed the older
   duplicate scan. The 46,000-byte cap and all budgets remain unchanged;
+- the next exact-HEAD correction adds 7 executable bytes and brings the
+  cumulative delta to 21,934 bytes. Escaped inline and reference links honor
+  backslash parity: odd runs remain escaped while zero and even runs keep the
+  link active. The exact bracketed IPv6 loopback authority `[::1]` is local
+  without changing remote IPv6 or outer URL contexts. A bounded readable
+  deletion pass preserves the fixed 46,000-byte cap and all other budgets;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.

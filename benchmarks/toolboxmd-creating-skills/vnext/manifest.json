@@ -119,7 +119,9 @@
     "pathAndReferenceNormalizationReason": "Exact-HEAD review required mixed direct Windows user-path separators, the exact IPv4 loopback authority for local file URIs, and internal-whitespace normalization for single-line CommonMark reference labels.",
     "yamlPrintableAndEscapedBacktickExecutableDeltaBytes": 6,
     "yamlPrintableAndEscapedBacktickReason": "Exact-HEAD review required the shared canonical scalar decoder to enforce YAML 1.2 printable characters and required odd-parity escaped backticks to remain literal before active Markdown links. The shared YAML physical-line splitter recognizes only CRLF, CR, and LF so printable NEL, LS, and PS remain scalar content and do not inflate line metrics. Reusing the parity-aware code-span matcher removed the prior duplicate scan without changing the closed CommonMark boundary.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21927,
+    "escapedLinkParityAndIpv6LoopbackExecutableDeltaBytes": 7,
+    "escapedLinkParityAndIpv6LoopbackReason": "Exact-HEAD review required escaped Markdown link masking to honor backslash parity and required the exact bracketed IPv6 loopback authority to remain local. A bounded readable deletion pass preserved the fixed package cap and all diagnostics.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21934,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -133,9 +135,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "dda5d4f47a7d810ccf021eee8d43ff480983a4ce47f82d4ad87de8fee9117d1b",
+    "aggregateSha256": "3ecd13a7588c40cfb5cb372a4125240e45773d1813e096cf6689e4eff18c25e9",
     "fileCount": 3,
-    "packageBytes": 45982,
+    "packageBytes": 45989,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -157,8 +159,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 41793,
-        "sha256": "82f8a56bb9f7bc17a3a436295c53c6bc3d9e47614a3a3eaacd55f3fe1a17067c"
+        "bytes": 41800,
+        "sha256": "9c3a57e917167473edbdf08f68f116a8c4f26e30a672fbe05d5b55c5fb70a937"
       }
     ]
   },
@@ -185,9 +187,9 @@
       "description angle brackets fail the built-in host-validator compatibility check even when skills-ref is unavailable, while ordinary quoted prose passes",
       "portable metadata uses JSON-double-quoted user-defined keys and values with no sequence markers, while explicit Hermes mode keeps fixed schema fields unquoted and requires double-quoted user-provided values plus a decoded non-whitespace key for every config entry",
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
-      "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus real single- and multi-backtick inline code, indented code, and escaped-link forms; odd-parity escaped backticks stay literal before active links, simple destinations validate, and complex or unresolved forms warn that they need official validation",
+      "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus real single- and multi-backtick inline code, indented code, and odd-backslash escaped-link forms; zero and even backslashes preserve active links, odd-parity escaped backticks stay literal before active links, simple destinations validate, and complex or unresolved forms warn that they need official validation",
       "blank lines retain root, blockquote, list, and nested blockquote-list fence state without waiving required blockquote markers or nonblank container exits",
-      "common POSIX, container, file URI, and Windows workstation paths are detected, including percent-decoded lexically bounded local single-slash or empty/localhost/127.0.0.1 file URI paths with mixed-separator Windows drive-user roots, case-insensitive file schemes and localhost authorities, shebangs, and direct case-insensitive mixed-separator Windows drive-user roots, while decoded POSIX root spelling stays case-sensitive and embedded file text, remote file authorities, and remote or anchor destinations remain nonlocal",
+      "common POSIX, container, file URI, and Windows workstation paths are detected, including percent-decoded lexically bounded local single-slash or empty/localhost/127.0.0.1/[::1] file URI paths with mixed-separator Windows drive-user roots, case-insensitive file schemes and localhost authorities, shebangs, and direct case-insensitive mixed-separator Windows drive-user roots, while decoded POSIX root spelling stays case-sensitive and embedded file text, remote file authorities, and remote or anchor destinations remain nonlocal",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, invalid UTF-8 Python remains a single package-validation error before AST parsing, and binary assets are skipped",
       "executable or shebang helpers outside scripts/ fail canonical package policy while outside non-executable data without a shebang remains allowed",
       "Python helper syntax below scripts/ is checked through AST while non-Python helpers there require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",
