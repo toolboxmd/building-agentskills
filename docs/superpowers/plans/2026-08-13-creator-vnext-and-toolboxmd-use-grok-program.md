@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 43,483 bytes, aggregate SHA-256
-  `4641b0e41cf21c204c40f7ec36a68ae7d66a2d3793edb3d3775db1236627cc51`;
+- exact package: three files, 43,611 bytes, aggregate SHA-256
+  `847853736703ea42193234a25d78e5696b7337d05db9f63723fa48865f059ee6`;
 - activated core: 78 lines and 4,640 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -188,8 +188,12 @@ Completion evidence, updated 2026-08-14:
 - the next exact-HEAD correction JSON-quoted `name` like every other generated
   string and rejects executable or shebang helpers outside `scripts/`. Reusing
   package collection and deleting obsolete scalar special cases reduced the
-  executable by 197 bytes, bringing the current cumulative delta to 18,761
-  bytes;
+  executable by 197 bytes, bringing the cumulative delta at that stage to
+  18,761 bytes;
+- a bounded exact-HEAD correction then preserved blank lines inside
+  list-contained fences in the shared script-path and link-masking state. It
+  added 128 executable bytes, bringing the current cumulative delta to 18,889
+  bytes, without waiving blockquote markers or nonblank container exits;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.

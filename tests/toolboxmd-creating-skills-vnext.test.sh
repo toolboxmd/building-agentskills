@@ -177,6 +177,9 @@ container_fence_exit=$?
 set -e
 [[ $container_fence_exit -eq 1 ]]
 
+make_body_fixture "$test_tmp/container-blank-lines" $'```bash\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n```\n\n> ```bash\n> PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n>\n> PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n> ```\n\n- ```bash\n  PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n\n  PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n  ```\n\n> - ```bash\n>   PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n>\n>   PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n>   ```'
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/container-blank-lines" > "$test_tmp/container-blank-lines.json"
+
 for name in blockquote list; do
   if [[ "$name" == blockquote ]]; then
     body=$'> ```bash\n> PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\n```'
@@ -1005,6 +1008,8 @@ cat >> "$test_tmp/code-links-fixture/SKILL.md" <<'EOF'
 > ~~~
 
 - ```markdown
+  harmless code
+
   [List fenced example](list-fenced-missing.md)
   ```
 
@@ -1234,6 +1239,7 @@ const closedShellSafe = JSON.parse(fs.readFileSync(path.join(temporary, "closed-
 const unfencedHelperContexts = JSON.parse(fs.readFileSync(path.join(temporary, "unfenced-helper-contexts.json")));
 const unclosedShellFence = JSON.parse(fs.readFileSync(path.join(temporary, "unclosed-shell-fence.json")));
 const containerShellFences = JSON.parse(fs.readFileSync(path.join(temporary, "container-shell-fences.json")));
+const containerBlankLines = JSON.parse(fs.readFileSync(path.join(temporary, "container-blank-lines.json")));
 const containerMissingClosers = ["blockquote", "list"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `container-missing-closer-${name}.json`))));
 const containerBoundarySafe = JSON.parse(fs.readFileSync(path.join(temporary, "container-boundary-safe.json")));
 const containerBoundaryShell = JSON.parse(fs.readFileSync(path.join(temporary, "container-boundary-shell.json")));
@@ -1349,7 +1355,8 @@ assert(freeze.budgetRevision.descriptionAngleBracketExecutableDeltaBytes === 132
 assert(freeze.budgetRevision.closedSurfaceScriptPathExecutableDeltaBytes === 1189, "closed-surface migration executable delta changed");
 assert(freeze.budgetRevision.containerFenceLinkMaskingExecutableDeltaBytes === 345, "container fence link-masking executable delta changed");
 assert(freeze.budgetRevision.quotedNameAndScriptLocationExecutableDeltaBytes === -197, "quoted-name/location executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 18761, "current executable delta changed");
+assert(freeze.budgetRevision.listContainerBlankLineExecutableDeltaBytes === 128, "list-container blank-line executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 18889, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1373,7 +1380,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43483, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43611, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1404,6 +1411,7 @@ assert(closedShellSafe.status === "pass" && closedShellSafe.warningCount === 0, 
 assert(unfencedHelperContexts.status === "fail" && unfencedHelperContexts.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 8, "single-line inline, indented, and fenced code outside recognized shell fences must fail closed");
 assert(unclosedShellFence.status === "fail" && unclosedShellFence.issues.some(item => item.code === "MARKDOWN_FENCE"), "unclosed recognized shell fences must fail");
 assert(containerShellFences.status === "fail" && containerShellFences.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3 && containerShellFences.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "nested blockquote/list fences and blockquote-indented code must preserve closed-surface checks");
+assert(containerBlankLines.status === "pass", "blank lines inside root, blockquote, list, and nested blockquote-list fences must preserve container state");
 assert(containerMissingClosers.every(result => result.issues.some(item => item.code === "MARKDOWN_FENCE")), "container fences must not accept a root-level closer");
 assert(containerBoundarySafe.status === "pass" && containerBoundarySafe.warningCount === 0, "non-shell fences end at their Markdown container boundary without consuming root prose");
 assert(containerBoundaryShell.status === "fail" && containerBoundaryShell.issues.filter(item => item.code === "MARKDOWN_FENCE").length === 1 && !containerBoundaryShell.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "recognized shell fences fail at their Markdown container boundary without consuming root prose");

@@ -90,7 +90,10 @@ real-interpreter shim regression is test-only. The next exact-HEAD correction
 JSON-quoted `name` like every other generated string and rejects executable or
 shebang helpers outside `scripts/`. Reusing package collection and deleting
 obsolete scalar special cases reduced the executable by 197 bytes, so the
-current cumulative executable delta is 18,761 bytes.
+current cumulative executable delta at that stage was 18,761 bytes. A bounded
+follow-up preserves blank lines inside list-contained fences for both script
+checks and link masking without waiving blockquote markers or nonblank exits.
+It added 128 executable bytes, bringing the cumulative delta to 18,889 bytes.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -116,6 +119,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 43,483 bytes: 4,640 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 38,627-byte read-only checker. The executable is not
+The frozen package is 43,611 bytes: 4,640 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 38,755-byte read-only checker. The executable is not
 loaded as activated core.

@@ -330,7 +330,9 @@ def fence_candidate(line: str) -> tuple[str, list[int]]:
 
 def fenced_line_view(line: str, containers: list[int]) -> str | None:
     view = line
-    for width in containers:
+    for index, width in enumerate(containers):
+        if not view.strip() and all(remaining > 0 for remaining in containers[index:]):
+            return ""
         if not width:
             match = re.match(r"^ {0,3}>[ \t]?", view)
             if not match:

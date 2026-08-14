@@ -81,7 +81,9 @@
     "containerFenceLinkMaskingReason": "Exact-HEAD review reused the declared root, blockquote, and list fence state for Markdown link masking so missing example links inside those code surfaces do not become package link errors. The real-interpreter shim regression is test-only and does not affect package bytes.",
     "quotedNameAndScriptLocationExecutableDeltaBytes": -197,
     "quotedNameAndScriptLocationReason": "Exact-HEAD review removed the remaining unquoted-name exception and rejects executable or shebang helpers outside scripts/. Reusing package collection for the location check and deleting obsolete scalar special cases reduced executable bytes without weakening the canonical fixture matrix.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 18761,
+    "listContainerBlankLineExecutableDeltaBytes": 128,
+    "listContainerBlankLineReason": "Exact-HEAD review required blank lines inside list-contained fences to retain shared script-path and Markdown-link masking state without waiving blockquote markers or nonblank container exits.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 18889,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -95,9 +97,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "4641b0e41cf21c204c40f7ec36a68ae7d66a2d3793edb3d3775db1236627cc51",
+    "aggregateSha256": "847853736703ea42193234a25d78e5696b7337d05db9f63723fa48865f059ee6",
     "fileCount": 3,
-    "packageBytes": 43483,
+    "packageBytes": 43611,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -119,8 +121,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 38627,
-        "sha256": "cf9656de2cd7320651416089cd86dc4012e4d971a1b7ae1b39e0ba8a428d5cb3"
+        "bytes": 38755,
+        "sha256": "fc06311d949cccc96388c30c5391c9844b8f91a2f2ef913c028bc1722a602e21"
       }
     ]
   },
@@ -145,6 +147,7 @@
       "portable metadata uses JSON-double-quoted user-defined keys and values with no sequence markers, while explicit Hermes mode keeps fixed schema fields unquoted and requires double-quoted user-provided values",
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
       "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus inline, indented, and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
+      "blank lines retain root, blockquote, list, and nested blockquote-list fence state without waiving required blockquote markers or nonblank container exits",
       "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",
       "executable or shebang helpers outside scripts/ fail canonical package policy while outside non-executable data without a shebang remains allowed",
