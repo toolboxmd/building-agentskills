@@ -101,7 +101,9 @@
     "extensionSkipCapRevisionReason": "The 1,000-byte package-cap revision preserves readable executable-only UTF-8 and extension-boundary handling after a bounded active-core deletion pass. Activated-core, description, file, reference, eval, and script budgets are unchanged, and no lower total package-size claim is allowed.",
     "descriptionAndEncodedFileUriExecutableDeltaBytes": 789,
     "descriptionAndEncodedFileUriReason": "Exact-HEAD review required the portable 1,024-character description ceiling to remain invariant when callers raise the package budget and required percent-decoding only lexically bounded empty-authority or localhost file URI paths before case-sensitive workstation-root classification, without treating embedded text, remote authorities, or remote and anchor destinations as local.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 20283,
+    "windowsHelperFileUriAndReferenceExecutableDeltaBytes": 57,
+    "windowsHelperFileUriAndReferenceReason": "Exact-HEAD review required slash or backslash task-relative helper separators, decoded local file URI classification for mixed-separator Windows drive-user roots, and indentation-neutral labels for canonical reference definitions.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 20340,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -115,9 +117,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "76b175016bd42efc51d725a93a309636cc45f5fd5fdc0235a7401c71f44eca5d",
+    "aggregateSha256": "f3136eeb901c8a788660976508deba578da173f8822baf07830f198ade5fe69c",
     "fileCount": 3,
-    "packageBytes": 44804,
+    "packageBytes": 44861,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -139,8 +141,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 40149,
-        "sha256": "14dc3f29bca1735be3b0371d97ba53e3bed4c7b76c3e0eb75a4199d2be6db3a3"
+        "bytes": 40206,
+        "sha256": "5f446eeaa792c6711def64d820704fa4164226dc73f601f83996bbc9520ab79b"
       }
     ]
   },
@@ -149,7 +151,7 @@
     "proves": [
       "the frozen product package and exact creator budgets reproduce",
       "the validator runs from outside the package without Python bytecode writes",
-      "immediate non-whitespace helper children with bare paths or any sequence of canonical ./ and ../ prefixes fail in root, blockquote, and list closed case-insensitive sh, bash, and shell fences without interpreting commands, strings, comments, heredocs, wrappers, assignments, or continuations",
+      "immediate non-whitespace helper children with bare paths or any sequence of canonical dot segments using slash or backslash separators fail in root, blockquote, and list closed case-insensitive sh, bash, and shell fences without interpreting commands, strings, comments, heredocs, wrappers, assignments, or continuations",
       "single-line inline code, indented code, and non-shell or unknown fences containing that lexical helper shape fail with a context error, while ordinary prose, Markdown link destinations, directory-only mentions, leading-whitespace child names, and explicit skill-directory paths remain accepted",
       "all UTF-8 files below scripts/ and executable or shebang files reject task- or parent-relative helper paths, while generic configuration files remain outside this policy absent a schema",
       "recognized shell fences must close and the prescribed validator command enables warnings-as-errors",
@@ -157,7 +159,7 @@
       "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, supported and bounded interface strings, assets-only icon paths, optional default_prompt, policy, current tool dependencies, and invalid UTF-8 as one package issue",
       "Codex interface, policy, and dependencies sections are independently optional in general mode; present interface strings require non-whitespace text, and creation mode accepts an absent optional sidecar but requires both UI fields when one is present",
       "valid Markdown links with optional titles pass",
-      "single-line CommonMark reference-definition destinations support angle brackets and optional titles while missing and escaping targets fail",
+      "single-line CommonMark reference definitions support zero to three leading spaces, angle-bracket destinations, and optional titles while four-space indented code is masked and missing or escaping targets fail",
       "skill names containing reserved provider strings fail",
       "every top-level string, including name, requires one-line JSON double quotes before slug, reserved-name, length, and directory checks",
       "YAML-invalid lone and paired JSON surrogate escapes fail through the shared canonical scalar decoder across top-level fields, portable metadata keys and values, Hermes values, and OpenAI sidecars while literal Unicode scalar values and escaped backslash text remain valid",
@@ -168,7 +170,7 @@
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
       "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus inline, indented, and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "blank lines retain root, blockquote, list, and nested blockquote-list fence state without waiving required blockquote markers or nonblank container exits",
-      "common POSIX, container, file URI, and Windows workstation paths are detected, including percent-decoded lexically bounded local file URI paths, case-insensitive file schemes, empty or case-insensitive localhost authorities, shebangs, and case-insensitive Windows drive-user roots, while decoded POSIX root spelling stays case-sensitive and embedded file text, remote file authorities, and remote or anchor destinations remain nonlocal",
+      "common POSIX, container, file URI, and Windows workstation paths are detected, including percent-decoded lexically bounded local file URI paths with mixed-separator Windows drive-user roots, case-insensitive file schemes, empty or case-insensitive localhost authorities, shebangs, and direct case-insensitive Windows drive-user roots, while decoded POSIX root spelling stays case-sensitive and embedded file text, remote file authorities, and remote or anchor destinations remain nonlocal",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, invalid UTF-8 Python remains a single package-validation error before AST parsing, and binary assets are skipped",
       "executable or shebang helpers outside scripts/ fail canonical package policy while outside non-executable data without a shebang remains allowed",
       "Python helper syntax below scripts/ is checked through AST while non-Python helpers there require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",

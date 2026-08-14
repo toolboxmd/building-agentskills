@@ -27,7 +27,7 @@ OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 SHELL_FENCE_LANGUAGES = {"sh", "bash", "shell"}
-BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./-])(?:\.\.?/)*scripts/")
+BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./\\-])(?:\.\.?[/\\]+)*scripts[/\\]+")
 SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
 SCRIPT_CONTEXT_HINT = f"{SCRIPT_ROOT_HINT} in a closed sh/bash/shell fence"
 LOCAL_ROOTS = "(?:Users|home|workspace|root)"
@@ -37,7 +37,7 @@ LOCAL_PATH_RE = re.compile(
 FILE_URI_RE = re.compile(r'''(?i:file://)[^\s'"`<>()]+''')
 LOCAL_FILE_URI_RE = re.compile(r'''(?<![A-Za-z0-9+./:#?=&_-])(?i:file://(?:localhost)?/)[^\s'"`<>()]+''')
 REMOTE_URI_CONTEXT_RE = re.compile(r'''(?i:(?:https?://)[^\s'"`]+|#[^\s'"`]*file://[^\s'"`]*)''')
-LOCAL_FILE_PATH_RE = re.compile(rf"^/{LOCAL_ROOTS}/")
+LOCAL_FILE_PATH_RE = re.compile(rf"^/(?:{LOCAL_ROOTS}/|(?i:[A-Za-z]:[/\\]+Users[/\\]+))")
 PROCESS_NAMES = {"README.md", "CHANGELOG.md", "STATUS.md", "DESIGN.md", "NOTES.md"}
 TEXT_SUFFIXES = {
     ".md", ".yaml", ".yml", ".json", ".py", ".sh", ".bash",
@@ -472,7 +472,7 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
         for pattern in (LINK_RE, REFERENCE_DEFINITION_RE):
             for match in pattern.finditer(canonical_markdown):
                 validate_destination(match.group(1), relative, path.parent)
-        definitions = {match.group(0).split("]:", 1)[0][1:].casefold() for match in REFERENCE_DEFINITION_RE.finditer(canonical_markdown)}
+        definitions = {match.group(0).lstrip().split("]:", 1)[0][1:].casefold() for match in REFERENCE_DEFINITION_RE.finditer(canonical_markdown)}
         for match in re.finditer(r"(?<!!)\[([^]\n]+)\]\[([^]\n]+)\]", canonical_markdown):
             if match.group(2).casefold() not in definitions:
                 problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "undefined reference label needs an official validator", "warning"))

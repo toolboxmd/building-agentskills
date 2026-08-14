@@ -139,6 +139,12 @@ Only lexically bounded empty-authority or localhost tokens are classified;
 embedded text, remote authorities, and remote or anchor destinations remain
 nonlocal. The cumulative executable delta is 20,283 bytes, and the 45,000-byte
 package cap is unchanged.
+The following exact-HEAD correction adds 57 executable bytes. Task-relative
+helper detection now accepts slash or backslash separators, decoded local file
+URIs classify mixed-separator Windows drive-user roots, and reference labels
+discard their permitted zero-to-three-space definition indentation. The
+cumulative executable delta is 20,340 bytes; package and activated-core budgets
+remain unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -168,6 +174,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 44,804 bytes: 4,439 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 40,149-byte read-only checker. The executable is not
+The frozen package is 44,861 bytes: 4,439 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 40,206-byte read-only checker. The executable is not
 loaded as activated core.

@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 44,804 bytes, aggregate SHA-256
-  `76b175016bd42efc51d725a93a309636cc45f5fd5fdc0235a7401c71f44eca5d`;
+- exact package: three files, 44,861 bytes, aggregate SHA-256
+  `f3136eeb901c8a788660976508deba578da173f8822baf07830f198ade5fe69c`;
 - activated core: 78 lines and 4,439 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -237,6 +237,13 @@ Completion evidence, updated 2026-08-14:
   checks; embedded text, remote authorities, and remote or anchor destinations
   remain nonlocal. The 45,000-byte cap and all non-package-byte budgets are
   unchanged;
+- the following exact-HEAD correction adds 57 executable bytes and brings the
+  cumulative delta to 20,340 bytes. Task-relative helper detection accepts
+  slash or backslash separators while retaining explicit-root and embedded-path
+  exclusions, decoded local file URI paths classify mixed-separator Windows
+  drive-user roots, and zero-to-three-space reference-definition indentation no
+  longer contaminates labels. The 45,000-byte cap and all activated-core
+  budgets are unchanged;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.
@@ -308,6 +315,11 @@ Completion evidence, updated 2026-08-14:
   paths, and detects shebang-local paths while ignoring embedded file text,
   remote authorities, and remote or anchor-link query or fragment text during
   workstation-path scanning;
+  recognizes slash and backslash task-relative helper separators across mixed
+  dot segments while keeping explicit skill roots and embedded paths safe,
+  classifies decoded Windows drive-user paths in empty or localhost file URIs,
+  and extracts canonical reference labels independently of their permitted
+  zero-to-three-space indentation while masking four-space indented code;
   requires an exact-current-byte operator
   attestation before a separately checked non-Python helper can pass strict
   mode, and reports that ToolboxMD did not execute the language-specific

@@ -174,7 +174,21 @@ parent_relative_code_exit=$?
 set -e
 [[ $parent_relative_code_exit -eq 1 ]]
 
-make_body_fixture "$test_tmp/parent-relative-safe" $'```bash\npython3 "<skill-dir>/scripts/run.py"\npython3 foo/../scripts/run.py\npython3 foo/./../scripts/run.py\n```'
+make_body_fixture "$test_tmp/windows-relative-shell" $'```bash\npython scripts\\run.py\npython .\\scripts\\run.py\npython ..\\scripts\\run.py\npython ./..\\scripts\\run.py\npython .\\../scripts\\run.py\n```'
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/windows-relative-shell" > "$test_tmp/windows-relative-shell.json"
+windows_relative_shell_exit=$?
+set -e
+[[ $windows_relative_shell_exit -eq 1 ]]
+
+make_body_fixture "$test_tmp/windows-relative-code" $'Run `python scripts\\run.py` and `python ./..\\scripts\\run.py`.\n\n```text\npython ..\\scripts\\run.py\npython .\\../scripts\\run.py\n```'
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/windows-relative-code" > "$test_tmp/windows-relative-code.json"
+windows_relative_code_exit=$?
+set -e
+[[ $windows_relative_code_exit -eq 1 ]]
+
+make_body_fixture "$test_tmp/parent-relative-safe" $'```bash\npython3 "<skill-dir>/scripts/run.py"\npython3 "<skill-dir>\\scripts\\run.py"\npython3 foo/../scripts/run.py\npython3 foo/./../scripts/run.py\npython3 foo\\..\\scripts\\run.py\npython3 foo\\.\\..\\scripts\\run.py\n```'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/parent-relative-safe" > "$test_tmp/parent-relative-safe.json"
 
 make_body_fixture "$test_tmp/unfenced-helper-contexts" $'Run `env MODE=strict ./scripts/run.py`.\n\nLiteral `[helper](scripts/run.py)` code also fails.\n\n    env MODE=strict ./scripts/run.py\n    [helper](scripts/run.py)\n\n```text\nenv MODE=strict ./scripts/run.py\n[helper](scripts/run.py)\n```\n\n~~~python\nprint("scripts/run.py")\n~~~\n\n```\nenv MODE=strict ./scripts/run.py\n```'
@@ -234,7 +248,7 @@ set -e
 [[ $helper_source_bare_exit -eq 1 ]]
 
 make_fixture "$test_tmp/helper-source-parent-relative" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
-printf 'SIBLING = "../../scripts/child.py"\nMIXED = "./../scripts/child.py"\n' > "$test_tmp/helper-source-parent-relative/scripts/run.py"
+printf 'SIBLING = "../../scripts/child.py"\nMIXED = "./../scripts/child.py"\nWINDOWS = "..\\\\scripts\\\\child.py"\nMIXED_WINDOWS = "./..\\\\scripts\\\\child.py"\n' > "$test_tmp/helper-source-parent-relative/scripts/run.py"
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/helper-source-parent-relative" > "$test_tmp/helper-source-parent-relative.json"
 helper_source_parent_exit=$?
@@ -244,6 +258,8 @@ set -e
 make_fixture "$test_tmp/helper-source-safe" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 cat > "$test_tmp/helper-source-safe/scripts/run.py" <<'EOF'
 SIBLING = "<skill-dir>/scripts/child.py"
+WINDOWS_SIBLING = "<skill-dir>\\scripts\\child.py"
+EMBEDDED_WINDOWS = "foo\\..\\scripts\\child.py"
 DIRECTORY = "scripts/"
 DIRECTORIES = ["scripts/"]
 CONFIG = {"root": "scripts/"}
@@ -555,12 +571,12 @@ cat >> "$test_tmp/reference-link-fixture/SKILL.md" <<'EOF'
 
 [Guide][guide]
 
-[guide]: <references/guide.md> "Read the guide"
+   [guide]: <references/guide.md> "Read the guide"
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/reference-link-fixture" > "$test_tmp/reference-link.json"
 
 make_fixture "$test_tmp/missing-reference-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
-printf '\n[unused]: missing.md "Missing guide"\n' >> "$test_tmp/missing-reference-fixture/SKILL.md"
+printf '\n [unused]: missing.md "Missing guide"\n' >> "$test_tmp/missing-reference-fixture/SKILL.md"
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/missing-reference-fixture" > "$test_tmp/missing-reference.json"
 missing_reference_exit=$?
@@ -574,6 +590,10 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/escaping-ref
 escaping_reference_exit=$?
 set -e
 [[ $escaping_reference_exit -eq 1 ]]
+
+make_fixture "$test_tmp/indented-code-reference" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\n    [code-only]: missing.md "Indented code, not a definition"\n' >> "$test_tmp/indented-code-reference/SKILL.md"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/indented-code-reference" > "$test_tmp/indented-code-reference.json"
 
 for reserved in claude-helper anthropic-helper; do
   make_fixture "$test_tmp/$reserved" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
@@ -1461,6 +1481,25 @@ for name in encoded-file-uri-local encoded-file-uri-localhost; do
 done
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/encoded-file-uri-safe" > "$test_tmp/encoded-file-uri-safe.json"
 
+for name in file-uri-windows-empty file-uri-windows-localhost file-uri-windows-mixed-forward-backslash file-uri-windows-mixed-backslash-forward file-uri-windows-mixed-localhost-one file-uri-windows-mixed-localhost-two file-uri-windows-safe; do
+  make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+done
+printf '%s\n' '' '[Local drive](file:///C:/Users/Alice/work/input.json).' >> "$test_tmp/file-uri-windows-empty/SKILL.md"
+printf '%s\n' '' '[Local drive](FiLe://LOCALHOST/c:/USERS/Alice/work/input.json).' >> "$test_tmp/file-uri-windows-localhost/SKILL.md"
+printf '%s\n' '' '[Local drive](file:///C:/Users%5CAlice/work/input.json).' >> "$test_tmp/file-uri-windows-mixed-forward-backslash/SKILL.md"
+printf '%s\n' '' '[Local drive](file:///C:%5CUsers/Alice/work/input.json).' >> "$test_tmp/file-uri-windows-mixed-backslash-forward/SKILL.md"
+printf '%s\n' '' '[Local drive](FiLe://LOCALHOST/c:%2FUSERS%5CAlice/work/input.json).' >> "$test_tmp/file-uri-windows-mixed-localhost-one/SKILL.md"
+printf '%s\n' '' '[Local drive](file://localhost/C:%5Cusers%2FAlice/work/input.json).' >> "$test_tmp/file-uri-windows-mixed-localhost-two/SKILL.md"
+printf '%s\n' '' '[Remote drive](file://example.com/C:/Users/Alice/work/input.json) and [wrong POSIX case](file:///Home/alice/input.json).' >> "$test_tmp/file-uri-windows-safe/SKILL.md"
+for name in file-uri-windows-empty file-uri-windows-localhost file-uri-windows-mixed-forward-backslash file-uri-windows-mixed-backslash-forward file-uri-windows-mixed-localhost-one file-uri-windows-mixed-localhost-two; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
+  file_uri_windows_exit=$?
+  set -e
+  [[ $file_uri_windows_exit -eq 1 ]]
+done
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/file-uri-windows-safe" > "$test_tmp/file-uri-windows-safe.json"
+
 for name in windows-forward windows-escaped windows-lowercase-backslash windows-uppercase-forward; do
   make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 done
@@ -1529,6 +1568,8 @@ const closedShellBare = JSON.parse(fs.readFileSync(path.join(temporary, "closed-
 const closedShellSafe = JSON.parse(fs.readFileSync(path.join(temporary, "closed-shell-safe.json")));
 const parentRelativeShell = JSON.parse(fs.readFileSync(path.join(temporary, "parent-relative-shell.json")));
 const parentRelativeCode = JSON.parse(fs.readFileSync(path.join(temporary, "parent-relative-code.json")));
+const windowsRelativeShell = JSON.parse(fs.readFileSync(path.join(temporary, "windows-relative-shell.json")));
+const windowsRelativeCode = JSON.parse(fs.readFileSync(path.join(temporary, "windows-relative-code.json")));
 const parentRelativeSafe = JSON.parse(fs.readFileSync(path.join(temporary, "parent-relative-safe.json")));
 const unfencedHelperContexts = JSON.parse(fs.readFileSync(path.join(temporary, "unfenced-helper-contexts.json")));
 const unclosedShellFence = JSON.parse(fs.readFileSync(path.join(temporary, "unclosed-shell-fence.json")));
@@ -1564,6 +1605,7 @@ const titledLink = JSON.parse(fs.readFileSync(path.join(temporary, "titled-link.
 const referenceLink = JSON.parse(fs.readFileSync(path.join(temporary, "reference-link.json")));
 const missingReference = JSON.parse(fs.readFileSync(path.join(temporary, "missing-reference.json")));
 const escapingReference = JSON.parse(fs.readFileSync(path.join(temporary, "escaping-reference.json")));
+const indentedCodeReference = JSON.parse(fs.readFileSync(path.join(temporary, "indented-code-reference.json")));
 const reserved = ["claude-helper", "anthropic-helper"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const listDescription = JSON.parse(fs.readFileSync(path.join(temporary, "list-description.json")));
 const quotedDescription = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-description.json")));
@@ -1635,6 +1677,8 @@ const fileUriCaseLocal = ["file-uri-uppercase-empty-authority", "file-uri-mixed-
 const fileUriCaseSafe = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-case-safe.json")));
 const encodedFileUriLocal = ["encoded-file-uri-local", "encoded-file-uri-localhost"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const encodedFileUriSafe = JSON.parse(fs.readFileSync(path.join(temporary, "encoded-file-uri-safe.json")));
+const fileUriWindowsLocal = ["file-uri-windows-empty", "file-uri-windows-localhost", "file-uri-windows-mixed-forward-backslash", "file-uri-windows-mixed-backslash-forward", "file-uri-windows-mixed-localhost-one", "file-uri-windows-mixed-localhost-two"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const fileUriWindowsSafe = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-windows-safe.json")));
 const windowsPaths = ["windows-forward", "windows-escaped", "windows-lowercase-backslash", "windows-uppercase-forward"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const webRootLink = JSON.parse(fs.readFileSync(path.join(temporary, "web-root-link.json")));
 const remoteWindowsLinks = JSON.parse(fs.readFileSync(path.join(temporary, "remote-windows-links.json")));
@@ -1686,7 +1730,8 @@ assert(freeze.budgetRevision.fileUriCaseExecutableDeltaBytes === 4, "file-URI-ca
 assert(freeze.budgetRevision.extensionSkipAndSidecarUtf8ExecutableDeltaBytes === 187, "extension-skip/sidecar-UTF8 executable delta changed");
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeExtensionSkip === 44000, "pre-extension-skip package cap changed");
 assert(freeze.budgetRevision.descriptionAndEncodedFileUriExecutableDeltaBytes === 789, "description/file-URI executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 20283, "current executable delta changed");
+assert(freeze.budgetRevision.windowsHelperFileUriAndReferenceExecutableDeltaBytes === 57, "Windows-helper/file-URI/reference executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 20340, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1710,7 +1755,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 44804, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 44861, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1729,6 +1774,7 @@ assert(titledLink.status === "pass" && titledLink.errorCount === 0, "valid local
 assert(referenceLink.status === "pass" && referenceLink.errorCount === 0, "valid reference definition must pass");
 assert(missingReference.issues.some(item => item.code === "BROKEN_LINK"), "missing reference destination must fail");
 assert(escapingReference.issues.some(item => item.code === "LINK_ESCAPE"), "escaping reference destination must fail");
+assert(indentedCodeReference.status === "pass", "four-space indented code must not become a reference definition");
 assert(reserved.every(result => result.status === "fail" && result.issues.some(item => item.code === "NAME_RESERVED")), "reserved provider names must fail");
 assert(listDescription.status === "fail" && listDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted collection description must fail");
 assert(quotedDescription.status === "pass", "quoted collection-looking description must remain a string");
@@ -1752,7 +1798,9 @@ assert(closedShellBare.status === "fail" && closedShellBare.issues.filter(item =
 assert(closedShellSafe.status === "pass" && closedShellSafe.warningCount === 0, "explicit skill roots, prose, links, directory-only mentions, and leading-whitespace child names must remain safe");
 assert(parentRelativeShell.status === "fail" && parentRelativeShell.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "plain and mixed parent-relative helper prefixes must fail in closed shell fences");
 assert(parentRelativeCode.status === "fail" && parentRelativeCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 4, "plain and mixed parent-relative helper prefixes must fail in closed non-shell code surfaces");
-assert(parentRelativeSafe.status === "pass", "explicit skill roots and embedded dot-relative paths must remain outside the task-relative helper policy");
+assert(windowsRelativeShell.status === "fail" && windowsRelativeShell.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "Windows and mixed-separator task-relative helpers must fail in closed shell fences");
+assert(windowsRelativeCode.status === "fail" && windowsRelativeCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 4, "Windows and mixed-separator task-relative helpers must fail in closed non-shell code surfaces");
+assert(parentRelativeSafe.status === "pass", "explicit skill roots and embedded dot-relative paths must remain safe on both separator styles");
 assert(unfencedHelperContexts.status === "fail" && unfencedHelperContexts.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 8, "single-line inline, indented, and fenced code outside recognized shell fences must fail closed");
 assert(unclosedShellFence.status === "fail" && unclosedShellFence.issues.some(item => item.code === "MARKDOWN_FENCE"), "unclosed recognized shell fences must fail");
 assert(containerShellFences.status === "fail" && containerShellFences.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3 && containerShellFences.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "nested blockquote/list fences and blockquote-indented code must preserve closed-surface checks");
@@ -1761,7 +1809,7 @@ assert(containerMissingClosers.every(result => result.issues.some(item => item.c
 assert(containerBoundarySafe.status === "pass" && containerBoundarySafe.warningCount === 0, "non-shell fences end at their Markdown container boundary without consuming root prose");
 assert(containerBoundaryShell.status === "fail" && containerBoundaryShell.issues.filter(item => item.code === "MARKDOWN_FENCE").length === 1 && !containerBoundaryShell.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "recognized shell fences fail at their Markdown container boundary without consuming root prose");
 assert(helperSourceBare.status === "fail" && executableSourceBare.status === "fail" && [helperSourceBare, executableSourceBare].every(result => result.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH")), "helper and executable source files must reject bare helper paths");
-assert(helperSourceParent.status === "fail" && helperSourceParent.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 2, "helper sources must reject plain and mixed parent-relative helper paths");
+assert(helperSourceParent.status === "fail" && helperSourceParent.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 4, "helper sources must reject slash/backslash plain and mixed parent-relative helper paths");
 assert(markdownHelperSource.status === "fail" && markdownHelperSource.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "Markdown files below scripts must retain helper-source coverage");
 assert(helperSourceSafe.status === "pass" && genericConfigSafe.status === "pass", "explicit helper roots must pass and generic configs must stay outside command scanning");
 assert(unquotedDateDescription.status === "fail" && unquotedDateDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted dates must fail the canonical string contract");
@@ -1816,6 +1864,8 @@ assert(fileUriCaseLocal.every(result => result.status === "fail" && result.issue
 assert(fileUriCaseSafe.status === "pass" && !fileUriCaseSafe.issues.some(item => item.code === "LOCAL_PATH"), "remote file authorities and wrong-case POSIX roots must remain nonlocal");
 assert(encodedFileUriLocal.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "percent-encoded local file URI roots must be decoded before classification");
 assert(encodedFileUriSafe.status === "pass" && !encodedFileUriSafe.issues.some(item => item.code === "LOCAL_PATH"), "remote, query, fragment, wrong-case, and malformed percent boundaries must remain nonlocal");
+assert(fileUriWindowsLocal.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "empty and localhost file URIs must classify decoded Windows drive-user roots");
+assert(fileUriWindowsSafe.status === "pass" && !fileUriWindowsSafe.issues.some(item => item.code === "LOCAL_PATH"), "remote Windows file URIs and wrong-case POSIX roots must remain nonlocal");
 assert(windowsPaths.every(result => result.issues.some(item => item.code === "LOCAL_PATH")), "Windows local path checks changed");
 assert(webRootLink.issues.some(item => item.code === "ROOT_LINK") && !webRootLink.issues.some(item => item.code === "LOCAL_PATH"), "web links must not be mistaken for workstation paths");
 assert(remoteWindowsLinks.status === "pass" && !remoteWindowsLinks.issues.some(item => item.code === "LOCAL_PATH"), "remote and anchor links must hide URL query or fragment text from workstation-path scanning");
