@@ -62,6 +62,12 @@ bind a separately reported non-Python syntax check to exact current helper
 bytes without adding an evidence artifact. It does not execute or prove that
 external check. Activated-core, description, file, reference, eval, and script
 budgets remain unchanged, and no lower total package-size claim is made.
+Bounded same-line clause state for a fixed shell control-prefix set then added
+959 executable bytes, bringing the cumulative delta to 17,292 bytes. It
+preserves command position after `if`, `while`, `until`, `then`, `do`, `elif`,
+`else`, and `!` without treating quoted, escaped, prose, argument, `fi`, or
+`done` tokens as control boundaries. Multiline and nested shell parsing remain
+outside the checker contract.
 
 Canonical subset v2 leaves only the exact `name` slug unquoted. Every other
 top-level string and every user-defined portable metadata key and value uses a
@@ -85,6 +91,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 41,476 bytes: 5,061 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 36,199-byte read-only checker. The executable is not
+The frozen package is 42,435 bytes: 5,061 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 37,158-byte read-only checker. The executable is not
 loaded as activated core.

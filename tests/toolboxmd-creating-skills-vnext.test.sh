@@ -125,6 +125,16 @@ grep -Fq "FRAGILE_SCRIPT_PATH" "$test_tmp/direct-strict.out"
 make_fixture "$test_tmp/direct-safe-fixture" $'See scripts/run.py for details.\ncat scripts/run.py\n[helper](scripts/run.py)\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\necho hi >& ./scripts/run.log\necho hi &> ./scripts/run.log\necho hi > ./scripts/run.log\necho hi >> ./scripts/run.log\n2 > ./scripts/run.log ./scripts/run.py\necho "(./scripts/run.py)"\necho \\(./scripts/run.py\\)\nprintf "%s" "inside (./scripts/run.py) text"\necho "{ ./scripts/run.py; }"\necho \\{./scripts/run.py\\}\necho {} ./scripts/run.py\necho {word} ./scripts/run.py\necho prefix{a,b} ./scripts/run.py\necho ${VALUE} ./scripts/run.py\nfind . -exec echo {} ./scripts/run.py \\;'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/direct-safe-fixture" > "$test_tmp/direct-safe.json"
 
+make_fixture "$test_tmp/control-prefix-direct-fixture" $'if ./scripts/run.py; then echo ok; fi\nwhile ./scripts/run.py; do echo ok; done\nuntil ./scripts/run.py; do echo ok; done\nthen ./scripts/run.py; fi\ndo ./scripts/run.py; done\nelif ./scripts/run.py; then echo ok; fi\nelse ./scripts/run.py; fi\n! ./scripts/run.py\nif ! ./scripts/run.py; then echo ok; fi\nfi; ./scripts/run.py\ndone && ./scripts/run.py'
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/control-prefix-direct-fixture" > "$test_tmp/control-prefix-direct.json"
+control_prefix_direct_exit=$?
+set -e
+[[ $control_prefix_direct_exit -eq 1 ]]
+
+make_fixture "$test_tmp/control-prefix-safe-fixture" $'echo if ./scripts/run.py\n"if" ./scripts/run.py\n\\if ./scripts/run.py\n"while" ./scripts/run.py\n"!" ./scripts/run.py\nifx ./scripts/run.py\nfi ./scripts/run.py\ndone ./scripts/run.py\nUse if before ./scripts/run.py.\ncat then ./scripts/run.py\necho "do" ./scripts/run.py\nif ./scripts/run.py is unavailable, use the fallback.\nwhile ./scripts/run.py remains the documented helper, keep this note.\nuntil ./scripts/run.py changes, no migration is needed.\nthen ./scripts/run.py is the next file to review.\nelse ./scripts/run.py remains an example path.'
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/control-prefix-safe-fixture" > "$test_tmp/control-prefix-safe.json"
+
 make_fixture "$test_tmp/assignment-direct-fixture" $'MODE=strict ./scripts/run.py\nA=1 B="two words" scripts/run.py\ntrue && MODE=strict ./scripts/run.py\nCONFIG=\'{"mode":"strict"}\' scripts/run.py\nprintf "%s" "#"; MODE=strict ./scripts/run.py\nMODE=strict \\\n  ./scripts/run.py'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/assignment-direct-fixture" > "$test_tmp/assignment-direct.json"
@@ -1081,6 +1091,8 @@ const bare = JSON.parse(fs.readFileSync(path.join(temporary, "bare.json")));
 const dotBare = JSON.parse(fs.readFileSync(path.join(temporary, "dot-bare.json")));
 const directBare = JSON.parse(fs.readFileSync(path.join(temporary, "direct-bare.json")));
 const directSafe = JSON.parse(fs.readFileSync(path.join(temporary, "direct-safe.json")));
+const controlPrefixDirect = JSON.parse(fs.readFileSync(path.join(temporary, "control-prefix-direct.json")));
+const controlPrefixSafe = JSON.parse(fs.readFileSync(path.join(temporary, "control-prefix-safe.json")));
 const assignmentDirect = JSON.parse(fs.readFileSync(path.join(temporary, "assignment-direct.json")));
 const assignmentSafe = JSON.parse(fs.readFileSync(path.join(temporary, "assignment-safe.json")));
 const optionBare = JSON.parse(fs.readFileSync(path.join(temporary, "option-bare.json")));
@@ -1180,7 +1192,8 @@ assert(freeze.budgetRevision.optionalSidecarAndAssignmentExecutableDeltaBytes ==
 assert(freeze.budgetRevision.groupingOperatorExecutableDeltaBytes === 226, "grouping operator executable delta changed");
 assert(freeze.budgetRevision.scriptSyntaxAttestationExecutableDeltaBytes === 2673, "script syntax attestation executable delta changed");
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeSyntaxAttestation === 40000, "pre-attestation package cap changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 16333, "current executable delta changed");
+assert(freeze.budgetRevision.shellControlPrefixExecutableDeltaBytes === 959, "shell control-prefix executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 17292, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1203,7 +1216,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 41476, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 42435, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -1230,6 +1243,8 @@ assert(dotBare.status === "fail", "dot-relative script fixture must fail under w
 assert(dotBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all dot-relative interpreter examples must be detected");
 assert(directBare.status === "fail" && directBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 29, "direct task-relative commands must fail at command and grouping boundaries");
 assert(directSafe.status === "pass" && directSafe.warningCount === 0, "prose, arguments, links, and explicit skill paths must not look executable");
+assert(controlPrefixDirect.status === "fail" && controlPrefixDirect.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 11, "shell control prefixes and real separators must preserve command position");
+assert(controlPrefixSafe.status === "pass" && controlPrefixSafe.warningCount === 0, "quoted, escaped, prose, argument, fi, and done lookalikes must remain safe");
 const newContractFailures = [];
 if (assignmentDirect.status !== "fail" || assignmentDirect.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length !== 6) newContractFailures.push("assignment-prefixed direct helpers are not all rejected");
 if (assignmentSafe.status !== "pass" || assignmentSafe.warningCount !== 0) newContractFailures.push("assignment safe boundaries changed");

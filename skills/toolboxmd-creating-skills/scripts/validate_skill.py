@@ -35,6 +35,10 @@ FRAGILE_SCRIPT_RE = re.compile(
     r"[^\r\n;&|]*?[ \t]+[\"']?(?:\./)?scripts/"
 )
 ASSIGNMENT_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+SHELL_CONTROL_PREFIXES = {
+    "if": "then", "while": "do", "until": "do", "then": "fi",
+    "do": "done", "elif": "then", "else": "fi", "!": "",
+}
 SHELL_CONTINUATION_RE = re.compile(r"(\\+)(?:\r\n|\n)[ \t]*")
 ROOT_NAMES = ("Users", "home", "workspace", "root")
 POSIX_ROOTS = "|".join(re.escape(f"/{name}/") for name in ROOT_NAMES)
@@ -124,9 +128,11 @@ def has_direct_task_script(line: str) -> bool:
     word: list[tuple[str, bool]] = []
     command = True
     redirect = False
+    control_close = ""
+    control_direct = False
 
     def finish() -> bool:
-        nonlocal word, command, redirect
+        nonlocal word, command, redirect, control_close, control_direct
         if not word:
             return False
         if redirect:
@@ -137,11 +143,30 @@ def has_direct_task_script(line: str) -> bool:
         assignment = equals > 0 and all(not marked for _, marked in word[:equals]) and ASSIGNMENT_NAME_RE.fullmatch(
             value[:equals]
         )
-        inspect = command and not assignment
+        plain = all(not marked for _, marked in word)
+        boundary = command and plain and (
+            value == control_close or control_close == "fi" and value in {"elif", "else"}
+        )
+        if boundary and control_direct:
+            return True
+        control = command and plain and value in SHELL_CONTROL_PREFIXES
+        if control:
+            expected = SHELL_CONTROL_PREFIXES[value]
+            if expected:
+                control_close, control_direct = expected, False
+            word = []
+            return False
+        if boundary:
+            control_close = ""
+        inspect = command and not assignment and not control
         if inspect:
             command = False
         word = []
-        return inspect and value.startswith(("scripts/", "./scripts/"))
+        direct = inspect and value.startswith(("scripts/", "./scripts/"))
+        if direct and control_close:
+            control_direct = True
+            return False
+        return direct
 
     quote = ""
     escaped = False

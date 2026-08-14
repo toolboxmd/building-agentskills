@@ -71,7 +71,9 @@
     "scriptSyntaxAttestationReason": "Exact-HEAD review required standalone unquoted shell grouping braces, without treating ordinary brace words as commands, and a no-execution, exact-digest operator attestation that lets separately checked non-Python helpers pass strict validation without claiming ToolboxMD ran their syntax commands.",
     "previousPackageBytesMaximumBeforeSyntaxAttestation": 40000,
     "syntaxAttestationCapRevisionReason": "The 4,000-byte cap revision preserves readable deterministic path, file-type, duplicate, and stale-digest diagnostics. Activated-core, description, file, reference, eval, and script budgets are unchanged, and no extra evidence artifact is required.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 16333,
+    "shellControlPrefixExecutableDeltaBytes": 959,
+    "shellControlPrefixReason": "Exact-HEAD review required bounded same-line shell clause state for a fixed unquoted control-prefix set, preserving command position without treating quoted, escaped, prose, argument, fi, or done tokens as command boundaries.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 17292,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -85,9 +87,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "e3b3ba814facb28590970e46ecfb04b9867664bb4166d789f913c6fb6ea33084",
+    "aggregateSha256": "60b79262b88e90fc4050ae4609362f9331aa7e099ceef40243a72f19ac9f4fef",
     "fileCount": 3,
-    "packageBytes": 41476,
+    "packageBytes": 42435,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -109,8 +111,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 36199,
-        "sha256": "5cb6a808f4921ea0481aac264236928687ac7ab79e702d40108f44b2258c88b8"
+        "bytes": 37158,
+        "sha256": "eb6524d8969426e411542fdf3ccd25c4d7717e56f4b9fa0d4f25baa8ac6f9e87"
       }
     ]
   },
@@ -120,6 +122,7 @@
       "the frozen product package and exact creator budgets reproduce",
       "the validator runs from outside the package without Python bytecode writes",
       "bare interpreter-prefixed and direct command-position task-relative helpers fail, including quoted, dot-relative, option-bearing, separator-led, grouping-parenthesis, grouping-brace, and odd-backslash shell-line-continued forms, without joining even-backslash or ordinary newlines",
+      "bounded same-line shell clause state for a fixed unquoted control-prefix set preserves command position while quoted, escaped, prose, argument, fi, and done lookalikes remain safe unless a real separator follows",
       "the prescribed validator command enables warnings-as-errors while prose, argument, Markdown-link, and explicit skill-directory script paths remain accepted",
       "direct helpers after bounded empty, unquoted, single-quoted, and double-quoted POSIX assignment words fail while assignment prose and intervening commands remain accepted",
       "explicit skill-directory script examples pass",
