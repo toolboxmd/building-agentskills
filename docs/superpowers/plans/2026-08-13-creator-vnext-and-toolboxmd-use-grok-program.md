@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 42,435 bytes, aggregate SHA-256
-  `60b79262b88e90fc4050ae4609362f9331aa7e099ceef40243a72f19ac9f4fef`;
+- exact package: three files, 42,567 bytes, aggregate SHA-256
+  `9b97a110b8d92b24a2787750effb99ffe5469a42e6163c4f7c7b149a97234ee2`;
 - activated core: 78 lines and 5,061 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -168,6 +168,9 @@ Completion evidence, updated 2026-08-14:
   The cumulative executable delta is 17,292 bytes; quoted, escaped, prose,
   argument, `fi`, and `done` tokens do not reset command position without a
   real separator. Multiline and nested shell parsing remain outside scope;
+- built-in host-validator compatibility added 132 executable bytes to reject
+  `<` or `>` in descriptions even when `skills-ref` is unavailable. The
+  cumulative executable delta is 17,424 bytes;
 - canonical subset v2 leaves only `name` unquoted. Every other top-level
   string and every user-defined portable metadata key and value uses one-line
   JSON double quotes.

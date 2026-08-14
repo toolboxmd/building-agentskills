@@ -460,6 +460,44 @@ description: "[one, two]"
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/quoted-description" > "$test_tmp/quoted-description.json"
 
+for name in angle-less-than-description angle-greater-than-description angle-safe-description; do
+  mkdir -p "$test_tmp/$name"
+done
+cat > "$test_tmp/angle-less-than-description/SKILL.md" <<'EOF'
+---
+name: angle-less-than-description
+description: "Use when processing <tag input."
+---
+
+# Less-than description
+EOF
+cat > "$test_tmp/angle-greater-than-description/SKILL.md" <<'EOF'
+---
+name: angle-greater-than-description
+description: "Use when processing tag> input."
+---
+
+# Greater-than description
+EOF
+cat > "$test_tmp/angle-safe-description/SKILL.md" <<'EOF'
+---
+name: angle-safe-description
+description: "Use when processing ordinary tagged input."
+---
+
+# Safe description
+EOF
+python_bin="$(command -v python3)"
+mkdir -p "$test_tmp/no-skills-ref-bin"
+for name in angle-less-than-description angle-greater-than-description; do
+  set +e
+  PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
+  angle_exit=$?
+  set -e
+  [[ $angle_exit -eq 1 ]]
+done
+PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --json "$test_tmp/angle-safe-description" > "$test_tmp/angle-safe-description.json"
+
 mkdir -p "$test_tmp/unquoted-date-description" "$test_tmp/quoted-name" "$test_tmp/portable-metadata-sequence" "$test_tmp/portable-hermes-sequence" "$test_tmp/hermes-config-sequence" "$test_tmp/hermes-child-sequence" "$test_tmp/unquoted-portable-metadata" "$test_tmp/quoted-portable-metadata-keys"
 cat > "$test_tmp/unquoted-date-description/SKILL.md" <<'EOF'
 ---
@@ -1116,6 +1154,8 @@ const escapingReference = JSON.parse(fs.readFileSync(path.join(temporary, "escap
 const reserved = ["claude-helper", "anthropic-helper"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const listDescription = JSON.parse(fs.readFileSync(path.join(temporary, "list-description.json")));
 const quotedDescription = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-description.json")));
+const angleDescriptions = ["angle-less-than-description", "angle-greater-than-description"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const angleSafeDescription = JSON.parse(fs.readFileSync(path.join(temporary, "angle-safe-description.json")));
 const unquotedDateDescription = JSON.parse(fs.readFileSync(path.join(temporary, "unquoted-date-description.json")));
 const quotedName = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-name.json")));
 const portableMetadataSequence = JSON.parse(fs.readFileSync(path.join(temporary, "portable-metadata-sequence.json")));
@@ -1193,7 +1233,8 @@ assert(freeze.budgetRevision.groupingOperatorExecutableDeltaBytes === 226, "grou
 assert(freeze.budgetRevision.scriptSyntaxAttestationExecutableDeltaBytes === 2673, "script syntax attestation executable delta changed");
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeSyntaxAttestation === 40000, "pre-attestation package cap changed");
 assert(freeze.budgetRevision.shellControlPrefixExecutableDeltaBytes === 959, "shell control-prefix executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 17292, "current executable delta changed");
+assert(freeze.budgetRevision.descriptionAngleBracketExecutableDeltaBytes === 132, "description angle-bracket executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 17424, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1216,7 +1257,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 42435, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 42567, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -1237,6 +1278,9 @@ assert(escapingReference.issues.some(item => item.code === "LINK_ESCAPE"), "esca
 assert(reserved.every(result => result.status === "fail" && result.issues.some(item => item.code === "NAME_RESERVED")), "reserved provider names must fail");
 assert(listDescription.status === "fail" && listDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted collection description must fail");
 assert(quotedDescription.status === "pass", "quoted collection-looking description must remain a string");
+assert(angleDescriptions.every(result => result.status === "fail" && result.issues.some(item => item.code === "DESCRIPTION_ANGLE_BRACKET")), "each description angle bracket must fail without skills-ref");
+assert(angleDescriptions.every(result => result.coverage.officialSkillsRef.status === "not_available"), "angle-bracket checks must not depend on skills-ref");
+assert(angleSafeDescription.status === "pass", "ordinary quoted description text must remain valid");
 assert(unquotedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_STRING")), "all unquoted description scalars must fail");
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
 assert(dotBare.status === "fail", "dot-relative script fixture must fail under warnings-as-errors");

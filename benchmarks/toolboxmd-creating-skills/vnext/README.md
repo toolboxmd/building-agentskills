@@ -67,7 +67,10 @@ Bounded same-line clause state for a fixed shell control-prefix set then added
 preserves command position after `if`, `while`, `until`, `then`, `do`, `elif`,
 `else`, and `!` without treating quoted, escaped, prose, argument, `fi`, or
 `done` tokens as control boundaries. Multiline and nested shell parsing remain
-outside the checker contract.
+outside the checker contract. A final host-validator compatibility check added
+132 executable bytes so descriptions containing `<` or `>` fail even when the
+optional `skills-ref` executable is unavailable. The cumulative executable
+delta is 17,424 bytes.
 
 Canonical subset v2 leaves only the exact `name` slug unquoted. Every other
 top-level string and every user-defined portable metadata key and value uses a
@@ -91,6 +94,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 42,435 bytes: 5,061 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 37,158-byte read-only checker. The executable is not
+The frozen package is 42,567 bytes: 5,061 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 37,290-byte read-only checker. The executable is not
 loaded as activated core.

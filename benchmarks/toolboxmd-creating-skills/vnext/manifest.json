@@ -73,7 +73,9 @@
     "syntaxAttestationCapRevisionReason": "The 4,000-byte cap revision preserves readable deterministic path, file-type, duplicate, and stale-digest diagnostics. Activated-core, description, file, reference, eval, and script budgets are unchanged, and no extra evidence artifact is required.",
     "shellControlPrefixExecutableDeltaBytes": 959,
     "shellControlPrefixReason": "Exact-HEAD review required bounded same-line shell clause state for a fixed unquoted control-prefix set, preserving command position without treating quoted, escaped, prose, argument, fi, or done tokens as command boundaries.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 17292,
+    "descriptionAngleBracketExecutableDeltaBytes": 132,
+    "descriptionAngleBracketReason": "Exact-HEAD review required built-in host-validator compatibility for descriptions containing angle brackets when the optional skills-ref executable is unavailable.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 17424,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -87,9 +89,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "60b79262b88e90fc4050ae4609362f9331aa7e099ceef40243a72f19ac9f4fef",
+    "aggregateSha256": "9b97a110b8d92b24a2787750effb99ffe5469a42e6163c4f7c7b149a97234ee2",
     "fileCount": 3,
-    "packageBytes": 42435,
+    "packageBytes": 42567,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -111,8 +113,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 37158,
-        "sha256": "eb6524d8969426e411542fdf3ccd25c4d7717e56f4b9fa0d4f25baa8ac6f9e87"
+        "bytes": 37290,
+        "sha256": "bcd0304dda3c0fb1455527a0554b3cca664107284f387e03b332d2dfa086422f"
       }
     ]
   },
@@ -133,6 +135,7 @@
       "skill names containing reserved provider strings fail",
       "name is the sole unquoted scalar while all other top-level strings require one-line JSON double quotes",
       "the quote-only contract rejects plain prose, dates, hexadecimal, octal, collections, booleans, nulls, numbers, special floats, single quotes, block scalars, tags, nested scalar syntax, and invalid quotes without partial implicit-YAML classification",
+      "description angle brackets fail the built-in host-validator compatibility check even when skills-ref is unavailable, while ordinary quoted prose passes",
       "portable metadata uses JSON-double-quoted user-defined keys and values with no sequence markers, while explicit Hermes mode keeps fixed schema fields unquoted and requires double-quoted user-provided values",
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
       "canonical Markdown links ignore code and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",

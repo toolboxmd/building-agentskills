@@ -700,6 +700,8 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
     if not isinstance(description, str) or not description.strip():
         fail("DESCRIPTION_REQUIRED", "description is required")
         description = ""
+    elif "<" in description or ">" in description:
+        fail("DESCRIPTION_ANGLE_BRACKET", "description must not contain < or >")
     compatibility = metadata.get("compatibility")
     if isinstance(compatibility, str) and len(compatibility) > 500:
         fail("COMPATIBILITY_BUDGET", "compatibility > 500 chars")
