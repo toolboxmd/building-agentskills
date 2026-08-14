@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 44,015 bytes, aggregate SHA-256
-  `3251b048c5c3746532cf7df8eb9ef9ffccc701f5290db9ab01ebf1c2e5293141`;
+- exact package: three files, 44,804 bytes, aggregate SHA-256
+  `76b175016bd42efc51d725a93a309636cc45f5fd5fdc0235a7401c71f44eca5d`;
 - activated core: 78 lines and 4,439 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -229,6 +229,14 @@ Completion evidence, updated 2026-08-14:
   the package cap is now 45,000 bytes while activated-core, description, file,
   reference, eval, and script budgets remain unchanged. No lower package-cost,
   superiority, or promotion claim is allowed;
+- the next exact-HEAD correction adds 789 executable bytes and brings the
+  cumulative delta to 20,283 bytes. A raised package budget cannot loosen the
+  portable 1,024-character description ceiling, while a lower budget remains
+  effective. Percent-decoding applies only to lexically bounded
+  empty-authority or localhost file URI paths before case-sensitive POSIX-root
+  checks; embedded text, remote authorities, and remote or anchor destinations
+  remain nonlocal. The 45,000-byte cap and all non-package-byte budgets are
+  unchanged;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.
@@ -286,6 +294,8 @@ Completion evidence, updated 2026-08-14:
   titled local links; rejects
   reserved provider names, single-quoted values, and every unquoted top-level
   string including names, prose, dates, hexadecimal, octal, and YAML typed scalars,
+  enforces the portable 1,024-character description ceiling even when a caller
+  raises the package budget while allowing a stricter budget,
   prevents trailing comments from hiding quoting errors, rejects block scalars,
   accepts the exact Hermes config extension only in explicit extension mode
   with double-quoted key-led sequence items and required descriptions, and
@@ -294,8 +304,10 @@ Completion evidence, updated 2026-08-14:
   ignores link syntax inside Markdown code, validates canonical single-line
   reference destinations, warns when complex Markdown requires official
   coverage, detects POSIX, container, case-insensitive Windows drive-user,
-  file URI, and shebang-local paths while ignoring remote and anchor-link
-  query or fragment text during workstation-path scanning;
+  percent-decodes lexically bounded empty-authority or localhost file URI
+  paths, and detects shebang-local paths while ignoring embedded file text,
+  remote authorities, and remote or anchor-link query or fragment text during
+  workstation-path scanning;
   requires an exact-current-byte operator
   attestation before a separately checked non-Python helper can pass strict
   mode, and reports that ToolboxMD did not execute the language-specific

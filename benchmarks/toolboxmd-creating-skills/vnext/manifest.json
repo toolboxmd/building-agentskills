@@ -99,7 +99,9 @@
     "extensionSkipAndSidecarUtf8Reason": "Exact-HEAD review required invalid UTF-8 OpenAI sidecars to remain a single package-validation error and required explicit Hermes extension mode to skip the portable skills-ref cross-check before executable discovery or invocation.",
     "previousPackageBytesMaximumBeforeExtensionSkip": 44000,
     "extensionSkipCapRevisionReason": "The 1,000-byte package-cap revision preserves readable executable-only UTF-8 and extension-boundary handling after a bounded active-core deletion pass. Activated-core, description, file, reference, eval, and script budgets are unchanged, and no lower total package-size claim is allowed.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 19494,
+    "descriptionAndEncodedFileUriExecutableDeltaBytes": 789,
+    "descriptionAndEncodedFileUriReason": "Exact-HEAD review required the portable 1,024-character description ceiling to remain invariant when callers raise the package budget and required percent-decoding only lexically bounded empty-authority or localhost file URI paths before case-sensitive workstation-root classification, without treating embedded text, remote authorities, or remote and anchor destinations as local.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 20283,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -113,9 +115,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "3251b048c5c3746532cf7df8eb9ef9ffccc701f5290db9ab01ebf1c2e5293141",
+    "aggregateSha256": "76b175016bd42efc51d725a93a309636cc45f5fd5fdc0235a7401c71f44eca5d",
     "fileCount": 3,
-    "packageBytes": 44015,
+    "packageBytes": 44804,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -137,8 +139,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 39360,
-        "sha256": "41697e84c233a2ce26b89c3d8f4969907130f4a7fa3db130553426c40bdcdee4"
+        "bytes": 40149,
+        "sha256": "14dc3f29bca1735be3b0371d97ba53e3bed4c7b76c3e0eb75a4199d2be6db3a3"
       }
     ]
   },
@@ -160,12 +162,13 @@
       "every top-level string, including name, requires one-line JSON double quotes before slug, reserved-name, length, and directory checks",
       "YAML-invalid lone and paired JSON surrogate escapes fail through the shared canonical scalar decoder across top-level fields, portable metadata keys and values, Hermes values, and OpenAI sidecars while literal Unicode scalar values and escaped backslash text remain valid",
       "the quote-only contract rejects plain prose, dates, hexadecimal, octal, collections, booleans, nulls, numbers, special floats, single quotes, block scalars, tags, nested scalar syntax, and invalid quotes without partial implicit-YAML classification",
+      "the portable description ceiling is 1,024 characters regardless of a looser package-budget flag, while callers may impose a stricter budget",
       "description angle brackets fail the built-in host-validator compatibility check even when skills-ref is unavailable, while ordinary quoted prose passes",
       "portable metadata uses JSON-double-quoted user-defined keys and values with no sequence markers, while explicit Hermes mode keeps fixed schema fields unquoted and requires double-quoted user-provided values",
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
       "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus inline, indented, and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "blank lines retain root, blockquote, list, and nested blockquote-list fence state without waiving required blockquote markers or nonblank container exits",
-      "common POSIX, container, file URI, and Windows workstation paths are detected, including case-insensitive file schemes, empty or case-insensitive localhost authorities, shebangs, and case-insensitive Windows drive-user roots, while POSIX root spelling stays case-sensitive and remote file authorities and remote or anchor Markdown destinations remain nonlocal",
+      "common POSIX, container, file URI, and Windows workstation paths are detected, including percent-decoded lexically bounded local file URI paths, case-insensitive file schemes, empty or case-insensitive localhost authorities, shebangs, and case-insensitive Windows drive-user roots, while decoded POSIX root spelling stays case-sensitive and embedded file text, remote file authorities, and remote or anchor destinations remain nonlocal",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, invalid UTF-8 Python remains a single package-validation error before AST parsing, and binary assets are skipped",
       "executable or shebang helpers outside scripts/ fail canonical package policy while outside non-executable data without a shebang remains allowed",
       "Python helper syntax below scripts/ is checked through AST while non-Python helpers there require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",

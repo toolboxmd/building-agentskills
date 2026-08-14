@@ -32,9 +32,12 @@ SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
 SCRIPT_CONTEXT_HINT = f"{SCRIPT_ROOT_HINT} in a closed sh/bash/shell fence"
 LOCAL_ROOTS = "(?:Users|home|workspace|root)"
 LOCAL_PATH_RE = re.compile(
-    rf"(?:(?i:file://(?:localhost)?/){LOCAL_ROOTS}/|(?<![A-Za-z0-9:/])(?:/{LOCAL_ROOTS}/|"
-    rf"(?i:[A-Za-z]:(?:/Users/|(?:\\)+Users(?:\\)+))))[^\s'\"`]+"
+    rf"(?<![A-Za-z0-9:/])(?:/{LOCAL_ROOTS}/|(?i:[A-Za-z]:(?:/Users/|(?:\\)+Users(?:\\)+)))[^\s'\"`]+"
 )
+FILE_URI_RE = re.compile(r'''(?i:file://)[^\s'"`<>()]+''')
+LOCAL_FILE_URI_RE = re.compile(r'''(?<![A-Za-z0-9+./:#?=&_-])(?i:file://(?:localhost)?/)[^\s'"`<>()]+''')
+REMOTE_URI_CONTEXT_RE = re.compile(r'''(?i:(?:https?://)[^\s'"`]+|#[^\s'"`]*file://[^\s'"`]*)''')
+LOCAL_FILE_PATH_RE = re.compile(rf"^/{LOCAL_ROOTS}/")
 PROCESS_NAMES = {"README.md", "CHANGELOG.md", "STATUS.md", "DESIGN.md", "NOTES.md"}
 TEXT_SUFFIXES = {
     ".md", ".yaml", ".yml", ".json", ".py", ".sh", ".bash",
@@ -42,6 +45,7 @@ TEXT_SUFFIXES = {
     ".svg", ".xml", ".txt", ".toml", ".html", ".css",
 }
 OFFICIAL_TIMEOUT_SECONDS = 2
+PORTABLE_DESCRIPTION_MAX = 1024
 
 
 class InspectionError(Exception):
@@ -442,7 +446,13 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
 
             for pattern in (LINK_RE, REFERENCE_DEFINITION_RE):
                 path_searchable = pattern.sub(mask_destination, path_searchable)
-        if LOCAL_PATH_RE.search(path_searchable):
+        path_searchable = REMOTE_URI_CONTEXT_RE.sub("", path_searchable)
+        local_file_uri = any(
+            LOCAL_FILE_PATH_RE.match(unquote(urlsplit(raw).path))
+            for raw in LOCAL_FILE_URI_RE.findall(path_searchable)
+        )
+        path_searchable = FILE_URI_RE.sub("", path_searchable)
+        if LOCAL_PATH_RE.search(path_searchable) or local_file_uri:
             problems.append(issue("LOCAL_PATH", relative, "workstation path"))
         source_surface = relative.startswith("scripts/") or os.access(path, os.X_OK) or content.startswith("#!")
         if source_surface:
@@ -750,7 +760,7 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
     eval_files = sum(str(record["path"]).startswith("evals/") for record in files)
     script_files = sum(str(record["path"]).startswith("scripts/") for record in files)
     metric_rows = (
-        ("descriptionCharacters", len(description), args.max_description_chars, "DESCRIPTION_BUDGET", "description characters"),
+        ("descriptionCharacters", len(description), min(args.max_description_chars, PORTABLE_DESCRIPTION_MAX), "DESCRIPTION_BUDGET", "description characters"),
         ("skillMdLines", skill_lines, args.max_skill_lines, "SKILL_LINES_BUDGET", "SKILL.md lines"),
         ("skillMdBytes", skill_bytes, args.max_skill_bytes, "SKILL_BYTES_BUDGET", "SKILL.md bytes"),
         ("fileCount", len(files), args.max_files, "FILE_COUNT_BUDGET", "package files"),
@@ -811,7 +821,9 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--script-syntax-checked", action="append", default=[], metavar="PATH=SHA256",
                         help="attest checked non-Python helper bytes")
     result.add_argument("--allow-hermes-metadata", action="store_true", help="allow canonical Hermes config")
-    limits = (("description-chars", 1024), ("skill-lines", 499), ("skill-bytes", None), ("files", None),
+    result.add_argument("--max-description-chars", type=int, default=PORTABLE_DESCRIPTION_MAX,
+                        help="tighten portable 1024-character ceiling")
+    limits = (("skill-lines", 499), ("skill-bytes", None), ("files", None),
               ("package-bytes", None), ("reference-files", None), ("eval-files", None), ("script-files", None))
     for name, default in limits:
         result.add_argument(f"--max-{name}", type=int, default=default)

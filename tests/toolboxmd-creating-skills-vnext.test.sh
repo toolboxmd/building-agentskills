@@ -32,6 +32,7 @@ help_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validato
 [[ "$help_output" == *"Exit: 0 valid, 1 invalid, 2 inspection error."* ]]
 [[ "$help_output" == *"--script-syntax-checked PATH=SHA256"* ]]
 [[ "$help_output" == *"--creation-mode"* ]]
+[[ "$help_output" == *"tighten portable 1024-character ceiling"* ]]
 
 human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" \
   --creation-mode \
@@ -1031,6 +1032,32 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --max-description-chars
 indented_budget_exit=$?
 set -e
 [[ $indented_budget_exit -eq 1 ]]
+
+for size in 1024 1025; do
+  directory="$test_tmp/description-$size"
+  mkdir -p "$directory"
+  node - "$directory" "$size" <<'NODE'
+const fs = require("node:fs");
+const path = require("node:path");
+const [directory, rawSize] = process.argv.slice(2);
+const name = path.basename(directory);
+const description = "x".repeat(Number(rawSize));
+fs.writeFileSync(path.join(directory, "SKILL.md"), `---\nname: "${name}"\ndescription: "${description}"\n---\n\n# Description boundary\n`);
+NODE
+done
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --max-description-chars 2000 "$test_tmp/description-1024" > "$test_tmp/description-1024-raised.json"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --max-description-chars 2000 "$test_tmp/description-1025" > "$test_tmp/description-1025-raised.json"
+description_1025_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --max-description-chars 1000 "$test_tmp/description-1024" > "$test_tmp/description-1024-lowered.json"
+description_1024_lowered_exit=$?
+set -e
+if [[ $description_1025_exit -ne 1 ]]; then
+  echo "FAIL: raised package budget bypassed the portable description ceiling" >&2
+  exit 1
+fi
+[[ $description_1024_lowered_exit -eq 1 ]]
+
 printf '%s\n' '---' 'name: "tabbed-block"' 'description: |-' $'\tTabbed indentation is invalid.' '---' '' '# Tabbed block' > "$test_tmp/tabbed-block/SKILL.md"
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/tabbed-block" > "$test_tmp/tabbed-block.json"
@@ -1412,6 +1439,28 @@ make_fixture "$test_tmp/file-uri-case-safe" 'PYTHONDONTWRITEBYTECODE=1 python3 -
 printf '\n[Remote](FILE://example.com/home/alice/input.json) and [wrong-case root](FiLe:///Home/alice/input.json).\n' >> "$test_tmp/file-uri-case-safe/SKILL.md"
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/file-uri-case-safe" > "$test_tmp/file-uri-case-safe.json"
 
+for name in encoded-file-uri-local encoded-file-uri-localhost encoded-file-uri-safe; do
+  make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+done
+printf '%s\n' '' '[Encoded home](file:///h%6fme/alice/input.json).' >> "$test_tmp/encoded-file-uri-local/SKILL.md"
+printf '%s\n' '' '[Encoded root](FiLe://LOCALHOST/%72oot/project/input.json) and FILE://localhost/%55sers/Alice/work/file.txt.' >> "$test_tmp/encoded-file-uri-localhost/SKILL.md"
+printf '%s\n' '' '[Remote file](file://example.com/h%6fme/alice/input.json), [wrong-case root](FiLe://localhost/%48ome/alice/input.json), [remote query](https://example.com/?next=file:///h%6fme/alice/input.json), [remote fragment](https://example.com/#file:///h%6fme/alice/input.json), [anchor](#file:///h%6fme/alice/input.json), [malformed](file:///h%ZZome/alice/input.json), and [malformed prefix](file:///%/Users/alice/input.json).' >> "$test_tmp/encoded-file-uri-safe/SKILL.md"
+printf '%s\n' 'Embedded profile:///h%6fme/a, not-FILE:///home/a, https://example.com/?next=file:///h%6fme/a, https://example.com/#file:///h%6fme/a, and #file:///h%6fme/a are not local file URI tokens.' >> "$test_tmp/encoded-file-uri-safe/SKILL.md"
+printf '%s\n' 'Remote file://[2001:db8::1]/home/a and file://files.example./workspace/a authorities are not local.' >> "$test_tmp/encoded-file-uri-safe/SKILL.md"
+printf '%s\n' 'Combined https://example.com/?next=file://[2001:db8::1]/home/a, https://example.com/#file://files.example./workspace/a, #file://[2001:db8::1]/root/a, https://example.com/?next=file:///%/Users/a, and #file:///%/workspace/a remain nonlocal.' >> "$test_tmp/encoded-file-uri-safe/SKILL.md"
+printf '%s\n' 'Nested https://example.com/?next=(file:///%68ome/alice/input) and #(file:///%72oot/alice/input) remain remote or anchor text.' >> "$test_tmp/encoded-file-uri-safe/SKILL.md"
+for name in encoded-file-uri-local encoded-file-uri-localhost; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
+  encoded_file_uri_exit=$?
+  set -e
+  if [[ $encoded_file_uri_exit -ne 1 ]]; then
+    printf 'FAIL: encoded local file URI %s returned exit %s\n' "$name" "$encoded_file_uri_exit" >&2
+    exit 1
+  fi
+done
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/encoded-file-uri-safe" > "$test_tmp/encoded-file-uri-safe.json"
+
 for name in windows-forward windows-escaped windows-lowercase-backslash windows-uppercase-forward; do
   make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 done
@@ -1548,6 +1597,9 @@ const commentKinds = ["collection", "boolean", "null", "numeric"];
 const commentedScalars = commentKinds.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `commented-${name}-description.json`))));
 const quotedHash = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-hash-description.json")));
 const blockDescription = JSON.parse(fs.readFileSync(path.join(temporary, "block-description.json")));
+const description1024Raised = JSON.parse(fs.readFileSync(path.join(temporary, "description-1024-raised.json")));
+const description1025Raised = JSON.parse(fs.readFileSync(path.join(temporary, "description-1025-raised.json")));
+const description1024Lowered = JSON.parse(fs.readFileSync(path.join(temporary, "description-1024-lowered.json")));
 const doubledQuote = JSON.parse(fs.readFileSync(path.join(temporary, "doubled-quote-budget.json")));
 const hermesMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "hermes-metadata.json")));
 const hermesDefault = JSON.parse(fs.readFileSync(path.join(temporary, "hermes-default.json")));
@@ -1581,6 +1633,8 @@ const fileUriLocalAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "f
 const fileUriRemoteAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-remote-authority.json")));
 const fileUriCaseLocal = ["file-uri-uppercase-empty-authority", "file-uri-mixed-localhost"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const fileUriCaseSafe = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-case-safe.json")));
+const encodedFileUriLocal = ["encoded-file-uri-local", "encoded-file-uri-localhost"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const encodedFileUriSafe = JSON.parse(fs.readFileSync(path.join(temporary, "encoded-file-uri-safe.json")));
 const windowsPaths = ["windows-forward", "windows-escaped", "windows-lowercase-backslash", "windows-uppercase-forward"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const webRootLink = JSON.parse(fs.readFileSync(path.join(temporary, "web-root-link.json")));
 const remoteWindowsLinks = JSON.parse(fs.readFileSync(path.join(temporary, "remote-windows-links.json")));
@@ -1631,7 +1685,8 @@ assert(freeze.budgetRevision.mixedDotAndPythonUtf8ExecutableDeltaBytes === 17, "
 assert(freeze.budgetRevision.fileUriCaseExecutableDeltaBytes === 4, "file-URI-case executable delta changed");
 assert(freeze.budgetRevision.extensionSkipAndSidecarUtf8ExecutableDeltaBytes === 187, "extension-skip/sidecar-UTF8 executable delta changed");
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeExtensionSkip === 44000, "pre-extension-skip package cap changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19494, "current executable delta changed");
+assert(freeze.budgetRevision.descriptionAndEncodedFileUriExecutableDeltaBytes === 789, "description/file-URI executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 20283, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1655,7 +1710,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 44015, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 44804, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1726,6 +1781,9 @@ assert(hermesInvalidSequences.every(result => result.status === "fail" && result
 assert(commentedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_STRING")), "trailing comments must not hide unquoted scalars");
 assert(quotedHash.status === "pass", "hashes inside quoted strings must remain content");
 assert(blockDescription.status === "fail" && blockDescription.issues.some(item => item.code === "FRONTMATTER_STYLE"), "block frontmatter must be rejected as noncanonical");
+assert(description1024Raised.status === "pass" && description1024Raised.metrics.descriptionCharacters === 1024, "the exact portable description ceiling must pass when the package budget is raised");
+assert(description1025Raised.status === "fail" && description1025Raised.issues.some(item => item.code === "DESCRIPTION_BUDGET" && item.message.includes("1025 > 1024")), "the portable description ceiling must not be raised by a package budget");
+assert(description1024Lowered.status === "fail" && description1024Lowered.issues.some(item => item.code === "DESCRIPTION_BUDGET" && item.message.includes("1024 > 1000")), "the package budget must still tighten the portable description ceiling");
 assert(doubledQuote.status === "fail" && doubledQuote.issues.some(item => item.code === "FRONTMATTER_STRING"), "single-quoted strings must fail the canonical contract");
 assert(hermesDefault.status === "fail", "portable-core mode must reject nested Hermes metadata");
 assert(hermesMetadata.status === "pass" && hermesMetadata.coverage.enabledExtensions.includes("hermes-metadata"), "explicit Hermes extension mode must pass");
@@ -1756,6 +1814,8 @@ assert([fileUri, fileUriLocalAuthority].every(result => result.status === "fail"
 assert(fileUriRemoteAuthority.status === "pass" && !fileUriRemoteAuthority.issues.some(item => item.code === "LOCAL_PATH"), "remote file URI authorities must remain nonlocal");
 assert(fileUriCaseLocal.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "file URI scheme and localhost matching must be case-insensitive");
 assert(fileUriCaseSafe.status === "pass" && !fileUriCaseSafe.issues.some(item => item.code === "LOCAL_PATH"), "remote file authorities and wrong-case POSIX roots must remain nonlocal");
+assert(encodedFileUriLocal.every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "percent-encoded local file URI roots must be decoded before classification");
+assert(encodedFileUriSafe.status === "pass" && !encodedFileUriSafe.issues.some(item => item.code === "LOCAL_PATH"), "remote, query, fragment, wrong-case, and malformed percent boundaries must remain nonlocal");
 assert(windowsPaths.every(result => result.issues.some(item => item.code === "LOCAL_PATH")), "Windows local path checks changed");
 assert(webRootLink.issues.some(item => item.code === "ROOT_LINK") && !webRootLink.issues.some(item => item.code === "LOCAL_PATH"), "web links must not be mistaken for workstation paths");
 assert(remoteWindowsLinks.status === "pass" && !remoteWindowsLinks.issues.some(item => item.code === "LOCAL_PATH"), "remote and anchor links must hide URL query or fragment text from workstation-path scanning");

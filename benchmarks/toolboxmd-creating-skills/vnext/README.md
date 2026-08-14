@@ -131,10 +131,20 @@ active-core deletion pass removed 127 bytes without changing its workflow. The
 package cap is now 45,000 bytes, leaving readable headroom for the deterministic
 checker. Activated-core, description, file, reference, eval, and script budgets
 remain unchanged, and no lower total package-size claim is made.
+The next exact-HEAD correction adds 789 executable bytes. The portable
+1,024-character description ceiling now remains invariant when a caller raises
+the package budget, while a lower budget still tightens acceptance. Local file
+URI paths are percent-decoded before case-sensitive POSIX-root classification.
+Only lexically bounded empty-authority or localhost tokens are classified;
+embedded text, remote authorities, and remote or anchor destinations remain
+nonlocal. The cumulative executable delta is 20,283 bytes, and the 45,000-byte
+package cap is unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
-metadata key and value; portable metadata is mapping-only. The exact
+metadata key and value; portable metadata is mapping-only. Descriptions retain
+an invariant 1,024-character portable ceiling; package budgets may only tighten
+it. The exact
 `metadata.hermes.config` vendor extension is enabled only by
 `--allow-hermes-metadata` for an explicitly Hermes-targeted package, with
 fixed unquoted schema field names and double-quoted user-provided values. The
@@ -158,6 +168,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 44,015 bytes: 4,439 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 39,360-byte read-only checker. The executable is not
+The frozen package is 44,804 bytes: 4,439 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 40,149-byte read-only checker. The executable is not
 loaded as activated core.
