@@ -25,7 +25,8 @@ REFERENCE_DEFINITION_RE = re.compile(
 OPENAI_FIELD_RE = re.compile(r'^([a-z_]+):\s*("(?:[^"\\]|\\.)*")$')
 OPENAI_INTERFACE_FIELDS = {"display_name", "short_description", "icon_small", "icon_large", "brand_color", "default_prompt"}
 OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
-CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
+CODE_SPAN_RE = re.compile(r"(?s)((?<!\\)(?:\\\\)*)(?<!`)(`+)(?!`).*?(?<!`)\2(?!`)")
+YAML_LINES = re.compile(r"\r\n?|\n")
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 SHELL_FENCE_LANGUAGES = {"sh", "bash", "shell"}
 SCRIPT_BREAKS = r"\s'\"`;&|(){}\[\]<>:"
@@ -57,27 +58,28 @@ class InspectionError(Exception):
 
 
 def issue(code: str, path: str, message: str, severity: str = "error") -> dict[str, str]:
-    return {"severity": severity, "code": code, "path": path, "message": message}
+    return dict(severity=severity, code=code, path=path, message=message)
 
 
 def split_frontmatter(text: str) -> tuple[list[str], str]:
-    lines = text.splitlines()
-    if not lines or lines[0] != "---":
+    lines = YAML_LINES.split(text)
+    if lines[0] != "---":
         raise InspectionError("missing opening ---")
     try:
         end = lines.index("---", 1)
-    except ValueError as exc:
-        raise InspectionError("missing closing ---") from exc
+    except ValueError:
+        raise InspectionError("missing closing ---")
     return lines[1:end], "\n".join(lines[end + 1 :])
 
 
 def canonical_scalar(raw: str) -> str:
     value = raw.strip()
-    if value[:1] != '"' or value[-1:] != '"':
+    if value[:1] != '"' or re.search(r"(?<!\\)(?:\\\\)*\\u(?i:d[89a-f][0-9a-f]{2})", value):
         raise ValueError
-    if re.search(r"(?<!\\)(?:\\\\)*\\u(?i:d[89a-f][0-9a-f]{2})", value):
+    value = json.loads(value)
+    if re.search(r"[^\t\n\r -~\x85\xa0-\ud7ff\ue000-\ufffd\U00010000-\U0010ffff]", value):
         raise ValueError
-    return json.loads(value)
+    return value
 
 
 def without_comment(raw: str) -> str:
@@ -256,7 +258,7 @@ def collect_files(root: Path) -> tuple[list[dict[str, object]], list[dict[str, s
             problems.append(issue("PYTHON_BYTECODE", relative, "bytecode not allowed"))
         if path.name in PROCESS_NAMES:
             problems.append(issue("PROCESS_ARTIFACT", relative, "needs distribution evidence", "warning"))
-    files.sort(key=lambda record: str(record["path"]).encode("utf-8"))
+    files.sort(key=lambda record: record["path"].encode("utf-8"))
     return files, problems
 
 
@@ -282,8 +284,7 @@ def markdown_without_code(text: str) -> str:
             containers = candidate_containers
         elif not view.startswith(("    ", "\t")):
             output.append(line)
-    result = CODE_SPAN_RE.sub("", "".join(output))
-    return re.sub(r"\\\[[^]\n]*\](?:\([^\n)]*\)|\[[^]\n]*\])", "", result)
+    return re.sub(r"\\\[[^]\n]*\](?:\([^\n)]*\)|\[[^]\n]*\])", "", CODE_SPAN_RE.sub(r"\1", "".join(output)))
 
 
 def has_bare_script_path(text: str) -> bool:
@@ -406,11 +407,9 @@ def validate_markdown_script_paths(content: str, relative: str, problems: list[d
                 add("UNFENCED_SCRIPT_EXAMPLE", line_number)
             continue
         for match in CODE_SPAN_RE.finditer(view):
-            marker = match.group(1)
-            literal = match.group(0)[len(marker) : -len(marker)]
-            prefix = view[: match.start()]
-            escaped = (len(prefix) - len(prefix.rstrip("\\"))) % 2
-            if not escaped and has_bare_script_path(literal):
+            slashes, marker = match.groups()
+            literal = match.group()[len(slashes) + len(marker) : -len(marker)]
+            if has_bare_script_path(literal):
                 add("UNFENCED_SCRIPT_EXAMPLE", line_number)
     if fence and shell_fence:
         add("MARKDOWN_FENCE", opener_line, "opens a recognized shell fence without a closing fence")
@@ -534,7 +533,7 @@ def validate_sidecar(root: Path, name: str, creation_mode: bool, problems: list[
     tools_seen = False
     policy_seen = False
     try:
-        lines = sidecar.read_bytes().decode().splitlines()
+        lines = YAML_LINES.split(sidecar.read_bytes().decode())
     except UnicodeDecodeError:
         return
     for line in lines:
@@ -791,11 +790,11 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
     official = run_official_validator(root, args.allow_hermes_metadata, problems)
 
     skill_bytes = len(text.encode("utf-8"))
-    skill_lines = len(text.splitlines())
+    skill_lines = len(YAML_LINES.findall(text)) + (text[-1:] not in "\r\n")
     package_bytes = sum(int(record["bytes"]) for record in files)
-    reference_files = sum(str(record["path"]).startswith("references/") for record in files)
-    eval_files = sum(str(record["path"]).startswith("evals/") for record in files)
-    script_files = sum(str(record["path"]).startswith("scripts/") for record in files)
+    reference_files = sum(record["path"].startswith("references/") for record in files)
+    eval_files = sum(record["path"].startswith("evals/") for record in files)
+    script_files = sum(record["path"].startswith("scripts/") for record in files)
     metric_rows = (
         ("descriptionCharacters", len(description), min(args.max_description_chars, PORTABLE_DESCRIPTION_MAX), "DESCRIPTION_BUDGET", "description characters"),
         ("skillMdLines", skill_lines, args.max_skill_lines, "SKILL_LINES_BUDGET", "SKILL.md lines"),

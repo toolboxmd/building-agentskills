@@ -197,6 +197,16 @@ reference labels collapse internal whitespace before case-insensitive
 matching. POSIX roots remain case-sensitive and other file authorities remain
 remote. The cumulative executable delta is 21,921 bytes; the 46,000-byte cap
 and all budgets remain unchanged.
+The next exact-HEAD correction adds 6 executable bytes after reusing the
+parity-aware code-span matcher. Odd-parity escaped backticks remain literal so
+an active link after them is validated, while real single- and multi-backtick
+code spans remain masked. The shared canonical scalar decoder now enforces the
+YAML 1.2 printable-character set across frontmatter, portable and Hermes
+metadata, and the OpenAI sidecar. A shared physical-line splitter recognizes
+only CRLF, CR, and LF, preserving printable NEL, LS, PS, BMP, and non-BMP
+Unicode as scalar content and physical-line metrics count only those three
+break forms. The cumulative executable delta is 21,927
+bytes; the 46,000-byte cap and all budgets remain unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -226,6 +236,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 45,976 bytes: 3,973 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 41,787-byte read-only checker. The executable is not
+The frozen package is 45,982 bytes: 3,973 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 41,793-byte read-only checker. The executable is not
 loaded as activated core.

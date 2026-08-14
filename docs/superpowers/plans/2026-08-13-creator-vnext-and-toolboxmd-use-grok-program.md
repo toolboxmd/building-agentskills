@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 45,976 bytes, aggregate SHA-256
-  `2515fc3495597e4b8442ebaab997414df115dbf70af864b5db457d617b135eed`;
+- exact package: three files, 45,982 bytes, aggregate SHA-256
+  `dda5d4f47a7d810ccf021eee8d43ff480983a4ce47f82d4ad87de8fee9117d1b`;
 - activated core: 74 lines and 3,973 bytes, with a 226-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -297,6 +297,16 @@ Completion evidence, updated 2026-08-14:
   internal whitespace before case-insensitive matching. POSIX roots remain
   case-sensitive and other file authorities remain remote. The 46,000-byte cap
   and all budgets remain unchanged;
+- the next exact-HEAD correction adds 6 executable bytes and brings the
+  cumulative delta to 21,927 bytes. Odd-parity escaped backticks remain literal
+  before active Markdown links while real single- and multi-backtick code spans
+  remain masked. The shared canonical scalar decoder enforces the YAML 1.2
+  printable-character set across top-level fields, portable metadata keys and
+  values, Hermes values, and OpenAI sidecars. A shared physical-line splitter
+  recognizes only CRLF, CR, and LF so printable NEL, LS, PS, BMP, and non-BMP
+  Unicode remain scalar content, and physical-line metrics count only those
+  three break forms. Reusing the parity-aware matcher removed the older
+  duplicate scan. The 46,000-byte cap and all budgets remain unchanged;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.

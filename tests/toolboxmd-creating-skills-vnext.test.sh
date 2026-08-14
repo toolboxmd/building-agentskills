@@ -1004,6 +1004,105 @@ interface:
 EOF
 PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --creation-mode --warnings-as-errors --json "$test_tmp/unicode-safe" > "$test_tmp/unicode-safe.json"
 
+for name in nonprintable-description nonprintable-metadata-key nonprintable-metadata-value nonprintable-hermes nonprintable-sidecar; do
+  mkdir -p "$test_tmp/$name"
+done
+{
+  printf '%s\n' '---' 'name: "nonprintable-description"'
+  printf 'description: "Reject literal DEL \177 in canonical text."\n'
+  printf '%s\n' '---' '' '# Nonprintable description'
+} > "$test_tmp/nonprintable-description/SKILL.md"
+cat > "$test_tmp/nonprintable-metadata-key/SKILL.md" <<'EOF'
+---
+name: "nonprintable-metadata-key"
+description: "Reject a nonprintable portable metadata key."
+metadata:
+  "\u0080": "bad key"
+---
+
+# Nonprintable metadata key
+EOF
+cat > "$test_tmp/nonprintable-metadata-value/SKILL.md" <<'EOF'
+---
+name: "nonprintable-metadata-value"
+description: "Reject a nonprintable portable metadata value."
+metadata:
+  "owner": "\u009f"
+---
+
+# Nonprintable metadata value
+EOF
+cat > "$test_tmp/nonprintable-hermes/SKILL.md" <<'EOF'
+---
+name: "nonprintable-hermes"
+description: "Reject a nonprintable Hermes configuration value."
+metadata:
+  hermes:
+    config:
+      - key: "wiki.enabled"
+        description: "\u000b"
+---
+
+# Nonprintable Hermes value
+EOF
+cat > "$test_tmp/nonprintable-sidecar/SKILL.md" <<'EOF'
+---
+name: "nonprintable-sidecar"
+description: "Reject a nonprintable OpenAI sidecar value."
+---
+
+# Nonprintable sidecar value
+EOF
+mkdir -p "$test_tmp/nonprintable-sidecar/agents"
+cat > "$test_tmp/nonprintable-sidecar/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "\uffff"
+  short_description: "Reject a nonprintable sidecar value."
+EOF
+nonprintable_exits=()
+for name in nonprintable-description nonprintable-metadata-key nonprintable-metadata-value nonprintable-sidecar; do
+  set +e
+  PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
+  nonprintable_exits+=("$?")
+  set -e
+done
+set +e
+PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --allow-hermes-metadata --json "$test_tmp/nonprintable-hermes" > "$test_tmp/nonprintable-hermes.json"
+nonprintable_exits+=("$?")
+set -e
+if [[ "${nonprintable_exits[*]}" != "1 1 1 1 1" ]]; then
+  printf 'FAIL: YAML-nonprintable canonical strings passed: %s\n' "${nonprintable_exits[*]}" >&2
+  exit 1
+fi
+
+mkdir -p "$test_tmp/yaml-printable-controls"
+cat > "$test_tmp/yaml-printable-controls/SKILL.md" <<'EOF'
+---
+name: "yaml-printable-controls"
+description: "Preserve printable YAML scalar controls and Unicode."
+metadata:
+  "tab_and_breaks": "\t\n\r"
+  "nel_nbsp": "\u0085\u00a0"
+  "bmp_astral": "Ω😀"
+---
+
+# YAML printable controls
+EOF
+PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --json --warnings-as-errors "$test_tmp/yaml-printable-controls" > "$test_tmp/yaml-printable-controls.json"
+
+nel=$(printf '\302\205')
+line_separator=$(printf '\342\200\250')
+paragraph_separator=$(printf '\342\200\251')
+mkdir -p "$test_tmp/yaml-printable-literals/agents"
+printf -- '---\nname: "yaml-printable-literals"\ndescription: "Preserve literal %s %s %s YAML printable text."\nmetadata:\n  "controls": "%s%s%s"\n---\n\n# YAML printable literals\n' "$nel" "$line_separator" "$paragraph_separator" "$nel" "$line_separator" "$paragraph_separator" > "$test_tmp/yaml-printable-literals/SKILL.md"
+printf 'interface:\n  display_name: "Literal %s %s %s"\n  short_description: "Preserve literal YAML printable Unicode."\n' "$nel" "$line_separator" "$paragraph_separator" > "$test_tmp/yaml-printable-literals/agents/openai.yaml"
+PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --creation-mode --max-skill-lines 10 --json --warnings-as-errors "$test_tmp/yaml-printable-literals" > "$test_tmp/yaml-printable-literals.json"
+
+mkdir -p "$test_tmp/yaml-physical-lines/agents"
+printf '%s\r\n' '---' 'name: "yaml-physical-lines"' 'description: "Preserve CRLF physical lines in canonical frontmatter."' '---' '' '# YAML physical lines' > "$test_tmp/yaml-physical-lines/SKILL.md"
+printf '%s\r' 'interface:' '  display_name: "Physical lines"' '  short_description: "Preserve CR physical lines in a sidecar."' > "$test_tmp/yaml-physical-lines/agents/openai.yaml"
+PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$validator" --creation-mode --json --warnings-as-errors "$test_tmp/yaml-physical-lines" > "$test_tmp/yaml-physical-lines.json"
+
 mkdir -p "$test_tmp/unquoted-date-description" "$test_tmp/quoted-name" "$test_tmp/portable-metadata-sequence" "$test_tmp/portable-hermes-sequence" "$test_tmp/hermes-config-sequence" "$test_tmp/hermes-child-sequence" "$test_tmp/unquoted-portable-metadata" "$test_tmp/quoted-portable-metadata-keys"
 cat > "$test_tmp/unquoted-date-description/SKILL.md" <<'EOF'
 ---
@@ -1515,6 +1614,27 @@ code_links_exit=$?
 set -e
 [[ $code_links_exit -eq 1 ]]
 
+make_fixture "$test_tmp/escaped-backtick-link" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+cat >> "$test_tmp/escaped-backtick-link/SKILL.md" <<'EOF'
+
+\`[Active missing link](escaped-backtick-missing.md)\`
+EOF
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/escaped-backtick-link" > "$test_tmp/escaped-backtick-link.json"
+escaped_backtick_exit=$?
+set -e
+
+make_fixture "$test_tmp/backtick-code-controls" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+cat >> "$test_tmp/backtick-code-controls/SKILL.md" <<'EOF'
+
+`[Single-backtick code](single-code-missing.md)`
+
+``[Multi-backtick code](multi-code-missing.md)``
+
+\\`[Even-backslash code](even-code-missing.md)`
+EOF
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/backtick-code-controls" > "$test_tmp/backtick-code-controls.json"
+
 make_fixture "$test_tmp/markdown-boundaries" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 cat >> "$test_tmp/markdown-boundaries/SKILL.md" <<'EOF'
 
@@ -1931,6 +2051,8 @@ const missingReference = JSON.parse(fs.readFileSync(path.join(temporary, "missin
 const escapingReference = JSON.parse(fs.readFileSync(path.join(temporary, "escaping-reference.json")));
 const encodedAbsoluteLink = JSON.parse(fs.readFileSync(path.join(temporary, "encoded-absolute-link.json")));
 const indentedCodeReference = JSON.parse(fs.readFileSync(path.join(temporary, "indented-code-reference.json")));
+const escapedBacktickLink = JSON.parse(fs.readFileSync(path.join(temporary, "escaped-backtick-link.json")));
+const backtickCodeControls = JSON.parse(fs.readFileSync(path.join(temporary, "backtick-code-controls.json")));
 const reserved = ["claude-helper", "anthropic-helper"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const listDescription = JSON.parse(fs.readFileSync(path.join(temporary, "list-description.json")));
 const quotedDescription = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-description.json")));
@@ -1942,6 +2064,14 @@ const surrogateMetadataValue = JSON.parse(fs.readFileSync(path.join(temporary, "
 const surrogateMetadataKey = JSON.parse(fs.readFileSync(path.join(temporary, "surrogate-pair-metadata-key.json")));
 const surrogateSidecar = JSON.parse(fs.readFileSync(path.join(temporary, "surrogate-pair-sidecar.json")));
 const unicodeSafe = JSON.parse(fs.readFileSync(path.join(temporary, "unicode-safe.json")));
+const nonprintableDescription = JSON.parse(fs.readFileSync(path.join(temporary, "nonprintable-description.json")));
+const nonprintableMetadataKey = JSON.parse(fs.readFileSync(path.join(temporary, "nonprintable-metadata-key.json")));
+const nonprintableMetadataValue = JSON.parse(fs.readFileSync(path.join(temporary, "nonprintable-metadata-value.json")));
+const nonprintableHermes = JSON.parse(fs.readFileSync(path.join(temporary, "nonprintable-hermes.json")));
+const nonprintableSidecar = JSON.parse(fs.readFileSync(path.join(temporary, "nonprintable-sidecar.json")));
+const yamlPrintableControls = JSON.parse(fs.readFileSync(path.join(temporary, "yaml-printable-controls.json")));
+const yamlPrintableLiterals = JSON.parse(fs.readFileSync(path.join(temporary, "yaml-printable-literals.json")));
+const yamlPhysicalLines = JSON.parse(fs.readFileSync(path.join(temporary, "yaml-physical-lines.json")));
 const unquotedDateDescription = JSON.parse(fs.readFileSync(path.join(temporary, "unquoted-date-description.json")));
 const quotedName = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-name.json")));
 const nameForms = ["ordinary-name", "true", "null", "123", "2026-08-14"];
@@ -2067,7 +2197,8 @@ assert(freeze.budgetRevision.caseExactLinkAndHermesKeyExecutableDeltaBytes === 5
 assert(freeze.budgetRevision.iconCaseAndTildeSegmentExecutableDeltaBytes === 98, "icon-case/tilde-segment executable delta changed");
 assert(freeze.budgetRevision.scriptComponentBoundaryExecutableDeltaBytes === 162, "script-component-boundary executable delta changed");
 assert(freeze.budgetRevision.pathAndReferenceNormalizationExecutableDeltaBytes === 35, "path/reference normalization executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21921, "current executable delta changed");
+assert(freeze.budgetRevision.yamlPrintableAndEscapedBacktickExecutableDeltaBytes === 6, "YAML-printable/escaped-backtick executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21927, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -2091,7 +2222,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45976, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45982, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -2123,6 +2254,8 @@ assert(missingReference.issues.some(item => item.code === "BROKEN_LINK"), "missi
 assert(escapingReference.issues.some(item => item.code === "LINK_ESCAPE"), "escaping reference destination must fail");
 assert(encodedAbsoluteLink.issues.some(item => item.code === "LINK_ESCAPE") && !encodedAbsoluteLink.issues.some(item => item.code === "BROKEN_LINK"), "percent-decoded absolute destinations must retain link-escape diagnostics");
 assert(indentedCodeReference.status === "pass", "four-space indented code must not become a reference definition");
+assert(escapedBacktickLink.status === "fail" && escapedBacktickLink.issues.filter(item => item.code === "BROKEN_LINK").length === 1, "escaped backtick delimiters must not mask an active missing link");
+assert(backtickCodeControls.status === "pass", "real single- and multi-backtick code spans must keep links masked across backslash parity");
 assert(reserved.every(result => result.status === "fail" && result.issues.some(item => item.code === "NAME_RESERVED")), "reserved provider names must fail");
 assert(listDescription.status === "fail" && listDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted collection description must fail");
 assert(quotedDescription.status === "pass", "quoted collection-looking description must remain a string");
@@ -2134,6 +2267,13 @@ assert(surrogateMetadataKey.status === "fail" && surrogateMetadataKey.issues.som
 assert(surrogateSidecar.status === "fail" && surrogateSidecar.issues.some(item => item.code === "OPENAI_SHAPE"), "surrogate escapes in sidecar strings must fail");
 assert([surrogateHigh, surrogateLow, surrogateMetadataValue, surrogateMetadataKey, surrogateSidecar].every(result => result.coverage.officialSkillsRef.status === "not_available"), "surrogate checks must not depend on skills-ref");
 assert(unicodeSafe.status === "pass" && unicodeSafe.warningCount === 0, "literal Unicode scalar values must remain valid across canonical surfaces");
+assert(nonprintableDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "literal YAML-nonprintable top-level text must fail canonical string validation");
+assert(nonprintableMetadataKey.issues.some(item => item.code === "METADATA_KEY"), "YAML-nonprintable portable metadata keys must retain the metadata-key diagnostic");
+assert([nonprintableMetadataValue, nonprintableHermes].every(result => result.issues.some(item => item.code === "FRONTMATTER_STRING")), "YAML-nonprintable metadata values must retain canonical string diagnostics");
+assert(nonprintableSidecar.issues.some(item => item.code === "OPENAI_SHAPE"), "YAML-nonprintable sidecar strings must retain the sidecar-shape diagnostic");
+assert(yamlPrintableControls.status === "pass", "YAML printable TAB, line breaks, BMP, and non-BMP scalar values must remain accepted");
+assert(yamlPrintableLiterals.status === "pass" && yamlPrintableLiterals.metrics.skillMdLines === 8, "literal YAML-printable NEL, LS, and PS must remain scalar content rather than physical lines");
+assert(yamlPhysicalLines.status === "pass", "CRLF and CR must remain physical YAML line breaks");
 assert(unquotedScalars.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_STRING")), "all unquoted description scalars must fail");
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
 assert(supportedPartialSidecars.every(result => result.status === "pass"), "supported partial sidecars are rejected");
