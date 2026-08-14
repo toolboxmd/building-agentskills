@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 43,934 bytes, aggregate SHA-256
-  `e438ab97147a56165ab3e2b40cdb439077d6d3bed1dada3d9a6cce0c3fda1efd`;
+- exact package: three files, 43,951 bytes, aggregate SHA-256
+  `f28a69fd7d20ac53e67c65b44696189b18435ade8244f38cdccd07fe5a4e7e9f`;
 - activated core: 78 lines and 4,566 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -212,6 +212,11 @@ Completion evidence, updated 2026-08-14:
   literal Unicode and escaped backslash text remain valid. Reuse plus removal
   of redundant runtime annotation and module declarations reduces executable
   bytes by 25, bringing the cumulative delta to 19,286 bytes;
+- the next exact-HEAD correction recognizes any combination of canonical `./`
+  and `../` segments at the existing task-relative token boundary and keeps
+  invalid UTF-8 Python helpers as package-validation failures instead of later
+  AST inspection errors. Reuse plus removal of a redundant subprocess default
+  adds 17 executable bytes, bringing the cumulative delta to 19,303 bytes;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.

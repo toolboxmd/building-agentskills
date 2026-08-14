@@ -91,7 +91,9 @@
     "parentRelativeAndFileAuthorityReason": "Exact-HEAD review required one-or-more parent-relative helper prefixes at the existing lexical token boundary and local file URI authorities with empty or case-insensitive localhost hosts, while embedded parent segments and remote file authorities stay outside those checks.",
     "unicodeSurrogateExecutableDeltaBytes": -25,
     "unicodeSurrogateReason": "Exact-HEAD review required the shared canonical scalar decoder to reject YAML-invalid JSON surrogate escapes across frontmatter, metadata, and sidecars while literal Unicode and escaped backslash text remain valid. Reusing that decoder and deleting redundant runtime annotation and module declarations reduced executable bytes.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 19286,
+    "mixedDotAndPythonUtf8ExecutableDeltaBytes": 17,
+    "mixedDotAndPythonUtf8Reason": "Exact-HEAD review required arbitrary combinations of canonical ./ and ../ helper-path segments at the existing token boundary and required invalid UTF-8 Python helpers to remain package-validation failures instead of escaping through the later AST decode. Reusing the prefix rule and deleting a redundant subprocess default kept the executable delta bounded.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 19303,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -105,9 +107,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "e438ab97147a56165ab3e2b40cdb439077d6d3bed1dada3d9a6cce0c3fda1efd",
+    "aggregateSha256": "f28a69fd7d20ac53e67c65b44696189b18435ade8244f38cdccd07fe5a4e7e9f",
     "fileCount": 3,
-    "packageBytes": 43934,
+    "packageBytes": 43951,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -129,8 +131,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 39152,
-        "sha256": "f217a4eedefea5382fc18e7027441186203c71678131b842cbb3786875d56b65"
+        "bytes": 39169,
+        "sha256": "eafd9dbdd33a200683030675c7ccee50d3324c0e351f6d0ed5bf4bb440a0963d"
       }
     ]
   },
@@ -139,7 +141,7 @@
     "proves": [
       "the frozen product package and exact creator budgets reproduce",
       "the validator runs from outside the package without Python bytecode writes",
-      "immediate non-whitespace helper children with bare, ./, or one-or-more parent-relative prefixes fail in root, blockquote, and list closed case-insensitive sh, bash, and shell fences without interpreting commands, strings, comments, heredocs, wrappers, assignments, or continuations",
+      "immediate non-whitespace helper children with bare paths or any sequence of canonical ./ and ../ prefixes fail in root, blockquote, and list closed case-insensitive sh, bash, and shell fences without interpreting commands, strings, comments, heredocs, wrappers, assignments, or continuations",
       "single-line inline code, indented code, and non-shell or unknown fences containing that lexical helper shape fail with a context error, while ordinary prose, Markdown link destinations, directory-only mentions, leading-whitespace child names, and explicit skill-directory paths remain accepted",
       "all UTF-8 files below scripts/ and executable or shebang files reject task- or parent-relative helper paths, while generic configuration files remain outside this policy absent a schema",
       "recognized shell fences must close and the prescribed validator command enables warnings-as-errors",
@@ -158,7 +160,7 @@
       "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus inline, indented, and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "blank lines retain root, blockquote, list, and nested blockquote-list fence state without waiving required blockquote markers or nonblank container exits",
       "common POSIX, container, file URI, and Windows workstation paths are detected, including empty or case-insensitive localhost file authorities, shebangs, and case-insensitive Windows drive-user roots, while remote file authorities and remote or anchor Markdown destinations remain nonlocal",
-      "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",
+      "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, invalid UTF-8 Python remains a single package-validation error before AST parsing, and binary assets are skipped",
       "executable or shebang helpers outside scripts/ fail canonical package policy while outside non-executable data without a shebang remains allowed",
       "Python helper syntax below scripts/ is checked through AST while non-Python helpers there require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",
       "an already-installed skills-ref is called without a shell using exact validate argv and a bounded timeout, with pass, invalid, unexpected, timeout, unavailable, and unattested external-behavior states reported separately",

@@ -27,7 +27,7 @@ OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 SHELL_FENCE_LANGUAGES = {"sh", "bash", "shell"}
-BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./-])(?:(?:\.\./)+|\./)?scripts/")
+BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./-])(?:\.\.?/)*scripts/")
 SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
 SCRIPT_CONTEXT_HINT = f"{SCRIPT_ROOT_HINT} in a closed sh/bash/shell fence"
 LOCAL_ROOTS = "(?:Users|home|workspace|root)"
@@ -640,7 +640,9 @@ def validate_scripts(
                 problems.append(issue("SCRIPT_SYNTAX_UNCHECKED", relative, "non-Python helper needs its own syntax test", "warning"))
             continue
         try:
-            ast.parse(path.read_text(encoding="utf-8"), filename=relative)
+            ast.parse(path.read_bytes().decode(), filename=relative)
+        except UnicodeDecodeError:
+            continue
         except SyntaxError as exc:
             problems.append(issue("PYTHON_SYNTAX", relative, f"{exc.msg} at line {exc.lineno}"))
     return sorted(accepted)
@@ -666,7 +668,6 @@ def run_official_validator(root: Path, problems: list[dict[str, str]]) -> dict[s
         completed = subprocess.run(
             [command, "validate", str(root)],
             capture_output=True,
-            check=False,
             shell=False,
             text=True,
             timeout=OFFICIAL_TIMEOUT_SECONDS,

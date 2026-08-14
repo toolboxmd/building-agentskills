@@ -159,21 +159,21 @@ if [[ $closed_shell_safe_exit -ne 0 ]]; then
   exit 1
 fi
 
-make_body_fixture "$test_tmp/parent-relative-shell" $'```bash\npython3 ../scripts/run.py\npython3 ../../scripts/run.py\n```'
+make_body_fixture "$test_tmp/parent-relative-shell" $'```bash\npython3 ../scripts/run.py\npython3 ../../scripts/run.py\npython3 ./../scripts/run.py\npython3 .././scripts/run.py\npython3 ../.././../scripts/run.py\n```'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/parent-relative-shell" > "$test_tmp/parent-relative-shell.json"
 parent_relative_shell_exit=$?
 set -e
 [[ $parent_relative_shell_exit -eq 1 ]]
 
-make_body_fixture "$test_tmp/parent-relative-code" $'Run `python3 ../scripts/run.py`.\n\n```text\npython3 ../../scripts/run.py\n```'
+make_body_fixture "$test_tmp/parent-relative-code" $'Run `python3 ../scripts/run.py` and `python3 ./../scripts/run.py`.\n\n```text\npython3 ../../scripts/run.py\npython3 ../.././../scripts/run.py\n```'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/parent-relative-code" > "$test_tmp/parent-relative-code.json"
 parent_relative_code_exit=$?
 set -e
 [[ $parent_relative_code_exit -eq 1 ]]
 
-make_body_fixture "$test_tmp/parent-relative-safe" $'```bash\npython3 "<skill-dir>/scripts/run.py"\npython3 foo/../scripts/run.py\n```'
+make_body_fixture "$test_tmp/parent-relative-safe" $'```bash\npython3 "<skill-dir>/scripts/run.py"\npython3 foo/../scripts/run.py\npython3 foo/./../scripts/run.py\n```'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/parent-relative-safe" > "$test_tmp/parent-relative-safe.json"
 
 make_body_fixture "$test_tmp/unfenced-helper-contexts" $'Run `env MODE=strict ./scripts/run.py`.\n\nLiteral `[helper](scripts/run.py)` code also fails.\n\n    env MODE=strict ./scripts/run.py\n    [helper](scripts/run.py)\n\n```text\nenv MODE=strict ./scripts/run.py\n[helper](scripts/run.py)\n```\n\n~~~python\nprint("scripts/run.py")\n~~~\n\n```\nenv MODE=strict ./scripts/run.py\n```'
@@ -233,7 +233,7 @@ set -e
 [[ $helper_source_bare_exit -eq 1 ]]
 
 make_fixture "$test_tmp/helper-source-parent-relative" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
-printf 'SIBLING = "../../scripts/child.py"\n' > "$test_tmp/helper-source-parent-relative/scripts/run.py"
+printf 'SIBLING = "../../scripts/child.py"\nMIXED = "./../scripts/child.py"\n' > "$test_tmp/helper-source-parent-relative/scripts/run.py"
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/helper-source-parent-relative" > "$test_tmp/helper-source-parent-relative.json"
 helper_source_parent_exit=$?
@@ -1318,6 +1318,20 @@ invalid_script_exit=$?
 set -e
 [[ $invalid_script_exit -eq 1 ]]
 
+make_fixture "$test_tmp/invalid-python-bytes" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\377\n' > "$test_tmp/invalid-python-bytes/scripts/run.py"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/invalid-python-bytes" > "$test_tmp/invalid-python-bytes.json"
+invalid_python_exit=$?
+set -e
+if [[ $invalid_python_exit -ne 1 ]]; then
+  printf 'FAIL: invalid UTF-8 Python helper returned exit %s instead of validation exit 1\n' "$invalid_python_exit" >&2
+  exit 1
+fi
+
+make_fixture "$test_tmp/valid-python-ast" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/valid-python-ast" > "$test_tmp/valid-python-ast.json"
+
 make_fixture "$test_tmp/invalid-shebang-bytes" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 printf '#!/bin/sh\n\377\n' > "$test_tmp/invalid-shebang-bytes/shebang-helper"
 set +e
@@ -1514,6 +1528,8 @@ const binaryAsset = JSON.parse(fs.readFileSync(path.join(temporary, "binary-asse
 const systemShebang = JSON.parse(fs.readFileSync(path.join(temporary, "system-shebang.json")));
 const localShebangs = ["workspace", "root"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}-shebang.json`))));
 const invalidScript = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-extensionless-script.json")));
+const invalidPython = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-python-bytes.json")));
+const validPython = JSON.parse(fs.readFileSync(path.join(temporary, "valid-python-ast.json")));
 const invalidShebang = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-shebang-bytes.json")));
 const svgPath = JSON.parse(fs.readFileSync(path.join(temporary, "svg-local-path.json")));
 const fileUri = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-path.json")));
@@ -1565,7 +1581,8 @@ assert(freeze.budgetRevision.windowsAndCreationModeExecutableDeltaBytes === 119,
 assert(freeze.budgetRevision.remoteLinkAndWhitespaceExecutableDeltaBytes === 277, "remote-link/whitespace executable delta changed");
 assert(freeze.budgetRevision.parentRelativeAndFileAuthorityExecutableDeltaBytes === 26, "parent-relative/file-authority executable delta changed");
 assert(freeze.budgetRevision.unicodeSurrogateExecutableDeltaBytes === -25, "Unicode-surrogate executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19286, "current executable delta changed");
+assert(freeze.budgetRevision.mixedDotAndPythonUtf8ExecutableDeltaBytes === 17, "mixed-dot/Python-UTF8 executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19303, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1589,7 +1606,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43934, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43951, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1628,9 +1645,9 @@ assert(creationFullSidecar.status === "pass" && creationNoSidecar.status === "pa
 assert(blankSidecars.every(result => result.status === "fail" && result.issues.some(item => item.code === "OPENAI_SHAPE")), "blank sidecar lacks semantic-section error");
 assert(closedShellBare.status === "fail" && closedShellBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 25, "closed shell fences must reject every lexically adjacent bare helper path without shell parsing");
 assert(closedShellSafe.status === "pass" && closedShellSafe.warningCount === 0, "explicit skill roots, prose, links, directory-only mentions, and leading-whitespace child names must remain safe");
-assert(parentRelativeShell.status === "fail" && parentRelativeShell.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 2, "one-or-more parent-relative helper prefixes must fail in closed shell fences");
-assert(parentRelativeCode.status === "fail" && parentRelativeCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 2, "parent-relative helper prefixes must fail in closed non-shell code surfaces");
-assert(parentRelativeSafe.status === "pass", "explicit skill roots and embedded foo/../scripts paths must remain outside the task-relative helper policy");
+assert(parentRelativeShell.status === "fail" && parentRelativeShell.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "plain and mixed parent-relative helper prefixes must fail in closed shell fences");
+assert(parentRelativeCode.status === "fail" && parentRelativeCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 4, "plain and mixed parent-relative helper prefixes must fail in closed non-shell code surfaces");
+assert(parentRelativeSafe.status === "pass", "explicit skill roots and embedded dot-relative paths must remain outside the task-relative helper policy");
 assert(unfencedHelperContexts.status === "fail" && unfencedHelperContexts.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 8, "single-line inline, indented, and fenced code outside recognized shell fences must fail closed");
 assert(unclosedShellFence.status === "fail" && unclosedShellFence.issues.some(item => item.code === "MARKDOWN_FENCE"), "unclosed recognized shell fences must fail");
 assert(containerShellFences.status === "fail" && containerShellFences.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3 && containerShellFences.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "nested blockquote/list fences and blockquote-indented code must preserve closed-surface checks");
@@ -1639,7 +1656,7 @@ assert(containerMissingClosers.every(result => result.issues.some(item => item.c
 assert(containerBoundarySafe.status === "pass" && containerBoundarySafe.warningCount === 0, "non-shell fences end at their Markdown container boundary without consuming root prose");
 assert(containerBoundaryShell.status === "fail" && containerBoundaryShell.issues.filter(item => item.code === "MARKDOWN_FENCE").length === 1 && !containerBoundaryShell.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "recognized shell fences fail at their Markdown container boundary without consuming root prose");
 assert(helperSourceBare.status === "fail" && executableSourceBare.status === "fail" && [helperSourceBare, executableSourceBare].every(result => result.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH")), "helper and executable source files must reject bare helper paths");
-assert(helperSourceParent.status === "fail" && helperSourceParent.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "helper sources must reject parent-relative helper paths");
+assert(helperSourceParent.status === "fail" && helperSourceParent.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 2, "helper sources must reject plain and mixed parent-relative helper paths");
 assert(markdownHelperSource.status === "fail" && markdownHelperSource.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "Markdown files below scripts must retain helper-source coverage");
 assert(helperSourceSafe.status === "pass" && genericConfigSafe.status === "pass", "explicit helper roots must pass and generic configs must stay outside command scanning");
 assert(unquotedDateDescription.status === "fail" && unquotedDateDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted dates must fail the canonical string contract");
@@ -1680,6 +1697,8 @@ assert(invalidAttestations.every(result => result.status === "fail" && result.is
 assert(binaryAsset.status === "pass" && !binaryAsset.issues.some(item => item.code === "UTF8"), "binary assets must not be decoded as declared text");
 assert(systemShebang.status === "pass" && localShebangs.every(result => result.issues.some(item => item.code === "LOCAL_PATH")), "shebang path boundary changed");
 assert(invalidScript.issues.some(item => item.code === "UTF8"), "invalid UTF-8 executable must fail");
+assert(invalidPython.status === "fail" && invalidPython.issues.filter(item => item.code === "UTF8").length === 1 && !invalidPython.issues.some(item => item.code === "PYTHON_SYNTAX"), "invalid UTF-8 Python must stay a single package-validation issue");
+assert(validPython.status === "pass" && !validPython.issues.some(item => item.code === "PYTHON_SYNTAX"), "valid Python helpers must retain AST acceptance");
 assert(invalidShebang.issues.some(item => item.code === "UTF8"), "invalid UTF-8 shebang file must fail without executable mode");
 assert(svgPath.issues.some(item => item.code === "LOCAL_PATH") && fileUri.issues.some(item => item.code === "LOCAL_PATH"), "decodable asset and file URI path checks changed");
 assert([fileUri, fileUriLocalAuthority].every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "empty and localhost file URI authorities must remain local");
