@@ -87,7 +87,9 @@
     "windowsAndCreationModeReason": "Exact-HEAD review required case-insensitive Windows drive-user paths and an explicit creation mode that enforces generated sidecar UI fields without rejecting supported partial existing sidecars in general mode.",
     "remoteLinkAndWhitespaceExecutableDeltaBytes": 277,
     "remoteLinkAndWhitespaceReason": "Independent exact-current audit required remote and anchor Markdown destinations to hide URL query and fragment text from workstation-path scanning while file and drive-root links remain local, and required present sidecar interface strings to contain non-whitespace text.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 19285,
+    "parentRelativeAndFileAuthorityExecutableDeltaBytes": 26,
+    "parentRelativeAndFileAuthorityReason": "Exact-HEAD review required one-or-more parent-relative helper prefixes at the existing lexical token boundary and local file URI authorities with empty or case-insensitive localhost hosts, while embedded parent segments and remote file authorities stay outside those checks.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 19311,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -101,22 +103,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "2a2bf3e39f7c4c495bc888062fe41f8110c00ae00f0d9a26086782acb63fe5e4",
+    "aggregateSha256": "7f3b4d512258a2262193fe19af086f1a59bd606e0fed52020617004586fd3da0",
     "fileCount": 3,
-    "packageBytes": 43877,
+    "packageBytes": 43915,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4510,
+      "bytes": 4522,
       "lines": 78,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4510,
-        "sha256": "2f2f730116f885dc2cf7844a2ccc370b0dbfa39b2240fb9b896ebe87c8d242be"
+        "bytes": 4522,
+        "sha256": "1c04424605bec28b85da616833292cfccfc23347d5659e672b7717e29ae694ab"
       },
       {
         "path": "agents/openai.yaml",
@@ -125,8 +127,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 39151,
-        "sha256": "aa8dbe4a56d7073a157c09e0409dc670a8ec22aa1e85fff9cd2a7e206800686e"
+        "bytes": 39177,
+        "sha256": "01b5659f839780525366bacbc31c9fb2bc429e939b3ff67694b22e69b553e075"
       }
     ]
   },
@@ -135,9 +137,9 @@
     "proves": [
       "the frozen product package and exact creator budgets reproduce",
       "the validator runs from outside the package without Python bytecode writes",
-      "immediate non-whitespace task-relative helper children fail in root, blockquote, and list closed case-insensitive sh, bash, and shell fences without interpreting commands, strings, comments, heredocs, wrappers, assignments, or continuations",
+      "immediate non-whitespace helper children with bare, ./, or one-or-more parent-relative prefixes fail in root, blockquote, and list closed case-insensitive sh, bash, and shell fences without interpreting commands, strings, comments, heredocs, wrappers, assignments, or continuations",
       "single-line inline code, indented code, and non-shell or unknown fences containing that lexical helper shape fail with a context error, while ordinary prose, Markdown link destinations, directory-only mentions, leading-whitespace child names, and explicit skill-directory paths remain accepted",
-      "all UTF-8 files below scripts/ and executable or shebang files reject task-relative helper paths, while generic configuration files remain outside this policy absent a schema",
+      "all UTF-8 files below scripts/ and executable or shebang files reject task- or parent-relative helper paths, while generic configuration files remain outside this policy absent a schema",
       "recognized shell fences must close and the prescribed validator command enables warnings-as-errors",
       "explicit skill-directory script examples pass",
       "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, supported and bounded interface strings, assets-only icon paths, optional default_prompt, policy, and current tool dependencies",
@@ -152,7 +154,7 @@
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
       "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus inline, indented, and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "blank lines retain root, blockquote, list, and nested blockquote-list fence state without waiving required blockquote markers or nonblank container exits",
-      "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs and case-insensitive Windows drive-user roots, while remote and anchor Markdown destinations hide query and fragment text",
+      "common POSIX, container, file URI, and Windows workstation paths are detected, including empty or case-insensitive localhost file authorities, shebangs, and case-insensitive Windows drive-user roots, while remote file authorities and remote or anchor Markdown destinations remain nonlocal",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",
       "executable or shebang helpers outside scripts/ fail canonical package policy while outside non-executable data without a shebang remains allowed",
       "Python helper syntax below scripts/ is checked through AST while non-Python helpers there require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",

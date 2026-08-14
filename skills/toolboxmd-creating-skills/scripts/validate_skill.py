@@ -31,12 +31,12 @@ OPENAI_TOOL_FIELDS = {"type", "value", "description", "transport", "url"}
 CODE_SPAN_RE = re.compile(r"(?s)(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)")
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 SHELL_FENCE_LANGUAGES = {"sh", "bash", "shell"}
-BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./-])(?:\./)?scripts/")
+BARE_SCRIPT_PREFIX_RE = re.compile(r"(?<![A-Za-z0-9_$./-])(?:(?:\.\./)+|\./)?scripts/")
 SCRIPT_ROOT_HINT = "use <skill-dir>/scripts/<helper>"
 SCRIPT_CONTEXT_HINT = f"{SCRIPT_ROOT_HINT} in a closed sh/bash/shell fence"
 LOCAL_ROOTS = "(?:Users|home|workspace|root)"
 LOCAL_PATH_RE = re.compile(
-    rf"(?:file:///{LOCAL_ROOTS}/|(?<![A-Za-z0-9:/])(?:/{LOCAL_ROOTS}/|"
+    rf"(?:file://(?i:localhost)?/{LOCAL_ROOTS}/|(?<![A-Za-z0-9:/])(?:/{LOCAL_ROOTS}/|"
     rf"(?i:[A-Za-z]:(?:/Users/|(?:\\)+Users(?:\\)+))))[^\s'\"`]+"
 )
 PROCESS_NAMES = {"README.md", "CHANGELOG.md", "STATUS.md", "DESIGN.md", "NOTES.md"}

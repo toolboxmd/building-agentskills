@@ -55,7 +55,7 @@ Resolve `<skill-dir>` from loaded `SKILL.md` to an absolute argument, independen
 PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --creation-mode --warnings-as-errors "<target-skill-dir>"
 ```
 
-Pass nondefault budgets. Fence executable examples as `sh`, `bash`, or `shell` and use `<skill-dir>/scripts/<helper>`. Task-relative helpers fail in inline, indented, and other fences. The lexical check treats non-whitespace immediately after `scripts/` as a child; directory mentions and whitespace-leading child names are outside it.
+Pass nondefault budgets. Fence executable examples as `sh`, `bash`, or `shell` and use `<skill-dir>/scripts/<helper>`. Task- and parent-relative helpers fail in inline, indented, and other fences. The lexical check treats non-whitespace immediately after `scripts/` as a child; directory mentions and whitespace-leading child names are outside it.
 
 The checker covers ToolboxMD policy, not general YAML, CommonMark, shell, or helper syntax. Executable/shebang helpers belong in `scripts/`. Python uses AST. For other helpers, run and report a syntax command, hash current bytes, and pass `--script-syntax-checked '<helper-path>=<lowercase-sha256>'`. This binds path and digest, not execution. It runs but never installs `skills-ref validate <target-skill-dir>`; report it separately because external behavior is outside ToolboxMD.
 

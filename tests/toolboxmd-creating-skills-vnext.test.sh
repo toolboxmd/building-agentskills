@@ -159,6 +159,23 @@ if [[ $closed_shell_safe_exit -ne 0 ]]; then
   exit 1
 fi
 
+make_body_fixture "$test_tmp/parent-relative-shell" $'```bash\npython3 ../scripts/run.py\npython3 ../../scripts/run.py\n```'
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/parent-relative-shell" > "$test_tmp/parent-relative-shell.json"
+parent_relative_shell_exit=$?
+set -e
+[[ $parent_relative_shell_exit -eq 1 ]]
+
+make_body_fixture "$test_tmp/parent-relative-code" $'Run `python3 ../scripts/run.py`.\n\n```text\npython3 ../../scripts/run.py\n```'
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/parent-relative-code" > "$test_tmp/parent-relative-code.json"
+parent_relative_code_exit=$?
+set -e
+[[ $parent_relative_code_exit -eq 1 ]]
+
+make_body_fixture "$test_tmp/parent-relative-safe" $'```bash\npython3 "<skill-dir>/scripts/run.py"\npython3 foo/../scripts/run.py\n```'
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/parent-relative-safe" > "$test_tmp/parent-relative-safe.json"
+
 make_body_fixture "$test_tmp/unfenced-helper-contexts" $'Run `env MODE=strict ./scripts/run.py`.\n\nLiteral `[helper](scripts/run.py)` code also fails.\n\n    env MODE=strict ./scripts/run.py\n    [helper](scripts/run.py)\n\n```text\nenv MODE=strict ./scripts/run.py\n[helper](scripts/run.py)\n```\n\n~~~python\nprint("scripts/run.py")\n~~~\n\n```\nenv MODE=strict ./scripts/run.py\n```'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/unfenced-helper-contexts" > "$test_tmp/unfenced-helper-contexts.json"
@@ -214,6 +231,14 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/helper-sourc
 helper_source_bare_exit=$?
 set -e
 [[ $helper_source_bare_exit -eq 1 ]]
+
+make_fixture "$test_tmp/helper-source-parent-relative" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf 'SIBLING = "../../scripts/child.py"\n' > "$test_tmp/helper-source-parent-relative/scripts/run.py"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/helper-source-parent-relative" > "$test_tmp/helper-source-parent-relative.json"
+helper_source_parent_exit=$?
+set -e
+[[ $helper_source_parent_exit -eq 1 ]]
 
 make_fixture "$test_tmp/helper-source-safe" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 cat > "$test_tmp/helper-source-safe/scripts/run.py" <<'EOF'
@@ -1241,6 +1266,18 @@ file_uri_exit=$?
 set -e
 [[ $file_uri_exit -eq 1 ]]
 
+make_fixture "$test_tmp/file-uri-local-authority" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\n[Local home](file://localhost/home/alice/input.json) and file://LOCALHOST/Users/Alice/work/file.txt.\n' >> "$test_tmp/file-uri-local-authority/SKILL.md"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/file-uri-local-authority" > "$test_tmp/file-uri-local-authority.json"
+file_uri_local_authority_exit=$?
+set -e
+[[ $file_uri_local_authority_exit -eq 1 ]]
+
+make_fixture "$test_tmp/file-uri-remote-authority" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '\n[Remote home](file://example.com/home/alice/input.json), file://files.example.com/Users/Alice/work/file.txt, and file://localhost/Home/alice/input.json.\n' >> "$test_tmp/file-uri-remote-authority/SKILL.md"
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/file-uri-remote-authority" > "$test_tmp/file-uri-remote-authority.json"
+
 for name in windows-forward windows-escaped windows-lowercase-backslash windows-uppercase-forward; do
   make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 done
@@ -1307,6 +1344,9 @@ const product = JSON.parse(fs.readFileSync(path.join(temporary, "product.json"))
 const minimalExample = JSON.parse(fs.readFileSync(path.join(temporary, "minimal-example.json")));
 const closedShellBare = JSON.parse(fs.readFileSync(path.join(temporary, "closed-shell-bare.json")));
 const closedShellSafe = JSON.parse(fs.readFileSync(path.join(temporary, "closed-shell-safe.json")));
+const parentRelativeShell = JSON.parse(fs.readFileSync(path.join(temporary, "parent-relative-shell.json")));
+const parentRelativeCode = JSON.parse(fs.readFileSync(path.join(temporary, "parent-relative-code.json")));
+const parentRelativeSafe = JSON.parse(fs.readFileSync(path.join(temporary, "parent-relative-safe.json")));
 const unfencedHelperContexts = JSON.parse(fs.readFileSync(path.join(temporary, "unfenced-helper-contexts.json")));
 const unclosedShellFence = JSON.parse(fs.readFileSync(path.join(temporary, "unclosed-shell-fence.json")));
 const containerShellFences = JSON.parse(fs.readFileSync(path.join(temporary, "container-shell-fences.json")));
@@ -1315,6 +1355,7 @@ const containerMissingClosers = ["blockquote", "list"].map(name => JSON.parse(fs
 const containerBoundarySafe = JSON.parse(fs.readFileSync(path.join(temporary, "container-boundary-safe.json")));
 const containerBoundaryShell = JSON.parse(fs.readFileSync(path.join(temporary, "container-boundary-shell.json")));
 const helperSourceBare = JSON.parse(fs.readFileSync(path.join(temporary, "helper-source-bare.json")));
+const helperSourceParent = JSON.parse(fs.readFileSync(path.join(temporary, "helper-source-parent-relative.json")));
 const helperSourceSafe = JSON.parse(fs.readFileSync(path.join(temporary, "helper-source-safe.json")));
 const markdownHelperSource = JSON.parse(fs.readFileSync(path.join(temporary, "markdown-helper-source.json")));
 const executableSourceBare = JSON.parse(fs.readFileSync(path.join(temporary, "executable-source-bare.json")));
@@ -1393,6 +1434,8 @@ const invalidScript = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-e
 const invalidShebang = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-shebang-bytes.json")));
 const svgPath = JSON.parse(fs.readFileSync(path.join(temporary, "svg-local-path.json")));
 const fileUri = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-path.json")));
+const fileUriLocalAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-local-authority.json")));
+const fileUriRemoteAuthority = JSON.parse(fs.readFileSync(path.join(temporary, "file-uri-remote-authority.json")));
 const windowsPaths = ["windows-forward", "windows-escaped", "windows-lowercase-backslash", "windows-uppercase-forward"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const webRootLink = JSON.parse(fs.readFileSync(path.join(temporary, "web-root-link.json")));
 const remoteWindowsLinks = JSON.parse(fs.readFileSync(path.join(temporary, "remote-windows-links.json")));
@@ -1437,7 +1480,8 @@ assert(freeze.budgetRevision.quotedNameAndScriptLocationExecutableDeltaBytes ===
 assert(freeze.budgetRevision.listContainerBlankLineExecutableDeltaBytes === 128, "list-container blank-line executable delta changed");
 assert(freeze.budgetRevision.windowsAndCreationModeExecutableDeltaBytes === 119, "Windows/creation-mode executable delta changed");
 assert(freeze.budgetRevision.remoteLinkAndWhitespaceExecutableDeltaBytes === 277, "remote-link/whitespace executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19285, "current executable delta changed");
+assert(freeze.budgetRevision.parentRelativeAndFileAuthorityExecutableDeltaBytes === 26, "parent-relative/file-authority executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 19311, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1461,7 +1505,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43877, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43915, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1495,6 +1539,9 @@ assert(creationFullSidecar.status === "pass" && creationNoSidecar.status === "pa
 assert(blankSidecars.every(result => result.status === "fail" && result.issues.some(item => item.code === "OPENAI_SHAPE")), "blank sidecar lacks semantic-section error");
 assert(closedShellBare.status === "fail" && closedShellBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 25, "closed shell fences must reject every lexically adjacent bare helper path without shell parsing");
 assert(closedShellSafe.status === "pass" && closedShellSafe.warningCount === 0, "explicit skill roots, prose, links, directory-only mentions, and leading-whitespace child names must remain safe");
+assert(parentRelativeShell.status === "fail" && parentRelativeShell.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 2, "one-or-more parent-relative helper prefixes must fail in closed shell fences");
+assert(parentRelativeCode.status === "fail" && parentRelativeCode.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 2, "parent-relative helper prefixes must fail in closed non-shell code surfaces");
+assert(parentRelativeSafe.status === "pass", "explicit skill roots and embedded foo/../scripts paths must remain outside the task-relative helper policy");
 assert(unfencedHelperContexts.status === "fail" && unfencedHelperContexts.issues.filter(item => item.code === "UNFENCED_SCRIPT_EXAMPLE").length === 8, "single-line inline, indented, and fenced code outside recognized shell fences must fail closed");
 assert(unclosedShellFence.status === "fail" && unclosedShellFence.issues.some(item => item.code === "MARKDOWN_FENCE"), "unclosed recognized shell fences must fail");
 assert(containerShellFences.status === "fail" && containerShellFences.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3 && containerShellFences.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "nested blockquote/list fences and blockquote-indented code must preserve closed-surface checks");
@@ -1503,6 +1550,7 @@ assert(containerMissingClosers.every(result => result.issues.some(item => item.c
 assert(containerBoundarySafe.status === "pass" && containerBoundarySafe.warningCount === 0, "non-shell fences end at their Markdown container boundary without consuming root prose");
 assert(containerBoundaryShell.status === "fail" && containerBoundaryShell.issues.filter(item => item.code === "MARKDOWN_FENCE").length === 1 && !containerBoundaryShell.issues.some(item => item.code === "UNFENCED_SCRIPT_EXAMPLE"), "recognized shell fences fail at their Markdown container boundary without consuming root prose");
 assert(helperSourceBare.status === "fail" && executableSourceBare.status === "fail" && [helperSourceBare, executableSourceBare].every(result => result.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH")), "helper and executable source files must reject bare helper paths");
+assert(helperSourceParent.status === "fail" && helperSourceParent.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "helper sources must reject parent-relative helper paths");
 assert(markdownHelperSource.status === "fail" && markdownHelperSource.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "Markdown files below scripts must retain helper-source coverage");
 assert(helperSourceSafe.status === "pass" && genericConfigSafe.status === "pass", "explicit helper roots must pass and generic configs must stay outside command scanning");
 assert(unquotedDateDescription.status === "fail" && unquotedDateDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted dates must fail the canonical string contract");
@@ -1545,6 +1593,8 @@ assert(systemShebang.status === "pass" && localShebangs.every(result => result.i
 assert(invalidScript.issues.some(item => item.code === "UTF8"), "invalid UTF-8 executable must fail");
 assert(invalidShebang.issues.some(item => item.code === "UTF8"), "invalid UTF-8 shebang file must fail without executable mode");
 assert(svgPath.issues.some(item => item.code === "LOCAL_PATH") && fileUri.issues.some(item => item.code === "LOCAL_PATH"), "decodable asset and file URI path checks changed");
+assert([fileUri, fileUriLocalAuthority].every(result => result.status === "fail" && result.issues.some(item => item.code === "LOCAL_PATH")), "empty and localhost file URI authorities must remain local");
+assert(fileUriRemoteAuthority.status === "pass" && !fileUriRemoteAuthority.issues.some(item => item.code === "LOCAL_PATH"), "remote file URI authorities must remain nonlocal");
 assert(windowsPaths.every(result => result.issues.some(item => item.code === "LOCAL_PATH")), "Windows local path checks changed");
 assert(webRootLink.issues.some(item => item.code === "ROOT_LINK") && !webRootLink.issues.some(item => item.code === "LOCAL_PATH"), "web links must not be mistaken for workstation paths");
 assert(remoteWindowsLinks.status === "pass" && !remoteWindowsLinks.issues.some(item => item.code === "LOCAL_PATH"), "remote and anchor links must hide URL query or fragment text from workstation-path scanning");
@@ -1560,6 +1610,7 @@ const ownSidecar = fs.readFileSync(path.join(root, freeze.package.path, "agents/
 assert(!/\bgit\s+(?:status|rev-parse|diff|log)\b/i.test(skillText), "creator embeds an unconditional Git command");
 assert(/Inspect Git state only when .*user requested Git delivery/.test(skillText), "conditional Git boundary missing");
 assert(skillText.includes('PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --creation-mode --warnings-as-errors "<target-skill-dir>"'), "strict creation-mode creator command missing");
+assert(skillText.includes("Task- and parent-relative helpers fail"), "parent-relative helper guidance missing");
 assert(skillText.includes("--script-syntax-checked '<helper-path>=<lowercase-sha256>'"), "exact-digest non-Python syntax attestation flow missing");
 assert(skillText.includes("Generated Codex sidecars require nonempty `display_name` and `short_description`"), "creator sidecar policy missing");
 assert(/^\s{2}display_name:\s+".+"$/m.test(ownSidecar) && /^\s{2}short_description:\s+".+"$/m.test(ownSidecar), "creator sidecar must retain nonempty UI fields");

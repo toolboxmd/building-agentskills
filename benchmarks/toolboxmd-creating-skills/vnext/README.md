@@ -103,7 +103,11 @@ An independent exact-current audit then added 277 executable bytes. Remote and
 anchor Markdown destinations now hide query and fragment text from workstation
 path scanning while file and drive-root destinations remain local, and present
 sidecar interface strings must contain non-whitespace text. The cumulative
-delta is 19,285 bytes.
+delta is 19,285 bytes. The next exact-HEAD correction adds 26 executable bytes
+to catch one-or-more parent-relative helper prefixes at the existing token
+boundary and empty or case-insensitive localhost file URI authorities. Embedded
+parent segments and remote file authorities remain outside those checks. The
+cumulative executable delta is 19,311 bytes.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -129,6 +133,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 43,877 bytes: 4,510 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 39,151-byte read-only checker. The executable is not
+The frozen package is 43,915 bytes: 4,522 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 39,177-byte read-only checker. The executable is not
 loaded as activated core.

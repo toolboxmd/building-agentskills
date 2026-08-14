@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 43,877 bytes, aggregate SHA-256
-  `2a2bf3e39f7c4c495bc888062fe41f8110c00ae00f0d9a26086782acb63fe5e4`;
-- activated core: 78 lines and 4,510 bytes, with a 240-character
+- exact package: three files, 43,915 bytes, aggregate SHA-256
+  `7f3b4d512258a2262193fe19af086f1a59bd606e0fed52020617004586fd3da0`;
+- activated core: 78 lines and 4,522 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -202,6 +202,11 @@ Completion evidence, updated 2026-08-14:
   and anchor-link query or fragment text from workstation-path scanning while
   preserving file and drive-root local links, and to reject whitespace-only
   present interface strings. The cumulative delta is 19,285 bytes;
+- the next exact-HEAD correction adds 26 executable bytes for one-or-more
+  parent-relative helper prefixes at the existing token boundary and empty or
+  case-insensitive localhost file URI authorities. Embedded parent segments and
+  remote file authorities remain outside those checks. The cumulative
+  executable delta is 19,311 bytes;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.
