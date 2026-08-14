@@ -130,9 +130,83 @@ EOF
   printf 'print("ok")\n' > "$directory/scripts/run.py"
 }
 
+make_no_scripts_fixture() {
+  local directory="$1"
+  mkdir -p "$directory"
+  cat > "$directory/SKILL.md" <<EOF
+---
+name: "$(basename "$directory")"
+description: "Validate a package whose optional scripts entry has an explicit test shape."
+---
+
+# Fixture
+
+No helper is required.
+EOF
+}
+
 sha256_file() {
   node -e 'const c=require("node:crypto"),f=require("node:fs");process.stdout.write(c.createHash("sha256").update(f.readFileSync(process.argv[1])).digest("hex"))' "$1"
 }
+
+external_scripts="$test_tmp/external-scripts-malformed"
+mkdir -p "$external_scripts"
+printf 'def malformed(:\n' > "$external_scripts/malformed.py"
+printf '#!/bin/sh\necho external\n' > "$external_scripts/check.sh"
+external_script_sha="$(sha256_file "$external_scripts/check.sh")"
+
+external_scripts_large="$test_tmp/external-scripts-large"
+mkdir -p "$external_scripts_large"
+node -e 'require("node:fs").writeFileSync(process.argv[1], "#".repeat(1024 * 1024))' "$external_scripts_large/large.py"
+printf 'def still_malformed(:\n' > "$external_scripts_large/malformed.py"
+mkfifo "$external_scripts_large/never-open.py"
+
+for name in scripts-root-symlink scripts-root-large scripts-root-broken scripts-root-missing scripts-root-file; do
+  make_no_scripts_fixture "$test_tmp/$name"
+done
+ln -s "$external_scripts" "$test_tmp/scripts-root-symlink/scripts"
+ln -s "$external_scripts_large" "$test_tmp/scripts-root-large/scripts"
+ln -s "$test_tmp/does-not-exist" "$test_tmp/scripts-root-broken/scripts"
+printf 'ordinary package data\n' > "$test_tmp/scripts-root-file/scripts"
+make_fixture "$test_tmp/scripts-root-regular" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+
+run_bounded_scripts_root() {
+  PYTHONDONTWRITEBYTECODE=1 python3 -B - "$validator" "$@" <<'PY'
+import subprocess
+import sys
+
+try:
+    result = subprocess.run(
+        [sys.executable, "-B", sys.argv[1], "--json", *sys.argv[2:]],
+        capture_output=True,
+        text=True,
+        timeout=2,
+    )
+except subprocess.TimeoutExpired:
+    raise SystemExit(124)
+sys.stdout.write(result.stdout)
+raise SystemExit(result.returncode)
+PY
+}
+
+set +e
+run_bounded_scripts_root --warnings-as-errors --script-syntax-checked "scripts/check.sh=$external_script_sha" "$test_tmp/scripts-root-symlink" > "$test_tmp/scripts-root-symlink.json"
+scripts_root_symlink_exit=$?
+run_bounded_scripts_root --warnings-as-errors "$test_tmp/scripts-root-large" > "$test_tmp/scripts-root-large.json"
+scripts_root_large_exit=$?
+run_bounded_scripts_root --warnings-as-errors "$test_tmp/scripts-root-broken" > "$test_tmp/scripts-root-broken.json"
+scripts_root_broken_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/scripts-root-missing" > "$test_tmp/scripts-root-missing.json"
+scripts_root_missing_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/scripts-root-regular" > "$test_tmp/scripts-root-regular.json"
+scripts_root_regular_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/scripts-root-file" > "$test_tmp/scripts-root-file.json"
+scripts_root_file_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors --script-syntax-checked "scripts/run.sh=$(printf '0%.0s' {1..64})" "$test_tmp/scripts-root-file" > "$test_tmp/scripts-root-file-attestation.json"
+scripts_root_file_attestation_exit=$?
+set -e
+[[ $scripts_root_symlink_exit -eq 1 && $scripts_root_large_exit -eq 1 && $scripts_root_broken_exit -eq 1 ]]
+[[ $scripts_root_missing_exit -eq 0 && $scripts_root_regular_exit -eq 0 && $scripts_root_file_exit -eq 0 && $scripts_root_file_attestation_exit -eq 1 ]]
 
 make_fixture "$test_tmp/outside-executable" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 mkdir -p "$test_tmp/outside-executable/bin"
@@ -2080,6 +2154,13 @@ const [root, freezePath, temporary] = process.argv.slice(2);
 const freeze = JSON.parse(fs.readFileSync(freezePath));
 const product = JSON.parse(fs.readFileSync(path.join(temporary, "product.json")));
 const minimalExample = JSON.parse(fs.readFileSync(path.join(temporary, "minimal-example.json")));
+const scriptsRootSymlink = JSON.parse(fs.readFileSync(path.join(temporary, "scripts-root-symlink.json")));
+const scriptsRootLarge = JSON.parse(fs.readFileSync(path.join(temporary, "scripts-root-large.json")));
+const scriptsRootBroken = JSON.parse(fs.readFileSync(path.join(temporary, "scripts-root-broken.json")));
+const scriptsRootMissing = JSON.parse(fs.readFileSync(path.join(temporary, "scripts-root-missing.json")));
+const scriptsRootRegular = JSON.parse(fs.readFileSync(path.join(temporary, "scripts-root-regular.json")));
+const scriptsRootFile = JSON.parse(fs.readFileSync(path.join(temporary, "scripts-root-file.json")));
+const scriptsRootFileAttestation = JSON.parse(fs.readFileSync(path.join(temporary, "scripts-root-file-attestation.json")));
 const closedShellBare = JSON.parse(fs.readFileSync(path.join(temporary, "closed-shell-bare.json")));
 const closedShellSafe = JSON.parse(fs.readFileSync(path.join(temporary, "closed-shell-safe.json")));
 const parentRelativeShell = JSON.parse(fs.readFileSync(path.join(temporary, "parent-relative-shell.json")));
@@ -2302,7 +2383,8 @@ assert(freeze.budgetRevision.pathAndReferenceNormalizationExecutableDeltaBytes =
 assert(freeze.budgetRevision.yamlPrintableAndEscapedBacktickExecutableDeltaBytes === 6, "YAML-printable/escaped-backtick executable delta changed");
 assert(freeze.budgetRevision.escapedLinkParityAndIpv6LoopbackExecutableDeltaBytes === 7, "escaped-link/IPv6-loopback executable delta changed");
 assert(freeze.budgetRevision.sidecarEntrySafetyExecutableDeltaBytes === -363, "sidecar-entry-safety executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21571, "current executable delta changed");
+assert(freeze.budgetRevision.scriptsRootSafetyExecutableDeltaBytes === 292, "scripts-root-safety executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21863, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -2326,8 +2408,13 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45626, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45918, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
+
+assert([scriptsRootSymlink, scriptsRootLarge, scriptsRootBroken].every(result => result.status === "fail" && result.issues.length === 1 && result.issues[0].code === "SYMLINK" && result.coverage.scriptSyntaxChecks.acceptedPaths.length === 0), "scripts-root symlinks must not traverse or inspect external helper bytes");
+assert(scriptsRootMissing.status === "pass" && scriptsRootRegular.status === "pass", "missing and real scripts directories must retain current behavior");
+assert(scriptsRootFile.status === "pass", "a non-directory nonsymlink scripts entry remains ordinary package data");
+assert(scriptsRootFileAttestation.status === "fail" && scriptsRootFileAttestation.issues.length === 1 && scriptsRootFileAttestation.issues[0].code === "SCRIPT_SYNTAX_CHECK", "child attestations below a non-directory scripts entry must retain the invalid-path result");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
 assert(official.map(result => result.coverage.officialSkillsRef.status).join(",") === "pass,fail,error,timeout", "official validator outcomes changed");

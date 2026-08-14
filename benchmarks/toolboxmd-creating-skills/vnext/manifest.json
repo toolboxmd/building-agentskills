@@ -123,7 +123,9 @@
     "escapedLinkParityAndIpv6LoopbackReason": "Exact-HEAD review required escaped Markdown link masking to honor backslash parity and required the exact bracketed IPv6 loopback authority to remain local. A bounded readable deletion pass preserved the fixed package cap and all diagnostics.",
     "sidecarEntrySafetyExecutableDeltaBytes": -363,
     "sidecarEntrySafetyReason": "Exact-HEAD review required lstat validation of the agents ancestor and openai.yaml leaf before any sidecar read so symlinks retain the package-level boundary, the present ancestor must be a directory, and non-regular entries fail without opening. Consolidating the two checks and removing runtime-neutral internal function annotations reduced the executable while preserving behavior and diagnostics.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21571,
+    "scriptsRootSafetyExecutableDeltaBytes": 292,
+    "scriptsRootSafetyReason": "Exact-HEAD review required lstat classification of the package scripts entry before attestation or recursive helper traversal so symlinked and broken-symlink roots retain only the package-level SYMLINK issue without resolving, walking, or reading external helpers. Missing roots, real directories, and non-directory package data retain their prior behavior.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 21863,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -137,9 +139,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "4a775e19515fb32e4dd42dbb9104cf29d9a70990bb2b3679a6d65fc12c5690e3",
+    "aggregateSha256": "b86c7c3081e9421ac50c250c6729e190b251a2ba937907040bcb3fb290baf4c0",
     "fileCount": 3,
-    "packageBytes": 45626,
+    "packageBytes": 45918,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -161,8 +163,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 41437,
-        "sha256": "71a079a434ab42f6ea0623e173941e37243fa2589ec3eb78ea155fda20035e90"
+        "bytes": 41729,
+        "sha256": "f1617e62e23f539295bda22f58e93af22814928b0f5cb1382e18b58ac15408f2"
       }
     ]
   },
@@ -196,6 +198,7 @@
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, invalid UTF-8 Python remains a single package-validation error before AST parsing, and binary assets are skipped",
       "executable or shebang helpers outside scripts/ fail canonical package policy while outside non-executable data without a shebang remains allowed",
       "Python helper syntax below scripts/ is checked through AST while non-Python helpers there require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",
+      "the scripts root is lstat-classified before attestation or recursive syntax inspection so symlinked and broken-symlink roots retain only the package-level boundary without external traversal, while missing roots, real directories, and non-directory package data retain their prior behavior",
       "portable mode calls an already-installed skills-ref without a shell using exact validate argv and a bounded timeout, with pass, invalid, unexpected, timeout, unavailable, and unattested external-behavior states reported separately; explicit Hermes extension mode reports skipped_extension without discovering or invoking that portable validator",
       "root-relative and remote web links are not misclassified as workstation paths",
       "the real copyable minimal-skill example passes the canonical checker under an explicit package budget",

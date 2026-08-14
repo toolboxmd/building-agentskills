@@ -649,6 +649,14 @@ def validate_sidecar(root, name, creation_mode, problems):
 
 
 def validate_scripts(root, declared, problems):
+    scripts = root / "scripts"
+    try:
+        scripts_mode = scripts.lstat().st_mode
+    except FileNotFoundError:
+        scripts_mode = None
+    if scripts_mode is not None and stat.S_ISLNK(scripts_mode):
+        return []
+
     accepted: set[str] = set()
     seen: set[str] = set()
     for value in declared:
@@ -684,7 +692,8 @@ def validate_scripts(root, declared, problems):
             continue
         accepted.add(relative)
 
-    scripts = root / "scripts"
+    if scripts_mode is None or not stat.S_ISDIR(scripts_mode):
+        return sorted(accepted)
     for path in sorted(scripts.rglob("*")):
         if not path.is_file() or path.is_symlink():
             continue

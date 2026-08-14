@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 45,626 bytes, aggregate SHA-256
-  `4a775e19515fb32e4dd42dbb9104cf29d9a70990bb2b3679a6d65fc12c5690e3`;
+- exact package: three files, 45,918 bytes, aggregate SHA-256
+  `b86c7c3081e9421ac50c250c6729e190b251a2ba937907040bcb3fb290baf4c0`;
 - activated core: 74 lines and 3,973 bytes, with a 226-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -322,6 +322,13 @@ Completion evidence, updated 2026-08-14:
   sidecars and valid regular sidecars remain unchanged. Consolidating the
   component checks and removing runtime-neutral internal function annotations
   preserves the fixed cap and every existing budget;
+- the next exact-HEAD correction adds 292 executable bytes and brings the
+  cumulative delta to 21,863 bytes. The checker `lstat`-classifies the package
+  `scripts` entry before attestations or recursive helper inspection, so
+  symlinked and broken-symlink roots retain only the package-level `SYMLINK`
+  boundary without resolving, walking, or reading external helpers. Missing
+  roots, real directories, and non-directory package data retain their prior
+  behavior. The fixed cap and every existing budget remain unchanged;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.

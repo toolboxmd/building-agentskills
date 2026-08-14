@@ -223,6 +223,13 @@ Missing optional sidecars and valid regular sidecars retain their behavior.
 Consolidating the two component checks and removing runtime-neutral internal
 function annotations brings the cumulative executable delta to 21,571 bytes
 with the fixed cap and all budgets unchanged.
+The next exact-HEAD correction adds 292 executable bytes for a pre-traversal
+`lstat` boundary on the package `scripts` entry. Symlinked and broken-symlink
+roots retain the existing package-level `SYMLINK` issue without resolving,
+walking, attesting, or parsing external helpers; missing roots, real
+directories, and non-directory package data retain their prior behavior. The
+cumulative executable delta is 21,863 bytes with the fixed cap and all budgets
+unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -252,6 +259,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 45,626 bytes: 3,973 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 41,437-byte read-only checker. The executable is not
+The frozen package is 45,918 bytes: 3,973 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 41,729-byte read-only checker. The executable is not
 loaded as activated core.
