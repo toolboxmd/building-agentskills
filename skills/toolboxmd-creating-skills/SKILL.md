@@ -43,6 +43,8 @@ Start with `SKILL.md`. Add only evidenced support: always-needed rules inline; c
 
 Leave only the exact `name` slug unquoted. JSON-quote all other top-level strings and each portable `metadata` key and value. Omit empty `metadata`. Describe capability, triggers, and exclusions, not workflow. Keep decisions, evidence, three answers, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Reserve rigid language for mechanized rules.
 
+Generated Codex sidecars require nonempty `display_name` and `short_description`. The validator also accepts official-compatible supported partial interface fields when validating an existing sidecar.
+
 Explicit `metadata.hermes.config`: pass `--allow-hermes-metadata`; keep `hermes`, `config`, `key`, `description`, `default`, and `prompt` unquoted; start items with `- key: "..."`; JSON-quote values. It is not portable core.
 
 ### 5. Make scripts portable

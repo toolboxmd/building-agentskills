@@ -35,14 +35,14 @@
     "skillMdLinesMaximum": 150,
     "skillMdBytesMaximum": 10500,
     "fileCountMaximum": 3,
-    "packageBytesMaximum": 36000,
+    "packageBytesMaximum": 40000,
     "referenceFileCountMaximum": 0,
     "evalFileCountMaximum": 0,
     "scriptFileCount": 1
   },
   "budgetRevision": {
     "previousPackageBytesMaximum": 24000,
-    "currentPackageBytesMaximum": 36000,
+    "currentPackageBytesMaximum": 40000,
     "deterministicExecutableDeltaBytes": 2256,
     "reason": "Exact-HEAD review required quote-aware YAML comments and the then-reviewed metadata.hermes.config vendor surface.",
     "laterDeterministicExecutableDeltaBytes": 460,
@@ -61,7 +61,11 @@
     "emptyMetadataReason": "Exact-HEAD review required bare and comment-only metadata blocks to fail while omission remains valid.",
     "directCommandExecutableDeltaBytes": 116,
     "directCommandReason": "Exact-HEAD review required command-position detection for direct task-relative helpers; the prescribed validator command now treats warnings as errors.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 10668,
+    "optionalSidecarAndAssignmentExecutableDeltaBytes": 2766,
+    "optionalSidecarAndAssignmentReason": "Exact-HEAD review aligned independently optional Codex sidecar sections and replaced library shell tokenization with a bounded readable lexical scanner preserving quote, escape, operator, redirection, comment, command-position, and assignment provenance.",
+    "previousPackageBytesMaximumBeforeLexicalScanner": 36000,
+    "lexicalScannerCapRevisionReason": "The 4,000-byte cap revision preserves readable activated-core doctrine and an executable-only bounded lexical scanner required by exact-HEAD review; activated-core, description, file, reference, eval, and script budgets are unchanged.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 13434,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -75,22 +79,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "769454c45a6836319ea7d2828172fa59139f261c8f19b977aa06e8e93d812e64",
+    "aggregateSha256": "220dd7cd4abb2c8eb17b35889f04b6d2603a663b7f7dfcf451180a56bcaa1377",
     "fileCount": 3,
-    "packageBytes": 35200,
+    "packageBytes": 38168,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4450,
-      "lines": 76,
+      "bytes": 4652,
+      "lines": 78,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4450,
-        "sha256": "f56d4b7f960e813a10f214aa9d8e3a4138f618db69b97f9a5286239b61d79527"
+        "bytes": 4652,
+        "sha256": "c3e95b95330f2588802edaf13a501ef14ae7858b01798d017bea7259da6ad342"
       },
       {
         "path": "agents/openai.yaml",
@@ -99,8 +103,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 30534,
-        "sha256": "96f6b163a1c523d94b800cad8ebad5120091e24664653e5cbbc07744de23361d"
+        "bytes": 33300,
+        "sha256": "dc7f8c0b22f4aec26828ca28ac2612260795ddc6ecafc6ccfba81f1f737fd8ae"
       }
     ]
   },
@@ -111,8 +115,10 @@
       "the validator runs from outside the package without Python bytecode writes",
       "bare interpreter-prefixed and direct command-position task-relative helpers fail, including quoted, dot-relative, option-bearing, separator-led, and odd-backslash shell-line-continued forms, without joining even-backslash or ordinary newlines",
       "the prescribed validator command enables warnings-as-errors while prose, argument, Markdown-link, and explicit skill-directory script paths remain accepted",
+      "direct helpers after bounded empty, unquoted, single-quoted, and double-quoted POSIX assignment words fail while assignment prose and intervening commands remain accepted",
       "explicit skill-directory script examples pass",
-      "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, required and bounded interface strings, assets-only icon paths, optional default_prompt, policy, and current tool dependencies",
+      "the canonical current Codex sidecar subset handles quote-aware comments, duplicate fields, supported and bounded interface strings, assets-only icon paths, optional default_prompt, policy, and current tool dependencies",
+      "Codex interface, policy, and dependencies sections are independently optional; present sections must be nonempty and valid, while generated ToolboxMD sidecars retain nonempty UI fields",
       "valid Markdown links with optional titles pass",
       "single-line CommonMark reference-definition destinations support angle brackets and optional titles while missing and escaping targets fail",
       "skill names containing reserved provider strings fail",

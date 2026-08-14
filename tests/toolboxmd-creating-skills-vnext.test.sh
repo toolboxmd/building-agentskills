@@ -32,7 +32,7 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-skill-lines 150 \
   --max-skill-bytes 10500 \
   --max-files 3 \
-  --max-package-bytes 36000 \
+  --max-package-bytes 40000 \
   --max-reference-files 0 \
   --max-eval-files 0 \
   --max-script-files 1 \
@@ -47,7 +47,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json \
   --max-skill-lines 150 \
   --max-skill-bytes 10500 \
   --max-files 3 \
-  --max-package-bytes 36000 \
+  --max-package-bytes 40000 \
   --max-reference-files 0 \
   --max-eval-files 0 \
   --max-script-files 1 \
@@ -106,7 +106,7 @@ dot_bare_exit=$?
 set -e
 [[ $dot_bare_exit -eq 1 ]]
 
-make_fixture "$test_tmp/direct-bare-fixture" $'scripts/run.py\n./scripts/run.py\n"scripts/run.py"\n\'./scripts/run.py\'\ntrue; scripts/run.py\ntrue && "./scripts/run.py"\ntrue || ./scripts/run.py\ntrue | \'scripts/run.py\'\ntrue & ./scripts/run.py'
+make_fixture "$test_tmp/direct-bare-fixture" $'scripts/run.py\n./scripts/run.py\n"scripts/run.py"\n\'./scripts/run.py\'\ntrue; scripts/run.py\ntrue && "./scripts/run.py"\ntrue || ./scripts/run.py\ntrue | \'scripts/run.py\'\ntrue & ./scripts/run.py\necho hi |& ./scripts/run.py\necho foo#bar && ./scripts/run.py\n> /tmp/log ./scripts/run.py\necho hi 2>&1 && ./scripts/run.py\n2>&1 ./scripts/run.py\n2>/tmp/log ./scripts/run.py\n2> /tmp/log ./scripts/run.py\n2>out ./scripts/run.py\n2>>out ./scripts/run.py\n2>|out ./scripts/run.py\n0<&1 ./scripts/run.py\n0<>data ./scripts/run.py\nMODE=strict 2>&1 ./scripts/run.py\n2>&1 MODE=strict ./scripts/run.py'
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --warnings-as-errors "$test_tmp/direct-bare-fixture" > "$test_tmp/direct-strict.out" 2>&1
 direct_strict_exit=$?
@@ -116,8 +116,18 @@ set -e
 [[ $direct_strict_exit -eq 1 && $direct_bare_exit -eq 1 ]]
 grep -Fq "FRAGILE_SCRIPT_PATH" "$test_tmp/direct-strict.out"
 
-make_fixture "$test_tmp/direct-safe-fixture" $'See scripts/run.py for details.\ncat scripts/run.py\n[helper](scripts/run.py)\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+make_fixture "$test_tmp/direct-safe-fixture" $'See scripts/run.py for details.\ncat scripts/run.py\n[helper](scripts/run.py)\nPYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"\necho hi >& ./scripts/run.log\necho hi &> ./scripts/run.log\necho hi > ./scripts/run.log\necho hi >> ./scripts/run.log\n2 > ./scripts/run.log ./scripts/run.py'
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/direct-safe-fixture" > "$test_tmp/direct-safe.json"
+
+make_fixture "$test_tmp/assignment-direct-fixture" $'MODE=strict ./scripts/run.py\nA=1 B="two words" scripts/run.py\ntrue && MODE=strict ./scripts/run.py\nCONFIG=\'{"mode":"strict"}\' scripts/run.py\nprintf "%s" "#"; MODE=strict ./scripts/run.py\nMODE=strict \\\n  ./scripts/run.py'
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/assignment-direct-fixture" > "$test_tmp/assignment-direct.json"
+assignment_direct_exit=$?
+set -e
+[[ $assignment_direct_exit -eq 1 ]]
+
+make_fixture "$test_tmp/assignment-safe-fixture" $'# ./scripts/run.py\ntrue; # do not run; ./scripts/run.py\nSet MODE=strict before using scripts/run.py.\nTARGET=./scripts/run.py\ncat MODE=strict scripts/run.py\nMODE=strict cat scripts/run.py\nprintf "%s" "a|b"\necho "a && b"\necho "https://example.com/?a=1&b=2"\necho ";" ./scripts/run.py\necho \\; ./scripts/run.py\n"MODE=strict" ./scripts/run.py\nMODE\\=strict ./scripts/run.py\n[helper](scripts/run.py)\nMODE=strict python3 -B "<skill-dir>/scripts/run.py"'
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/assignment-safe-fixture" > "$test_tmp/assignment-safe.json"
 
 make_fixture "$test_tmp/option-bare-fixture" $'python3 -X dev scripts/run.py\nnode --require loader "./scripts/run.js"\nbash --init-file profile scripts/run.sh\nsh -o errexit scripts/run.sh\nruby -I lib scripts/run.py'
 set +e
@@ -214,6 +224,36 @@ dependencies: # target tools
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/sidecar-fixture" > "$test_tmp/sidecar.json"
 
+for name in policy-only dependencies-only display-only brand-only blank-sidecar comment-only-sidecar; do
+  make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+  mkdir -p "$test_tmp/$name/agents"
+done
+cat > "$test_tmp/policy-only/agents/openai.yaml" <<'EOF'
+policy:
+  allow_implicit_invocation: false
+EOF
+cat > "$test_tmp/dependencies-only/agents/openai.yaml" <<'EOF'
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "openaiDeveloperDocs"
+EOF
+cat > "$test_tmp/display-only/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Display Only"
+EOF
+cat > "$test_tmp/brand-only/agents/openai.yaml" <<'EOF'
+interface:
+  brand_color: "#3B82F6"
+EOF
+: > "$test_tmp/blank-sidecar/agents/openai.yaml"
+printf '# no semantic section\n' > "$test_tmp/comment-only-sidecar/agents/openai.yaml"
+for name in policy-only dependencies-only display-only brand-only blank-sidecar comment-only-sidecar; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/$name" > "$test_tmp/$name.json"
+  set -e
+done
+
 make_fixture "$test_tmp/policy-case-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 mkdir -p "$test_tmp/policy-case-fixture/agents"
 cat > "$test_tmp/policy-case-fixture/agents/openai.yaml" <<'EOF'
@@ -229,7 +269,7 @@ policy_case_exit=$?
 set -e
 [[ $policy_case_exit -eq 1 ]]
 
-for name in empty-sidecar duplicate-sidecar duplicate-tools; do
+for name in empty-interface empty-interface-value empty-policy empty-dependencies empty-tools duplicate-sidecar duplicate-tools; do
   make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
   mkdir -p "$test_tmp/$name/agents"
 done
@@ -269,11 +309,11 @@ for name in long-display long-prompt outside-icon token-boundary invalid-sidecar
   set -e
   [[ $sidecar_bound_exit -eq 1 ]]
 done
-cat > "$test_tmp/empty-sidecar/agents/openai.yaml" <<'EOF'
-interface:
-  display_name: ""
-  short_description: ""
-EOF
+printf 'interface:\n' > "$test_tmp/empty-interface/agents/openai.yaml"
+printf 'interface:\n  brand_color: ""\n' > "$test_tmp/empty-interface-value/agents/openai.yaml"
+printf 'policy:\n' > "$test_tmp/empty-policy/agents/openai.yaml"
+printf 'dependencies:\n' > "$test_tmp/empty-dependencies/agents/openai.yaml"
+printf 'dependencies:\n  tools:\n' > "$test_tmp/empty-tools/agents/openai.yaml"
 cat > "$test_tmp/duplicate-sidecar/agents/openai.yaml" <<'EOF'
 interface:
   display_name: "Duplicate Sidecar"
@@ -290,7 +330,7 @@ dependencies:
   tools:
   tools:
 EOF
-for name in empty-sidecar duplicate-sidecar duplicate-tools; do
+for name in empty-interface empty-interface-value empty-policy empty-dependencies empty-tools duplicate-sidecar duplicate-tools; do
   set +e
   PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
   sidecar_edge_exit=$?
@@ -335,15 +375,6 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/missing-icon
 missing_icon_exit=$?
 set -e
 [[ $missing_icon_exit -eq 1 ]]
-
-make_fixture "$test_tmp/missing-interface-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
-mkdir -p "$test_tmp/missing-interface-fixture/agents"
-printf 'interface:\n  display_name: "Missing Fields"\n' > "$test_tmp/missing-interface-fixture/agents/openai.yaml"
-set +e
-PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/missing-interface-fixture" > "$test_tmp/missing-interface.json"
-missing_interface_exit=$?
-set -e
-[[ $missing_interface_exit -eq 1 ]]
 
 make_fixture "$test_tmp/titled-link-fixture" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 mkdir -p "$test_tmp/titled-link-fixture/references"
@@ -989,6 +1020,8 @@ const bare = JSON.parse(fs.readFileSync(path.join(temporary, "bare.json")));
 const dotBare = JSON.parse(fs.readFileSync(path.join(temporary, "dot-bare.json")));
 const directBare = JSON.parse(fs.readFileSync(path.join(temporary, "direct-bare.json")));
 const directSafe = JSON.parse(fs.readFileSync(path.join(temporary, "direct-safe.json")));
+const assignmentDirect = JSON.parse(fs.readFileSync(path.join(temporary, "assignment-direct.json")));
+const assignmentSafe = JSON.parse(fs.readFileSync(path.join(temporary, "assignment-safe.json")));
 const optionBare = JSON.parse(fs.readFileSync(path.join(temporary, "option-bare.json")));
 const separatorSafe = JSON.parse(fs.readFileSync(path.join(temporary, "separator-safe.json")));
 const continuedBare = JSON.parse(fs.readFileSync(path.join(temporary, "continued-bare.json")));
@@ -996,12 +1029,13 @@ const evenBackslash = JSON.parse(fs.readFileSync(path.join(temporary, "even-back
 const portable = JSON.parse(fs.readFileSync(path.join(temporary, "portable.json")));
 const official = ["pass", "fail", "unexpected", "timeout"].map(mode => JSON.parse(fs.readFileSync(path.join(temporary, `skills-ref-${mode}.json`))));
 const sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "sidecar.json")));
+const supportedPartialSidecars = ["policy-only", "dependencies-only", "display-only", "brand-only"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const blankSidecars = ["blank-sidecar", "comment-only-sidecar"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const policyCase = JSON.parse(fs.readFileSync(path.join(temporary, "policy-case.json")));
-const sidecarEdges = ["empty-sidecar", "duplicate-sidecar", "duplicate-tools", "long-display", "long-prompt", "outside-icon", "token-boundary", "invalid-sidecar-string"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const sidecarEdges = ["empty-interface", "empty-interface-value", "empty-policy", "empty-dependencies", "empty-tools", "duplicate-sidecar", "duplicate-tools", "long-display", "long-prompt", "outside-icon", "token-boundary", "invalid-sidecar-string"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const minimalSidecar = JSON.parse(fs.readFileSync(path.join(temporary, "minimal-sidecar.json")));
 const badPrompt = JSON.parse(fs.readFileSync(path.join(temporary, "bad-prompt.json")));
 const missingIcon = JSON.parse(fs.readFileSync(path.join(temporary, "missing-icon.json")));
-const missingInterface = JSON.parse(fs.readFileSync(path.join(temporary, "missing-interface.json")));
 const titledLink = JSON.parse(fs.readFileSync(path.join(temporary, "titled-link.json")));
 const referenceLink = JSON.parse(fs.readFileSync(path.join(temporary, "reference-link.json")));
 const missingReference = JSON.parse(fs.readFileSync(path.join(temporary, "missing-reference.json")));
@@ -1066,7 +1100,7 @@ function fileSha(relative) {
 assert(freeze.claimBoundary.newModelSessions === 0, "freeze must record zero model sessions");
 assert(freeze.claimBoundary.superiorityClaimAllowed === false, "freeze must forbid a superiority claim");
 assert(freeze.claimBoundary.promotionClaimAllowed === false, "freeze must forbid a promotion claim");
-assert(freeze.creatorBudgets.packageBytesMaximum === 36000, "reviewed package cap changed");
+assert(freeze.creatorBudgets.packageBytesMaximum === 40000, "reviewed package cap changed");
 assert(freeze.budgetRevision.deterministicExecutableDeltaBytes === 2256, "executable review delta changed");
 assert(freeze.budgetRevision.laterDeterministicExecutableDeltaBytes === 460, "later executable review delta changed");
 assert(freeze.budgetRevision.holisticReviewExecutableDeltaBytes === 7353, "holistic review delta changed");
@@ -1076,7 +1110,9 @@ assert(freeze.budgetRevision.quoteOnlyCanonicalExecutableDeltaBytes === -312, "q
 assert(freeze.budgetRevision.portableMetadataKeyExecutableDeltaBytes === 273, "portable metadata key executable delta changed");
 assert(freeze.budgetRevision.emptyMetadataExecutableDeltaBytes === 142, "empty metadata executable delta changed");
 assert(freeze.budgetRevision.directCommandExecutableDeltaBytes === 116, "direct command executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 10668, "current executable delta changed");
+assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeLexicalScanner === 36000, "pre-lexer package cap changed");
+assert(freeze.budgetRevision.optionalSidecarAndAssignmentExecutableDeltaBytes === 2766, "optional sidecar and assignment executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 13434, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1099,7 +1135,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 35200, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 38168, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(bare.status === "fail", "bare script fixture must fail under warnings-as-errors");
@@ -1113,7 +1149,6 @@ assert(policyCase.status === "fail" && sidecarEdges.every(result => result.statu
 assert(minimalSidecar.status === "pass" && minimalSidecar.errorCount === 0, "default_prompt must remain optional");
 assert(badPrompt.issues.some(item => item.code === "OPENAI_DEFAULT_PROMPT"), "default_prompt must be validated when present");
 assert(missingIcon.issues.some(item => item.code === "OPENAI_ICON"), "declared icon paths must resolve inside the package");
-assert(missingInterface.issues.filter(item => item.code === "OPENAI_MISSING").length === 1, "required interface fields must remain enforced");
 assert(titledLink.status === "pass" && titledLink.errorCount === 0, "valid local link with optional title must pass");
 assert(referenceLink.status === "pass" && referenceLink.errorCount === 0, "valid reference definition must pass");
 assert(missingReference.issues.some(item => item.code === "BROKEN_LINK"), "missing reference destination must fail");
@@ -1125,8 +1160,14 @@ assert(unquotedScalars.every(result => result.status === "fail" && result.issues
 assert(quotedScalars.every(result => result.status === "pass"), "quoted scalar lookalikes must remain strings");
 assert(dotBare.status === "fail", "dot-relative script fixture must fail under warnings-as-errors");
 assert(dotBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "all dot-relative interpreter examples must be detected");
-assert(directBare.status === "fail" && directBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 9, "direct task-relative commands must fail in command position");
+assert(directBare.status === "fail" && directBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 23, "direct task-relative commands must fail in command position");
 assert(directSafe.status === "pass" && directSafe.warningCount === 0, "prose, arguments, links, and explicit skill paths must not look executable");
+const newContractFailures = [];
+if (assignmentDirect.status !== "fail" || assignmentDirect.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length !== 6) newContractFailures.push("assignment-prefixed direct helpers are not all rejected");
+if (assignmentSafe.status !== "pass" || assignmentSafe.warningCount !== 0) newContractFailures.push("assignment safe boundaries changed");
+if (!supportedPartialSidecars.every(result => result.status === "pass")) newContractFailures.push("supported partial sidecars are rejected");
+if (!blankSidecars.every(result => result.status === "fail" && result.issues.some(item => item.code === "OPENAI_SHAPE"))) newContractFailures.push("blank sidecar lacks semantic-section error");
+assert(newContractFailures.length === 0, newContractFailures.join("; "));
 assert(optionBare.status === "fail" && optionBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 5, "option operands must not hide fragile script paths");
 assert(separatorSafe.status === "pass" && separatorSafe.warningCount === 0, "later-command arguments and reverse prose direction must remain safe");
 assert(continuedBare.status === "fail" && continuedBare.issues.filter(item => item.code === "FRAGILE_SCRIPT_PATH").length === 3, "one and three backslashes across LF or CRLF must preserve continuation detection");
@@ -1170,9 +1211,12 @@ for (const [name, result, expectedEvals] of [["meeting", meeting, 1], ["deck", d
 }
 
 const skillText = fs.readFileSync(path.join(root, freeze.package.path, "SKILL.md"), "utf8");
+const ownSidecar = fs.readFileSync(path.join(root, freeze.package.path, "agents/openai.yaml"), "utf8");
 assert(!/\bgit\s+(?:status|rev-parse|diff|log)\b/i.test(skillText), "creator embeds an unconditional Git command");
 assert(/Inspect Git state only when .*user requested Git delivery/.test(skillText), "conditional Git boundary missing");
 assert(skillText.includes('PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --warnings-as-errors "<target-skill-dir>"'), "strict portable creator command missing");
+assert(skillText.includes("Generated Codex sidecars require nonempty `display_name` and `short_description`"), "creator sidecar policy missing");
+assert(/^\s{2}display_name:\s+".+"$/m.test(ownSidecar) && /^\s{2}short_description:\s+".+"$/m.test(ownSidecar), "creator sidecar must retain nonempty UI fields");
 assert(skillText.includes("always-read reference belongs in activated-core cost"), "always-read cost rule missing");
 NODE
 

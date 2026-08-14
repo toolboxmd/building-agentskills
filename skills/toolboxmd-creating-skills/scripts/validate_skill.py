@@ -34,7 +34,7 @@ FRAGILE_SCRIPT_RE = re.compile(
     r"\b(?:python(?:3(?:\.\d+)?)?|node|bash|sh|ruby)\b"
     r"[^\r\n;&|]*?[ \t]+[\"']?(?:\./)?scripts/"
 )
-DIRECT_SCRIPT_RE = re.compile(r'(?:^|;|&&|\|\||[|&])[ \t]*["\']?(?:\./)?scripts/')
+ASSIGNMENT_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 SHELL_CONTINUATION_RE = re.compile(r"(\\+)(?:\r\n|\n)[ \t]*")
 ROOT_NAMES = ("Users", "home", "workspace", "root")
 POSIX_ROOTS = "|".join(re.escape(f"/{name}/") for name in ROOT_NAMES)
@@ -118,6 +118,79 @@ def normalize_shell_continuations(text: str) -> str:
         return backslashes[:-1] + " " if len(backslashes) % 2 else match.group(0)
 
     return SHELL_CONTINUATION_RE.sub(replace, text)
+
+
+def has_direct_task_script(line: str) -> bool:
+    word: list[tuple[str, bool]] = []
+    command = True
+    redirect = False
+
+    def finish() -> bool:
+        nonlocal word, command, redirect
+        if not word:
+            return False
+        if redirect:
+            word, redirect = [], False
+            return False
+        value = "".join(char for char, _ in word)
+        equals = next((at for at, pair in enumerate(word) if pair == ("=", False)), -1)
+        assignment = equals > 0 and all(not marked for _, marked in word[:equals]) and ASSIGNMENT_NAME_RE.fullmatch(
+            value[:equals]
+        )
+        inspect = command and not assignment
+        if inspect:
+            command = False
+        word = []
+        return inspect and value.startswith(("scripts/", "./scripts/"))
+
+    quote = ""
+    escaped = False
+    index = 0
+    while index < len(line):
+        char = line[index]
+        if escaped:
+            word.append((char, True))
+            escaped = False
+        elif quote:
+            if char == quote:
+                quote = ""
+            elif quote == '"' and char == "\\":
+                escaped = True
+            else:
+                word.append((char, True))
+        elif char == "\\":
+            escaped = True
+        elif char in "\"'":
+            quote = char
+            word.append(("", True))
+        elif char.isspace():
+            if finish():
+                return True
+        elif char == "#" and not word:
+            break
+        elif char in ";&|<>":
+            io_number = char in "<>" and word and all(not marked for _, marked in word) and all(
+                digit.isdigit() for digit, _ in word
+            )
+            if io_number:
+                word = []
+            elif finish():
+                return True
+            pair = line[index : index + 2]
+            if char in "<>":
+                redirect = True
+            elif pair in {"&>", "|&"}:
+                redirect = pair == "&>"
+                if not redirect:
+                    command = True
+            else:
+                command, redirect = True, False
+            if pair in {"&&", "||", "|&", ">&", "&>", ">>", ">|", "<&", "<>"}:
+                index += 1
+        else:
+            word.append((char, False))
+        index += 1
+    return False if quote or escaped else finish()
 
 
 def parse_metadata(
@@ -340,7 +413,7 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
             problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "nested Markdown link shape needs an official validator", "warning"))
         command_text = normalize_shell_continuations(content)
         for line_number, line in enumerate(command_text.splitlines(), 1):
-            if FRAGILE_SCRIPT_RE.search(line) or DIRECT_SCRIPT_RE.search(line):
+            if FRAGILE_SCRIPT_RE.search(line) or has_direct_task_script(line):
                 problems.append(issue("FRAGILE_SCRIPT_PATH", relative, f"line {line_number} uses task-relative scripts/", "warning"))
 
 
@@ -388,6 +461,7 @@ def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> N
         elif section == "policy" and indent == 2:
             if not re.fullmatch(r"allow_implicit_invocation:\s*(true|false)", stripped):
                 fail("OPENAI_SHAPE", "invalid policy")
+                continue
             elif policy_seen:
                 fail("OPENAI_DUPLICATE", "duplicate field: allow_implicit_invocation")
             policy_seen = True
@@ -422,9 +496,17 @@ def validate_sidecar(root: Path, name: str, problems: list[dict[str, str]]) -> N
             target[key] = canonical_scalar(raw)
         except (TypeError, ValueError):
             fail("OPENAI_SHAPE", f"invalid quoted string: {key}")
-    for key in {"display_name", "short_description"}:
-        if not values.get(key):
-            fail("OPENAI_MISSING", f"missing or empty {key}")
+        else:
+            if target is values and not target[key]:
+                fail("OPENAI_SHAPE", f"{key} must be nonempty")
+    if not sections:
+        fail("OPENAI_SHAPE", "no recognized semantic section")
+    if "interface" in sections and not values:
+        fail("OPENAI_SHAPE", "interface needs a supported field")
+    if "policy" in sections and not policy_seen:
+        fail("OPENAI_SHAPE", "policy needs allow_implicit_invocation")
+    if "dependencies" in sections and not tools:
+        fail("OPENAI_SHAPE", "dependencies needs a nonempty tools sequence")
     display = values.get("display_name", "")
     if len(display) > 64:
         fail("OPENAI_DISPLAY_NAME", "display_name length must be at most 64")

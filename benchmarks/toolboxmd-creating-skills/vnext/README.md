@@ -22,7 +22,7 @@ working directory, Python bytecode isolation, known failure-pattern fixtures,
 and non-mutation of retained inputs. It does not test triggering or semantic
 downstream usefulness.
 
-The package budget is 36,000 bytes. Exact-HEAD review first added 2,256 bytes
+The package budget was 36,000 bytes. Exact-HEAD review first added 2,256 bytes
 of deterministic executable validator code for quote-aware YAML comments and
 the reviewed Hermes metadata surface, then 460 bytes for optional
 `default_prompt`, all-decodable-file local-path scanning, and single-line
@@ -45,7 +45,13 @@ comment-only metadata hardening then added 142 executable bytes, bringing the
 cumulative delta to 10,552 bytes; optional metadata must be omitted when empty.
 Direct command-position helper detection added 116 executable bytes and the
 copyable validator command now treats warnings as errors. The cumulative
-executable delta is 10,668 bytes.
+executable delta is 10,668 bytes. Optional Codex sidecar subsets and a bounded
+lexical command scanner added 2,766 executable bytes, bringing the cumulative
+delta to 13,434 bytes. The package cap is now 40,000 bytes. This 4,000-byte
+revision preserves the readable activated workflow and an executable-only
+scanner with quote, escape, operator, redirection, comment, command-position,
+and assignment provenance. Activated-core, description, file, reference, eval,
+and script budgets are unchanged, and no lower total package-size claim is made.
 
 Canonical subset v2 leaves only the exact `name` slug unquoted. Every other
 top-level string and every user-defined portable metadata key and value uses a
@@ -66,6 +72,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 35,200 bytes: 4,450 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 30,534-byte read-only checker. The executable is not
+The frozen package is 38,168 bytes: 4,652 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 33,300-byte read-only checker. The executable is not
 loaded as activated core.

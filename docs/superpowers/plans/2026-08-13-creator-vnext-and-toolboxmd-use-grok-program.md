@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 35,200 bytes, aggregate SHA-256
-  `769454c45a6836319ea7d2828172fa59139f261c8f19b977aa06e8e93d812e64`;
-- activated core: 76 lines and 4,450 bytes, with a 240-character
+- exact package: three files, 38,168 bytes, aggregate SHA-256
+  `220dd7cd4abb2c8eb17b35889f04b6d2603a663b7f7dfcf451180a56bcaa1377`;
+- activated core: 78 lines and 4,652 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -145,6 +145,13 @@ Completion evidence, updated 2026-08-14:
   cumulative executable delta is 10,552 bytes, and omission remains valid;
 - strict delivery-command and direct task-relative helper hardening added 116
   executable bytes. The cumulative executable delta is 10,668 bytes;
+- optional Codex sidecar subsets and a bounded lexical command scanner added
+  2,766 executable bytes. The cumulative delta is 13,434 bytes. The package
+  cap is now 40,000 bytes, restoring the readable accepted workflow while the
+  executable-only scanner preserves quote, escape, operator, redirection,
+  comment, command-position, and assignment provenance. Activated-core,
+  description, file, reference, eval, and script budgets remain unchanged,
+  and no lower total package-size claim is allowed;
 - canonical subset v2 leaves only `name` unquoted. Every other top-level
   string and every user-defined portable metadata key and value uses one-line
   JSON double quotes.
@@ -182,10 +189,14 @@ Completion evidence, updated 2026-08-14:
   blocks fragile interpreter-prefixed and direct command-position task-relative
   helpers, including quoted, dot-relative, option-bearing, separator-led, and
   odd-backslash shell-line-continued forms, without joining even-backslash or
-  ordinary newlines, while the prescribed command makes warnings fatal,
+  ordinary newlines, including bounded assignment prefixes, while the
+  prescribed command makes warnings fatal,
   validates the real copyable minimal-skill example under explicit budgets,
   accepts the explicit `<skill-dir>` contract,
-  accepts supported Codex sidecar sections and titled local links, rejects
+  accepts independently optional Codex interface, policy, and dependency
+  sections, including supported partial interfaces, while rejecting empty
+  sections and empty sidecars; accepts
+  titled local links; rejects
   reserved provider names, single-quoted values, and every unquoted non-name
   string including prose, dates, hexadecimal, octal, and YAML typed scalars,
   prevents trailing comments from hiding quoting errors, rejects block scalars,
