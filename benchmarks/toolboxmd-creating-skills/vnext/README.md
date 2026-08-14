@@ -214,6 +214,15 @@ authority `[::1]` joins the existing local file URI authorities without making
 remote IPv6 or outer URL contexts local. A bounded readable deletion pass keeps
 the cumulative executable delta at 21,934 bytes and the fixed 46,000-byte cap
 with all other budgets unchanged.
+The next exact-HEAD correction removes 363 executable bytes while adding a
+bounded `lstat` gate before sidecar reads. `agents/openai.yaml` and its `agents`
+ancestor must be non-symlink entries, the ancestor must be a directory, and a
+present sidecar must be a regular file. Wrong-type ancestors, directories,
+FIFOs, devices, and other non-regular entries fail without being opened.
+Missing optional sidecars and valid regular sidecars retain their behavior.
+Consolidating the two component checks and removing runtime-neutral internal
+function annotations brings the cumulative executable delta to 21,571 bytes
+with the fixed cap and all budgets unchanged.
 
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
@@ -243,6 +252,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 45,989 bytes: 3,973 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 41,800-byte read-only checker. The executable is not
+The frozen package is 45,626 bytes: 3,973 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 41,437-byte read-only checker. The executable is not
 loaded as activated core.

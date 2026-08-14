@@ -107,8 +107,8 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 45,989 bytes, aggregate SHA-256
-  `3ecd13a7588c40cfb5cb372a4125240e45773d1813e096cf6689e4eff18c25e9`;
+- exact package: three files, 45,626 bytes, aggregate SHA-256
+  `4a775e19515fb32e4dd42dbb9104cf29d9a70990bb2b3679a6d65fc12c5690e3`;
 - activated core: 74 lines and 3,973 bytes, with a 226-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
@@ -313,6 +313,15 @@ Completion evidence, updated 2026-08-14:
   link active. The exact bracketed IPv6 loopback authority `[::1]` is local
   without changing remote IPv6 or outer URL contexts. A bounded readable
   deletion pass preserves the fixed 46,000-byte cap and all other budgets;
+- the next exact-HEAD correction removes 363 executable bytes and brings the
+  cumulative delta to 21,571 bytes while adding a bounded `lstat` gate before
+  sidecar reads. The `agents` ancestor and `openai.yaml` leaf cannot be
+  symlinks, the present ancestor must be a directory, and a present leaf must
+  be a regular file. Wrong-type ancestors, directories, FIFOs, devices, and
+  other non-regular entries fail without being opened. Missing optional
+  sidecars and valid regular sidecars remain unchanged. Consolidating the
+  component checks and removing runtime-neutral internal function annotations
+  preserves the fixed cap and every existing budget;
 - canonical subset v2 uses one-line JSON double quotes for every top-level
   string, including `name`, and every user-defined portable metadata key and
   value.

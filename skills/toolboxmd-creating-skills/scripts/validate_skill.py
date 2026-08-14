@@ -7,6 +7,7 @@ import os
 import posixpath
 import re
 import shutil
+import stat
 import subprocess
 import sys
 from pathlib import Path, PurePosixPath
@@ -56,11 +57,11 @@ PORTABLE_DESCRIPTION_MAX = 1024
 class InspectionError(Exception): pass
 
 
-def issue(code: str, path: str, message: str, severity: str = "error"):
+def issue(code, path, message, severity="error"):
     return dict(severity=severity, code=code, path=path, message=message)
 
 
-def split_frontmatter(text: str) -> tuple[list[str], str]:
+def split_frontmatter(text):
     lines = YAML_LINES.split(text)
     if lines[0] != "---":
         raise InspectionError("missing opening ---")
@@ -71,7 +72,7 @@ def split_frontmatter(text: str) -> tuple[list[str], str]:
     return lines[1:end], "\n".join(lines[end + 1 :])
 
 
-def canonical_scalar(raw: str) -> str:
+def canonical_scalar(raw):
     value = raw.strip()
     if value[:1] != '"' or re.search(r"(?<!\\)(?:\\\\)*\\u(?i:d[89a-f][0-9a-f]{2})", value):
         raise ValueError
@@ -81,7 +82,7 @@ def canonical_scalar(raw: str) -> str:
     return value
 
 
-def without_comment(raw: str) -> str:
+def without_comment(raw):
     quote = ""
     escaped = False
     index = 0
@@ -102,7 +103,7 @@ def without_comment(raw: str) -> str:
     return raw.strip()
 
 
-def parse_string(raw: str, field: str, problems: list[dict[str, str]]) -> str:
+def parse_string(raw, field, problems):
     try:
         return canonical_scalar(raw)
     except ValueError:
@@ -110,9 +111,7 @@ def parse_string(raw: str, field: str, problems: list[dict[str, str]]) -> str:
     return ""
 
 
-def parse_metadata(
-    lines: list[str], index: int, problems: list[dict[str, str]], allow_hermes: bool
-) -> tuple[dict[str, object], int, bool]:
+def parse_metadata(lines, index, problems, allow_hermes):
     def fail(code: str, message: str) -> None:
         problems.append(issue(code, "SKILL.md", message))
 
@@ -188,7 +187,7 @@ def parse_metadata(
     return mapping, index, seen
 
 
-def parse_frontmatter(lines: list[str], allow_hermes: bool) -> tuple[dict[str, object], list[dict[str, str]]]:
+def parse_frontmatter(lines, allow_hermes):
     data: dict[str, object] = {}
     problems: list[dict[str, str]] = []
 
@@ -233,7 +232,7 @@ def parse_frontmatter(lines: list[str], allow_hermes: bool) -> tuple[dict[str, o
     return data, problems
 
 
-def collect_files(root: Path) -> tuple[list[dict[str, object]], list[dict[str, str]]]:
+def collect_files(root):
     files: list[dict[str, object]] = []
     problems: list[dict[str, str]] = []
     for path in sorted(root.rglob("*")):
@@ -261,7 +260,7 @@ def collect_files(root: Path) -> tuple[list[dict[str, object]], list[dict[str, s
     return files, problems
 
 
-def markdown_without_code(text: str) -> str:
+def markdown_without_code(text):
     output: list[str] = []
     fence = ""
     containers: list[int] = []
@@ -286,7 +285,7 @@ def markdown_without_code(text: str) -> str:
     return re.sub(r"((?<!\\)(?:\\\\)*)\\\[[^]\n]*\](?:\([^\n)]*\)|\[[^]\n]*\])", r"\1", CODE_SPAN_RE.sub(r"\1", "".join(output)))
 
 
-def has_bare_script_path(text: str) -> bool:
+def has_bare_script_path(text):
     text = URI_RE.sub("", REMOTE_RE.sub("", text))
 
     def active_quote(stop: int) -> str:
@@ -327,7 +326,7 @@ def has_bare_script_path(text: str) -> bool:
     return False
 
 
-def fence_candidate(line: str) -> tuple[str, list[int]]:
+def fence_candidate(line):
     view = line
     containers: list[int] = []
     while True:
@@ -341,7 +340,7 @@ def fence_candidate(line: str) -> tuple[str, list[int]]:
     return view, containers
 
 
-def fenced_line_view(line: str, containers: list[int]):
+def fenced_line_view(line, containers):
     view = line
     for index, width in enumerate(containers):
         if not view.strip() and all(remaining > 0 for remaining in containers[index:]):
@@ -358,7 +357,7 @@ def fenced_line_view(line: str, containers: list[int]):
     return view
 
 
-def validate_markdown_script_paths(content: str, relative: str, problems: list[dict[str, str]]) -> None:
+def validate_markdown_script_paths(content, relative, problems):
     fence = ""
     shell_fence = False
     opener_line = 0
@@ -414,7 +413,7 @@ def validate_markdown_script_paths(content: str, relative: str, problems: list[d
         add("MARKDOWN_FENCE", opener_line, "opens a recognized shell fence without a closing fence")
 
 
-def safe_urlsplit(raw: str, relative: str, problems: list[dict[str, str]]):
+def safe_urlsplit(raw, relative, problems):
     try:
         return urlsplit(raw)
     except ValueError:
@@ -434,7 +433,7 @@ def exact_path(parent, target):
     return True
 
 
-def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None:
+def validate_links_and_paths(root, problems):
     def validate_destination(raw: str, relative: str, parent: Path) -> None:
         if raw.startswith("<"):
             raw = raw[1:-1]
@@ -515,14 +514,26 @@ def validate_links_and_paths(root: Path, problems: list[dict[str, str]]) -> None
             problems.append(issue("OFFICIAL_VALIDATOR_REQUIRED", relative, "nested Markdown link shape needs an official validator", "warning"))
 
 
-def validate_sidecar(root: Path, name: str, creation_mode: bool, problems: list[dict[str, str]]) -> None:
+def validate_sidecar(root, name, creation_mode, problems):
     sidecar = root / "agents" / "openai.yaml"
-    if not sidecar.exists():
-        return
     path = "agents/openai.yaml"
 
     def fail(code: str, message: str) -> None:
         problems.append(issue(code, path, message))
+
+    for entry, required in ((sidecar.parent, stat.S_ISDIR), (sidecar, stat.S_ISREG)):
+        try:
+            mode = entry.lstat().st_mode
+        except FileNotFoundError:
+            return
+        except OSError:
+            fail("OPENAI_FILE", "sidecar path cannot be inspected")
+            return
+        if stat.S_ISLNK(mode):
+            return
+        if not required(mode):
+            fail("OPENAI_FILE", "invalid sidecar path entry")
+            return
 
     section = ""
     sections: set[str] = set()
@@ -637,9 +648,7 @@ def validate_sidecar(root: Path, name: str, creation_mode: bool, problems: list[
         fail("OPENAI_DEPENDENCY", "each tool needs type mcp and value")
 
 
-def validate_scripts(
-    root: Path, declared: list[str], problems: list[dict[str, str]]
-) -> list[str]:
+def validate_scripts(root, declared, problems):
     accepted: set[str] = set()
     seen: set[str] = set()
     for value in declared:
@@ -697,12 +706,12 @@ def validate_scripts(
     return sorted(accepted)
 
 
-def budget_problem(value: int, maximum, code: str, label: str, problems: list[dict[str, str]]) -> None:
+def budget_problem(value, maximum, code, label, problems):
     if maximum is not None and value > maximum:
         problems.append(issue(code, "SKILL.md" if label.startswith(("SKILL.md", "description")) else ".", f"{label}: {value} > {maximum}"))
 
 
-def run_official_validator(root: Path, hermes: bool, problems: list[dict[str, str]]) -> dict[str, object]:
+def run_official_validator(root, hermes, problems):
     coverage: dict[str, object] = {
         "attempted": False,
         "status": "skipped_extension" if hermes else "not_available",
@@ -743,7 +752,7 @@ def run_official_validator(root: Path, hermes: bool, problems: list[dict[str, st
     return coverage
 
 
-def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
+def validate(root, args):
     if not root.is_dir():
         raise InspectionError(f"not a directory: {root}")
     skill_path = root / "SKILL.md"
@@ -844,7 +853,7 @@ def validate(root: Path, args: argparse.Namespace) -> dict[str, object]:
     }
 
 
-def parser() -> argparse.ArgumentParser:
+def parser():
     result = argparse.ArgumentParser(
         description="Read-only canonical ToolboxMD package checker.",
         epilog="Exit: 0 valid, 1 invalid, 2 inspection error.",
@@ -865,7 +874,7 @@ def parser() -> argparse.ArgumentParser:
     return result
 
 
-def main() -> int:
+def main():
     args = parser().parse_args()
     for key, value in vars(args).items():
         if key.startswith("max_") and value is not None and value < 0:

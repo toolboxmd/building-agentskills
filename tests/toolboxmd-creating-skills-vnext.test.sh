@@ -452,6 +452,57 @@ dependencies: # target tools
 EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/sidecar-fixture" > "$test_tmp/sidecar.json"
 
+for name in sidecar-directory sidecar-direct-symlink sidecar-ancestor-symlink sidecar-fifo sidecar-ancestor-file sidecar-ancestor-fifo; do
+  make_fixture "$test_tmp/$name" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+done
+mkdir -p "$test_tmp/sidecar-directory/agents/openai.yaml" "$test_tmp/external-sidecar"
+cp "$root/README.md" "$test_tmp/external-sidecar/openai.yaml"
+mkdir -p "$test_tmp/sidecar-direct-symlink/agents"
+ln -s "$test_tmp/external-sidecar/openai.yaml" "$test_tmp/sidecar-direct-symlink/agents/openai.yaml"
+ln -s "$test_tmp/external-sidecar" "$test_tmp/sidecar-ancestor-symlink/agents"
+mkdir -p "$test_tmp/sidecar-fifo/agents"
+mkfifo "$test_tmp/sidecar-fifo/agents/openai.yaml"
+printf 'not a directory\n' > "$test_tmp/sidecar-ancestor-file/agents"
+mkfifo "$test_tmp/sidecar-ancestor-fifo/agents"
+for name in sidecar-directory sidecar-direct-symlink sidecar-ancestor-symlink sidecar-ancestor-file; do
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
+  sidecar_entry_exit=$?
+  set -e
+  if [[ $sidecar_entry_exit -ne 1 ]]; then
+    echo "FAIL: $name exited $sidecar_entry_exit instead of structured validation exit 1" >&2
+    exit 1
+  fi
+done
+run_bounded_sidecar() {
+  PYTHONDONTWRITEBYTECODE=1 python3 -B - "$validator" "$1" <<'PY'
+import subprocess
+import sys
+
+try:
+    result = subprocess.run(
+        [sys.executable, "-B", sys.argv[1], "--json", sys.argv[2]],
+        capture_output=True,
+        text=True,
+        timeout=2,
+    )
+except subprocess.TimeoutExpired:
+    raise SystemExit(124)
+sys.stdout.write(result.stdout)
+raise SystemExit(result.returncode)
+PY
+}
+for name in sidecar-fifo sidecar-ancestor-fifo; do
+  set +e
+  run_bounded_sidecar "$test_tmp/$name" > "$test_tmp/$name.json"
+  sidecar_fifo_exit=$?
+  set -e
+  if [[ $sidecar_fifo_exit -ne 1 ]]; then
+    echo "FAIL: $name exited $sidecar_fifo_exit instead of bounded validation exit 1" >&2
+    exit 1
+  fi
+done
+
 make_fixture "$test_tmp/invalid-utf8-sidecar" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
 mkdir -p "$test_tmp/invalid-utf8-sidecar/agents"
 printf '\377\n' > "$test_tmp/invalid-utf8-sidecar/agents/openai.yaml"
@@ -2065,6 +2116,8 @@ const genericConfigSafe = JSON.parse(fs.readFileSync(path.join(temporary, "gener
 const portable = JSON.parse(fs.readFileSync(path.join(temporary, "portable.json")));
 const official = ["pass", "fail", "unexpected", "timeout"].map(mode => JSON.parse(fs.readFileSync(path.join(temporary, `skills-ref-${mode}.json`))));
 const sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "sidecar.json")));
+const nonregularSidecars = ["sidecar-directory", "sidecar-fifo", "sidecar-ancestor-file", "sidecar-ancestor-fifo"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
+const symlinkSidecars = ["sidecar-direct-symlink", "sidecar-ancestor-symlink"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const invalidUtf8Sidecar = JSON.parse(fs.readFileSync(path.join(temporary, "invalid-utf8-sidecar.json")));
 const supportedPartialSidecars = ["policy-only", "dependencies-only", "display-only", "brand-only", "prompt-only"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const creationPartialSidecars = ["policy-only", "dependencies-only", "display-only", "brand-only", "prompt-only"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `creation-${name}.json`))));
@@ -2248,7 +2301,8 @@ assert(freeze.budgetRevision.scriptComponentBoundaryExecutableDeltaBytes === 162
 assert(freeze.budgetRevision.pathAndReferenceNormalizationExecutableDeltaBytes === 35, "path/reference normalization executable delta changed");
 assert(freeze.budgetRevision.yamlPrintableAndEscapedBacktickExecutableDeltaBytes === 6, "YAML-printable/escaped-backtick executable delta changed");
 assert(freeze.budgetRevision.escapedLinkParityAndIpv6LoopbackExecutableDeltaBytes === 7, "escaped-link/IPv6-loopback executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21934, "current executable delta changed");
+assert(freeze.budgetRevision.sidecarEntrySafetyExecutableDeltaBytes === -363, "sidecar-entry-safety executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 21571, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -2272,7 +2326,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45989, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 45626, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -2280,6 +2334,8 @@ assert(official.map(result => result.coverage.officialSkillsRef.status).join(","
 assert(official[0].status === "pass" && official.slice(1).every(result => result.status === "fail"), "official validator exits changed");
 assert(official.every(result => result.coverage.officialSkillsRef.externalBehaviorAttested === false), "external validator behavior must remain unattested");
 assert(sidecar.status === "pass" && sidecar.errorCount === 0, "official nested sidecar must pass");
+assert(nonregularSidecars.every(result => result.status === "fail" && result.issues.length === 1 && result.issues[0].code === "OPENAI_FILE"), "non-regular sidecars must fail once without reading their bytes");
+assert(symlinkSidecars.every(result => result.status === "fail" && result.issues.length === 1 && result.issues[0].code === "SYMLINK"), "sidecar and ancestor symlinks must not read external bytes or add sidecar diagnostics");
 assert(invalidUtf8Sidecar.status === "fail" && invalidUtf8Sidecar.issues.length === 1 && invalidUtf8Sidecar.issues[0].code === "UTF8", "invalid UTF-8 sidecar must produce one package issue");
 assert(policyCase.status === "fail" && sidecarEdges.every(result => result.status === "fail"), "sidecar canonical boundary changed");
 assert(minimalSidecar.status === "pass" && minimalSidecar.errorCount === 0, "default_prompt must remain optional");
