@@ -84,7 +84,7 @@ make_fixture() {
   mkdir -p "$directory/scripts"
   cat > "$directory/SKILL.md" <<EOF
 ---
-name: $(basename "$directory")
+name: "$(basename "$directory")"
 description: "Run a deterministic fixture when testing installed script path examples."
 ---
 
@@ -105,7 +105,7 @@ make_body_fixture() {
   mkdir -p "$directory/scripts"
   cat > "$directory/SKILL.md" <<EOF
 ---
-name: $(basename "$directory")
+name: "$(basename "$directory")"
 description: "Run a deterministic fixture when testing closed Markdown and helper-source surfaces."
 ---
 
@@ -119,6 +119,24 @@ EOF
 sha256_file() {
   node -e 'const c=require("node:crypto"),f=require("node:fs");process.stdout.write(c.createHash("sha256").update(f.readFileSync(process.argv[1])).digest("hex"))' "$1"
 }
+
+make_fixture "$test_tmp/outside-executable" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/outside-executable/bin"
+printf 'echo broken )\n' > "$test_tmp/outside-executable/bin/run.sh"
+chmod +x "$test_tmp/outside-executable/bin/run.sh"
+make_fixture "$test_tmp/outside-shebang" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+printf '#!/bin/sh\necho broken )\n' > "$test_tmp/outside-shebang/run-helper"
+make_fixture "$test_tmp/outside-data" 'PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/run.py"'
+mkdir -p "$test_tmp/outside-data/bin"
+printf 'echo inert data\n' > "$test_tmp/outside-data/bin/run.sh"
+set +e
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/outside-executable" > "$test_tmp/outside-executable.json"
+outside_executable_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/outside-shebang" > "$test_tmp/outside-shebang.json"
+outside_shebang_exit=$?
+PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --warnings-as-errors "$test_tmp/outside-data" > "$test_tmp/outside-data.json"
+outside_data_exit=$?
+set -e
 
 
 make_body_fixture "$test_tmp/closed-shell-bare" $'```bash\nenv MODE=strict ./scripts/run.py\necho scripts/run.py\nprintf "scripts/run.py"\n# scripts/run.py\ncat <<\'PAYLOAD\'\nscripts/run.py\nPAYLOAD\n>scripts/run.py\n<scripts/run.py\n2>scripts/run.py\necho scripts/"run.py"\necho scripts/\'run.py\'\necho scripts/""run.py\necho "scripts/"run.py\necho \'a"b\' scripts/"run.py"\necho "scripts/>out"\necho "scripts/<in"\necho "scripts/;child"\necho "scripts/,child"\necho "scripts/:child"\necho scripts/<helper>\necho scripts/<child.py>\necho scripts/{run.py}\necho scripts/*.py\necho [helper](scripts/run.py)\n```\n\n~~~Sh\ntrue && ./scripts/run.py\n~~~\n\n```SHELL\n./scripts/run.py\n```'
@@ -485,7 +503,7 @@ for name in list-description quoted-description; do
 done
 cat > "$test_tmp/list-description/SKILL.md" <<'EOF'
 ---
-name: list-description
+name: "list-description"
 description: [one, two]
 ---
 
@@ -498,7 +516,7 @@ set -e
 [[ $list_description_exit -eq 1 ]]
 cat > "$test_tmp/quoted-description/SKILL.md" <<'EOF'
 ---
-name: quoted-description
+name: "quoted-description"
 description: "[one, two]"
 ---
 
@@ -511,7 +529,7 @@ for name in angle-less-than-description angle-greater-than-description angle-saf
 done
 cat > "$test_tmp/angle-less-than-description/SKILL.md" <<'EOF'
 ---
-name: angle-less-than-description
+name: "angle-less-than-description"
 description: "Use when processing <tag input."
 ---
 
@@ -519,7 +537,7 @@ description: "Use when processing <tag input."
 EOF
 cat > "$test_tmp/angle-greater-than-description/SKILL.md" <<'EOF'
 ---
-name: angle-greater-than-description
+name: "angle-greater-than-description"
 description: "Use when processing tag> input."
 ---
 
@@ -527,7 +545,7 @@ description: "Use when processing tag> input."
 EOF
 cat > "$test_tmp/angle-safe-description/SKILL.md" <<'EOF'
 ---
-name: angle-safe-description
+name: "angle-safe-description"
 description: "Use when processing ordinary tagged input."
 ---
 
@@ -554,7 +572,7 @@ PATH="$test_tmp/no-skills-ref-bin" PYTHONDONTWRITEBYTECODE=1 "$python_bin" -B "$
 mkdir -p "$test_tmp/unquoted-date-description" "$test_tmp/quoted-name" "$test_tmp/portable-metadata-sequence" "$test_tmp/portable-hermes-sequence" "$test_tmp/hermes-config-sequence" "$test_tmp/hermes-child-sequence" "$test_tmp/unquoted-portable-metadata" "$test_tmp/quoted-portable-metadata-keys"
 cat > "$test_tmp/unquoted-date-description/SKILL.md" <<'EOF'
 ---
-name: unquoted-date-description
+name: "unquoted-date-description"
 description: 2026-08-13
 ---
 
@@ -567,19 +585,36 @@ set -e
 cat > "$test_tmp/quoted-name/SKILL.md" <<'EOF'
 ---
 name: "quoted-name"
-description: "Reject a quoted name in the canonical generated subset."
+description: "Accept a quoted name in the canonical generated subset."
 ---
 
 # Quoted name
 EOF
-set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/quoted-name" > "$test_tmp/quoted-name.json"
-quoted_name_exit=$?
-set -e
-[[ $quoted_name_exit -eq 1 ]]
+
+name_forms=(ordinary-name true null 123 2026-08-14)
+unquoted_name_exits=()
+quoted_name_exits=()
+for skill_name in "${name_forms[@]}"; do
+  mkdir -p "$test_tmp/name-forms/$skill_name"
+  printf -- '---\nname: %s\ndescription: "Reject every unquoted name in the canonical generated subset."\n---\n\n# Name form\n' "$skill_name" > "$test_tmp/name-forms/$skill_name/SKILL.md"
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/name-forms/$skill_name" > "$test_tmp/unquoted-name-$skill_name.json"
+  unquoted_name_exits+=("$?")
+  set -e
+  printf -- '---\nname: "%s"\ndescription: "Accept JSON-double-quoted names before applying slug and directory checks."\n---\n\n# Name form\n' "$skill_name" > "$test_tmp/name-forms/$skill_name/SKILL.md"
+  set +e
+  PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/name-forms/$skill_name" > "$test_tmp/quoted-name-$skill_name.json"
+  quoted_name_exits+=("$?")
+  set -e
+done
+if [[ "${unquoted_name_exits[*]}" != "1 1 1 1 1" || "${quoted_name_exits[*]}" != "0 0 0 0 0" || $outside_executable_exit -ne 1 || $outside_shebang_exit -ne 1 || $outside_data_exit -ne 0 ]]; then
+  printf 'FAIL: canonical name/location RED unquoted=%s quoted=%s outside=%s/%s data=%s\n' "${unquoted_name_exits[*]}" "${quoted_name_exits[*]}" "$outside_executable_exit" "$outside_shebang_exit" "$outside_data_exit" >&2
+  exit 1
+fi
 cat > "$test_tmp/portable-metadata-sequence/SKILL.md" <<'EOF'
 ---
-name: portable-metadata-sequence
+name: "portable-metadata-sequence"
 description: "Reject a sequence where portable metadata requires a mapping."
 metadata:
   - owner: "toolboxmd"
@@ -593,7 +628,7 @@ portable_metadata_sequence_exit=$?
 set -e
 cat > "$test_tmp/portable-hermes-sequence/SKILL.md" <<'EOF'
 ---
-name: portable-hermes-sequence
+name: "portable-hermes-sequence"
 description: "Reject a sequence marker at the Hermes metadata level."
 metadata:
   - hermes:
@@ -606,7 +641,7 @@ metadata:
 EOF
 cat > "$test_tmp/hermes-config-sequence/SKILL.md" <<'EOF'
 ---
-name: hermes-config-sequence
+name: "hermes-config-sequence"
 description: "Reject a sequence marker before the Hermes config mapping."
 metadata:
   hermes:
@@ -619,7 +654,7 @@ metadata:
 EOF
 cat > "$test_tmp/hermes-child-sequence/SKILL.md" <<'EOF'
 ---
-name: hermes-child-sequence
+name: "hermes-child-sequence"
 description: "Reject a sequence marker on a Hermes child field."
 metadata:
   hermes:
@@ -632,7 +667,7 @@ metadata:
 EOF
 cat > "$test_tmp/unquoted-portable-metadata/SKILL.md" <<'EOF'
 ---
-name: unquoted-portable-metadata
+name: "unquoted-portable-metadata"
 description: "Reject an unquoted portable metadata value."
 metadata:
   "owner": toolboxmd
@@ -645,14 +680,14 @@ for ((index = 0; index < ${#metadata_key_cases[@]}; index += 2)); do
   label="${metadata_key_cases[$index]}"
   raw="${metadata_key_cases[$((index + 1))]}"
   mkdir -p "$test_tmp/unquoted-$label-metadata-key"
-  printf -- '---\nname: unquoted-%s-metadata-key\ndescription: "Reject an unquoted portable metadata key."\nmetadata:\n  %s: "value"\n---\n\n# Unquoted metadata key\n' "$label" "$raw" > "$test_tmp/unquoted-$label-metadata-key/SKILL.md"
+  printf -- '---\nname: "unquoted-%s-metadata-key"\ndescription: "Reject an unquoted portable metadata key."\nmetadata:\n  %s: "value"\n---\n\n# Unquoted metadata key\n' "$label" "$raw" > "$test_tmp/unquoted-$label-metadata-key/SKILL.md"
   set +e
   PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/unquoted-$label-metadata-key" > "$test_tmp/unquoted-$label-metadata-key.json"
   set -e
 done
 cat > "$test_tmp/quoted-portable-metadata-keys/SKILL.md" <<'EOF'
 ---
-name: quoted-portable-metadata-keys
+name: "quoted-portable-metadata-keys"
 description: "Accept JSON-double-quoted portable metadata keys."
 metadata:
   "owner": "toolboxmd"
@@ -669,7 +704,7 @@ for variant in empty comment-only; do
 done
 cat > "$test_tmp/empty-metadata/SKILL.md" <<'EOF'
 ---
-name: empty-metadata
+name: "empty-metadata"
 description: "Reject a bare metadata field."
 metadata:
 ---
@@ -678,7 +713,7 @@ metadata:
 EOF
 cat > "$test_tmp/comment-only-metadata/SKILL.md" <<'EOF'
 ---
-name: comment-only-metadata
+name: "comment-only-metadata"
 description: "Reject metadata containing only comments."
 metadata:
   # no semantic entries
@@ -709,7 +744,7 @@ set -e
 
 mkdir -p "$test_tmp/doubled-quote-budget"
 {
-  printf '%s\n' '---' 'name: doubled-quote-budget'
+  printf '%s\n' '---' 'name: "doubled-quote-budget"'
   printf "description: '%s''%s'\n" "$(printf '%0600d' 0)" "$(printf '%0600d' 0)"
   printf '%s\n' '---' '' '# Doubled quote budget'
 } > "$test_tmp/doubled-quote-budget/SKILL.md"
@@ -726,25 +761,25 @@ for ((index = 0; index < ${#scalar_cases[@]}; index += 2)); do
   for prefix in unquoted quoted; do
     mkdir -p "$test_tmp/$prefix-$label-description"
   done
-  printf -- '---\nname: unquoted-%s-description\ndescription: %s\n---\n\n# Unquoted scalar\n' "$label" "$raw" > "$test_tmp/unquoted-$label-description/SKILL.md"
+  printf -- '---\nname: "unquoted-%s-description"\ndescription: %s\n---\n\n# Unquoted scalar\n' "$label" "$raw" > "$test_tmp/unquoted-$label-description/SKILL.md"
   set +e
   PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/unquoted-$label-description" > "$test_tmp/unquoted-$label-description.json"
   scalar_exit=$?
   set -e
   [[ $scalar_exit -eq 1 ]]
-  printf -- '---\nname: quoted-%s-description\ndescription: "%s"\n---\n\n# Quoted scalar\n' "$label" "$raw" > "$test_tmp/quoted-$label-description/SKILL.md"
+  printf -- '---\nname: "quoted-%s-description"\ndescription: "%s"\n---\n\n# Quoted scalar\n' "$label" "$raw" > "$test_tmp/quoted-$label-description/SKILL.md"
   PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/quoted-$label-description" > "$test_tmp/quoted-$label-description.json"
 done
 
 for name in invalid-double-escape nested-scalar explicit-tag malformed-quote invalid-fold-indicator reserved-indicator; do
   mkdir -p "$test_tmp/$name"
 done
-printf '%s\n' '---' 'name: invalid-double-escape' 'description: "Bad\qescape"' '---' '' '# Invalid escape' > "$test_tmp/invalid-double-escape/SKILL.md"
-printf '%s\n' '---' 'name: nested-scalar' 'description: nested: value' '---' '' '# Nested scalar' > "$test_tmp/nested-scalar/SKILL.md"
-printf '%s\n' '---' 'name: explicit-tag' 'description: !!seq [one]' '---' '' '# Explicit tag' > "$test_tmp/explicit-tag/SKILL.md"
-printf '%s\n' '---' 'name: malformed-quote' 'description: "unterminated' '---' '' '# Malformed quote' > "$test_tmp/malformed-quote/SKILL.md"
-printf '%s\n' '---' 'name: invalid-fold-indicator' 'description: >0' '---' '' '# Invalid fold indicator' > "$test_tmp/invalid-fold-indicator/SKILL.md"
-printf '%s\n' '---' 'name: reserved-indicator' 'description: @bad' '---' '' '# Reserved indicator' > "$test_tmp/reserved-indicator/SKILL.md"
+printf '%s\n' '---' 'name: "invalid-double-escape"' 'description: "Bad\qescape"' '---' '' '# Invalid escape' > "$test_tmp/invalid-double-escape/SKILL.md"
+printf '%s\n' '---' 'name: "nested-scalar"' 'description: nested: value' '---' '' '# Nested scalar' > "$test_tmp/nested-scalar/SKILL.md"
+printf '%s\n' '---' 'name: "explicit-tag"' 'description: !!seq [one]' '---' '' '# Explicit tag' > "$test_tmp/explicit-tag/SKILL.md"
+printf '%s\n' '---' 'name: "malformed-quote"' 'description: "unterminated' '---' '' '# Malformed quote' > "$test_tmp/malformed-quote/SKILL.md"
+printf '%s\n' '---' 'name: "invalid-fold-indicator"' 'description: >0' '---' '' '# Invalid fold indicator' > "$test_tmp/invalid-fold-indicator/SKILL.md"
+printf '%s\n' '---' 'name: "reserved-indicator"' 'description: @bad' '---' '' '# Reserved indicator' > "$test_tmp/reserved-indicator/SKILL.md"
 for name in invalid-double-escape nested-scalar explicit-tag malformed-quote invalid-fold-indicator reserved-indicator; do
   set +e
   PYTHONDWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/$name" > "$test_tmp/$name.json"
@@ -758,7 +793,7 @@ for ((index = 0; index < ${#comment_cases[@]}; index += 2)); do
   label="${comment_cases[$index]}"
   raw="${comment_cases[$((index + 1))]}"
   mkdir -p "$test_tmp/commented-$label-description"
-  printf -- '---\nname: commented-%s-description\ndescription: %s # type comment\n---\n\n# Commented scalar\n' "$label" "$raw" > "$test_tmp/commented-$label-description/SKILL.md"
+  printf -- '---\nname: "commented-%s-description"\ndescription: %s # type comment\n---\n\n# Commented scalar\n' "$label" "$raw" > "$test_tmp/commented-$label-description/SKILL.md"
   set +e
   PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/commented-$label-description" > "$test_tmp/commented-$label-description.json"
   commented_exit=$?
@@ -769,7 +804,7 @@ done
 mkdir -p "$test_tmp/quoted-hash-description" "$test_tmp/block-description"
 cat > "$test_tmp/quoted-hash-description/SKILL.md" <<'EOF'
 ---
-name: quoted-hash-description
+name: "quoted-hash-description"
 description: "[one, two] # literal"
 compatibility: "true # literal" # actual comment
 ---
@@ -779,7 +814,7 @@ EOF
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/quoted-hash-description" > "$test_tmp/quoted-hash-description.json"
 cat > "$test_tmp/block-description/SKILL.md" <<'EOF'
 ---
-name: block-description
+name: "block-description"
 description: | # block header comment
   Validate a block scalar without treating its hashes # as YAML comments.
 ---
@@ -797,7 +832,7 @@ for style in literal folded; do
 done
 cat > "$test_tmp/metadata-block-literal/SKILL.md" <<'EOF'
 ---
-name: metadata-block-literal
+name: "metadata-block-literal"
 description: "Reject scalar metadata."
 metadata: | # metadata must be a mapping
   author: toolboxmd
@@ -807,7 +842,7 @@ metadata: | # metadata must be a mapping
 EOF
 cat > "$test_tmp/metadata-block-folded/SKILL.md" <<'EOF'
 ---
-name: metadata-block-folded
+name: "metadata-block-folded"
 description: "Reject folded scalar metadata."
 metadata: >-
   author: toolboxmd
@@ -825,7 +860,7 @@ done
 
 mkdir -p "$test_tmp/indented-budget" "$test_tmp/tabbed-block" "$test_tmp/under-indented-block"
 {
-  printf '%s\n' '---' 'name: indented-budget' 'description: |-' '  a'
+  printf '%s\n' '---' 'name: "indented-budget"' 'description: |-' '  a'
   printf '  %40s%s\n' '' 'b'
   printf '%s\n' '---' '' '# Indented budget'
 } > "$test_tmp/indented-budget/SKILL.md"
@@ -834,7 +869,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --max-description-chars
 indented_budget_exit=$?
 set -e
 [[ $indented_budget_exit -eq 1 ]]
-printf '%s\n' '---' 'name: tabbed-block' 'description: |-' $'\tTabbed indentation is invalid.' '---' '' '# Tabbed block' > "$test_tmp/tabbed-block/SKILL.md"
+printf '%s\n' '---' 'name: "tabbed-block"' 'description: |-' $'\tTabbed indentation is invalid.' '---' '' '# Tabbed block' > "$test_tmp/tabbed-block/SKILL.md"
 set +e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json "$test_tmp/tabbed-block" > "$test_tmp/tabbed-block.json"
 tabbed_block_exit=$?
@@ -842,7 +877,7 @@ set -e
 [[ $tabbed_block_exit -eq 1 ]]
 cat > "$test_tmp/under-indented-block/SKILL.md" <<'EOF'
 ---
-name: under-indented-block
+name: "under-indented-block"
 description: |2-
   first
  second
@@ -859,7 +894,7 @@ set -e
 mkdir -p "$test_tmp/hermes-metadata" "$test_tmp/hermes-mapping" "$test_tmp/hermes-bad-list-start" "$test_tmp/unsupported-metadata" "$test_tmp/non-string-metadata"
 cat > "$test_tmp/hermes-metadata/SKILL.md" <<'EOF'
 ---
-name: hermes-metadata
+name: "hermes-metadata"
 description: "Validate documented Hermes configuration metadata."
 metadata:
   "author": "toolboxmd"
@@ -884,7 +919,7 @@ set -e
 PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" --json --allow-hermes-metadata "$test_tmp/hermes-metadata" > "$test_tmp/hermes-metadata.json"
 cat > "$test_tmp/hermes-mapping/SKILL.md" <<'EOF'
 ---
-name: hermes-mapping
+name: "hermes-mapping"
 description: "Reject a mapping where Hermes requires a config sequence."
 metadata:
   hermes:
@@ -901,7 +936,7 @@ hermes_mapping_exit=$?
 set -e
 cat > "$test_tmp/hermes-bad-list-start/SKILL.md" <<'EOF'
 ---
-name: hermes-bad-list-start
+name: "hermes-bad-list-start"
 description: "Reject a Hermes config item that does not start with key."
 metadata:
   hermes:
@@ -918,7 +953,7 @@ hermes_bad_list_start_exit=$?
 set -e
 cat > "$test_tmp/unsupported-metadata/SKILL.md" <<'EOF'
 ---
-name: unsupported-metadata
+name: "unsupported-metadata"
 description: "Reject an unsupported nested metadata extension."
 metadata:
   "other":
@@ -936,7 +971,7 @@ set -e
 [[ $unsupported_metadata_exit -eq 1 ]]
 cat > "$test_tmp/non-string-metadata/SKILL.md" <<'EOF'
 ---
-name: non-string-metadata
+name: "non-string-metadata"
 description: "Reject a non-string Hermes configuration value."
 metadata:
   hermes:
@@ -1228,6 +1263,12 @@ const angleDescriptions = ["angle-less-than-description", "angle-greater-than-de
 const angleSafeDescription = JSON.parse(fs.readFileSync(path.join(temporary, "angle-safe-description.json")));
 const unquotedDateDescription = JSON.parse(fs.readFileSync(path.join(temporary, "unquoted-date-description.json")));
 const quotedName = JSON.parse(fs.readFileSync(path.join(temporary, "quoted-name.json")));
+const nameForms = ["ordinary-name", "true", "null", "123", "2026-08-14"];
+const unquotedNames = nameForms.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `unquoted-name-${name}.json`))));
+const quotedNames = nameForms.map(name => JSON.parse(fs.readFileSync(path.join(temporary, `quoted-name-${name}.json`))));
+const outsideExecutable = JSON.parse(fs.readFileSync(path.join(temporary, "outside-executable.json")));
+const outsideShebang = JSON.parse(fs.readFileSync(path.join(temporary, "outside-shebang.json")));
+const outsideData = JSON.parse(fs.readFileSync(path.join(temporary, "outside-data.json")));
 const portableMetadataSequence = JSON.parse(fs.readFileSync(path.join(temporary, "portable-metadata-sequence.json")));
 const metadataSequenceLevels = ["portable-hermes-sequence", "hermes-config-sequence", "hermes-child-sequence"].map(name => JSON.parse(fs.readFileSync(path.join(temporary, `${name}.json`))));
 const unquotedPortableMetadata = JSON.parse(fs.readFileSync(path.join(temporary, "unquoted-portable-metadata.json")));
@@ -1307,7 +1348,8 @@ assert(freeze.budgetRevision.shellControlPrefixExecutableDeltaBytes === 959, "sh
 assert(freeze.budgetRevision.descriptionAngleBracketExecutableDeltaBytes === 132, "description angle-bracket executable delta changed");
 assert(freeze.budgetRevision.closedSurfaceScriptPathExecutableDeltaBytes === 1189, "closed-surface migration executable delta changed");
 assert(freeze.budgetRevision.containerFenceLinkMaskingExecutableDeltaBytes === 345, "container fence link-masking executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 18958, "current executable delta changed");
+assert(freeze.budgetRevision.quotedNameAndScriptLocationExecutableDeltaBytes === -197, "quoted-name/location executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 18761, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
@@ -1331,7 +1373,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43742, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 43483, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 assert(portable.status === "pass" && portable.warningCount === 0, "explicit skill-directory fixture must pass");
@@ -1369,7 +1411,11 @@ assert(helperSourceBare.status === "fail" && executableSourceBare.status === "fa
 assert(markdownHelperSource.status === "fail" && markdownHelperSource.issues.some(item => item.code === "FRAGILE_SCRIPT_PATH"), "Markdown files below scripts must retain helper-source coverage");
 assert(helperSourceSafe.status === "pass" && genericConfigSafe.status === "pass", "explicit helper roots must pass and generic configs must stay outside command scanning");
 assert(unquotedDateDescription.status === "fail" && unquotedDateDescription.issues.some(item => item.code === "FRONTMATTER_STRING"), "unquoted dates must fail the canonical string contract");
-assert(quotedName.status === "fail" && quotedName.issues.some(item => item.code === "NAME_FORMAT"), "name must remain an unquoted slug");
+assert(quotedName.status === "pass", "quoted ordinary name must pass the canonical string contract");
+assert(unquotedNames.every(result => result.status === "fail" && result.issues.some(item => item.code === "FRONTMATTER_STRING")), "every unquoted name must fail before YAML implicit typing");
+assert(quotedNames.every(result => result.status === "pass"), "quoted ordinary and implicit-looking names must remain strings");
+assert([outsideExecutable, outsideShebang].every(result => result.status === "fail" && result.issues.some(item => item.code === "SCRIPT_LOCATION")), "executable and shebang helpers outside scripts must fail canonical package policy");
+assert(outsideData.status === "pass" && !outsideData.issues.some(item => item.code === "SCRIPT_LOCATION"), "outside non-executable data without a shebang must remain allowed");
 assert(portableMetadataSequence.status === "fail" && portableMetadataSequence.issues.some(item => item.code === "METADATA_SHAPE"), "portable metadata sequences must fail");
 assert(metadataSequenceLevels.every(result => result.status === "fail" && result.issues.some(item => item.code === "METADATA_SHAPE")), "sequence markers must remain confined to Hermes config entries");
 assert(unquotedPortableMetadata.status === "fail" && unquotedPortableMetadata.issues.some(item => item.code === "FRONTMATTER_STRING"), "portable metadata values must use JSON double quotes");

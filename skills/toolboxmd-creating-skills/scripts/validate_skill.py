@@ -17,7 +17,6 @@ from urllib.parse import unquote, urlsplit
 
 
 PORTABLE_FIELDS = {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
-STRING_FIELDS = PORTABLE_FIELDS - {"metadata", "name"}
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 BLOCK_SCALAR_RE = re.compile(r"[|>](?:[1-9][+-]?|[+-][1-9]?|[+-]?)")
 LINK_RE = re.compile(
@@ -72,14 +71,8 @@ def split_frontmatter(text: str) -> tuple[list[str], str]:
 def canonical_scalar(raw: str) -> str:
     value = raw.strip()
     if len(value) < 2 or not value.startswith('"') or not value.endswith('"'):
-        raise ValueError("canonical strings must use JSON double quotes")
-    try:
-        parsed = json.loads(value)
-    except (json.JSONDecodeError, TypeError) as exc:
-        raise ValueError("invalid double-quoted string") from exc
-    if not isinstance(parsed, str):
-        raise ValueError("value is not a string")
-    return parsed
+        raise ValueError
+    return json.loads(value)
 
 
 def without_comment(raw: str) -> str:
@@ -107,7 +100,7 @@ def parse_string(raw: str, field: str, problems: list[dict[str, str]]) -> str:
     try:
         return canonical_scalar(raw)
     except ValueError:
-        problems.append(issue("FRONTMATTER_STRING", "SKILL.md", f"{field} must be a JSON double-quoted one-line string"))
+        problems.append(issue("FRONTMATTER_STRING", "SKILL.md", f"{field} needs a one-line JSON string"))
     return ""
 
 
@@ -225,7 +218,7 @@ def parse_frontmatter(lines: list[str], allow_hermes: bool) -> tuple[dict[str, o
             if not seen:
                 fail("METADATA_EMPTY", "omit empty metadata")
             continue
-        data[key] = parse_string(raw_value, key, problems) if key in STRING_FIELDS else raw_value
+        data[key] = parse_string(raw_value, key, problems)
         index += 1
     return data, problems
 
@@ -241,6 +234,8 @@ def collect_files(root: Path) -> tuple[list[dict[str, object]], list[dict[str, s
         if not path.is_file():
             continue
         contents = path.read_bytes()
+        if not relative.startswith("scripts/") and (path.stat().st_mode & 0o111 or contents.startswith(b"#!")):
+            problems.append(issue("SCRIPT_LOCATION", relative, "executable/shebang helper must be below scripts/"))
         files.append(
             {
                 "path": relative,
@@ -625,7 +620,7 @@ def validate_scripts(
         accepted.add(relative)
 
     scripts = root / "scripts"
-    for path in sorted(scripts.rglob("*")) if scripts.is_dir() else []:
+    for path in sorted(scripts.rglob("*")):
         if not path.is_file() or path.is_symlink():
             continue
         relative = path.relative_to(root).as_posix()

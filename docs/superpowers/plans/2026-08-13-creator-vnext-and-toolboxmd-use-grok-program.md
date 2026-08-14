@@ -107,9 +107,9 @@ with its own hash and package inspection.
 Completion evidence, updated 2026-08-14:
 
 - product: `skills/toolboxmd-creating-skills/`;
-- exact package: three files, 43,742 bytes, aggregate SHA-256
-  `5de8fd61d030e4fecb8d1a8a8cb154482594ec1ccebe5bfb7b2b6b9902a11aa8`;
-- activated core: 78 lines and 4,702 bytes, with a 240-character
+- exact package: three files, 43,483 bytes, aggregate SHA-256
+  `4641b0e41cf21c204c40f7ec36a68ae7d66a2d3793edb3d3775db1236627cc51`;
+- activated core: 78 lines and 4,640 bytes, with a 240-character
   description, zero references, zero evals, and one read-only validator;
 - freeze and claim boundary:
   `benchmarks/toolboxmd-creating-skills/vnext/manifest.json`;
@@ -183,12 +183,16 @@ Completion evidence, updated 2026-08-14:
   remain outside the rule. Leading-whitespace child names and multiline inline
   spans are outside the custom lexical subset;
 - exact-HEAD review then reused the same root, blockquote, and list fence state
-  for Markdown link masking. It added 345 executable bytes and brings the current
-  cumulative executable delta to 18,958 bytes. The real-interpreter shim test is
-  test-only;
-- canonical subset v2 leaves only `name` unquoted. Every other top-level
-  string and every user-defined portable metadata key and value uses one-line
-  JSON double quotes.
+  for Markdown link masking. It added 345 executable bytes. The real-interpreter
+  shim test is test-only;
+- the next exact-HEAD correction JSON-quoted `name` like every other generated
+  string and rejects executable or shebang helpers outside `scripts/`. Reusing
+  package collection and deleting obsolete scalar special cases reduced the
+  executable by 197 bytes, bringing the current cumulative delta to 18,761
+  bytes;
+- canonical subset v2 uses one-line JSON double quotes for every top-level
+  string, including `name`, and every user-defined portable metadata key and
+  value.
   The `metadata.hermes.config` vendor extension requires
   `--allow-hermes-metadata` and double-quoted key-led entries for an explicitly
   Hermes-targeted package;
@@ -225,8 +229,8 @@ Completion evidence, updated 2026-08-14:
   commands, strings, comments, heredocs, wrappers, assignments, continuations,
   or control flow; rejects the same shape in single-line inline, indented, and non-shell
   fenced code with a context error; requires recognized shell fences to close;
-  scans all UTF-8 files below `scripts/` plus executable or shebang files; and
-  keeps ordinary prose,
+  scans all UTF-8 files below `scripts/`, rejects executable or shebang helpers
+  outside it, and keeps ordinary prose,
   Markdown link destinations, directory-only mentions, leading-whitespace child
   names, explicit skill roots,
   and generic configs without a schema outside the rule. The prescribed
@@ -237,8 +241,8 @@ Completion evidence, updated 2026-08-14:
   sections, including supported partial interfaces, while rejecting empty
   sections and empty sidecars; accepts
   titled local links; rejects
-  reserved provider names, single-quoted values, and every unquoted non-name
-  string including prose, dates, hexadecimal, octal, and YAML typed scalars,
+  reserved provider names, single-quoted values, and every unquoted top-level
+  string including names, prose, dates, hexadecimal, octal, and YAML typed scalars,
   prevents trailing comments from hiding quoting errors, rejects block scalars,
   accepts the exact Hermes config extension only in explicit extension mode
   with double-quoted key-led sequence items and required descriptions, and

@@ -79,7 +79,9 @@
     "closedSurfaceScriptPathReason": "A Grok architecture audit and exact-HEAD review replaced the open-ended shell lexer with a closed-surface portability rule for root, blockquote, and list shell fences, single-line inline and other Markdown code contexts, UTF-8 helper sources, and executable or shebang files. A path-bearing child is an immediate non-whitespace lexical child after scripts/; leading-whitespace child names are outside this checker. The executable-only delta includes explicit context diagnostics and does not parse shell or full CommonMark grammar.",
     "containerFenceLinkMaskingExecutableDeltaBytes": 345,
     "containerFenceLinkMaskingReason": "Exact-HEAD review reused the declared root, blockquote, and list fence state for Markdown link masking so missing example links inside those code surfaces do not become package link errors. The real-interpreter shim regression is test-only and does not affect package bytes.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 18958,
+    "quotedNameAndScriptLocationExecutableDeltaBytes": -197,
+    "quotedNameAndScriptLocationReason": "Exact-HEAD review removed the remaining unquoted-name exception and rejects executable or shebang helpers outside scripts/. Reusing package collection for the location check and deleting obsolete scalar special cases reduced executable bytes without weakening the canonical fixture matrix.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 18761,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -93,22 +95,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "5de8fd61d030e4fecb8d1a8a8cb154482594ec1ccebe5bfb7b2b6b9902a11aa8",
+    "aggregateSha256": "4641b0e41cf21c204c40f7ec36a68ae7d66a2d3793edb3d3775db1236627cc51",
     "fileCount": 3,
-    "packageBytes": 43742,
+    "packageBytes": 43483,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 4702,
+      "bytes": 4640,
       "lines": 78,
       "descriptionCharacters": 240
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 4702,
-        "sha256": "3738bf2d3fddc118bc0ed34f6cf700fc318757baf2d0f60b4d80748e98f85df0"
+        "bytes": 4640,
+        "sha256": "fbe642ea437e9a807806671374968f118d5f28da06030da328e18f4009029074"
       },
       {
         "path": "agents/openai.yaml",
@@ -117,8 +119,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 38824,
-        "sha256": "7e6965a22cd884bdc1338c5427fc490b0fda952af51b3156ccae181ee79e4945"
+        "bytes": 38627,
+        "sha256": "cf9656de2cd7320651416089cd86dc4012e4d971a1b7ae1b39e0ba8a428d5cb3"
       }
     ]
   },
@@ -137,7 +139,7 @@
       "valid Markdown links with optional titles pass",
       "single-line CommonMark reference-definition destinations support angle brackets and optional titles while missing and escaping targets fail",
       "skill names containing reserved provider strings fail",
-      "name is the sole unquoted scalar while all other top-level strings require one-line JSON double quotes",
+      "every top-level string, including name, requires one-line JSON double quotes before slug, reserved-name, length, and directory checks",
       "the quote-only contract rejects plain prose, dates, hexadecimal, octal, collections, booleans, nulls, numbers, special floats, single quotes, block scalars, tags, nested scalar syntax, and invalid quotes without partial implicit-YAML classification",
       "description angle brackets fail the built-in host-validator compatibility check even when skills-ref is unavailable, while ordinary quoted prose passes",
       "portable metadata uses JSON-double-quoted user-defined keys and values with no sequence markers, while explicit Hermes mode keeps fixed schema fields unquoted and requires double-quoted user-provided values",
@@ -145,7 +147,8 @@
       "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus inline, indented, and escaped forms, validate simple destinations, and warn that complex or unresolved forms need official validation",
       "common POSIX, container, file URI, and Windows workstation paths are detected, including shebangs",
       "local paths in any UTF-8-decodable package file are detected, likely non-UTF-8 scripts fail, and binary assets are skipped",
-      "Python helper syntax is checked through AST while non-Python helpers require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",
+      "executable or shebang helpers outside scripts/ fail canonical package policy while outside non-executable data without a shebang remains allowed",
+      "Python helper syntax below scripts/ is checked through AST while non-Python helpers there require explicit exact-current-byte operator attestations to pass strict mode; the checker reports accepted paths and does not claim it executed their language-specific commands",
       "an already-installed skills-ref is called without a shell using exact validate argv and a bounded timeout, with pass, invalid, unexpected, timeout, unavailable, and unattested external-behavior states reported separately",
       "root-relative and remote web links are not misclassified as workstation paths",
       "the real copyable minimal-skill example passes the canonical checker under an explicit package budget",

@@ -85,13 +85,16 @@ ordinary prose, Markdown link destinations, directory-only mentions, and
 generic configuration files without a schema. Child names beginning with whitespace
 and multiline inline code spans are explicitly outside the custom lexical subset.
 A later exact-HEAD correction reused those root, blockquote, and list fence
-surfaces when masking Markdown links and added 345 executable bytes. The current
-cumulative executable delta is 18,958 bytes. Its real-interpreter shim regression
-is test-only.
+surfaces when masking Markdown links and added 345 executable bytes. Its
+real-interpreter shim regression is test-only. The next exact-HEAD correction
+JSON-quoted `name` like every other generated string and rejects executable or
+shebang helpers outside `scripts/`. Reusing package collection and deleting
+obsolete scalar special cases reduced the executable by 197 bytes, so the
+current cumulative executable delta is 18,761 bytes.
 
-Canonical subset v2 leaves only the exact `name` slug unquoted. Every other
-top-level string and every user-defined portable metadata key and value uses a
-one-line JSON double-quoted string, and portable metadata is mapping-only. The exact
+Canonical subset v2 uses one-line JSON double quotes for every top-level string,
+including the exact directory-matching `name`, and every user-defined portable
+metadata key and value; portable metadata is mapping-only. The exact
 `metadata.hermes.config` vendor extension is enabled only by
 `--allow-hermes-metadata` for an explicitly Hermes-targeted package, with
 fixed unquoted schema field names and double-quoted user-provided values. The
@@ -100,7 +103,9 @@ operator attestations for separately checked non-Python helpers, and the
 availability/result of `skills-ref validate`; the frozen
 host recorded `not_available`, and no install or network fallback is used.
 ToolboxMD reports accepted helper paths but does not claim it executed their
-language-specific syntax commands.
+language-specific syntax commands. Executable and shebang helpers outside
+`scripts/` fail canonical package policy; non-executable data without a
+shebang remains allowed outside that directory.
 When available, `skills-ref` is a local external executable. The ToolboxMD
 checker neither constrains nor attests that program's filesystem or network
 behavior.
@@ -111,6 +116,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 43,742 bytes: 4,702 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 38,824-byte read-only checker. The executable is not
+The frozen package is 43,483 bytes: 4,640 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 38,627-byte read-only checker. The executable is not
 loaded as activated core.

@@ -1,5 +1,5 @@
 ---
-name: minimal-skill
+name: "minimal-skill"
 description: "Use when the user asks to test a minimal skill template, or types \"ping minimal\"; replies with a one-line confirmation that the skill activated. Copy this file as a starting point for your own skill; replace name, description, and body to fit your domain."
 license: "Apache-2.0"
 ---

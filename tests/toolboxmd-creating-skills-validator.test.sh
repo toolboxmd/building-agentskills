@@ -12,7 +12,7 @@ make_valid() {
   mkdir -p "$directory/references" "$directory/agents"
   cat > "$directory/SKILL.md" <<EOF
 ---
-name: $name
+name: "$name"
 description: Create a fixture skill when validator behavior needs testing.
 ---
 

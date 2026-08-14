@@ -1,5 +1,5 @@
 ---
-name: toolboxmd-creating-skills
+name: "toolboxmd-creating-skills"
 description: "Create portable Agent Skills from needs, trigger and near-miss examples, artifacts, and failures. Use for new reusable packages and proportional validation. Do not update or compare skills; route those to updating or benchmarking workflows."
 ---
 
@@ -29,7 +29,7 @@ A skill may coordinate these; prose does not fire them.
 
 ### 2. Build an evidence brief
 
-Record job and value, triggers and near misses, inputs and outputs, mistakes, constraints, and evidence gaps. Close load-bearing gaps with questions or a representative task. Label hypotheses.
+Record job/value, triggers/near misses, inputs/outputs, mistakes, constraints, and evidence gaps. Close load-bearing gaps with questions or a representative task. Label hypotheses.
 
 ### 3. Answer three independent questions
 
@@ -39,9 +39,9 @@ Record job and value, triggers and near misses, inputs and outputs, mistakes, co
 
 ### 4. Plan and draft the package
 
-Start with `SKILL.md`. Keep always-needed rules inline; put conditional knowledge in `references/`, deterministic work in `scripts/`, output inputs in `assets/`, and target metadata in sidecars. Keep evals external. Test scripts and distribution contracts. Do not add speculative files.
+Start with `SKILL.md`. Keep core rules inline. Put conditional knowledge in `references/`, deterministic work in `scripts/`, output inputs in `assets/`, and target metadata in sidecars. Keep evals external. Test scripts and distribution contracts. Delete speculative files.
 
-Leave only the exact `name` slug unquoted. JSON-quote other top-level strings and portable `metadata` keys and values; omit empty `metadata`. Description states capability, triggers, and exclusions. `SKILL.md` holds decisions, evidence, procedure, inputs, outputs, and load-bearing gotchas. Use rigid language only for mechanized rules.
+JSON-quote all top-level strings, including exact `name`, and all portable `metadata` keys/values. Omit empty `metadata`. Description states capability, triggers, and exclusions. Keep decisions, evidence, procedure, inputs, outputs, and load-bearing gotchas in `SKILL.md`. Use rigid language only for mechanized rules.
 
 Generated Codex sidecars require nonempty `display_name` and `short_description`; existing sidecars may use any supported nonempty interface subset.
 
@@ -49,15 +49,15 @@ For explicit `metadata.hermes.config`, pass `--allow-hermes-metadata`. Keep its 
 
 ### 5. Make scripts portable
 
-Resolve `<skill-dir>` from loaded `SKILL.md` as an absolute argument, not from cwd or shell expansion. Use `<target-skill-dir>` for the new package.
+Resolve `<skill-dir>` from loaded `SKILL.md` to an absolute argument independent of cwd and shell expansion. Use `<target-skill-dir>` for the new package.
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 python3 -B "<skill-dir>/scripts/validate_skill.py" --warnings-as-errors "<target-skill-dir>"
 ```
 
-Pass budget flags when defaults differ. Fence executable examples as `sh`, `bash`, or `shell` and use `<skill-dir>/scripts/<helper>`. Task-relative helpers fail in single-line inline, indented, or other fenced code. The lexical check treats immediate non-whitespace content after `scripts/` as a child. Directory-only mentions and child names starting with whitespace are outside it.
+Pass nondefault budgets. Fence executable examples as `sh`, `bash`, or `shell`; use `<skill-dir>/scripts/<helper>`. Task-relative helpers fail in single-line inline, indented, or other fences. The lexical check treats immediate non-whitespace content after `scripts/` as a child; directory-only mentions and whitespace-leading child names are outside it.
 
-The checker covers the ToolboxMD subset and policy, not arbitrary YAML, CommonMark, or shell. It checks Python with AST. For each non-Python helper, run and report a syntax command, hash current bytes, and pass `--script-syntax-checked '<helper-path>=<lowercase-sha256>'`. This binds path to digest; it does not prove execution. If installed, external `skills-ref validate <target-skill-dir>` runs without an install fallback. Report its result separately; ToolboxMD does not constrain its behavior.
+The checker covers ToolboxMD policy, not arbitrary YAML, CommonMark, shell, or helper syntax. Executable/shebang helpers belong in `scripts/`. Python uses AST. For each other helper, run and report a syntax command, hash current bytes, and pass `--script-syntax-checked '<helper-path>=<lowercase-sha256>'`. This binds path to digest, not execution. It runs installed `skills-ref validate <target-skill-dir>` but never installs it. Report that result separately; external behavior is outside ToolboxMD.
 
 ### 6. Test, delete, and deliver
 
