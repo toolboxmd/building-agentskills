@@ -43,7 +43,8 @@
     "subsequentReviewedCommits": [
       "46938699eb21ad3f6167f147f956781704976b35",
       "91533764d5c2336f7876f2565405e7ae74090a2f",
-      "e5c5e8bceed532ff6a9968448a06edf13a69365c"
+      "e5c5e8bceed532ff6a9968448a06edf13a69365c",
+      "5ef565ad6f251ec2b87686271e985f622f64c22d"
     ],
     "activeGrokProductChangedAfterRun": true,
     "activeGrokFinding": "Direct or enveloped successful output could bypass complete runtime isolation evidence when no init event was present.",
@@ -56,8 +57,10 @@
     "wikiResolution": "The existing wiki index and log now link the active skill and record the ineligible diagnostic without creating a pending capture.",
     "activeGrokStructuredRedactionFinding": "Applying the credential-assignment regex to serialized review JSON could consume JSON syntax and turn a valid Grok review into an input error.",
     "activeGrokStructuredRedactionResolution": "Structured review string values are now redacted recursively before JSON serialization, preserving the review object and its syntax.",
-    "currentActiveGrokAggregateSha256": "c940cc0a69b562875a0541855a7e02b98cee9394705e61a811692c691486a350",
-    "currentActiveGrokPackageBytes": 36206,
+    "activeGrokParserFinding": "Parser-level invalid input exited through argparse before the adapter could emit its stable JSON status object.",
+    "activeGrokParserResolution": "The argument parser now raises the adapter's input category, and main emits one JSON status line with exit code 2 before creating a run directory.",
+    "currentActiveGrokAggregateSha256": "fea334c07b895825ea4dd6c15611def135a7549e8aadb82965dbfa167b0756ea",
+    "currentActiveGrokPackageBytes": 36509,
     "historicalAcceptanceReferenceChanged": false,
     "harnessChangedAfterRun": true,
     "harnessFinding": "PID existence alone misclassified a terminated Linux zombie as a live timeout child.",

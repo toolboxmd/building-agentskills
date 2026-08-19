@@ -14,7 +14,8 @@
     "subsequentReviewedCommits": [
       "46938699eb21ad3f6167f147f956781704976b35",
       "91533764d5c2336f7876f2565405e7ae74090a2f",
-      "e5c5e8bceed532ff6a9968448a06edf13a69365c"
+      "e5c5e8bceed532ff6a9968448a06edf13a69365c",
+      "5ef565ad6f251ec2b87686271e985f622f64c22d"
     ],
     "findings": [
       {
@@ -52,15 +53,21 @@
         "surface": "active Grok structured review redaction",
         "finding": "Applying the credential-assignment regex to serialized review JSON could consume JSON syntax and turn a valid Grok review into an input error.",
         "resolution": "Structured review string values are now redacted recursively before JSON serialization, preserving the review object and its syntax."
+      },
+      {
+        "priority": "P2",
+        "surface": "active Grok argument parser",
+        "finding": "Parser-level invalid input exited through argparse before the adapter could emit its stable JSON status object.",
+        "resolution": "The argument parser now raises the adapter's input category, and main emits one JSON status line with exit code 2 before creating a run directory."
       }
     ]
   },
   "liveAfterFix": {
     "harnessAggregateSha256": "713578a2b03233d72cfa83f226802b0cb1b30e5baa23f9548944684faae8c98b",
     "harnessBytes": 78804,
-    "activeGrokAggregateSha256": "c940cc0a69b562875a0541855a7e02b98cee9394705e61a811692c691486a350",
-    "activeGrokPackageBytes": 36206,
-    "activeGrokAdapterSha256": "accb41a467812ed7e5d816270878273d8496bd274bbdd07e532e7da9a33c5789"
+    "activeGrokAggregateSha256": "fea334c07b895825ea4dd6c15611def135a7549e8aadb82965dbfa167b0756ea",
+    "activeGrokPackageBytes": 36509,
+    "activeGrokAdapterSha256": "9797a0ab584f73d13f0db704363aad11a312103148676d51a726b91edd6e7480"
   },
   "claimBoundary": {
     "authoringOutputsChanged": false,

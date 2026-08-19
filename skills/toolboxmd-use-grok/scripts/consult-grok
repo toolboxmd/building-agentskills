@@ -113,8 +113,13 @@ class ConsultationError(Exception):
         self.category = category
 
 
+class StatusArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        raise ConsultationError("input", f"Argument error: {message}")
+
+
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = StatusArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=("explicit", "automatic"), required=True)
     parser.add_argument("--prompt-file", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -577,7 +582,10 @@ def runtime_reasons(init: dict | None, result: dict | None) -> list[str]:
 
 
 def main() -> int:
-    args = parse_args()
+    try:
+        args = parse_args()
+    except ConsultationError as exc:
+        return emit({"status": exc.category, "message": str(exc)}, EXIT[exc.category])
     run_id = str(uuid.uuid4())
     run_dir = args.output_dir.expanduser().resolve() / f"run-{run_id}"
     run_dir.mkdir(parents=True, exist_ok=False, mode=0o700)

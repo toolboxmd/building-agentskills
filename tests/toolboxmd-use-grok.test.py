@@ -331,6 +331,47 @@ class UseGrokTests(unittest.TestCase):
             self.assertRegex(prompt, r"(?i)grok")
         self.assertEqual(len(contract["automaticNearMisses"]), 8)
 
+    def test_parser_failures_emit_input_json(self) -> None:
+        valid = [
+            sys.executable,
+            str(ADAPTER),
+            "--mode",
+            "explicit",
+            "--prompt-file",
+            str(self.prompt),
+            "--output-dir",
+            str(self.output),
+        ]
+        cases = {
+            "invalid-mode": valid[:3] + ["nope"] + valid[4:],
+            "nonnumeric-timeout": valid + ["--timeout", "nope"],
+            "missing-prompt": [
+                sys.executable,
+                str(ADAPTER),
+                "--mode",
+                "explicit",
+                "--output-dir",
+                str(self.output),
+            ],
+        }
+        for case, command in cases.items():
+            with self.subTest(parser_failure=case):
+                result = subprocess.run(
+                    command,
+                    cwd=self.root,
+                    env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(result.stderr, "")
+                self.assertEqual(len(result.stdout.splitlines()), 1)
+                payload = json.loads(result.stdout)
+                self.assertEqual(payload["status"], "input")
+                self.assertTrue(payload["message"].startswith("Argument error:"))
+                self.assertFalse(self.output.exists())
+
     def test_direct_and_enveloped_structured_output(self) -> None:
         for scenario in ("direct", "envelope"):
             with self.subTest(scenario=scenario):
