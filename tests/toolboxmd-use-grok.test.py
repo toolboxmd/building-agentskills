@@ -146,6 +146,8 @@ review = {
 }
 if scenario == "runtime-secret":
     review["risks"] = [os.environ.get("XAI_API_KEY", "missing-test-secret")]
+if scenario == "runtime-escaped-prompt":
+    review["risks"] = [prompt_path.read_text(encoding="utf-8")]
 
 if scenario in ("direct", "direct-ambient-skill", "direct-config-layer"):
     print(json.dumps(review))
@@ -154,7 +156,7 @@ elif scenario in ("envelope", "envelope-managed-settings"):
 elif scenario in (
     "streaming", "runtime-skills", "runtime-tools-changed", "runtime-tool-call",
     "runtime-server-tool", "runtime-fields-missing", "runtime-web", "runtime-secret",
-    "config-warning", "result-error"
+    "runtime-escaped-prompt", "config-warning", "result-error"
 ):
     skills = ["ambient-trap"] if scenario == "runtime-skills" else []
     tools = ["todo_write", "search_tool", "use_tool"]
@@ -473,6 +475,21 @@ class UseGrokTests(unittest.TestCase):
             if path.is_file()
         )
         self.assertNotIn("synthetic-output-secret-value", retained)
+        self.assertIn("[REDACTED]", retained)
+
+        self.output = self.root / "output-json-escaped-prompt-redaction"
+        escaped_prompt = 'First line with "quotes".\nDruga linia z \\backslash i Unicode: żółć.\n'
+        self.prompt.write_text(escaped_prompt, encoding="utf-8")
+        result, payload, _ = self.run_adapter("runtime-escaped-prompt")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        retained = "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in Path(payload["runDir"]).iterdir()
+            if path.is_file()
+        )
+        self.assertNotIn(escaped_prompt, retained)
+        self.assertNotIn(json.dumps(escaped_prompt, ensure_ascii=False)[1:-1], retained)
+        self.assertNotIn(json.dumps(escaped_prompt, ensure_ascii=True)[1:-1], retained)
         self.assertIn("[REDACTED]", retained)
 
     def test_automatic_requires_clean_runtime_and_stable_profile(self) -> None:

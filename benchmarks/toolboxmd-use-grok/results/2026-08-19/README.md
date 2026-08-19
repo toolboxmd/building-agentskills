@@ -5,6 +5,11 @@ could accept direct or enveloped output without a runtime init event and without
 the complete inspect allowlist. The active adapter now applies the strict
 inspect fallback whenever init is absent.
 
+A subsequent exact-HEAD review found that retained evidence could still contain
+a JSON-escaped copy of a protected multiline or quote-containing prompt. The
+active adapter now redacts literal, UTF-8 JSON-escaped, and ASCII JSON-escaped
+variants, with a focused fake-runtime regression test covering all three.
+
 The two-file active package passes the final exact-reviewed Creator vNext
 validator from commit `20fc268615079ade496e31cc5e55f51bcc5ad3b0` under the
 same 45,000-byte downstream package profile. The exact validator, adapter,

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "recordedOn": "2026-08-19",
-  "reason": "Post-review validation after requiring complete strict inspect evidence for successful direct or enveloped Grok output without a runtime init event.",
+  "reason": "Post-review validation after requiring complete strict inspect evidence without a runtime init event and redacting JSON-escaped variants of protected values.",
   "validator": {
     "creatorCommit": "20fc268615079ade496e31cc5e55f51bcc5ad3b0",
     "repositoryPath": "skills/toolboxmd-creating-skills/scripts/validate_skill.py",
@@ -13,8 +13,8 @@
   },
   "scriptSyntaxAttestation": {
     "path": "scripts/consult-grok",
-    "sha256": "a17d6a7e28838a861f5ddc329e004c8c8b95b9c8cd2e0094bf16e874cea8f6f7",
-    "argument": "--script-syntax-checked scripts/consult-grok=a17d6a7e28838a861f5ddc329e004c8c8b95b9c8cd2e0094bf16e874cea8f6f7",
+    "sha256": "569c0b54d2e98efc23009ee514e438d757f87af952bc47e9c36baf0028df1c4e",
+    "argument": "--script-syntax-checked scripts/consult-grok=569c0b54d2e98efc23009ee514e438d757f87af952bc47e9c36baf0028df1c4e",
     "basis": "The focused fake suite executes the exact active extensionless Python helper across eleven test methods; ToolboxMD validator reports executionVerifiedByToolboxMD=false."
   },
   "execution": {
@@ -30,7 +30,7 @@
       "--creation-mode",
       "--warnings-as-errors",
       "--script-syntax-checked",
-      "scripts/consult-grok=a17d6a7e28838a861f5ddc329e004c8c8b95b9c8cd2e0094bf16e874cea8f6f7",
+      "scripts/consult-grok=569c0b54d2e98efc23009ee514e438d757f87af952bc47e9c36baf0028df1c4e",
       "--max-description-chars",
       "400",
       "--max-skill-lines",
@@ -55,8 +55,8 @@
     "status": "pass",
     "warningCount": 0,
     "errorCount": 0,
-    "aggregateSha256": "21fe602249ff19e8726ff69ccd9466f7b56d204085e6d6ee5e25ee8ea2094b12",
-    "packageBytes": 34846,
+    "aggregateSha256": "c6b9e0a3ca583adefa106a62156fffad2e4cb3f650ae4ebbf36e2b217fa3e8ba",
+    "packageBytes": 35048,
     "fileCount": 2,
     "skillMdBytes": 4978,
     "skillMdLines": 80,
@@ -67,6 +67,7 @@
   },
   "claimBoundary": {
     "reviewSourceCommit": "223e49d8697141b13c53fec249d5b5ebb3682f75",
+    "subsequentReviewSourceCommit": "46938699eb21ad3f6167f147f956781704976b35",
     "realGrokCalls": 0,
     "automaticModeAccepted": false,
     "historicalFourArmReferenceReplaced": false,
