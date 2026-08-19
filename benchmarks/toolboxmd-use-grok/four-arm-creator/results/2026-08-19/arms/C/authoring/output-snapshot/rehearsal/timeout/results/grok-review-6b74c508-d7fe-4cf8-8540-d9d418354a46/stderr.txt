@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/private/tmp/creator-four-arm-67f75e96-e702-4257-a8aa-85e207110203/sandbox/output/rehearsal/timeout/fake_grok.py", line 162, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/private/tmp/creator-four-arm-67f75e96-e702-4257-a8aa-85e207110203/sandbox/output/rehearsal/timeout/fake_grok.py", line 153, in main
+    child = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+PermissionError: [Errno 1] Operation not permitted: '/opt/homebrew/opt/python@3.14/bin/python3.14'

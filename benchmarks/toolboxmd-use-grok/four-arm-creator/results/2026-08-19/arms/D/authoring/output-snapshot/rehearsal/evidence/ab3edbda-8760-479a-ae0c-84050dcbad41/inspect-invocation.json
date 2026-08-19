@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "/private/tmp/creator-four-arm-671d2822-f1cd-41be-87e4-7ab8bfd8bf3d/sandbox/output/rehearsal/bin/grok",
+    "inspect",
+    "--json"
+  ],
+  "cwd": "/private/tmp/creator-four-arm-671d2822-f1cd-41be-87e4-7ab8bfd8bf3d/sandbox/output/rehearsal/evidence/grok-ab3edbda-8760-479a-ae0c-84050dcbad41-i_m0g6ni",
+  "environmentKeys": [
+    "GROK_DISABLE_CLAUDE_COMPAT",
+    "GROK_DISABLE_CURSOR_COMPAT",
+    "GROK_DISABLE_EXTERNAL_COMPAT",
+    "GROK_HOME",
+    "HOME",
+    "LANG",
+    "LC_ALL",
+    "PATH"
+  ],
+  "exitCode": 0
+}

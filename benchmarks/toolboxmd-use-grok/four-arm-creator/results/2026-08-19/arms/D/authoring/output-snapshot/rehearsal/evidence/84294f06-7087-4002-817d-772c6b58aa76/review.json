@@ -1,0 +1,16 @@
+{
+  "minimum_plan_delta": [
+    "Add one bounded canary."
+  ],
+  "missing": [
+    "Name the rollback signal."
+  ],
+  "overengineering": [
+    "Remove the speculative queue."
+  ],
+  "risks": [
+    "The first canary may be noisy."
+  ],
+  "user_decisions": [],
+  "verdict": "PROCEED WITH CHANGES"
+}

@@ -1,0 +1,2273 @@
+{
+  "candidateAggregateSha256": "8e7efbbc38104231acc92f6b6324f3dba8271b9a848cb1fd3bed3a61e33cb0eb",
+  "caseResults": {
+    "automatic:missing-inspect-fields:3:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.15,
+      "exitStatus": 1,
+      "fakeInvocation": null,
+      "fakeInvoked": false,
+      "mode": "automatic",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "missing-inspect-fields",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "message": "automatic mode is disabled pending dedicated-profile acceptance",
+        "status": "isolation-failure"
+      },
+      "timedOutByGrader": false
+    },
+    "automatic:streaming:3:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.139,
+      "exitStatus": 1,
+      "fakeInvocation": null,
+      "fakeInvoked": false,
+      "mode": "automatic",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "streaming",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "message": "automatic mode is disabled pending dedicated-profile acceptance",
+        "status": "isolation-failure"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:bad-inspect:3:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.425,
+      "exitStatus": 1,
+      "fakeInvocation": null,
+      "fakeInvoked": false,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "bad-inspect",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "message": "effective configuration is outside the frozen allow-list",
+        "status": "isolation-failure"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:direct:3:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 1.193,
+      "exitStatus": 0,
+      "fakeInvocation": {
+        "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+        "argv": [
+          "--prompt-file",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-direct-eps3vffm/output/grok-review-67bc4a48-cbd1-4701-a7cc-f01076411834-7ambdxrf/prompt.txt",
+          "--agent",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-direct-eps3vffm/output/grok-review-67bc4a48-cbd1-4701-a7cc-f01076411834-7ambdxrf/review-agent.txt",
+          "--output-format",
+          "stream-json",
+          "--json-schema",
+          "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+          "--sandbox",
+          "read-only",
+          "--no-memory",
+          "--no-subagents",
+          "--no-web",
+          "--max-turns",
+          "3"
+        ],
+        "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-direct-eps3vffm/output/grok-review-67bc4a48-cbd1-4701-a7cc-f01076411834-7ambdxrf",
+        "cwdFiles": [
+          "prompt.txt",
+          "review-agent.txt"
+        ],
+        "environmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+        "xaiKeyPresent": false
+      },
+      "fakeInvoked": true,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "direct",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-direct-eps3vffm/output/grok-review-67bc4a48-cbd1-4701-a7cc-f01076411834.json",
+        "review": {
+          "minimum_plan_delta": [
+            "Add one bounded canary."
+          ],
+          "missing": [
+            "Name the rollback signal."
+          ],
+          "overengineering": [
+            "Remove the speculative queue."
+          ],
+          "risks": [
+            "The first canary may be noisy."
+          ],
+          "user_decisions": [],
+          "verdict": "PROCEED WITH CHANGES"
+        },
+        "status": "ok"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:envelope:3:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.459,
+      "exitStatus": 0,
+      "fakeInvocation": {
+        "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+        "argv": [
+          "--prompt-file",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-envelope-rxc6jakh/output/grok-review-70c987dc-8ee4-48b7-9924-63313b4dbc5b-am07wovu/prompt.txt",
+          "--agent",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-envelope-rxc6jakh/output/grok-review-70c987dc-8ee4-48b7-9924-63313b4dbc5b-am07wovu/review-agent.txt",
+          "--output-format",
+          "stream-json",
+          "--json-schema",
+          "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+          "--sandbox",
+          "read-only",
+          "--no-memory",
+          "--no-subagents",
+          "--no-web",
+          "--max-turns",
+          "3"
+        ],
+        "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-envelope-rxc6jakh/output/grok-review-70c987dc-8ee4-48b7-9924-63313b4dbc5b-am07wovu",
+        "cwdFiles": [
+          "prompt.txt",
+          "review-agent.txt"
+        ],
+        "environmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+        "xaiKeyPresent": false
+      },
+      "fakeInvoked": true,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "envelope",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-envelope-rxc6jakh/output/grok-review-70c987dc-8ee4-48b7-9924-63313b4dbc5b.json",
+        "review": {
+          "minimum_plan_delta": [
+            "Add one bounded canary."
+          ],
+          "missing": [
+            "Name the rollback signal."
+          ],
+          "overengineering": [
+            "Remove the speculative queue."
+          ],
+          "risks": [
+            "The first canary may be noisy."
+          ],
+          "user_decisions": [],
+          "verdict": "PROCEED WITH CHANGES"
+        },
+        "status": "ok"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:incomplete:3:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.477,
+      "exitStatus": 1,
+      "fakeInvocation": {
+        "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+        "argv": [
+          "--prompt-file",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-incomplete-s2kunpao/output/grok-review-1318a695-317f-4214-b9a6-005123b2869d-qtj5zg94/prompt.txt",
+          "--agent",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-incomplete-s2kunpao/output/grok-review-1318a695-317f-4214-b9a6-005123b2869d-qtj5zg94/review-agent.txt",
+          "--output-format",
+          "stream-json",
+          "--json-schema",
+          "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+          "--sandbox",
+          "read-only",
+          "--no-memory",
+          "--no-subagents",
+          "--no-web",
+          "--max-turns",
+          "3"
+        ],
+        "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-incomplete-s2kunpao/output/grok-review-1318a695-317f-4214-b9a6-005123b2869d-qtj5zg94",
+        "cwdFiles": [
+          "prompt.txt",
+          "review-agent.txt"
+        ],
+        "environmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+        "xaiKeyPresent": false
+      },
+      "fakeInvoked": true,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "incomplete",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-incomplete-s2kunpao/output/grok-review-1318a695-317f-4214-b9a6-005123b2869d.json",
+        "status": "incomplete-stop-reason"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:invalid-json:3:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.445,
+      "exitStatus": 1,
+      "fakeInvocation": {
+        "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+        "argv": [
+          "--prompt-file",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-invalid-json-7pu7yxan/output/grok-review-7eb5ff9a-064a-43a1-9e74-60ac196cb434-a6mz559s/prompt.txt",
+          "--agent",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-invalid-json-7pu7yxan/output/grok-review-7eb5ff9a-064a-43a1-9e74-60ac196cb434-a6mz559s/review-agent.txt",
+          "--output-format",
+          "stream-json",
+          "--json-schema",
+          "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+          "--sandbox",
+          "read-only",
+          "--no-memory",
+          "--no-subagents",
+          "--no-web",
+          "--max-turns",
+          "3"
+        ],
+        "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-invalid-json-7pu7yxan/output/grok-review-7eb5ff9a-064a-43a1-9e74-60ac196cb434-a6mz559s",
+        "cwdFiles": [
+          "prompt.txt",
+          "review-agent.txt"
+        ],
+        "environmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+        "xaiKeyPresent": false
+      },
+      "fakeInvoked": true,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "invalid-json",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-invalid-json-7pu7yxan/output/grok-review-7eb5ff9a-064a-43a1-9e74-60ac196cb434.json",
+        "status": "invalid-json"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:max-turns:3:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.47,
+      "exitStatus": 1,
+      "fakeInvocation": {
+        "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+        "argv": [
+          "--prompt-file",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-max-turns-jd8r309e/output/grok-review-0b3a1526-1fc9-4563-a748-31da6d77317c-plx47ta5/prompt.txt",
+          "--agent",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-max-turns-jd8r309e/output/grok-review-0b3a1526-1fc9-4563-a748-31da6d77317c-plx47ta5/review-agent.txt",
+          "--output-format",
+          "stream-json",
+          "--json-schema",
+          "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+          "--sandbox",
+          "read-only",
+          "--no-memory",
+          "--no-subagents",
+          "--no-web",
+          "--max-turns",
+          "3"
+        ],
+        "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-max-turns-jd8r309e/output/grok-review-0b3a1526-1fc9-4563-a748-31da6d77317c-plx47ta5",
+        "cwdFiles": [
+          "prompt.txt",
+          "review-agent.txt"
+        ],
+        "environmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+        "xaiKeyPresent": false
+      },
+      "fakeInvoked": true,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "max-turns",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-max-turns-jd8r309e/output/grok-review-0b3a1526-1fc9-4563-a748-31da6d77317c.json",
+        "status": "max-turns"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:nonzero:3:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.419,
+      "exitStatus": 1,
+      "fakeInvocation": {
+        "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+        "argv": [
+          "--prompt-file",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-nonzero-wtlh_jdq/output/grok-review-82107ea6-a97b-4a58-b27f-63d6f68d5b92-c1ne8k_2/prompt.txt",
+          "--agent",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-nonzero-wtlh_jdq/output/grok-review-82107ea6-a97b-4a58-b27f-63d6f68d5b92-c1ne8k_2/review-agent.txt",
+          "--output-format",
+          "stream-json",
+          "--json-schema",
+          "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+          "--sandbox",
+          "read-only",
+          "--no-memory",
+          "--no-subagents",
+          "--no-web",
+          "--max-turns",
+          "3"
+        ],
+        "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-nonzero-wtlh_jdq/output/grok-review-82107ea6-a97b-4a58-b27f-63d6f68d5b92-c1ne8k_2",
+        "cwdFiles": [
+          "prompt.txt",
+          "review-agent.txt"
+        ],
+        "environmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+        "xaiKeyPresent": false
+      },
+      "fakeInvoked": true,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "nonzero",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-nonzero-wtlh_jdq/output/grok-review-82107ea6-a97b-4a58-b27f-63d6f68d5b92.json",
+        "status": "nonzero-exit"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:result-error:3:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.447,
+      "exitStatus": 1,
+      "fakeInvocation": {
+        "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+        "argv": [
+          "--prompt-file",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-result-error-utpa4ho9/output/grok-review-3e7c6236-81b4-4b5c-9b80-9d55c3af03bc-1crcssid/prompt.txt",
+          "--agent",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-result-error-utpa4ho9/output/grok-review-3e7c6236-81b4-4b5c-9b80-9d55c3af03bc-1crcssid/review-agent.txt",
+          "--output-format",
+          "stream-json",
+          "--json-schema",
+          "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+          "--sandbox",
+          "read-only",
+          "--no-memory",
+          "--no-subagents",
+          "--no-web",
+          "--max-turns",
+          "3"
+        ],
+        "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-result-error-utpa4ho9/output/grok-review-3e7c6236-81b4-4b5c-9b80-9d55c3af03bc-1crcssid",
+        "cwdFiles": [
+          "prompt.txt",
+          "review-agent.txt"
+        ],
+        "environmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+        "xaiKeyPresent": false
+      },
+      "fakeInvoked": true,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "result-error",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-result-error-utpa4ho9/output/grok-review-3e7c6236-81b4-4b5c-9b80-9d55c3af03bc.json",
+        "status": "nonzero-exit"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:streaming:0:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.139,
+      "exitStatus": 1,
+      "fakeInvocation": null,
+      "fakeInvoked": false,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "streaming",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "message": "timeout and max-turns must be positive",
+        "status": "isolation-failure"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:streaming:3:0": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.137,
+      "exitStatus": 1,
+      "fakeInvocation": null,
+      "fakeInvoked": false,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "streaming",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "message": "timeout and max-turns must be positive",
+        "status": "isolation-failure"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:streaming:3:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.419,
+      "exitStatus": 0,
+      "fakeInvocation": {
+        "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+        "argv": [
+          "--prompt-file",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-quqvddq2/output/grok-review-27ad3db9-24c9-4d38-b51a-3e64c241610a-ml77j35i/prompt.txt",
+          "--agent",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-quqvddq2/output/grok-review-27ad3db9-24c9-4d38-b51a-3e64c241610a-ml77j35i/review-agent.txt",
+          "--output-format",
+          "stream-json",
+          "--json-schema",
+          "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+          "--sandbox",
+          "read-only",
+          "--no-memory",
+          "--no-subagents",
+          "--no-web",
+          "--max-turns",
+          "3"
+        ],
+        "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-quqvddq2/output/grok-review-27ad3db9-24c9-4d38-b51a-3e64c241610a-ml77j35i",
+        "cwdFiles": [
+          "prompt.txt",
+          "review-agent.txt"
+        ],
+        "environmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "prompt": "XAI_API_KEY=synthetic-input-secret\n",
+        "xaiKeyPresent": false
+      },
+      "fakeInvoked": true,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "streaming",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-quqvddq2/output/grok-review-27ad3db9-24c9-4d38-b51a-3e64c241610a.json",
+        "review": {
+          "minimum_plan_delta": [
+            "Add one bounded canary."
+          ],
+          "missing": [
+            "Name the rollback signal."
+          ],
+          "overengineering": [
+            "Remove the speculative queue."
+          ],
+          "risks": [
+            "The first canary may be noisy."
+          ],
+          "user_decisions": [],
+          "verdict": "PROCEED WITH CHANGES"
+        },
+        "status": "ok"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:streaming:3:9": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.562,
+      "exitStatus": 0,
+      "fakeInvocation": {
+        "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+        "argv": [
+          "--prompt-file",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-jjpqkwdo/output/grok-review-f1aa5239-01f2-4eeb-9043-97188371d465-it0cpfk8/prompt.txt",
+          "--agent",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-jjpqkwdo/output/grok-review-f1aa5239-01f2-4eeb-9043-97188371d465-it0cpfk8/review-agent.txt",
+          "--output-format",
+          "stream-json",
+          "--json-schema",
+          "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+          "--sandbox",
+          "read-only",
+          "--no-memory",
+          "--no-subagents",
+          "--no-web",
+          "--max-turns",
+          "9"
+        ],
+        "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-jjpqkwdo/output/grok-review-f1aa5239-01f2-4eeb-9043-97188371d465-it0cpfk8",
+        "cwdFiles": [
+          "prompt.txt",
+          "review-agent.txt"
+        ],
+        "environmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+        "xaiKeyPresent": false
+      },
+      "fakeInvoked": true,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "streaming",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-jjpqkwdo/output/grok-review-f1aa5239-01f2-4eeb-9043-97188371d465.json",
+        "review": {
+          "minimum_plan_delta": [
+            "Add one bounded canary."
+          ],
+          "missing": [
+            "Name the rollback signal."
+          ],
+          "overengineering": [
+            "Remove the speculative queue."
+          ],
+          "risks": [
+            "The first canary may be noisy."
+          ],
+          "user_decisions": [],
+          "verdict": "PROCEED WITH CHANGES"
+        },
+        "status": "ok"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:streaming:601:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.449,
+      "exitStatus": 0,
+      "fakeInvocation": {
+        "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+        "argv": [
+          "--prompt-file",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-3qi3izoi/output/grok-review-595f0781-4dee-4372-b6cd-dc6b94caba19-h3i39mim/prompt.txt",
+          "--agent",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-3qi3izoi/output/grok-review-595f0781-4dee-4372-b6cd-dc6b94caba19-h3i39mim/review-agent.txt",
+          "--output-format",
+          "stream-json",
+          "--json-schema",
+          "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+          "--sandbox",
+          "read-only",
+          "--no-memory",
+          "--no-subagents",
+          "--no-web",
+          "--max-turns",
+          "3"
+        ],
+        "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-3qi3izoi/output/grok-review-595f0781-4dee-4372-b6cd-dc6b94caba19-h3i39mim",
+        "cwdFiles": [
+          "prompt.txt",
+          "review-agent.txt"
+        ],
+        "environmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+        "xaiKeyPresent": false
+      },
+      "fakeInvoked": true,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "streaming",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-3qi3izoi/output/grok-review-595f0781-4dee-4372-b6cd-dc6b94caba19.json",
+        "review": {
+          "minimum_plan_delta": [
+            "Add one bounded canary."
+          ],
+          "missing": [
+            "Name the rollback signal."
+          ],
+          "overengineering": [
+            "Remove the speculative queue."
+          ],
+          "risks": [
+            "The first canary may be noisy."
+          ],
+          "user_decisions": [],
+          "verdict": "PROCEED WITH CHANGES"
+        },
+        "status": "ok"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:streaming:NaN:3": {
+      "childAliveAfterReturn": null,
+      "childPid": null,
+      "durationSeconds": 0.142,
+      "exitStatus": 1,
+      "fakeInvocation": null,
+      "fakeInvoked": false,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "streaming",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "message": "isolated execution failed: cannot convert float NaN to integer",
+        "status": "isolation-failure"
+      },
+      "timedOutByGrader": false
+    },
+    "explicit:timeout:0.3:3": {
+      "childAliveAfterGrace": false,
+      "childAliveAfterReturn": false,
+      "childPid": 61823,
+      "durationSeconds": 0.722,
+      "exitStatus": 1,
+      "fakeInvocation": {
+        "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+        "argv": [
+          "--prompt-file",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-timeout-zgexh8h5/output/grok-review-df4f74bc-99a4-47db-b208-6b6e67c01832-khqi8hnp/prompt.txt",
+          "--agent",
+          "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-timeout-zgexh8h5/output/grok-review-df4f74bc-99a4-47db-b208-6b6e67c01832-khqi8hnp/review-agent.txt",
+          "--output-format",
+          "stream-json",
+          "--json-schema",
+          "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+          "--sandbox",
+          "read-only",
+          "--no-memory",
+          "--no-subagents",
+          "--no-web",
+          "--max-turns",
+          "3"
+        ],
+        "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-timeout-zgexh8h5/output/grok-review-df4f74bc-99a4-47db-b208-6b6e67c01832-khqi8hnp",
+        "cwdFiles": [
+          "prompt.txt",
+          "review-agent.txt"
+        ],
+        "environmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+        "xaiKeyPresent": false
+      },
+      "fakeInvoked": true,
+      "mode": "explicit",
+      "retainedSyntheticAwsSecret": false,
+      "retainedSyntheticInputSecret": false,
+      "retainedSyntheticUnrelatedSecret": false,
+      "reviewObjects": [],
+      "scenario": "timeout",
+      "shellInjectionMarkerExists": false,
+      "stderr": "",
+      "stdoutPayload": {
+        "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-timeout-zgexh8h5/output/grok-review-df4f74bc-99a4-47db-b208-6b6e67c01832.json",
+        "status": "timeout"
+      },
+      "timedOutByGrader": false
+    }
+  },
+  "checks": {
+    "automatic-mode-disabled-and-fail-closed": {
+      "critical": true,
+      "detail": {
+        "childAliveAfterReturn": null,
+        "childPid": null,
+        "durationSeconds": 0.139,
+        "exitStatus": 1,
+        "fakeInvocation": null,
+        "fakeInvoked": false,
+        "mode": "automatic",
+        "retainedSyntheticAwsSecret": false,
+        "retainedSyntheticInputSecret": false,
+        "retainedSyntheticUnrelatedSecret": false,
+        "reviewObjects": [],
+        "scenario": "streaming",
+        "shellInjectionMarkerExists": false,
+        "stderr": "",
+        "stdoutPayload": {
+          "message": "automatic mode is disabled pending dedicated-profile acceptance",
+          "status": "isolation-failure"
+        },
+        "timedOutByGrader": false
+      },
+      "passed": true,
+      "pointsAvailable": 4,
+      "pointsAwarded": 4
+    },
+    "concrete-failure-classification": {
+      "critical": true,
+      "detail": {
+        "incomplete": {
+          "expected": "incomplete-stop-reason",
+          "passed": true,
+          "result": {
+            "childAliveAfterReturn": null,
+            "childPid": null,
+            "durationSeconds": 0.477,
+            "exitStatus": 1,
+            "fakeInvocation": {
+              "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+              "argv": [
+                "--prompt-file",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-incomplete-s2kunpao/output/grok-review-1318a695-317f-4214-b9a6-005123b2869d-qtj5zg94/prompt.txt",
+                "--agent",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-incomplete-s2kunpao/output/grok-review-1318a695-317f-4214-b9a6-005123b2869d-qtj5zg94/review-agent.txt",
+                "--output-format",
+                "stream-json",
+                "--json-schema",
+                "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+                "--sandbox",
+                "read-only",
+                "--no-memory",
+                "--no-subagents",
+                "--no-web",
+                "--max-turns",
+                "3"
+              ],
+              "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-incomplete-s2kunpao/output/grok-review-1318a695-317f-4214-b9a6-005123b2869d-qtj5zg94",
+              "cwdFiles": [
+                "prompt.txt",
+                "review-agent.txt"
+              ],
+              "environmentKeys": [
+                "CPATH",
+                "GROK_DISABLE_CLAUDE_COMPAT",
+                "GROK_DISABLE_CURSOR_COMPAT",
+                "GROK_DISABLE_EXTERNAL_COMPAT",
+                "GROK_DISABLE_HOOKS",
+                "GROK_DISABLE_MCP",
+                "GROK_DISABLE_PLUGINS",
+                "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+                "GROK_DISABLE_USER_MEMORY",
+                "GROK_HOME",
+                "HOME",
+                "LANG",
+                "LC_ALL",
+                "LIBRARY_PATH",
+                "MANPATH",
+                "PATH",
+                "SDKROOT",
+                "XDG_CACHE_HOME",
+                "XDG_CONFIG_HOME",
+                "XDG_DATA_HOME",
+                "__CF_USER_TEXT_ENCODING"
+              ],
+              "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+              "xaiKeyPresent": false
+            },
+            "fakeInvoked": true,
+            "mode": "explicit",
+            "retainedSyntheticAwsSecret": false,
+            "retainedSyntheticInputSecret": false,
+            "retainedSyntheticUnrelatedSecret": false,
+            "reviewObjects": [],
+            "scenario": "incomplete",
+            "shellInjectionMarkerExists": false,
+            "stderr": "",
+            "stdoutPayload": {
+              "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-incomplete-s2kunpao/output/grok-review-1318a695-317f-4214-b9a6-005123b2869d.json",
+              "status": "incomplete-stop-reason"
+            },
+            "timedOutByGrader": false
+          }
+        },
+        "invalid-json": {
+          "expected": "invalid-json",
+          "passed": true,
+          "result": {
+            "childAliveAfterReturn": null,
+            "childPid": null,
+            "durationSeconds": 0.445,
+            "exitStatus": 1,
+            "fakeInvocation": {
+              "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+              "argv": [
+                "--prompt-file",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-invalid-json-7pu7yxan/output/grok-review-7eb5ff9a-064a-43a1-9e74-60ac196cb434-a6mz559s/prompt.txt",
+                "--agent",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-invalid-json-7pu7yxan/output/grok-review-7eb5ff9a-064a-43a1-9e74-60ac196cb434-a6mz559s/review-agent.txt",
+                "--output-format",
+                "stream-json",
+                "--json-schema",
+                "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+                "--sandbox",
+                "read-only",
+                "--no-memory",
+                "--no-subagents",
+                "--no-web",
+                "--max-turns",
+                "3"
+              ],
+              "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-invalid-json-7pu7yxan/output/grok-review-7eb5ff9a-064a-43a1-9e74-60ac196cb434-a6mz559s",
+              "cwdFiles": [
+                "prompt.txt",
+                "review-agent.txt"
+              ],
+              "environmentKeys": [
+                "CPATH",
+                "GROK_DISABLE_CLAUDE_COMPAT",
+                "GROK_DISABLE_CURSOR_COMPAT",
+                "GROK_DISABLE_EXTERNAL_COMPAT",
+                "GROK_DISABLE_HOOKS",
+                "GROK_DISABLE_MCP",
+                "GROK_DISABLE_PLUGINS",
+                "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+                "GROK_DISABLE_USER_MEMORY",
+                "GROK_HOME",
+                "HOME",
+                "LANG",
+                "LC_ALL",
+                "LIBRARY_PATH",
+                "MANPATH",
+                "PATH",
+                "SDKROOT",
+                "XDG_CACHE_HOME",
+                "XDG_CONFIG_HOME",
+                "XDG_DATA_HOME",
+                "__CF_USER_TEXT_ENCODING"
+              ],
+              "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+              "xaiKeyPresent": false
+            },
+            "fakeInvoked": true,
+            "mode": "explicit",
+            "retainedSyntheticAwsSecret": false,
+            "retainedSyntheticInputSecret": false,
+            "retainedSyntheticUnrelatedSecret": false,
+            "reviewObjects": [],
+            "scenario": "invalid-json",
+            "shellInjectionMarkerExists": false,
+            "stderr": "",
+            "stdoutPayload": {
+              "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-invalid-json-7pu7yxan/output/grok-review-7eb5ff9a-064a-43a1-9e74-60ac196cb434.json",
+              "status": "invalid-json"
+            },
+            "timedOutByGrader": false
+          }
+        },
+        "max-turns": {
+          "expected": "max-turns",
+          "passed": true,
+          "result": {
+            "childAliveAfterReturn": null,
+            "childPid": null,
+            "durationSeconds": 0.47,
+            "exitStatus": 1,
+            "fakeInvocation": {
+              "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+              "argv": [
+                "--prompt-file",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-max-turns-jd8r309e/output/grok-review-0b3a1526-1fc9-4563-a748-31da6d77317c-plx47ta5/prompt.txt",
+                "--agent",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-max-turns-jd8r309e/output/grok-review-0b3a1526-1fc9-4563-a748-31da6d77317c-plx47ta5/review-agent.txt",
+                "--output-format",
+                "stream-json",
+                "--json-schema",
+                "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+                "--sandbox",
+                "read-only",
+                "--no-memory",
+                "--no-subagents",
+                "--no-web",
+                "--max-turns",
+                "3"
+              ],
+              "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-max-turns-jd8r309e/output/grok-review-0b3a1526-1fc9-4563-a748-31da6d77317c-plx47ta5",
+              "cwdFiles": [
+                "prompt.txt",
+                "review-agent.txt"
+              ],
+              "environmentKeys": [
+                "CPATH",
+                "GROK_DISABLE_CLAUDE_COMPAT",
+                "GROK_DISABLE_CURSOR_COMPAT",
+                "GROK_DISABLE_EXTERNAL_COMPAT",
+                "GROK_DISABLE_HOOKS",
+                "GROK_DISABLE_MCP",
+                "GROK_DISABLE_PLUGINS",
+                "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+                "GROK_DISABLE_USER_MEMORY",
+                "GROK_HOME",
+                "HOME",
+                "LANG",
+                "LC_ALL",
+                "LIBRARY_PATH",
+                "MANPATH",
+                "PATH",
+                "SDKROOT",
+                "XDG_CACHE_HOME",
+                "XDG_CONFIG_HOME",
+                "XDG_DATA_HOME",
+                "__CF_USER_TEXT_ENCODING"
+              ],
+              "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+              "xaiKeyPresent": false
+            },
+            "fakeInvoked": true,
+            "mode": "explicit",
+            "retainedSyntheticAwsSecret": false,
+            "retainedSyntheticInputSecret": false,
+            "retainedSyntheticUnrelatedSecret": false,
+            "reviewObjects": [],
+            "scenario": "max-turns",
+            "shellInjectionMarkerExists": false,
+            "stderr": "",
+            "stdoutPayload": {
+              "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-max-turns-jd8r309e/output/grok-review-0b3a1526-1fc9-4563-a748-31da6d77317c.json",
+              "status": "max-turns"
+            },
+            "timedOutByGrader": false
+          }
+        },
+        "missing-cli": {
+          "expected": "missing-cli",
+          "passed": true,
+          "result": {
+            "childAliveAfterReturn": null,
+            "childPid": null,
+            "durationSeconds": 0.14,
+            "exitStatus": 1,
+            "fakeInvocation": null,
+            "fakeInvoked": false,
+            "mode": "explicit",
+            "retainedSyntheticAwsSecret": false,
+            "retainedSyntheticInputSecret": false,
+            "retainedSyntheticUnrelatedSecret": false,
+            "reviewObjects": [],
+            "scenario": "streaming",
+            "shellInjectionMarkerExists": false,
+            "stderr": "",
+            "stdoutPayload": {
+              "message": "Grok executable is missing or not executable",
+              "status": "missing-cli"
+            },
+            "timedOutByGrader": false
+          }
+        },
+        "nonzero": {
+          "expected": "nonzero-exit",
+          "passed": true,
+          "result": {
+            "childAliveAfterReturn": null,
+            "childPid": null,
+            "durationSeconds": 0.419,
+            "exitStatus": 1,
+            "fakeInvocation": {
+              "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+              "argv": [
+                "--prompt-file",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-nonzero-wtlh_jdq/output/grok-review-82107ea6-a97b-4a58-b27f-63d6f68d5b92-c1ne8k_2/prompt.txt",
+                "--agent",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-nonzero-wtlh_jdq/output/grok-review-82107ea6-a97b-4a58-b27f-63d6f68d5b92-c1ne8k_2/review-agent.txt",
+                "--output-format",
+                "stream-json",
+                "--json-schema",
+                "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+                "--sandbox",
+                "read-only",
+                "--no-memory",
+                "--no-subagents",
+                "--no-web",
+                "--max-turns",
+                "3"
+              ],
+              "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-nonzero-wtlh_jdq/output/grok-review-82107ea6-a97b-4a58-b27f-63d6f68d5b92-c1ne8k_2",
+              "cwdFiles": [
+                "prompt.txt",
+                "review-agent.txt"
+              ],
+              "environmentKeys": [
+                "CPATH",
+                "GROK_DISABLE_CLAUDE_COMPAT",
+                "GROK_DISABLE_CURSOR_COMPAT",
+                "GROK_DISABLE_EXTERNAL_COMPAT",
+                "GROK_DISABLE_HOOKS",
+                "GROK_DISABLE_MCP",
+                "GROK_DISABLE_PLUGINS",
+                "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+                "GROK_DISABLE_USER_MEMORY",
+                "GROK_HOME",
+                "HOME",
+                "LANG",
+                "LC_ALL",
+                "LIBRARY_PATH",
+                "MANPATH",
+                "PATH",
+                "SDKROOT",
+                "XDG_CACHE_HOME",
+                "XDG_CONFIG_HOME",
+                "XDG_DATA_HOME",
+                "__CF_USER_TEXT_ENCODING"
+              ],
+              "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+              "xaiKeyPresent": false
+            },
+            "fakeInvoked": true,
+            "mode": "explicit",
+            "retainedSyntheticAwsSecret": false,
+            "retainedSyntheticInputSecret": false,
+            "retainedSyntheticUnrelatedSecret": false,
+            "reviewObjects": [],
+            "scenario": "nonzero",
+            "shellInjectionMarkerExists": false,
+            "stderr": "",
+            "stdoutPayload": {
+              "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-nonzero-wtlh_jdq/output/grok-review-82107ea6-a97b-4a58-b27f-63d6f68d5b92.json",
+              "status": "nonzero-exit"
+            },
+            "timedOutByGrader": false
+          }
+        },
+        "result-error": {
+          "expected": "incomplete-stop-reason",
+          "passed": false,
+          "result": {
+            "childAliveAfterReturn": null,
+            "childPid": null,
+            "durationSeconds": 0.447,
+            "exitStatus": 1,
+            "fakeInvocation": {
+              "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+              "argv": [
+                "--prompt-file",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-result-error-utpa4ho9/output/grok-review-3e7c6236-81b4-4b5c-9b80-9d55c3af03bc-1crcssid/prompt.txt",
+                "--agent",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-result-error-utpa4ho9/output/grok-review-3e7c6236-81b4-4b5c-9b80-9d55c3af03bc-1crcssid/review-agent.txt",
+                "--output-format",
+                "stream-json",
+                "--json-schema",
+                "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+                "--sandbox",
+                "read-only",
+                "--no-memory",
+                "--no-subagents",
+                "--no-web",
+                "--max-turns",
+                "3"
+              ],
+              "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-result-error-utpa4ho9/output/grok-review-3e7c6236-81b4-4b5c-9b80-9d55c3af03bc-1crcssid",
+              "cwdFiles": [
+                "prompt.txt",
+                "review-agent.txt"
+              ],
+              "environmentKeys": [
+                "CPATH",
+                "GROK_DISABLE_CLAUDE_COMPAT",
+                "GROK_DISABLE_CURSOR_COMPAT",
+                "GROK_DISABLE_EXTERNAL_COMPAT",
+                "GROK_DISABLE_HOOKS",
+                "GROK_DISABLE_MCP",
+                "GROK_DISABLE_PLUGINS",
+                "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+                "GROK_DISABLE_USER_MEMORY",
+                "GROK_HOME",
+                "HOME",
+                "LANG",
+                "LC_ALL",
+                "LIBRARY_PATH",
+                "MANPATH",
+                "PATH",
+                "SDKROOT",
+                "XDG_CACHE_HOME",
+                "XDG_CONFIG_HOME",
+                "XDG_DATA_HOME",
+                "__CF_USER_TEXT_ENCODING"
+              ],
+              "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+              "xaiKeyPresent": false
+            },
+            "fakeInvoked": true,
+            "mode": "explicit",
+            "retainedSyntheticAwsSecret": false,
+            "retainedSyntheticInputSecret": false,
+            "retainedSyntheticUnrelatedSecret": false,
+            "reviewObjects": [],
+            "scenario": "result-error",
+            "shellInjectionMarkerExists": false,
+            "stderr": "",
+            "stdoutPayload": {
+              "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-result-error-utpa4ho9/output/grok-review-3e7c6236-81b4-4b5c-9b80-9d55c3af03bc.json",
+              "status": "nonzero-exit"
+            },
+            "timedOutByGrader": false
+          }
+        }
+      },
+      "passed": false,
+      "pointsAvailable": 10,
+      "pointsAwarded": 0
+    },
+    "credential-shaped-input-rejected-before-call": {
+      "critical": true,
+      "detail": {
+        "childAliveAfterReturn": null,
+        "childPid": null,
+        "durationSeconds": 0.419,
+        "exitStatus": 0,
+        "fakeInvocation": {
+          "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+          "argv": [
+            "--prompt-file",
+            "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-quqvddq2/output/grok-review-27ad3db9-24c9-4d38-b51a-3e64c241610a-ml77j35i/prompt.txt",
+            "--agent",
+            "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-quqvddq2/output/grok-review-27ad3db9-24c9-4d38-b51a-3e64c241610a-ml77j35i/review-agent.txt",
+            "--output-format",
+            "stream-json",
+            "--json-schema",
+            "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+            "--sandbox",
+            "read-only",
+            "--no-memory",
+            "--no-subagents",
+            "--no-web",
+            "--max-turns",
+            "3"
+          ],
+          "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-quqvddq2/output/grok-review-27ad3db9-24c9-4d38-b51a-3e64c241610a-ml77j35i",
+          "cwdFiles": [
+            "prompt.txt",
+            "review-agent.txt"
+          ],
+          "environmentKeys": [
+            "CPATH",
+            "GROK_DISABLE_CLAUDE_COMPAT",
+            "GROK_DISABLE_CURSOR_COMPAT",
+            "GROK_DISABLE_EXTERNAL_COMPAT",
+            "GROK_DISABLE_HOOKS",
+            "GROK_DISABLE_MCP",
+            "GROK_DISABLE_PLUGINS",
+            "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+            "GROK_DISABLE_USER_MEMORY",
+            "GROK_HOME",
+            "HOME",
+            "LANG",
+            "LC_ALL",
+            "LIBRARY_PATH",
+            "MANPATH",
+            "PATH",
+            "SDKROOT",
+            "XDG_CACHE_HOME",
+            "XDG_CONFIG_HOME",
+            "XDG_DATA_HOME",
+            "__CF_USER_TEXT_ENCODING"
+          ],
+          "prompt": "XAI_API_KEY=synthetic-input-secret\n",
+          "xaiKeyPresent": false
+        },
+        "fakeInvoked": true,
+        "mode": "explicit",
+        "retainedSyntheticAwsSecret": false,
+        "retainedSyntheticInputSecret": false,
+        "retainedSyntheticUnrelatedSecret": false,
+        "reviewObjects": [],
+        "scenario": "streaming",
+        "shellInjectionMarkerExists": false,
+        "stderr": "",
+        "stdoutPayload": {
+          "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-quqvddq2/output/grok-review-27ad3db9-24c9-4d38-b51a-3e64c241610a.json",
+          "review": {
+            "minimum_plan_delta": [
+              "Add one bounded canary."
+            ],
+            "missing": [
+              "Name the rollback signal."
+            ],
+            "overengineering": [
+              "Remove the speculative queue."
+            ],
+            "risks": [
+              "The first canary may be noisy."
+            ],
+            "user_decisions": [],
+            "verdict": "PROCEED WITH CHANGES"
+          },
+          "status": "ok"
+        },
+        "timedOutByGrader": false
+      },
+      "passed": false,
+      "pointsAvailable": 2,
+      "pointsAwarded": 0
+    },
+    "direct-envelope-streaming-success": {
+      "critical": true,
+      "detail": {
+        "direct": {
+          "childAliveAfterReturn": null,
+          "childPid": null,
+          "durationSeconds": 1.193,
+          "exitStatus": 0,
+          "fakeInvocation": {
+            "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+            "argv": [
+              "--prompt-file",
+              "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-direct-eps3vffm/output/grok-review-67bc4a48-cbd1-4701-a7cc-f01076411834-7ambdxrf/prompt.txt",
+              "--agent",
+              "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-direct-eps3vffm/output/grok-review-67bc4a48-cbd1-4701-a7cc-f01076411834-7ambdxrf/review-agent.txt",
+              "--output-format",
+              "stream-json",
+              "--json-schema",
+              "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+              "--sandbox",
+              "read-only",
+              "--no-memory",
+              "--no-subagents",
+              "--no-web",
+              "--max-turns",
+              "3"
+            ],
+            "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-direct-eps3vffm/output/grok-review-67bc4a48-cbd1-4701-a7cc-f01076411834-7ambdxrf",
+            "cwdFiles": [
+              "prompt.txt",
+              "review-agent.txt"
+            ],
+            "environmentKeys": [
+              "CPATH",
+              "GROK_DISABLE_CLAUDE_COMPAT",
+              "GROK_DISABLE_CURSOR_COMPAT",
+              "GROK_DISABLE_EXTERNAL_COMPAT",
+              "GROK_DISABLE_HOOKS",
+              "GROK_DISABLE_MCP",
+              "GROK_DISABLE_PLUGINS",
+              "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+              "GROK_DISABLE_USER_MEMORY",
+              "GROK_HOME",
+              "HOME",
+              "LANG",
+              "LC_ALL",
+              "LIBRARY_PATH",
+              "MANPATH",
+              "PATH",
+              "SDKROOT",
+              "XDG_CACHE_HOME",
+              "XDG_CONFIG_HOME",
+              "XDG_DATA_HOME",
+              "__CF_USER_TEXT_ENCODING"
+            ],
+            "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+            "xaiKeyPresent": false
+          },
+          "fakeInvoked": true,
+          "mode": "explicit",
+          "retainedSyntheticAwsSecret": false,
+          "retainedSyntheticInputSecret": false,
+          "retainedSyntheticUnrelatedSecret": false,
+          "reviewObjects": [],
+          "scenario": "direct",
+          "shellInjectionMarkerExists": false,
+          "stderr": "",
+          "stdoutPayload": {
+            "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-direct-eps3vffm/output/grok-review-67bc4a48-cbd1-4701-a7cc-f01076411834.json",
+            "review": {
+              "minimum_plan_delta": [
+                "Add one bounded canary."
+              ],
+              "missing": [
+                "Name the rollback signal."
+              ],
+              "overengineering": [
+                "Remove the speculative queue."
+              ],
+              "risks": [
+                "The first canary may be noisy."
+              ],
+              "user_decisions": [],
+              "verdict": "PROCEED WITH CHANGES"
+            },
+            "status": "ok"
+          },
+          "timedOutByGrader": false
+        },
+        "envelope": {
+          "childAliveAfterReturn": null,
+          "childPid": null,
+          "durationSeconds": 0.459,
+          "exitStatus": 0,
+          "fakeInvocation": {
+            "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+            "argv": [
+              "--prompt-file",
+              "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-envelope-rxc6jakh/output/grok-review-70c987dc-8ee4-48b7-9924-63313b4dbc5b-am07wovu/prompt.txt",
+              "--agent",
+              "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-envelope-rxc6jakh/output/grok-review-70c987dc-8ee4-48b7-9924-63313b4dbc5b-am07wovu/review-agent.txt",
+              "--output-format",
+              "stream-json",
+              "--json-schema",
+              "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+              "--sandbox",
+              "read-only",
+              "--no-memory",
+              "--no-subagents",
+              "--no-web",
+              "--max-turns",
+              "3"
+            ],
+            "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-envelope-rxc6jakh/output/grok-review-70c987dc-8ee4-48b7-9924-63313b4dbc5b-am07wovu",
+            "cwdFiles": [
+              "prompt.txt",
+              "review-agent.txt"
+            ],
+            "environmentKeys": [
+              "CPATH",
+              "GROK_DISABLE_CLAUDE_COMPAT",
+              "GROK_DISABLE_CURSOR_COMPAT",
+              "GROK_DISABLE_EXTERNAL_COMPAT",
+              "GROK_DISABLE_HOOKS",
+              "GROK_DISABLE_MCP",
+              "GROK_DISABLE_PLUGINS",
+              "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+              "GROK_DISABLE_USER_MEMORY",
+              "GROK_HOME",
+              "HOME",
+              "LANG",
+              "LC_ALL",
+              "LIBRARY_PATH",
+              "MANPATH",
+              "PATH",
+              "SDKROOT",
+              "XDG_CACHE_HOME",
+              "XDG_CONFIG_HOME",
+              "XDG_DATA_HOME",
+              "__CF_USER_TEXT_ENCODING"
+            ],
+            "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+            "xaiKeyPresent": false
+          },
+          "fakeInvoked": true,
+          "mode": "explicit",
+          "retainedSyntheticAwsSecret": false,
+          "retainedSyntheticInputSecret": false,
+          "retainedSyntheticUnrelatedSecret": false,
+          "reviewObjects": [],
+          "scenario": "envelope",
+          "shellInjectionMarkerExists": false,
+          "stderr": "",
+          "stdoutPayload": {
+            "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-envelope-rxc6jakh/output/grok-review-70c987dc-8ee4-48b7-9924-63313b4dbc5b.json",
+            "review": {
+              "minimum_plan_delta": [
+                "Add one bounded canary."
+              ],
+              "missing": [
+                "Name the rollback signal."
+              ],
+              "overengineering": [
+                "Remove the speculative queue."
+              ],
+              "risks": [
+                "The first canary may be noisy."
+              ],
+              "user_decisions": [],
+              "verdict": "PROCEED WITH CHANGES"
+            },
+            "status": "ok"
+          },
+          "timedOutByGrader": false
+        },
+        "streaming": {
+          "childAliveAfterReturn": null,
+          "childPid": null,
+          "durationSeconds": 0.462,
+          "exitStatus": 0,
+          "fakeInvocation": {
+            "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+            "argv": [
+              "--prompt-file",
+              "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-h8jncmxr/output/grok-review-182e029e-a55e-4a96-8bb1-ccf46daa5a6f-2ti3wj57/prompt.txt",
+              "--agent",
+              "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-h8jncmxr/output/grok-review-182e029e-a55e-4a96-8bb1-ccf46daa5a6f-2ti3wj57/review-agent.txt",
+              "--output-format",
+              "stream-json",
+              "--json-schema",
+              "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+              "--sandbox",
+              "read-only",
+              "--no-memory",
+              "--no-subagents",
+              "--no-web",
+              "--max-turns",
+              "3"
+            ],
+            "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-h8jncmxr/output/grok-review-182e029e-a55e-4a96-8bb1-ccf46daa5a6f-2ti3wj57",
+            "cwdFiles": [
+              "prompt.txt",
+              "review-agent.txt"
+            ],
+            "environmentKeys": [
+              "CPATH",
+              "GROK_DISABLE_CLAUDE_COMPAT",
+              "GROK_DISABLE_CURSOR_COMPAT",
+              "GROK_DISABLE_EXTERNAL_COMPAT",
+              "GROK_DISABLE_HOOKS",
+              "GROK_DISABLE_MCP",
+              "GROK_DISABLE_PLUGINS",
+              "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+              "GROK_DISABLE_USER_MEMORY",
+              "GROK_HOME",
+              "HOME",
+              "LANG",
+              "LC_ALL",
+              "LIBRARY_PATH",
+              "MANPATH",
+              "PATH",
+              "SDKROOT",
+              "XDG_CACHE_HOME",
+              "XDG_CONFIG_HOME",
+              "XDG_DATA_HOME",
+              "__CF_USER_TEXT_ENCODING"
+            ],
+            "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+            "xaiKeyPresent": false
+          },
+          "fakeInvoked": true,
+          "mode": "explicit",
+          "retainedSyntheticAwsSecret": false,
+          "retainedSyntheticInputSecret": false,
+          "retainedSyntheticUnrelatedSecret": false,
+          "reviewObjects": [],
+          "scenario": "streaming",
+          "shellInjectionMarkerExists": false,
+          "stderr": "",
+          "stdoutPayload": {
+            "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-h8jncmxr/output/grok-review-182e029e-a55e-4a96-8bb1-ccf46daa5a6f.json",
+            "review": {
+              "minimum_plan_delta": [
+                "Add one bounded canary."
+              ],
+              "missing": [
+                "Name the rollback signal."
+              ],
+              "overengineering": [
+                "Remove the speculative queue."
+              ],
+              "risks": [
+                "The first canary may be noisy."
+              ],
+              "user_decisions": [],
+              "verdict": "PROCEED WITH CHANGES"
+            },
+            "status": "ok"
+          },
+          "timedOutByGrader": false
+        }
+      },
+      "passed": false,
+      "pointsAvailable": 8,
+      "pointsAwarded": 0
+    },
+    "exact-two-file-shape": {
+      "critical": true,
+      "detail": {
+        "files": [
+          "SKILL.md",
+          "scripts/consult-grok"
+        ],
+        "nonregular": [],
+        "symlinks": []
+      },
+      "passed": true,
+      "pointsAvailable": 5,
+      "pointsAwarded": 5
+    },
+    "executable-stdlib-python-without-shell-eval": {
+      "critical": true,
+      "detail": {
+        "dangerousCalls": [],
+        "executable": true,
+        "syntaxError": null
+      },
+      "passed": true,
+      "pointsAvailable": 5,
+      "pointsAwarded": 5
+    },
+    "frozen-product-budgets": {
+      "critical": true,
+      "detail": {
+        "fileCount": 2,
+        "limits": {
+          "descriptionCharactersMaximum": 400,
+          "evalFileCount": 0,
+          "fileCount": 2,
+          "packageBytesMaximum": 45000,
+          "referenceFileCount": 0,
+          "scriptFileCount": 1,
+          "skillMdBytesMaximum": 10500,
+          "skillMdLinesMaximum": 150
+        },
+        "packageBytes": 15238,
+        "skillBytes": 3536,
+        "skillLines": 38
+      },
+      "passed": true,
+      "pointsAvailable": 5,
+      "pointsAwarded": 5
+    },
+    "inspect-allowlist-fails-closed": {
+      "critical": true,
+      "detail": {
+        "badInspect": {
+          "childAliveAfterReturn": null,
+          "childPid": null,
+          "durationSeconds": 0.425,
+          "exitStatus": 1,
+          "fakeInvocation": null,
+          "fakeInvoked": false,
+          "mode": "explicit",
+          "retainedSyntheticAwsSecret": false,
+          "retainedSyntheticInputSecret": false,
+          "retainedSyntheticUnrelatedSecret": false,
+          "reviewObjects": [],
+          "scenario": "bad-inspect",
+          "shellInjectionMarkerExists": false,
+          "stderr": "",
+          "stdoutPayload": {
+            "message": "effective configuration is outside the frozen allow-list",
+            "status": "isolation-failure"
+          },
+          "timedOutByGrader": false
+        },
+        "missingFields": {
+          "childAliveAfterReturn": null,
+          "childPid": null,
+          "durationSeconds": 0.15,
+          "exitStatus": 1,
+          "fakeInvocation": null,
+          "fakeInvoked": false,
+          "mode": "automatic",
+          "retainedSyntheticAwsSecret": false,
+          "retainedSyntheticInputSecret": false,
+          "retainedSyntheticUnrelatedSecret": false,
+          "reviewObjects": [],
+          "scenario": "missing-inspect-fields",
+          "shellInjectionMarkerExists": false,
+          "stderr": "",
+          "stdoutPayload": {
+            "message": "automatic mode is disabled pending dedicated-profile acceptance",
+            "status": "isolation-failure"
+          },
+          "timedOutByGrader": false
+        }
+      },
+      "passed": true,
+      "pointsAvailable": 6,
+      "pointsAwarded": 6
+    },
+    "numeric-bounds-fail-before-call": {
+      "critical": false,
+      "detail": [
+        {
+          "maxTurns": "3",
+          "passed": true,
+          "result": {
+            "childAliveAfterReturn": null,
+            "childPid": null,
+            "durationSeconds": 0.139,
+            "exitStatus": 1,
+            "fakeInvocation": null,
+            "fakeInvoked": false,
+            "mode": "explicit",
+            "retainedSyntheticAwsSecret": false,
+            "retainedSyntheticInputSecret": false,
+            "retainedSyntheticUnrelatedSecret": false,
+            "reviewObjects": [],
+            "scenario": "streaming",
+            "shellInjectionMarkerExists": false,
+            "stderr": "",
+            "stdoutPayload": {
+              "message": "timeout and max-turns must be positive",
+              "status": "isolation-failure"
+            },
+            "timedOutByGrader": false
+          },
+          "timeout": "0"
+        },
+        {
+          "maxTurns": "3",
+          "passed": false,
+          "result": {
+            "childAliveAfterReturn": null,
+            "childPid": null,
+            "durationSeconds": 0.449,
+            "exitStatus": 0,
+            "fakeInvocation": {
+              "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+              "argv": [
+                "--prompt-file",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-3qi3izoi/output/grok-review-595f0781-4dee-4372-b6cd-dc6b94caba19-h3i39mim/prompt.txt",
+                "--agent",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-3qi3izoi/output/grok-review-595f0781-4dee-4372-b6cd-dc6b94caba19-h3i39mim/review-agent.txt",
+                "--output-format",
+                "stream-json",
+                "--json-schema",
+                "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+                "--sandbox",
+                "read-only",
+                "--no-memory",
+                "--no-subagents",
+                "--no-web",
+                "--max-turns",
+                "3"
+              ],
+              "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-3qi3izoi/output/grok-review-595f0781-4dee-4372-b6cd-dc6b94caba19-h3i39mim",
+              "cwdFiles": [
+                "prompt.txt",
+                "review-agent.txt"
+              ],
+              "environmentKeys": [
+                "CPATH",
+                "GROK_DISABLE_CLAUDE_COMPAT",
+                "GROK_DISABLE_CURSOR_COMPAT",
+                "GROK_DISABLE_EXTERNAL_COMPAT",
+                "GROK_DISABLE_HOOKS",
+                "GROK_DISABLE_MCP",
+                "GROK_DISABLE_PLUGINS",
+                "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+                "GROK_DISABLE_USER_MEMORY",
+                "GROK_HOME",
+                "HOME",
+                "LANG",
+                "LC_ALL",
+                "LIBRARY_PATH",
+                "MANPATH",
+                "PATH",
+                "SDKROOT",
+                "XDG_CACHE_HOME",
+                "XDG_CONFIG_HOME",
+                "XDG_DATA_HOME",
+                "__CF_USER_TEXT_ENCODING"
+              ],
+              "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+              "xaiKeyPresent": false
+            },
+            "fakeInvoked": true,
+            "mode": "explicit",
+            "retainedSyntheticAwsSecret": false,
+            "retainedSyntheticInputSecret": false,
+            "retainedSyntheticUnrelatedSecret": false,
+            "reviewObjects": [],
+            "scenario": "streaming",
+            "shellInjectionMarkerExists": false,
+            "stderr": "",
+            "stdoutPayload": {
+              "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-3qi3izoi/output/grok-review-595f0781-4dee-4372-b6cd-dc6b94caba19.json",
+              "review": {
+                "minimum_plan_delta": [
+                  "Add one bounded canary."
+                ],
+                "missing": [
+                  "Name the rollback signal."
+                ],
+                "overengineering": [
+                  "Remove the speculative queue."
+                ],
+                "risks": [
+                  "The first canary may be noisy."
+                ],
+                "user_decisions": [],
+                "verdict": "PROCEED WITH CHANGES"
+              },
+              "status": "ok"
+            },
+            "timedOutByGrader": false
+          },
+          "timeout": "601"
+        },
+        {
+          "maxTurns": "3",
+          "passed": true,
+          "result": {
+            "childAliveAfterReturn": null,
+            "childPid": null,
+            "durationSeconds": 0.142,
+            "exitStatus": 1,
+            "fakeInvocation": null,
+            "fakeInvoked": false,
+            "mode": "explicit",
+            "retainedSyntheticAwsSecret": false,
+            "retainedSyntheticInputSecret": false,
+            "retainedSyntheticUnrelatedSecret": false,
+            "reviewObjects": [],
+            "scenario": "streaming",
+            "shellInjectionMarkerExists": false,
+            "stderr": "",
+            "stdoutPayload": {
+              "message": "isolated execution failed: cannot convert float NaN to integer",
+              "status": "isolation-failure"
+            },
+            "timedOutByGrader": false
+          },
+          "timeout": "NaN"
+        },
+        {
+          "maxTurns": "0",
+          "passed": true,
+          "result": {
+            "childAliveAfterReturn": null,
+            "childPid": null,
+            "durationSeconds": 0.137,
+            "exitStatus": 1,
+            "fakeInvocation": null,
+            "fakeInvoked": false,
+            "mode": "explicit",
+            "retainedSyntheticAwsSecret": false,
+            "retainedSyntheticInputSecret": false,
+            "retainedSyntheticUnrelatedSecret": false,
+            "reviewObjects": [],
+            "scenario": "streaming",
+            "shellInjectionMarkerExists": false,
+            "stderr": "",
+            "stdoutPayload": {
+              "message": "timeout and max-turns must be positive",
+              "status": "isolation-failure"
+            },
+            "timedOutByGrader": false
+          },
+          "timeout": "3"
+        },
+        {
+          "maxTurns": "9",
+          "passed": false,
+          "result": {
+            "childAliveAfterReturn": null,
+            "childPid": null,
+            "durationSeconds": 0.562,
+            "exitStatus": 0,
+            "fakeInvocation": {
+              "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+              "argv": [
+                "--prompt-file",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-jjpqkwdo/output/grok-review-f1aa5239-01f2-4eeb-9043-97188371d465-it0cpfk8/prompt.txt",
+                "--agent",
+                "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-jjpqkwdo/output/grok-review-f1aa5239-01f2-4eeb-9043-97188371d465-it0cpfk8/review-agent.txt",
+                "--output-format",
+                "stream-json",
+                "--json-schema",
+                "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+                "--sandbox",
+                "read-only",
+                "--no-memory",
+                "--no-subagents",
+                "--no-web",
+                "--max-turns",
+                "9"
+              ],
+              "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-jjpqkwdo/output/grok-review-f1aa5239-01f2-4eeb-9043-97188371d465-it0cpfk8",
+              "cwdFiles": [
+                "prompt.txt",
+                "review-agent.txt"
+              ],
+              "environmentKeys": [
+                "CPATH",
+                "GROK_DISABLE_CLAUDE_COMPAT",
+                "GROK_DISABLE_CURSOR_COMPAT",
+                "GROK_DISABLE_EXTERNAL_COMPAT",
+                "GROK_DISABLE_HOOKS",
+                "GROK_DISABLE_MCP",
+                "GROK_DISABLE_PLUGINS",
+                "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+                "GROK_DISABLE_USER_MEMORY",
+                "GROK_HOME",
+                "HOME",
+                "LANG",
+                "LC_ALL",
+                "LIBRARY_PATH",
+                "MANPATH",
+                "PATH",
+                "SDKROOT",
+                "XDG_CACHE_HOME",
+                "XDG_CONFIG_HOME",
+                "XDG_DATA_HOME",
+                "__CF_USER_TEXT_ENCODING"
+              ],
+              "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+              "xaiKeyPresent": false
+            },
+            "fakeInvoked": true,
+            "mode": "explicit",
+            "retainedSyntheticAwsSecret": false,
+            "retainedSyntheticInputSecret": false,
+            "retainedSyntheticUnrelatedSecret": false,
+            "reviewObjects": [],
+            "scenario": "streaming",
+            "shellInjectionMarkerExists": false,
+            "stderr": "",
+            "stdoutPayload": {
+              "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-streaming-jjpqkwdo/output/grok-review-f1aa5239-01f2-4eeb-9043-97188371d465.json",
+              "review": {
+                "minimum_plan_delta": [
+                  "Add one bounded canary."
+                ],
+                "missing": [
+                  "Name the rollback signal."
+                ],
+                "overengineering": [
+                  "Remove the speculative queue."
+                ],
+                "risks": [
+                  "The first canary may be noisy."
+                ],
+                "user_decisions": [],
+                "verdict": "PROCEED WITH CHANGES"
+              },
+              "status": "ok"
+            },
+            "timedOutByGrader": false
+          },
+          "timeout": "3"
+        }
+      ],
+      "passed": false,
+      "pointsAvailable": 5,
+      "pointsAwarded": 0
+    },
+    "portable-frontmatter-and-explicit-activation": {
+      "critical": true,
+      "detail": {
+        "descriptionCharacters": 362,
+        "error": null,
+        "frontmatter": {
+          "description": "Ask a locally installed Grok or Grok Build CLI for a bounded second opinion when the user explicitly requests Grok review in Polish or English, then reconcile its advice. Do not use for implicit or automatic review, brainstorming, status, Grok-response summaries, unchanged repeat reviews, nested-agent benchmarks, opt-outs, or content unsafe to send externally.",
+          "name": "toolboxmd-use-grok"
+        }
+      },
+      "passed": true,
+      "pointsAvailable": 5,
+      "pointsAwarded": 5
+    },
+    "safe-argv-prompt-and-environment": {
+      "critical": true,
+      "detail": {
+        "argvContractPassed": false,
+        "fakeEnvironmentKeys": [
+          "CPATH",
+          "GROK_DISABLE_CLAUDE_COMPAT",
+          "GROK_DISABLE_CURSOR_COMPAT",
+          "GROK_DISABLE_EXTERNAL_COMPAT",
+          "GROK_DISABLE_HOOKS",
+          "GROK_DISABLE_MCP",
+          "GROK_DISABLE_PLUGINS",
+          "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+          "GROK_DISABLE_USER_MEMORY",
+          "GROK_HOME",
+          "HOME",
+          "LANG",
+          "LC_ALL",
+          "LIBRARY_PATH",
+          "MANPATH",
+          "PATH",
+          "SDKROOT",
+          "XDG_CACHE_HOME",
+          "XDG_CONFIG_HOME",
+          "XDG_DATA_HOME",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "promptFilePreserved": true,
+        "retainedSyntheticSecrets": false,
+        "shellInjectionMarkerExists": false
+      },
+      "passed": false,
+      "pointsAvailable": 10,
+      "pointsAwarded": 0
+    },
+    "timeout-kills-complete-process-tree": {
+      "critical": true,
+      "detail": {
+        "childAliveAfterGrace": false,
+        "childAliveAfterReturn": false,
+        "childPid": 61823,
+        "durationSeconds": 0.722,
+        "exitStatus": 1,
+        "fakeInvocation": {
+          "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+          "argv": [
+            "--prompt-file",
+            "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-timeout-zgexh8h5/output/grok-review-df4f74bc-99a4-47db-b208-6b6e67c01832-khqi8hnp/prompt.txt",
+            "--agent",
+            "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-timeout-zgexh8h5/output/grok-review-df4f74bc-99a4-47db-b208-6b6e67c01832-khqi8hnp/review-agent.txt",
+            "--output-format",
+            "stream-json",
+            "--json-schema",
+            "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+            "--sandbox",
+            "read-only",
+            "--no-memory",
+            "--no-subagents",
+            "--no-web",
+            "--max-turns",
+            "3"
+          ],
+          "cwd": "/private/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-timeout-zgexh8h5/output/grok-review-df4f74bc-99a4-47db-b208-6b6e67c01832-khqi8hnp",
+          "cwdFiles": [
+            "prompt.txt",
+            "review-agent.txt"
+          ],
+          "environmentKeys": [
+            "CPATH",
+            "GROK_DISABLE_CLAUDE_COMPAT",
+            "GROK_DISABLE_CURSOR_COMPAT",
+            "GROK_DISABLE_EXTERNAL_COMPAT",
+            "GROK_DISABLE_HOOKS",
+            "GROK_DISABLE_MCP",
+            "GROK_DISABLE_PLUGINS",
+            "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+            "GROK_DISABLE_USER_MEMORY",
+            "GROK_HOME",
+            "HOME",
+            "LANG",
+            "LC_ALL",
+            "LIBRARY_PATH",
+            "MANPATH",
+            "PATH",
+            "SDKROOT",
+            "XDG_CACHE_HOME",
+            "XDG_CONFIG_HOME",
+            "XDG_DATA_HOME",
+            "__CF_USER_TEXT_ENCODING"
+          ],
+          "prompt": "Review literal $(touch SHELL-INJECTION-MARKER).\n",
+          "xaiKeyPresent": false
+        },
+        "fakeInvoked": true,
+        "mode": "explicit",
+        "retainedSyntheticAwsSecret": false,
+        "retainedSyntheticInputSecret": false,
+        "retainedSyntheticUnrelatedSecret": false,
+        "reviewObjects": [],
+        "scenario": "timeout",
+        "shellInjectionMarkerExists": false,
+        "stderr": "",
+        "stdoutPayload": {
+          "evidence": "/var/folders/mc/1lysd8tx6_zbb3ybf7278vlr0000gn/T/grok-grade-timeout-zgexh8h5/output/grok-review-df4f74bc-99a4-47db-b208-6b6e67c01832.json",
+          "status": "timeout"
+        },
+        "timedOutByGrader": false
+      },
+      "passed": true,
+      "pointsAvailable": 5,
+      "pointsAwarded": 5
+    }
+  },
+  "criticalFailures": [
+    "direct-envelope-streaming-success",
+    "safe-argv-prompt-and-environment",
+    "concrete-failure-classification",
+    "credential-shaped-input-rejected-before-call"
+  ],
+  "deterministicPointsAvailable": 70,
+  "deterministicPointsAwarded": 35,
+  "recommendableArtifact": false,
+  "schemaVersion": 1
+}

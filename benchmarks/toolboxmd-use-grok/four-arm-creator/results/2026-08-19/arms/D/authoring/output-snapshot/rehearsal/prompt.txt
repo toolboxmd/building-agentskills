@@ -1,0 +1,1 @@
+Review literal shell text without executing it: $(touch output/rehearsal/INJECTION-RAN); `touch output/rehearsal/BACKTICK-RAN`; ; & |. Do not use tools.

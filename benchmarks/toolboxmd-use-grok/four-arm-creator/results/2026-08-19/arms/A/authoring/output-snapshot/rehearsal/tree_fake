@@ -1,0 +1,9 @@
+#!/bin/sh
+if [ "$1" = "inspect" ]; then
+  printf '%s\n' '{"grokVersion":"1.0.3","cwd":"synthetic","projectRoot":null,"projectInstructions":[],"skills":[],"agents":[{"name":"general-purpose","source":{"type":"builtin"}},{"name":"explore","source":{"type":"builtin"}},{"name":"plan","source":{"type":"builtin"}}],"mcpServers":[],"plugins":[],"hooks":[],"marketplaces":[],"externalCompat":{"remoteSettingsLoaded":false,"cells":[{"vendor":"cursor","surface":"skills","enabled":false},{"vendor":"cursor","surface":"rules","enabled":false},{"vendor":"cursor","surface":"agents","enabled":false},{"vendor":"cursor","surface":"mcps","enabled":false},{"vendor":"cursor","surface":"hooks","enabled":false},{"vendor":"cursor","surface":"sessions","enabled":false},{"vendor":"claude","surface":"skills","enabled":false},{"vendor":"claude","surface":"rules","enabled":false},{"vendor":"claude","surface":"agents","enabled":false},{"vendor":"claude","surface":"mcps","enabled":false},{"vendor":"claude","surface":"hooks","enabled":false},{"vendor":"claude","surface":"sessions","enabled":false}]},"configSources":{"layers":[]},"configWarnings":null,"permissions":{"managedSettingsActive":false}}'
+  exit 0
+fi
+/bin/sleep 60 &
+child=$!
+printf '%s\n' "$child" > "${0%/*}/tree-child.pid"
+wait "$child"

@@ -1,0 +1,9 @@
+{
+  "classification": "incomplete-stop-reason",
+  "exit_code": 0,
+  "finished_at_unix": 1787159578.10556,
+  "schemaVersion": 1,
+  "session_id": null,
+  "stop_reason": "cancelled",
+  "usage": null
+}

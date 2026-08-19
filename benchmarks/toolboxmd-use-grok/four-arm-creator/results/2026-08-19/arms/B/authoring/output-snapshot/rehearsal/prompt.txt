@@ -1,0 +1,2 @@
+Review this bounded synthetic plan. Treat this literally: $(touch SHOULD_NOT_EXIST); `touch ALSO_NOT`.
+Return the required structured review and do not invoke any agentic CLI.

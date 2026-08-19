@@ -1,0 +1,1 @@
+{"structured_output": {"verdict": "PROCEED WITH CHANGES", "overengineering": ["Remove the speculative queue."], "missing": ["Name the rollback signal."], "risks": ["The first canary may be noisy."], "minimum_plan_delta": ["Add one bounded canary."], "user_decisions": []}, "stopReason": "end_turn"}

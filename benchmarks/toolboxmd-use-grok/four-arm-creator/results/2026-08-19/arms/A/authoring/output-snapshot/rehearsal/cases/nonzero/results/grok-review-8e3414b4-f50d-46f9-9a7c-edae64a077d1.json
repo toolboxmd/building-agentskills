@@ -1,0 +1,168 @@
+{
+  "duration_seconds": 0.065451,
+  "exit_code": 42,
+  "inspection": {
+    "agents": [
+      {
+        "name": "general-purpose",
+        "source": {
+          "type": "builtin"
+        }
+      },
+      {
+        "name": "explore",
+        "source": {
+          "type": "builtin"
+        }
+      },
+      {
+        "name": "plan",
+        "source": {
+          "type": "builtin"
+        }
+      }
+    ],
+    "configSources": {
+      "layers": []
+    },
+    "configWarnings": null,
+    "cwd": "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/nonzero/results/grok-review-8e3414b4-f50d-46f9-9a7c-edae64a077d1-istxla_d",
+    "externalCompat": {
+      "cells": [
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "skills",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "rules",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "agents",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "mcps",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "hooks",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "sessions",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "skills",
+          "vendor": "claude"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "rules",
+          "vendor": "claude"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "agents",
+          "vendor": "claude"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "mcps",
+          "vendor": "claude"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "hooks",
+          "vendor": "claude"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "sessions",
+          "vendor": "claude"
+        }
+      ],
+      "remoteSettingsLoaded": false
+    },
+    "grokVersion": "1.0.3",
+    "hooks": [],
+    "marketplaces": [],
+    "mcpServers": [],
+    "permissions": {
+      "managedSettingsActive": false
+    },
+    "plugins": [],
+    "projectInstructions": [],
+    "projectRoot": null,
+    "skills": []
+  },
+  "invocation": {
+    "argv": [
+      "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/nonzero/fake_grok.py",
+      "--prompt-file",
+      "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/nonzero/results/grok-review-8e3414b4-f50d-46f9-9a7c-edae64a077d1-istxla_d/prompt.txt",
+      "--agent",
+      "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/nonzero/results/grok-review-8e3414b4-f50d-46f9-9a7c-edae64a077d1-istxla_d/review-agent.txt",
+      "--output-format",
+      "stream-json",
+      "--json-schema",
+      "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+      "--sandbox",
+      "read-only",
+      "--no-memory",
+      "--no-subagents",
+      "--no-web",
+      "--max-turns",
+      "4"
+    ],
+    "cwd": "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/nonzero/results/grok-review-8e3414b4-f50d-46f9-9a7c-edae64a077d1-istxla_d",
+    "environment_keys": [
+      "GROK_DISABLE_CLAUDE_COMPAT",
+      "GROK_DISABLE_CURSOR_COMPAT",
+      "GROK_DISABLE_EXTERNAL_COMPAT",
+      "GROK_DISABLE_HOOKS",
+      "GROK_DISABLE_MCP",
+      "GROK_DISABLE_PLUGINS",
+      "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+      "GROK_DISABLE_USER_MEMORY",
+      "GROK_HOME",
+      "HOME",
+      "LANG",
+      "LC_ALL",
+      "PATH",
+      "XDG_CACHE_HOME",
+      "XDG_CONFIG_HOME",
+      "XDG_DATA_HOME"
+    ]
+  },
+  "mode": "explicit",
+  "run_id": "8e3414b4-f50d-46f9-9a7c-edae64a077d1",
+  "schema_version": 1,
+  "session_id": null,
+  "status": "nonzero-exit",
+  "stderr": "synthetic stderr\n",
+  "stdout": "{\"type\": \"error\", \"message\": \"synthetic failure\"}\n",
+  "stop_reason": null,
+  "timed_out": false,
+  "usage": null
+}

@@ -1,0 +1,1 @@
+Review this literal text only: $(touch output/rehearsal/SHELL_INJECTION_MARKER); `id`; & whoami

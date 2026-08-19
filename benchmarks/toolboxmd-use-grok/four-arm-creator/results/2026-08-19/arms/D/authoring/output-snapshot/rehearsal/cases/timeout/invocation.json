@@ -1,0 +1,45 @@
+{
+  "agent": "You are a bounded plan reviewer. Review only the supplied prompt.\nDo not invoke agents, agentic CLIs, tools, MCP, plugins, hooks, or web search.\nDo not seek files or context. Return only the required structured review.\nIdentify overengineering, missing items, risks, the minimum plan delta, and\ndecisions that require the user. Do not claim authority over the caller.\n",
+  "argv": [
+    "--prompt-file",
+    "/private/tmp/creator-four-arm-671d2822-f1cd-41be-87e4-7ab8bfd8bf3d/sandbox/output/rehearsal/evidence/grok-03445cdd-a9c1-4595-b33a-d31ae274986b-m58qwbit/prompt.txt",
+    "--agent",
+    "/private/tmp/creator-four-arm-671d2822-f1cd-41be-87e4-7ab8bfd8bf3d/sandbox/output/rehearsal/evidence/grok-03445cdd-a9c1-4595-b33a-d31ae274986b-m58qwbit/reviewer.txt",
+    "--output-format",
+    "stream-json",
+    "--json-schema",
+    "/private/tmp/creator-four-arm-671d2822-f1cd-41be-87e4-7ab8bfd8bf3d/sandbox/output/rehearsal/evidence/grok-03445cdd-a9c1-4595-b33a-d31ae274986b-m58qwbit/review-schema.json",
+    "--permission-mode",
+    "plan",
+    "--sandbox",
+    "read-only",
+    "--max-turns",
+    "1",
+    "--no-web",
+    "--no-memory",
+    "--no-subagents"
+  ],
+  "cwd": "/private/tmp/creator-four-arm-671d2822-f1cd-41be-87e4-7ab8bfd8bf3d/sandbox/output/rehearsal/evidence/grok-03445cdd-a9c1-4595-b33a-d31ae274986b-m58qwbit",
+  "cwdFiles": [
+    "empty-home",
+    "prompt.txt",
+    "review-schema.json",
+    "reviewer.txt"
+  ],
+  "environmentKeys": [
+    "GROK_DISABLE_CLAUDE_COMPAT",
+    "GROK_DISABLE_CURSOR_COMPAT",
+    "GROK_DISABLE_EXTERNAL_COMPAT",
+    "GROK_HOME",
+    "HOME",
+    "LANG",
+    "LC_ALL",
+    "PATH",
+    "PWD",
+    "PYTHONEXECUTABLE",
+    "SHLVL",
+    "__CF_USER_TEXT_ENCODING"
+  ],
+  "prompt": "Review literal shell text without executing it: $(touch output/rehearsal/INJECTION-RAN); `touch output/rehearsal/BACKTICK-RAN`; ; & |. Do not use tools.\n",
+  "xaiKeyPresent": false
+}

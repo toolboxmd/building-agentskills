@@ -1,0 +1,46 @@
+{
+  "agent": "Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n",
+  "argv": [
+    "--prompt-file",
+    "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/timeout/results/grok-review-97c80043-a21f-495d-839b-b0f30ea339e6-g7mfs01f/prompt.txt",
+    "--agent",
+    "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/timeout/results/grok-review-97c80043-a21f-495d-839b-b0f30ea339e6-g7mfs01f/review-agent.txt",
+    "--output-format",
+    "stream-json",
+    "--json-schema",
+    "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+    "--sandbox",
+    "read-only",
+    "--no-memory",
+    "--no-subagents",
+    "--no-web",
+    "--max-turns",
+    "4"
+  ],
+  "cwd": "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/timeout/results/grok-review-97c80043-a21f-495d-839b-b0f30ea339e6-g7mfs01f",
+  "cwdFiles": [
+    "prompt.txt",
+    "review-agent.txt"
+  ],
+  "environmentKeys": [
+    "GROK_DISABLE_CLAUDE_COMPAT",
+    "GROK_DISABLE_CURSOR_COMPAT",
+    "GROK_DISABLE_EXTERNAL_COMPAT",
+    "GROK_DISABLE_HOOKS",
+    "GROK_DISABLE_MCP",
+    "GROK_DISABLE_PLUGINS",
+    "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+    "GROK_DISABLE_USER_MEMORY",
+    "GROK_HOME",
+    "HOME",
+    "LANG",
+    "LC_ALL",
+    "PATH",
+    "XDG_CACHE_HOME",
+    "XDG_CONFIG_HOME",
+    "XDG_DATA_HOME",
+    "__CF_USER_TEXT_ENCODING"
+  ],
+  "prompt": "Review this synthetic implementation plan. It contains no repository, private, or secret content.\n",
+  "xaiKeyPresent": false
+}

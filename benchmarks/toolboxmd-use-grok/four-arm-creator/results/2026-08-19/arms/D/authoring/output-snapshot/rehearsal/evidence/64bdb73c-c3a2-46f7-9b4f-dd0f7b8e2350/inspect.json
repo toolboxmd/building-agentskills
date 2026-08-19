@@ -1,0 +1,120 @@
+{
+  "agents": [
+    {
+      "name": "general-purpose",
+      "source": {
+        "type": "builtin"
+      }
+    },
+    {
+      "name": "explore",
+      "source": {
+        "type": "builtin"
+      }
+    },
+    {
+      "name": "plan",
+      "source": {
+        "type": "builtin"
+      }
+    }
+  ],
+  "configSources": {
+    "layers": []
+  },
+  "configWarnings": null,
+  "cwd": "/private/tmp/creator-four-arm-671d2822-f1cd-41be-87e4-7ab8bfd8bf3d/sandbox/output/rehearsal/evidence/grok-64bdb73c-c3a2-46f7-9b4f-dd0f7b8e2350-k_tm7206",
+  "externalCompat": {
+    "cells": [
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "skills",
+        "vendor": "cursor"
+      },
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "rules",
+        "vendor": "cursor"
+      },
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "agents",
+        "vendor": "cursor"
+      },
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "mcps",
+        "vendor": "cursor"
+      },
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "hooks",
+        "vendor": "cursor"
+      },
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "sessions",
+        "vendor": "cursor"
+      },
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "skills",
+        "vendor": "claude"
+      },
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "rules",
+        "vendor": "claude"
+      },
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "agents",
+        "vendor": "claude"
+      },
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "mcps",
+        "vendor": "claude"
+      },
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "hooks",
+        "vendor": "claude"
+      },
+      {
+        "enabled": false,
+        "source": "env",
+        "surface": "sessions",
+        "vendor": "claude"
+      }
+    ],
+    "remoteSettingsLoaded": false
+  },
+  "grokVersion": "1.0.3",
+  "hooks": [],
+  "marketplaces": [],
+  "mcpServers": [
+    {
+      "disabled": false,
+      "name": "ambient"
+    }
+  ],
+  "permissions": {
+    "managedSettingsActive": false
+  },
+  "plugins": [],
+  "projectInstructions": [],
+  "projectRoot": null,
+  "skills": []
+}

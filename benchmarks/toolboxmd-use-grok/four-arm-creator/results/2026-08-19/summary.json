@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "runDate": "2026-08-19",
+  "preregistrationCommit": "12b1540cd6d37e68f2972d03329bc9d2e9abd497",
+  "creatorVNextCommit": "20fc268615079ade496e31cc5e55f51bcc5ad3b0",
+  "verdict": {
+    "code": "INELIGIBLE_TOKEN_CAP",
+    "rankingAllowed": false,
+    "winner": null,
+    "recommendation": null,
+    "reason": "Arms C and D exceeded the preregistered 750000 input-token cap, which makes the entire four-arm comparison ineligible for ranking."
+  },
+  "abort": {
+    "triggered": true,
+    "stage": "post-authoring token-cap gate",
+    "triggerArms": [
+      "C",
+      "D"
+    ],
+    "judgeRunsStarted": 0,
+    "semanticScoringStarted": false,
+    "pairedRepeatStarted": false,
+    "heldOutStarted": false,
+    "capChangedAfterOutputs": false,
+    "retryStarted": false
+  },
+  "conditions": {
+    "model": "gpt-5.6-sol",
+    "reasoningEffort": "medium",
+    "codexCliVersion": "0.147.0",
+    "pythonVersion": "3.14.6",
+    "wallTimeLimitSeconds": 600,
+    "inputTokenLimit": 750000,
+    "outputTokenLimit": 30000,
+    "allControlPreflightsPassed": true,
+    "allModelPreflightsPassed": true,
+    "allAuthoringProcessesExitedZero": true,
+    "realGrokCalls": 0,
+    "automaticGrokReviewEnabled": false
+  },
+  "arms": {
+    "A": {
+      "treatment": "legacy ToolboxMD Creator",
+      "treatmentAggregateSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",
+      "authoring": {
+        "isolationEligible": true,
+        "tokenCapPassed": true,
+        "exitStatus": 0,
+        "durationSeconds": 323.63,
+        "inputTokens": 747055,
+        "cachedInputTokens": 662016,
+        "outputTokens": 14959,
+        "reasoningOutputTokens": 4090
+      },
+      "candidate": {
+        "aggregateSha256": "8e7efbbc38104231acc92f6b6324f3dba8271b9a848cb1fd3bed3a61e33cb0eb",
+        "fileCount": 2,
+        "packageBytes": 15238,
+        "skillMdBytes": 3536,
+        "adapterBytes": 11702
+      },
+      "deterministicDiagnostic": {
+        "pointsAwarded": 35,
+        "pointsAvailable": 70,
+        "recommendableArtifact": false,
+        "criticalFailures": [
+          "direct-envelope-streaming-success",
+          "safe-argv-prompt-and-environment",
+          "concrete-failure-classification",
+          "credential-shaped-input-rejected-before-call"
+        ]
+      },
+      "customToolboxmdValidatorDiagnostic": {
+        "status": "fail",
+        "exitStatus": 1,
+        "errorCount": 5,
+        "issueCodes": [
+          "DESCRIPTION_REQUIRED",
+          "FRONTMATTER_STRING",
+          "FRONTMATTER_STRING",
+          "NAME_REQUIRED",
+          "UNFENCED_SCRIPT_EXAMPLE"
+        ]
+      }
+    },
+    "B": {
+      "treatment": "early Creator vNext at bfbd679fceec4bf2d403b8aca3a4b09d9396340e",
+      "treatmentAggregateSha256": "e76c24dda94e6228cdad895b3fc0abe89c22558bbdce7c11c9d062f66cd5212f",
+      "authoring": {
+        "isolationEligible": true,
+        "tokenCapPassed": true,
+        "exitStatus": 0,
+        "durationSeconds": 366.076,
+        "inputTokens": 598371,
+        "cachedInputTokens": 542976,
+        "outputTokens": 16941,
+        "reasoningOutputTokens": 4965
+      },
+      "candidate": {
+        "aggregateSha256": "64f349941bc999429c837ca77d0677a86afd9863a441bd3626d96f8f61e94dca",
+        "fileCount": 2,
+        "packageBytes": 20691,
+        "skillMdBytes": 4088,
+        "adapterBytes": 16603
+      },
+      "deterministicDiagnostic": {
+        "pointsAwarded": 35,
+        "pointsAvailable": 70,
+        "recommendableArtifact": false,
+        "criticalFailures": [
+          "direct-envelope-streaming-success",
+          "safe-argv-prompt-and-environment",
+          "concrete-failure-classification",
+          "credential-shaped-input-rejected-before-call"
+        ]
+      },
+      "customToolboxmdValidatorDiagnostic": {
+        "status": "fail",
+        "exitStatus": 1,
+        "errorCount": 2,
+        "issueCodes": [
+          "FRONTMATTER_STRING",
+          "NAME_REQUIRED"
+        ]
+      }
+    },
+    "C": {
+      "treatment": "final Creator vNext at 20fc268615079ade496e31cc5e55f51bcc5ad3b0",
+      "treatmentAggregateSha256": "e667aa1671dafc07df09289f8f1ed23bd36268c6a1a44b8868cac83eb429e22f",
+      "authoring": {
+        "isolationEligible": false,
+        "tokenCapPassed": false,
+        "exitStatus": 0,
+        "durationSeconds": 380.062,
+        "inputTokens": 831996,
+        "cachedInputTokens": 775680,
+        "outputTokens": 17888,
+        "reasoningOutputTokens": 5586
+      },
+      "candidate": {
+        "aggregateSha256": "fab7091a8ba9293eb856f03a343743f39f2f85e2f5bc5e9d277bf7d7cd28872a",
+        "fileCount": 2,
+        "packageBytes": 20031,
+        "skillMdBytes": 4882,
+        "adapterBytes": 15149
+      },
+      "deterministicDiagnostic": {
+        "pointsAwarded": 43,
+        "pointsAvailable": 70,
+        "recommendableArtifact": false,
+        "criticalFailures": [
+          "safe-argv-prompt-and-environment",
+          "concrete-failure-classification",
+          "credential-shaped-input-rejected-before-call"
+        ]
+      },
+      "customToolboxmdValidatorDiagnostic": {
+        "status": "pass",
+        "exitStatus": 0,
+        "errorCount": 0,
+        "issueCodes": []
+      }
+    },
+    "D": {
+      "treatment": "frozen current built-in Codex skill-creator",
+      "treatmentAggregateSha256": "6fe5b307747bb389d3e5171dccc418a6de523caaa71f09ee23f1f4b4914e31ca",
+      "authoring": {
+        "isolationEligible": false,
+        "tokenCapPassed": false,
+        "exitStatus": 0,
+        "durationSeconds": 429.756,
+        "inputTokens": 1151683,
+        "cachedInputTokens": 1056000,
+        "outputTokens": 19396,
+        "reasoningOutputTokens": 5552
+      },
+      "candidate": {
+        "aggregateSha256": "de1bc51f490fc0ef7cceec5ff5fa32389688d96622c43ca7c7a844cbbfe50135",
+        "fileCount": 2,
+        "packageBytes": 16354,
+        "skillMdBytes": 3477,
+        "adapterBytes": 12877
+      },
+      "deterministicDiagnostic": {
+        "pointsAwarded": 43,
+        "pointsAvailable": 70,
+        "recommendableArtifact": false,
+        "criticalFailures": [
+          "safe-argv-prompt-and-environment",
+          "concrete-failure-classification",
+          "credential-shaped-input-rejected-before-call"
+        ]
+      },
+      "customToolboxmdValidatorDiagnostic": {
+        "status": "fail",
+        "exitStatus": 1,
+        "errorCount": 6,
+        "issueCodes": [
+          "DESCRIPTION_REQUIRED",
+          "FRONTMATTER_STRING",
+          "FRONTMATTER_STRING",
+          "NAME_REQUIRED",
+          "UNFENCED_SCRIPT_EXAMPLE",
+          "UNFENCED_SCRIPT_EXAMPLE"
+        ]
+      }
+    }
+  },
+  "sharedDeterministicObservations": {
+    "allArmsPassed": [
+      "exact-two-file-shape",
+      "executable-stdlib-python-without-shell-eval",
+      "frozen-product-budgets",
+      "inspect-allowlist-fails-closed",
+      "portable-frontmatter-and-explicit-activation",
+      "timeout-kills-complete-process-tree",
+      "automatic-mode-disabled-and-fail-closed"
+    ],
+    "allArmsFailed": [
+      "safe-argv-prompt-and-environment",
+      "concrete-failure-classification",
+      "credential-shaped-input-rejected-before-call",
+      "numeric-bounds-fail-before-call"
+    ],
+    "notes": [
+      "A and B returned success payloads for direct, envelope, and streaming fixtures but did not retain the required review.json object.",
+      "C and D retained the required review object for all three success fixtures.",
+      "All four invoked the fake CLI for credential-shaped prompt input instead of rejecting it before the call.",
+      "All four classified the result-error fixture as nonzero-exit instead of incomplete-stop-reason.",
+      "All four accepted timeout 601 and max-turns 9 instead of rejecting the frozen upper-bound violations before the call."
+    ]
+  },
+  "unrankedReferences": {
+    "historicalRaw": {
+      "aggregateSha256": "a886822d8416f79dfc345928a0b39a22aa95ac5357dc21943b970ea2eaa12521",
+      "deterministicPointsAwarded": 35,
+      "deterministicPointsAvailable": 70,
+      "recommendableArtifact": false,
+      "criticalFailures": [
+        "safe-argv-prompt-and-environment",
+        "inspect-allowlist-fails-closed",
+        "concrete-failure-classification",
+        "automatic-mode-disabled-and-fail-closed"
+      ]
+    },
+    "acceptanceRefined": {
+      "aggregateSha256": "cb2e0c3e607d57ae02ab613858a9a6d41ab8371a1067b810caccd75d32be017a",
+      "deterministicPointsAwarded": 70,
+      "deterministicPointsAvailable": 70,
+      "recommendableArtifact": true,
+      "criticalFailures": []
+    }
+  },
+  "customToolboxmdValidator": {
+    "scored": false,
+    "validatorSha256": "f49186278510607eeb5dff2571dcb0ae70ed8cf90465e7f7b32dc92724af2713",
+    "canonicalSubset": "toolboxmd-portable-core-v2",
+    "creationMode": true,
+    "warningsAsErrors": true,
+    "limits": {
+      "descriptionCharacters": 400,
+      "skillMdLines": 150,
+      "skillMdBytes": 10500,
+      "files": 2,
+      "packageBytes": 45000,
+      "referenceFiles": 0,
+      "evalFiles": 0,
+      "scriptFiles": 1
+    },
+    "scriptSyntaxAttestation": "Exact SHA-256 of scripts/consult-grok supplied separately for each candidate."
+  },
+  "claimBoundary": {
+    "knownBriefDiagnosticOnly": true,
+    "generalCreatorSuperiorityAllowed": false,
+    "productionPromotionAllowed": false,
+    "defaultCreatorSelectionAllowed": false,
+    "semanticScoresAvailable": false,
+    "heldOutEvidenceAvailable": false,
+    "realGrokBehaviorTested": false
+  },
+  "requiredUserDecision": {
+    "decision": "Accept this as a completed ineligible diagnostic, or authorize a new preregistered four-arm run with a higher common token cap and four fresh outputs.",
+    "reuseCurrentOutputsForRankingAllowed": false,
+    "automaticNextAction": null
+  }
+}

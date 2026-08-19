@@ -1,0 +1,142 @@
+{
+  "actualCommandCwd": "/private/tmp/creator-four-arm-ded54382-bf9f-4104-8d39-a51a18e59aa5/sandbox",
+  "arm": "B",
+  "authoring": {
+    "durationSeconds": 366.076,
+    "exitStatus": 0,
+    "modelPreflightPassed": true,
+    "startedEpoch": 1787159236.641778,
+    "timedOut": false,
+    "tokenCapPassed": true,
+    "usage": {
+      "cached_input_tokens": 542976,
+      "input_tokens": 598371,
+      "output_tokens": 16941,
+      "reasoning_output_tokens": 4965
+    }
+  },
+  "codexVersion": "codex-cli 0.147.0",
+  "controlPreflight": {
+    "durationSeconds": 0.232,
+    "exitStatus": 0,
+    "passed": true,
+    "timedOut": false
+  },
+  "debugPromptInput": {
+    "durationSeconds": 0.77,
+    "exitStatus": 0,
+    "timedOut": false
+  },
+  "filesystemProfile": {
+    "default": "deny",
+    "homeDenied": "/private/tmp/creator-four-arm-ded54382-bf9f-4104-8d39-a51a18e59aa5/sandbox/home",
+    "minimalRuntimeRead": true,
+    "networkEnabled": false,
+    "outputWrite": "/private/tmp/creator-four-arm-ded54382-bf9f-4104-8d39-a51a18e59aa5/sandbox/output",
+    "pythonRuntimeRead": "/opt/homebrew/Cellar/python@3.14/3.14.6",
+    "sandboxRootRead": "/private/tmp/creator-four-arm-ded54382-bf9f-4104-8d39-a51a18e59aa5/sandbox",
+    "treatmentRead": "/private/tmp/creator-four-arm-ded54382-bf9f-4104-8d39-a51a18e59aa5/sandbox/home/.codex/skills/creator-under-test"
+  },
+  "freshEphemeralContext": true,
+  "ignoreRules": true,
+  "ignoreUserConfig": true,
+  "inputs": {
+    "baseBrief": {
+      "bytes": 5246,
+      "sha256": "8ae35d1e9a95e873e23bf33f2343734d64a873fc3642aef8a3246a0889519efe"
+    },
+    "contract": {
+      "bytes": 2051,
+      "sha256": "d50124d66f29a9f4b6b0ef29ffba1f7d45890f8544cf540d43ea2228cbbf1742"
+    },
+    "copiedTreatment": {
+      "aggregateSha256": "e76c24dda94e6228cdad895b3fc0abe89c22558bbdce7c11c9d062f66cd5212f",
+      "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+      "bytes": 23496,
+      "fileCount": 3,
+      "files": [
+        {
+          "bytes": 6353,
+          "mode": "0o644",
+          "path": "SKILL.md",
+          "sha256": "a7881821051f5361d677506f884d3201144b7b316d5eaed757910d7dc63f2d2b"
+        },
+        {
+          "bytes": 216,
+          "mode": "0o644",
+          "path": "agents/openai.yaml",
+          "sha256": "681fec1eaaf543fa748fa9fb0b387c59e5a2d23b8e428c7575d3b9a3e0bece7d"
+        },
+        {
+          "bytes": 16927,
+          "mode": "0o644",
+          "path": "scripts/validate_skill.py",
+          "sha256": "cf265b2e02859524812ec01ba0fcc194c83bf02c22fb512c11301b486d1b16ab"
+        }
+      ],
+      "symlinks": []
+    },
+    "prompt": {
+      "bytes": 2159,
+      "sha256": "56f34312178db36f6a43a59b569b9bc37b56f052ab2d6a91f5d639f9d39fea31"
+    },
+    "treatment": {
+      "aggregateSha256": "e76c24dda94e6228cdad895b3fc0abe89c22558bbdce7c11c9d062f66cd5212f",
+      "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+      "bytes": 23496,
+      "fileCount": 3,
+      "files": [
+        {
+          "bytes": 6353,
+          "mode": "0o644",
+          "path": "SKILL.md",
+          "sha256": "a7881821051f5361d677506f884d3201144b7b316d5eaed757910d7dc63f2d2b"
+        },
+        {
+          "bytes": 216,
+          "mode": "0o644",
+          "path": "agents/openai.yaml",
+          "sha256": "681fec1eaaf543fa748fa9fb0b387c59e5a2d23b8e428c7575d3b9a3e0bece7d"
+        },
+        {
+          "bytes": 16927,
+          "mode": "0o644",
+          "path": "scripts/validate_skill.py",
+          "sha256": "cf265b2e02859524812ec01ba0fcc194c83bf02c22fb512c11301b486d1b16ab"
+        }
+      ],
+      "symlinks": []
+    }
+  },
+  "isolationEligible": true,
+  "limits": {
+    "inputTokens": 750000,
+    "outputTokens": 30000,
+    "wallTimeSeconds": 600
+  },
+  "model": "gpt-5.6-sol",
+  "modelReasoningEffort": "medium",
+  "opaqueRunId": "ded54382-bf9f-4104-8d39-a51a18e59aa5",
+  "preflightEligible": true,
+  "preflightOnly": false,
+  "processEnvironmentKeys": [
+    "CODEX_CI",
+    "CODEX_HOME",
+    "HOME",
+    "LANG",
+    "LC_ALL",
+    "NO_COLOR",
+    "PATH",
+    "TERM",
+    "TMPDIR"
+  ],
+  "projectDocMaxBytes": 0,
+  "pythonRuntime": {
+    "executable": "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+    "root": "/opt/homebrew/Cellar/python@3.14/3.14.6",
+    "version": "Python 3.14.6"
+  },
+  "realGrokCalls": 0,
+  "schemaVersion": 1,
+  "shellEnvironmentInherit": "none"
+}

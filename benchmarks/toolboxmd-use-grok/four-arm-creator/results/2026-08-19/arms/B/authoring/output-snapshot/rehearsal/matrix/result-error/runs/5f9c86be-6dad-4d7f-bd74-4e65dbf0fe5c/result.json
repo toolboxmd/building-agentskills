@@ -1,0 +1,9 @@
+{
+  "classification": "nonzero-exit",
+  "exit_code": 0,
+  "finished_at_unix": 1787159541.913734,
+  "schemaVersion": 1,
+  "session_id": null,
+  "stop_reason": null,
+  "usage": null
+}

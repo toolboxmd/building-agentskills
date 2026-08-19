@@ -1,0 +1,9 @@
+{
+  "classification": "isolation-failure",
+  "exit_code": 0,
+  "finished_at_unix": 1787159541.404195,
+  "schemaVersion": 1,
+  "session_id": null,
+  "stop_reason": null,
+  "usage": null
+}

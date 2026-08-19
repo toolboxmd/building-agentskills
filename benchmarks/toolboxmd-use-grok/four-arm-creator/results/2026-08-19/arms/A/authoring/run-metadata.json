@@ -1,0 +1,178 @@
+{
+  "actualCommandCwd": "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox",
+  "arm": "A",
+  "authoring": {
+    "durationSeconds": 323.63,
+    "exitStatus": 0,
+    "modelPreflightPassed": true,
+    "startedEpoch": 1787159236.6305559,
+    "timedOut": false,
+    "tokenCapPassed": true,
+    "usage": {
+      "cached_input_tokens": 662016,
+      "input_tokens": 747055,
+      "output_tokens": 14959,
+      "reasoning_output_tokens": 4090
+    }
+  },
+  "codexVersion": "codex-cli 0.147.0",
+  "controlPreflight": {
+    "durationSeconds": 0.276,
+    "exitStatus": 0,
+    "passed": true,
+    "timedOut": false
+  },
+  "debugPromptInput": {
+    "durationSeconds": 0.715,
+    "exitStatus": 0,
+    "timedOut": false
+  },
+  "filesystemProfile": {
+    "default": "deny",
+    "homeDenied": "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/home",
+    "minimalRuntimeRead": true,
+    "networkEnabled": false,
+    "outputWrite": "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output",
+    "pythonRuntimeRead": "/opt/homebrew/Cellar/python@3.14/3.14.6",
+    "sandboxRootRead": "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox",
+    "treatmentRead": "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/home/.codex/skills/creator-under-test"
+  },
+  "freshEphemeralContext": true,
+  "ignoreRules": true,
+  "ignoreUserConfig": true,
+  "inputs": {
+    "baseBrief": {
+      "bytes": 5246,
+      "sha256": "8ae35d1e9a95e873e23bf33f2343734d64a873fc3642aef8a3246a0889519efe"
+    },
+    "contract": {
+      "bytes": 2051,
+      "sha256": "d50124d66f29a9f4b6b0ef29ffba1f7d45890f8544cf540d43ea2228cbbf1742"
+    },
+    "copiedTreatment": {
+      "aggregateSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",
+      "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+      "bytes": 34440,
+      "fileCount": 6,
+      "files": [
+        {
+          "bytes": 10056,
+          "mode": "0o644",
+          "path": "SKILL.md",
+          "sha256": "54411fef8b6477ffdc4ae6af8572f709cf881fdb8f84b6834885ec13afb8af59"
+        },
+        {
+          "bytes": 235,
+          "mode": "0o644",
+          "path": "agents/openai.yaml",
+          "sha256": "92a34e6af17f93aa0dd034f4cca2d559e8601fbb88eb40c0bc3a116c66ff12b7"
+        },
+        {
+          "bytes": 1407,
+          "mode": "0o644",
+          "path": "evals/downstream-smoke.md",
+          "sha256": "1050ee83588a8935f0e1c56eb891269d01e2d55ddf2dac0948d1fe2ab902b368"
+        },
+        {
+          "bytes": 2816,
+          "mode": "0o644",
+          "path": "evals/evals.json",
+          "sha256": "4f3560f5b21d6ae360040b062345b0d52d5c30495834df2bc0d5e9ab34ab8b9a"
+        },
+        {
+          "bytes": 8962,
+          "mode": "0o644",
+          "path": "references/authoring-reference.md",
+          "sha256": "1be30adbf23d1716e1ba4bb4df8b5e5d3dd47e3061ab088838461e6e04153a72"
+        },
+        {
+          "bytes": 10964,
+          "mode": "0o644",
+          "path": "scripts/validate_skill.py",
+          "sha256": "470a9d6cfd7ea582e7b3c8f8609071b39c5e8c872237952635cb87cb81212beb"
+        }
+      ],
+      "symlinks": []
+    },
+    "prompt": {
+      "bytes": 2159,
+      "sha256": "56f34312178db36f6a43a59b569b9bc37b56f052ab2d6a91f5d639f9d39fea31"
+    },
+    "treatment": {
+      "aggregateSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",
+      "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+      "bytes": 34440,
+      "fileCount": 6,
+      "files": [
+        {
+          "bytes": 10056,
+          "mode": "0o644",
+          "path": "SKILL.md",
+          "sha256": "54411fef8b6477ffdc4ae6af8572f709cf881fdb8f84b6834885ec13afb8af59"
+        },
+        {
+          "bytes": 235,
+          "mode": "0o644",
+          "path": "agents/openai.yaml",
+          "sha256": "92a34e6af17f93aa0dd034f4cca2d559e8601fbb88eb40c0bc3a116c66ff12b7"
+        },
+        {
+          "bytes": 1407,
+          "mode": "0o644",
+          "path": "evals/downstream-smoke.md",
+          "sha256": "1050ee83588a8935f0e1c56eb891269d01e2d55ddf2dac0948d1fe2ab902b368"
+        },
+        {
+          "bytes": 2816,
+          "mode": "0o644",
+          "path": "evals/evals.json",
+          "sha256": "4f3560f5b21d6ae360040b062345b0d52d5c30495834df2bc0d5e9ab34ab8b9a"
+        },
+        {
+          "bytes": 8962,
+          "mode": "0o644",
+          "path": "references/authoring-reference.md",
+          "sha256": "1be30adbf23d1716e1ba4bb4df8b5e5d3dd47e3061ab088838461e6e04153a72"
+        },
+        {
+          "bytes": 10964,
+          "mode": "0o644",
+          "path": "scripts/validate_skill.py",
+          "sha256": "470a9d6cfd7ea582e7b3c8f8609071b39c5e8c872237952635cb87cb81212beb"
+        }
+      ],
+      "symlinks": []
+    }
+  },
+  "isolationEligible": true,
+  "limits": {
+    "inputTokens": 750000,
+    "outputTokens": 30000,
+    "wallTimeSeconds": 600
+  },
+  "model": "gpt-5.6-sol",
+  "modelReasoningEffort": "medium",
+  "opaqueRunId": "c650722b-85e8-4ef2-aa4a-5e21e98bcdbe",
+  "preflightEligible": true,
+  "preflightOnly": false,
+  "processEnvironmentKeys": [
+    "CODEX_CI",
+    "CODEX_HOME",
+    "HOME",
+    "LANG",
+    "LC_ALL",
+    "NO_COLOR",
+    "PATH",
+    "TERM",
+    "TMPDIR"
+  ],
+  "projectDocMaxBytes": 0,
+  "pythonRuntime": {
+    "executable": "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+    "root": "/opt/homebrew/Cellar/python@3.14/3.14.6",
+    "version": "Python 3.14.6"
+  },
+  "realGrokCalls": 0,
+  "schemaVersion": 1,
+  "shellEnvironmentInherit": "none"
+}

@@ -1,0 +1,241 @@
+#!/usr/bin/env python3
+"""Run one fail-closed, locally isolated Grok review."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import signal
+import subprocess
+import sys
+import tempfile
+import time
+import uuid
+
+FAILURES = {
+    "missing-cli", "isolation-failure", "nonzero-exit", "timeout",
+    "invalid-json", "incomplete-stop-reason", "max-turns",
+}
+VERDICTS = {"PROCEED", "PROCEED WITH CHANGES", "REPLAN", "NEEDS HUMAN DECISION"}
+SECTIONS = ("overengineering", "missing", "risks", "minimum_plan_delta", "user_decisions")
+ALLOWED_AGENTS = {"general-purpose", "explore", "plan"}
+COMPAT_SURFACES = {"skills", "rules", "agents", "mcps", "hooks", "sessions"}
+SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object", "additionalProperties": False,
+    "required": ["verdict", *SECTIONS],
+    "properties": {
+        "verdict": {"enum": sorted(VERDICTS)},
+        **{name: {"type": "array", "items": {"type": "string"}} for name in SECTIONS},
+    },
+}
+
+
+def emit(status: str, **fields: object) -> int:
+    print(json.dumps({"status": status, **fields}, sort_keys=True, separators=(",", ":")))
+    return 0 if status == "ok" else 1
+
+
+def redact(text: str, secrets: list[str]) -> str:
+    for secret in secrets:
+        if secret:
+            text = text.replace(secret, "[REDACTED]")
+    text = re.sub(r"(?i)(api[_-]?key|token|password|secret)(\s*[:=]\s*)[^\s,\"}]+", r"\1\2[REDACTED]", text)
+    return text
+
+
+def run(argv: list[str], env: dict[str, str], cwd: Path, timeout: float) -> tuple[int | None, str, str, bool]:
+    process = subprocess.Popen(argv, cwd=cwd, env=env, stdin=subprocess.DEVNULL,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                               start_new_session=True)
+    try:
+        stdout, stderr = process.communicate(timeout=timeout)
+        return process.returncode, stdout, stderr, False
+    except subprocess.TimeoutExpired:
+        os.killpg(process.pid, signal.SIGTERM)
+        try:
+            stdout, stderr = process.communicate(timeout=1.0)
+        except subprocess.TimeoutExpired:
+            os.killpg(process.pid, signal.SIGKILL)
+            stdout, stderr = process.communicate()
+        return None, stdout, stderr, True
+
+
+def isolated_environment(grok_home: Path, stage: Path) -> dict[str, str]:
+    env = {
+        "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+        "HOME": str(grok_home),
+        "GROK_HOME": str(grok_home),
+        "XDG_CONFIG_HOME": str(stage / "xdg-config"),
+        "XDG_CACHE_HOME": str(stage / "xdg-cache"),
+        "XDG_DATA_HOME": str(stage / "xdg-data"),
+        "GROK_DISABLE_CURSOR_COMPAT": "1",
+        "GROK_DISABLE_CLAUDE_COMPAT": "1",
+        "GROK_DISABLE_EXTERNAL_COMPAT": "1",
+        "GROK_DISABLE_PROJECT_INSTRUCTIONS": "1",
+        "GROK_DISABLE_USER_MEMORY": "1",
+        "GROK_DISABLE_PLUGINS": "1",
+        "GROK_DISABLE_HOOKS": "1",
+        "GROK_DISABLE_MCP": "1",
+    }
+    if "XAI_API_KEY" in os.environ:
+        env["XAI_API_KEY"] = os.environ["XAI_API_KEY"]
+    for name in ("LANG", "LC_ALL"):
+        if name in os.environ:
+            env[name] = os.environ[name]
+    return env
+
+
+def inspect_isolated(value: object) -> bool:
+    if not isinstance(value, dict):
+        return False
+    required = {"projectRoot", "projectInstructions", "skills", "agents", "mcpServers",
+                "plugins", "hooks", "marketplaces", "externalCompat", "configSources",
+                "configWarnings", "permissions"}
+    if not required <= value.keys():
+        return False
+    if value["projectRoot"] is not None or value["configWarnings"] is not None:
+        return False
+    for name in ("projectInstructions", "skills", "mcpServers", "plugins", "hooks", "marketplaces"):
+        if value[name] != []:
+            return False
+    agents = value["agents"]
+    if not isinstance(agents, list) or any(not isinstance(a, dict) or a.get("name") not in ALLOWED_AGENTS or a.get("source", {}).get("type") != "builtin" for a in agents):
+        return False
+    external = value["externalCompat"]
+    cells = external.get("cells") if isinstance(external, dict) else None
+    expected = {(v, s) for v in ("cursor", "claude") for s in COMPAT_SURFACES}
+    actual = {(c.get("vendor"), c.get("surface")) for c in cells} if isinstance(cells, list) and all(isinstance(c, dict) for c in cells) else set()
+    if external.get("remoteSettingsLoaded") is not False or actual != expected or any(c.get("enabled") is not False for c in cells):
+        return False
+    sources, permissions = value["configSources"], value["permissions"]
+    return (isinstance(sources, dict) and sources.get("layers") == [] and
+            isinstance(permissions, dict) and permissions.get("managedSettingsActive") is False)
+
+
+def parse_review(stdout: str) -> tuple[str, dict[str, object] | None, dict[str, object]]:
+    try:
+        values = [json.loads(line) for line in stdout.splitlines() if line.strip()]
+    except json.JSONDecodeError:
+        return "invalid-json", None, {}
+    if not values:
+        return "invalid-json", None, {}
+    runtime: dict[str, object] = {"session_id": None, "usage": None, "stop_reason": None}
+    tool_called = False
+    for value in values:
+        if not isinstance(value, dict):
+            return "invalid-json", None, runtime
+        if value.get("type") == "system" and value.get("subtype") == "init":
+            runtime["session_id"] = value.get("session_id")
+            if value.get("skills") != [] or value.get("mcp_servers") != []:
+                return "isolation-failure", None, runtime
+        content = value.get("message", {}).get("content", []) if isinstance(value.get("message"), dict) else []
+        tool_called |= isinstance(content, list) and any(isinstance(c, dict) and c.get("type") == "tool_use" for c in content)
+    if tool_called:
+        return "isolation-failure", None, runtime
+    last = values[-1]
+    if last.get("subtype") == "error_max_turns":
+        return "max-turns", None, runtime
+    if last.get("type") == "result":
+        runtime.update(session_id=last.get("session_id", runtime["session_id"]), usage=last.get("usage"), stop_reason=last.get("stop_reason"))
+        if last.get("is_error") is True:
+            return "nonzero-exit", None, runtime
+        if last.get("stop_reason") != "end_turn":
+            return "incomplete-stop-reason", None, runtime
+        review = last.get("structured_output")
+    elif "structured_output" in last:
+        runtime["stop_reason"] = last.get("stopReason")
+        if last.get("stopReason") != "end_turn":
+            return "incomplete-stop-reason", None, runtime
+        review = last.get("structured_output")
+    elif len(values) == 1:
+        review = last
+    else:
+        return "invalid-json", None, runtime
+    if not isinstance(review, dict) or set(review) != {"verdict", *SECTIONS} or review.get("verdict") not in VERDICTS:
+        return "invalid-json", None, runtime
+    if any(not isinstance(review[name], list) or any(not isinstance(item, str) for item in review[name]) for name in SECTIONS):
+        return "invalid-json", None, runtime
+    return "ok", review, runtime
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Run one isolated Grok review; stdout is one JSON status object.")
+    parser.add_argument("--mode", required=True, choices=("explicit", "automatic"))
+    parser.add_argument("--prompt-file", required=True, type=Path)
+    parser.add_argument("--output-dir", required=True, type=Path)
+    parser.add_argument("--grok-home", required=True, type=Path)
+    parser.add_argument("--grok-bin", required=True, type=Path)
+    parser.add_argument("--timeout", required=True, type=float)
+    parser.add_argument("--max-turns", required=True, type=int)
+    args = parser.parse_args()
+    if args.timeout <= 0 or args.max_turns <= 0:
+        return emit("isolation-failure", message="timeout and max-turns must be positive")
+    if args.mode == "automatic":
+        return emit("isolation-failure", message="automatic mode is disabled pending dedicated-profile acceptance")
+    if not args.grok_bin.is_file() or not os.access(args.grok_bin, os.X_OK):
+        return emit("missing-cli", message="Grok executable is missing or not executable")
+    try:
+        prompt = args.prompt_file.read_bytes()
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        args.grok_home.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        return emit("isolation-failure", message=f"input or directory preflight failed: {exc}")
+    run_id = str(uuid.uuid4())
+    evidence_path = args.output_dir / f"grok-review-{run_id}.json"
+    stage = Path(tempfile.mkdtemp(prefix=f"grok-review-{run_id}-", dir=args.output_dir))
+    started = time.monotonic()
+    try:
+        staged_prompt = stage / "prompt.txt"
+        staged_prompt.write_bytes(prompt)
+        agent = stage / "review-agent.txt"
+        agent.write_text("Review only the supplied prompt. Do not use tools, web, subagents, memory, project files, or any agentic CLI. Return only the required structured review.\n", encoding="utf-8")
+        env = isolated_environment(args.grok_home.resolve(), stage.resolve())
+        secrets = [env.get("XAI_API_KEY", "")]
+        inspect_argv = [str(args.grok_bin.resolve()), "inspect", "--json"]
+        try:
+            code, inspect_out, inspect_err, timed_out = run(inspect_argv, env, stage, min(args.timeout, 10.0))
+        except OSError:
+            return emit("missing-cli", message="Grok executable could not be started")
+        if timed_out or code != 0:
+            return emit("isolation-failure", message="effective configuration inspection failed")
+        try:
+            inspection = json.loads(inspect_out)
+        except json.JSONDecodeError:
+            inspection = None
+        if not inspect_isolated(inspection):
+            return emit("isolation-failure", message="effective configuration is outside the frozen allow-list")
+        argv = [str(args.grok_bin.resolve()), "--prompt-file", str(staged_prompt), "--agent", str(agent),
+                "--output-format", "stream-json", "--json-schema", json.dumps(SCHEMA, separators=(",", ":")),
+                "--sandbox", "read-only", "--no-memory", "--no-subagents", "--no-web",
+                "--max-turns", str(args.max_turns)]
+        code, stdout, stderr, timed_out = run(argv, env, stage, args.timeout)
+        status, review, runtime = ("timeout", None, {}) if timed_out else parse_review(stdout)
+        if not timed_out and code != 0 and status != "max-turns":
+            status = "nonzero-exit"
+            review = None
+        evidence = {
+            "schema_version": 1, "run_id": run_id, "mode": args.mode,
+            "duration_seconds": round(time.monotonic() - started, 6),
+            "invocation": {"argv": argv, "cwd": str(stage), "environment_keys": sorted(env)},
+            "inspection": inspection, "exit_code": code, "timed_out": timed_out,
+            "stdout": redact(stdout, secrets), "stderr": redact(stderr, secrets), **runtime,
+            "status": status,
+        }
+        evidence_path.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        fields: dict[str, object] = {"evidence": str(evidence_path)}
+        if review is not None:
+            fields["review"] = review
+        return emit(status, **fields)
+    except (OSError, ValueError) as exc:
+        return emit("isolation-failure", message=f"isolated execution failed: {exc}")
+    finally:
+        shutil.rmtree(stage, ignore_errors=True)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,40 @@
+{
+  "argv": [
+    "<grok-bin>",
+    "--prompt-file",
+    "/private/tmp/grok-review-3b61e433-48a4-4bc8-90a1-3d1022a9cdd9-svhoatjl/work/prompt.txt",
+    "--agent",
+    "/private/tmp/grok-review-3b61e433-48a4-4bc8-90a1-3d1022a9cdd9-svhoatjl/work/agent.md",
+    "--output-format",
+    "stream-json",
+    "--json-schema",
+    "/private/tmp/grok-review-3b61e433-48a4-4bc8-90a1-3d1022a9cdd9-svhoatjl/work/review-schema.json",
+    "--permission-mode",
+    "plan",
+    "--no-memory",
+    "--no-web",
+    "--no-subagents",
+    "--strict-mcp-config",
+    "--max-turns",
+    "3"
+  ],
+  "cwd": "/private/tmp/grok-review-3b61e433-48a4-4bc8-90a1-3d1022a9cdd9-svhoatjl/work",
+  "environment_keys": [
+    "GROK_DISABLE_CLAUDE_COMPAT",
+    "GROK_DISABLE_CURSOR_COMPAT",
+    "GROK_DISABLE_MEMORY",
+    "GROK_DISABLE_WEB",
+    "GROK_HOME",
+    "HOME",
+    "LANG",
+    "LC_ALL",
+    "NO_COLOR",
+    "PATH"
+  ],
+  "max_turns": 3,
+  "mode": "explicit",
+  "run_id": "3b61e433-48a4-4bc8-90a1-3d1022a9cdd9",
+  "schemaVersion": 1,
+  "started_at_unix": 1787159507.619691,
+  "timeout_seconds": 0.3
+}

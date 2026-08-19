@@ -1,0 +1,339 @@
+{
+  "aggregateSha256": "df72943a994b36a86acf52c3c987fef80c148f13ad9e2d5429ac05bbb2a08e3e",
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+  "bytes": 201838,
+  "excludedDirectories": [
+    ".home",
+    ".pycache",
+    ".tmp"
+  ],
+  "fileCount": 54,
+  "files": [
+    {
+      "bytes": 20222,
+      "mode": "0o644",
+      "path": ".pycache/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/skills/toolboxmd-use-grok/scripts/consult-grokcpython-314.pyc",
+      "sha256": "fa3919475fbf966d15adf69a94d34a6c4357f30a6e2419b7224145c6f78dd1d0"
+    },
+    {
+      "bytes": 862,
+      "mode": "0o644",
+      "path": "isolation-preflight-control.json",
+      "sha256": "ff5f2f5c6adc793af2f0a4c7f6f63e75e8922a91c9904681b2771a03a454a82e"
+    },
+    {
+      "bytes": 1072,
+      "mode": "0o644",
+      "path": "isolation-preflight-model.json",
+      "sha256": "3a88db84060795c56fc0318b7ad3a02013936356bd133f1b2f6257e8d68ff7e9"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/automatic-no-launch/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/cases/bad-inspect/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 12,
+      "mode": "0o644",
+      "path": "rehearsal/cases/bad-inspect/scenario.txt",
+      "sha256": "81e688be11a7f1e3b6785b0d81fc671978d42ee215a2d7d1382c0cff5d1d9d19"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/cases/direct/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 2319,
+      "mode": "0o644",
+      "path": "rehearsal/cases/direct/invocation.json",
+      "sha256": "d30a7b8df886a95f73deb5cd8874480388e52423177b72be9c3a55ce97387fa5"
+    },
+    {
+      "bytes": 5277,
+      "mode": "0o644",
+      "path": "rehearsal/cases/direct/results/grok-review-73af6f33-4686-4eb8-b9bb-7bb021bdfbc3.json",
+      "sha256": "41c088f0990d71cc118485ffffdb8f9fe586bf7c99163a14f74dd7427d5f233c"
+    },
+    {
+      "bytes": 7,
+      "mode": "0o644",
+      "path": "rehearsal/cases/direct/scenario.txt",
+      "sha256": "96f56a26868e3613cca099b0457840e9e532b916a4de8572946edca4b12a5a15"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/cases/envelope/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 2325,
+      "mode": "0o644",
+      "path": "rehearsal/cases/envelope/invocation.json",
+      "sha256": "a568c4a000165ac36924c486f18b1eeb42f6baf39b990b4d510c0c8ea03d952a"
+    },
+    {
+      "bytes": 5348,
+      "mode": "0o644",
+      "path": "rehearsal/cases/envelope/results/grok-review-c7ca2981-510c-4bba-be52-f14453c2cbf0.json",
+      "sha256": "c067f7e7110191c8753d4738093d039577b2e9ec4930d1ef0aa3323b1af1c246"
+    },
+    {
+      "bytes": 9,
+      "mode": "0o644",
+      "path": "rehearsal/cases/envelope/scenario.txt",
+      "sha256": "014d43d7335efe2a5a933b409043116854659963b9f5b02a0b2f6d10f3c85ccf"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/cases/incomplete/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 2331,
+      "mode": "0o644",
+      "path": "rehearsal/cases/incomplete/invocation.json",
+      "sha256": "ad6302bcc8fc70ebba39e7e6cff3250afe66a1cf907ab27ed519bdd5acc9f196"
+    },
+    {
+      "bytes": 5891,
+      "mode": "0o644",
+      "path": "rehearsal/cases/incomplete/results/grok-review-a940e501-12b5-4216-88c8-8e38f2caf71e.json",
+      "sha256": "185aa625ba8aa9cfc78e31ab6fb9535d7d6f1a4f8572e3d2009f0f6663757d28"
+    },
+    {
+      "bytes": 11,
+      "mode": "0o644",
+      "path": "rehearsal/cases/incomplete/scenario.txt",
+      "sha256": "2d0ffd0d61facda134ae7325f59317526607541e74443c1a45c224fb36bb2525"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/cases/invalid-json/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 2337,
+      "mode": "0o644",
+      "path": "rehearsal/cases/invalid-json/invocation.json",
+      "sha256": "4d642b40cafeb511a5f382a74e76eabf38654ff4b36d3629a2e744ee3cc3da3d"
+    },
+    {
+      "bytes": 4993,
+      "mode": "0o644",
+      "path": "rehearsal/cases/invalid-json/results/grok-review-a5cdad66-0fdf-4525-8489-3219f01eb449.json",
+      "sha256": "072b90c196c193858f490974f0e834a59700bbc95aeedbffdab4e411973e7483"
+    },
+    {
+      "bytes": 13,
+      "mode": "0o644",
+      "path": "rehearsal/cases/invalid-json/scenario.txt",
+      "sha256": "bf8d37854f4266dfa6acfe4821be9935a0e279fc1cf89aa973fa9fa402291b79"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/cases/max-turns/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 2328,
+      "mode": "0o644",
+      "path": "rehearsal/cases/max-turns/invocation.json",
+      "sha256": "7cbbc65ae50535e8ed0d763ddcf263311581216134d19ba3dd75137f31ffa079"
+    },
+    {
+      "bytes": 5104,
+      "mode": "0o644",
+      "path": "rehearsal/cases/max-turns/results/grok-review-25ce895f-049a-447a-b2ce-34d31332851d.json",
+      "sha256": "f82872a8a410d02c9006be612644d9a399ede1fa4dca842a3af04f9098b3b3d2"
+    },
+    {
+      "bytes": 10,
+      "mode": "0o644",
+      "path": "rehearsal/cases/max-turns/scenario.txt",
+      "sha256": "239038a8d0f5ba07430b066169bfe741417c51cc3b6fb99dd714bad239497668"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/cases/missing-inspect-fields/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 23,
+      "mode": "0o644",
+      "path": "rehearsal/cases/missing-inspect-fields/scenario.txt",
+      "sha256": "1b867d853fa9c000cd32a01d063433f2d57424213f5c487353d34cb9e5519b88"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/cases/nonzero/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 2322,
+      "mode": "0o644",
+      "path": "rehearsal/cases/nonzero/invocation.json",
+      "sha256": "9095fdbe87d2ee19d65a066c88035e59d28a972a08d369a0ed03af4bd136a1c6"
+    },
+    {
+      "bytes": 5096,
+      "mode": "0o644",
+      "path": "rehearsal/cases/nonzero/results/grok-review-140ba1e8-3347-411d-a645-0b9e508ab243.json",
+      "sha256": "159e07b26762f7b89824da743f43bea368b0f33c991b765cc7f523e525077a5f"
+    },
+    {
+      "bytes": 5097,
+      "mode": "0o644",
+      "path": "rehearsal/cases/nonzero/results/grok-review-8e3414b4-f50d-46f9-9a7c-edae64a077d1.json",
+      "sha256": "84425359400cc697423579f5b30e2ab5aaa7d8f40ad42b296fbb4d42200b82ac"
+    },
+    {
+      "bytes": 8,
+      "mode": "0o644",
+      "path": "rehearsal/cases/nonzero/scenario.txt",
+      "sha256": "25306aaa469b360353309d67b9b88284863e603a7173eaa0ae54a7264164dc73"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/cases/runtime-tool-call/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 2352,
+      "mode": "0o644",
+      "path": "rehearsal/cases/runtime-tool-call/invocation.json",
+      "sha256": "3f1d399de5a23c5a6b569396b7e61192e78c54266199ffdb107d03e003b74f65"
+    },
+    {
+      "bytes": 5926,
+      "mode": "0o644",
+      "path": "rehearsal/cases/runtime-tool-call/results/grok-review-123783ae-6721-4b70-8b2f-5ff9339ef446.json",
+      "sha256": "1bbfa3810f489dd58f26889348f35c27b9f4a6f62ee2f89a69bd405a7b5aca8a"
+    },
+    {
+      "bytes": 18,
+      "mode": "0o644",
+      "path": "rehearsal/cases/runtime-tool-call/scenario.txt",
+      "sha256": "cd4d33e0ece2e828b0a19330d3224d75ca2cca56d00f218ba69622aedaf59051"
+    },
+    {
+      "bytes": 5394,
+      "mode": "0o755",
+      "path": "rehearsal/cases/timeout/fake_grok.py",
+      "sha256": "7aa36f9c5296ae50507c561874d9143de31551bf431cb848eda594a4ede94e01"
+    },
+    {
+      "bytes": 2322,
+      "mode": "0o644",
+      "path": "rehearsal/cases/timeout/invocation.json",
+      "sha256": "d9673dca573f1b49772a5942ea3b74dd77eba04c87dd771e37ad3c756363843a"
+    },
+    {
+      "bytes": 6368,
+      "mode": "0o644",
+      "path": "rehearsal/cases/timeout/results/grok-review-11c001a5-c5dd-4146-8dd2-487b51997925.json",
+      "sha256": "330f63facd1edb2bdc3803d0e6b70ee98f6dbc768ce3dc8ef956ad34319e6276"
+    },
+    {
+      "bytes": 6368,
+      "mode": "0o644",
+      "path": "rehearsal/cases/timeout/results/grok-review-97c80043-a21f-495d-839b-b0f30ea339e6.json",
+      "sha256": "f37ad483b40ff98039e01ffb75176ba0ee310b4a98cf7557b12ae4a35858cd43"
+    },
+    {
+      "bytes": 6368,
+      "mode": "0o644",
+      "path": "rehearsal/cases/timeout/results/grok-review-dd62cf37-007d-432c-b165-4d04b928f000.json",
+      "sha256": "886491c83e2f8d50ff0a91984f0368a9a52365984f7638b5f817a7967512c995"
+    },
+    {
+      "bytes": 8,
+      "mode": "0o644",
+      "path": "rehearsal/cases/timeout/scenario.txt",
+      "sha256": "7ed6120912d915f6ba8ef82ba3ec0b703265a0979bc0a243e0144580ad0c0b6b"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 5845,
+      "mode": "0o644",
+      "path": "rehearsal/injection-results/grok-review-bf197c39-838a-469d-aadb-06540247e45c.json",
+      "sha256": "acbb4a3ad58dab4c33263bea3610829a4ed4f93fc2213a4a99a3f1910bba9197"
+    },
+    {
+      "bytes": 2352,
+      "mode": "0o644",
+      "path": "rehearsal/invocation.json",
+      "sha256": "ac3606aa94f8a677065a3d0cace1d2ddd60c08ee2a314c9991b413c682e6d3e4"
+    },
+    {
+      "bytes": 122,
+      "mode": "0o644",
+      "path": "rehearsal/prompt-shell-metacharacters.txt",
+      "sha256": "d4b6f5dd748a642cbb0abef0d729847d996558f4a3db1a3b1e426a95365d76b5"
+    },
+    {
+      "bytes": 98,
+      "mode": "0o644",
+      "path": "rehearsal/prompt.txt",
+      "sha256": "6b6422de9efa40b3721439c884e7fbcd49f6eca5429138b172f83010b5805ca1"
+    },
+    {
+      "bytes": 5808,
+      "mode": "0o644",
+      "path": "rehearsal/review-output/grok-review-61be043c-9216-42d5-8b19-e1f9c846aa6d.json",
+      "sha256": "d634327988f8b81687c3190d335b47f59aafe5a5df41c228b00ada0fc1a6f7ae"
+    },
+    {
+      "bytes": 6,
+      "mode": "0o644",
+      "path": "rehearsal/tree-child.pid",
+      "sha256": "155a763d4d04c39fcfc5fd3dc50b0ecd4c349fd3b8c4880aae828b9a6b106bae"
+    },
+    {
+      "bytes": 4424,
+      "mode": "0o644",
+      "path": "rehearsal/tree-results/grok-review-424082f2-047b-4af3-8a29-44767587c585.json",
+      "sha256": "22f30a2920468402f2b3ef2a1d44119dd4f00a26bdd4483d0d18fd155226b763"
+    },
+    {
+      "bytes": 1284,
+      "mode": "0o755",
+      "path": "rehearsal/tree_fake",
+      "sha256": "f6ebc52ccbab9f3dc7c2923887eb43da33e8c907952aab0dbb6e07e87b7e7ff8"
+    },
+    {
+      "bytes": 3536,
+      "mode": "0o644",
+      "path": "skills/toolboxmd-use-grok/SKILL.md",
+      "sha256": "6de84a091cd4f2f24c3d46925944cc12539dc53b772ec68742503b5a030a7f6d"
+    },
+    {
+      "bytes": 11702,
+      "mode": "0o755",
+      "path": "skills/toolboxmd-use-grok/scripts/consult-grok",
+      "sha256": "2c5a7f45c643d80b3e302c932e5968a2afabd6a3bd3ff958db4e880388703089"
+    }
+  ],
+  "omittedSymlinks": [],
+  "symlinks": []
+}

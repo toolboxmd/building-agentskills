@@ -1,0 +1,15 @@
+{
+  "classification": "ok",
+  "exit_code": 0,
+  "finished_at_unix": 1787159497.54889,
+  "schemaVersion": 1,
+  "session_id": "fake-session",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 10,
+    "output_tokens": 5,
+    "server_tool_use": {
+      "web_search_requests": 0
+    }
+  }
+}

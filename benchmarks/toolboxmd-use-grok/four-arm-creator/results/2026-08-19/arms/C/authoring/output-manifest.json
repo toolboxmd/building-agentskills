@@ -1,0 +1,741 @@
+{
+  "aggregateSha256": "1c49d4551cb21e6c48ecdebe13b5c94936c2508e7267d674df470898546a9f78",
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+  "bytes": 165060,
+  "excludedDirectories": [
+    ".home",
+    ".pycache",
+    ".tmp"
+  ],
+  "fileCount": 121,
+  "files": [
+    {
+      "bytes": 862,
+      "mode": "0o644",
+      "path": "isolation-preflight-control.json",
+      "sha256": "007b4987c2d2de43c9ad4353a95a75d66b0e78a1580ccd81e373311b36be34e5"
+    },
+    {
+      "bytes": 1072,
+      "mode": "0o644",
+      "path": "isolation-preflight-model.json",
+      "sha256": "04f364653000daff21d245d1bd36393426938fd1f90a14698dad850e2b23354c"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/bad-inspect/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/bad-inspect/results/grok-review-a7e97fcf-3543-4f8c-bdec-7b366471713f/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1545,
+      "mode": "0o644",
+      "path": "rehearsal/bad-inspect/results/grok-review-a7e97fcf-3543-4f8c-bdec-7b366471713f/inspect.stdout.txt",
+      "sha256": "bc0251df244b19cbfef70ce6d8e177b203792200fb6de37fabf3da79426a29c0"
+    },
+    {
+      "bytes": 12,
+      "mode": "0o644",
+      "path": "rehearsal/bad-inspect/scenario.txt",
+      "sha256": "81e688be11a7f1e3b6785b0d81fc671978d42ee215a2d7d1382c0cff5d1d9d19"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/direct/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 1454,
+      "mode": "0o644",
+      "path": "rehearsal/direct/invocation.json",
+      "sha256": "d2002795760e196e1b158b3e7ecaba4c6025094f762d3504ae15966b35230a9d"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-3b81e61e-e6c9-4638-845a-b9abe1c2707b/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-3b81e61e-e6c9-4638-845a-b9abe1c2707b/inspect.stdout.txt",
+      "sha256": "baec639478ea544344f673e047a7d8a8ee12152c02b53551c46c1399a46b4b15"
+    },
+    {
+      "bytes": 1257,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-3b81e61e-e6c9-4638-845a-b9abe1c2707b/invocation.json",
+      "sha256": "e6e7b8ce798034b2f5528afe6998b05f0d3c44ff9e9992a7642a9262ab310695"
+    },
+    {
+      "bytes": 47,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-3b81e61e-e6c9-4638-845a-b9abe1c2707b/result.json",
+      "sha256": "3d8e99508e60427baa8c776d5e41eb712c6e6b2ebf4a6510f80ac0f5fdee29ff"
+    },
+    {
+      "bytes": 296,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-3b81e61e-e6c9-4638-845a-b9abe1c2707b/review.json",
+      "sha256": "9baab12e0dedbab8bc1a54139987ee858e4ff1c3a98b3e65c4b9ccc2c2bb454d"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-3b81e61e-e6c9-4638-845a-b9abe1c2707b/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 250,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-3b81e61e-e6c9-4638-845a-b9abe1c2707b/stdout.txt",
+      "sha256": "ae338d4433ed51df46b255862102100734133137f8991aef60cd1fae3cee2cc7"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-83120118-d9f5-47c8-9bba-bbca9f8cf7cb/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-83120118-d9f5-47c8-9bba-bbca9f8cf7cb/inspect.stdout.txt",
+      "sha256": "f228156b7e5a4bea4bcf0686891a6396240e6d5509c8e70a727e7426fb6ec8c7"
+    },
+    {
+      "bytes": 1378,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-83120118-d9f5-47c8-9bba-bbca9f8cf7cb/invocation.json",
+      "sha256": "1bc1256269ed60cdc4c35c97c4620c87ff5dd6f9f191a7f375d556f67dbfacff"
+    },
+    {
+      "bytes": 47,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-83120118-d9f5-47c8-9bba-bbca9f8cf7cb/result.json",
+      "sha256": "3d8e99508e60427baa8c776d5e41eb712c6e6b2ebf4a6510f80ac0f5fdee29ff"
+    },
+    {
+      "bytes": 296,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-83120118-d9f5-47c8-9bba-bbca9f8cf7cb/review.json",
+      "sha256": "9baab12e0dedbab8bc1a54139987ee858e4ff1c3a98b3e65c4b9ccc2c2bb454d"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-83120118-d9f5-47c8-9bba-bbca9f8cf7cb/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 250,
+      "mode": "0o644",
+      "path": "rehearsal/direct/results/grok-review-83120118-d9f5-47c8-9bba-bbca9f8cf7cb/stdout.txt",
+      "sha256": "ae338d4433ed51df46b255862102100734133137f8991aef60cd1fae3cee2cc7"
+    },
+    {
+      "bytes": 7,
+      "mode": "0o644",
+      "path": "rehearsal/direct/scenario.txt",
+      "sha256": "96f56a26868e3613cca099b0457840e9e532b916a4de8572946edca4b12a5a15"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/envelope/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 1454,
+      "mode": "0o644",
+      "path": "rehearsal/envelope/invocation.json",
+      "sha256": "e0199f7916404e71d046b56001a637a039cb32df052de76d215b8df0f1703881"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/envelope/results/grok-review-5db5aa2e-09b6-4a66-8252-477c75243a8e/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/envelope/results/grok-review-5db5aa2e-09b6-4a66-8252-477c75243a8e/inspect.stdout.txt",
+      "sha256": "9fa241b55d7b404c31574883eef8d59148d56d3b7958abb1c41c51ff7f2a8411"
+    },
+    {
+      "bytes": 1259,
+      "mode": "0o644",
+      "path": "rehearsal/envelope/results/grok-review-5db5aa2e-09b6-4a66-8252-477c75243a8e/invocation.json",
+      "sha256": "deace1cffab2eb71b9ed6e60ad31f3fdc184ad52bce5f6025fa94aa85398fe61"
+    },
+    {
+      "bytes": 55,
+      "mode": "0o644",
+      "path": "rehearsal/envelope/results/grok-review-5db5aa2e-09b6-4a66-8252-477c75243a8e/result.json",
+      "sha256": "dafbc61e43f1d1227ed11d263fa781e399d8bee4b06668b4a4acadca7c8a6480"
+    },
+    {
+      "bytes": 296,
+      "mode": "0o644",
+      "path": "rehearsal/envelope/results/grok-review-5db5aa2e-09b6-4a66-8252-477c75243a8e/review.json",
+      "sha256": "9baab12e0dedbab8bc1a54139987ee858e4ff1c3a98b3e65c4b9ccc2c2bb454d"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/envelope/results/grok-review-5db5aa2e-09b6-4a66-8252-477c75243a8e/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 299,
+      "mode": "0o644",
+      "path": "rehearsal/envelope/results/grok-review-5db5aa2e-09b6-4a66-8252-477c75243a8e/stdout.txt",
+      "sha256": "99b11d099c15629fc5c5f61cb55b6504db79bae52f15b2a4bb9b667bd568c15a"
+    },
+    {
+      "bytes": 9,
+      "mode": "0o644",
+      "path": "rehearsal/envelope/scenario.txt",
+      "sha256": "014d43d7335efe2a5a933b409043116854659963b9f5b02a0b2f6d10f3c85ccf"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/final-stream/grok-review-2b9e2d3b-84ab-45c4-a123-91d5953ca81f/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/final-stream/grok-review-2b9e2d3b-84ab-45c4-a123-91d5953ca81f/inspect.stdout.txt",
+      "sha256": "d3b86827a3730381dda20d0e0466e82eab03f8ea5f20db534254d8b3ab44775e"
+    },
+    {
+      "bytes": 1371,
+      "mode": "0o644",
+      "path": "rehearsal/final-stream/grok-review-2b9e2d3b-84ab-45c4-a123-91d5953ca81f/invocation.json",
+      "sha256": "e6a8da91f193f858b9b3aa61247adc8ea5a1112cff516dd16f661834aa029e4d"
+    },
+    {
+      "bytes": 213,
+      "mode": "0o644",
+      "path": "rehearsal/final-stream/grok-review-2b9e2d3b-84ab-45c4-a123-91d5953ca81f/result.json",
+      "sha256": "71933d7946e365c2332d26e6b0f3c0ea52421613eb23f8a562b6364a20d0bb52"
+    },
+    {
+      "bytes": 296,
+      "mode": "0o644",
+      "path": "rehearsal/final-stream/grok-review-2b9e2d3b-84ab-45c4-a123-91d5953ca81f/review.json",
+      "sha256": "9baab12e0dedbab8bc1a54139987ee858e4ff1c3a98b3e65c4b9ccc2c2bb454d"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/final-stream/grok-review-2b9e2d3b-84ab-45c4-a123-91d5953ca81f/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 640,
+      "mode": "0o644",
+      "path": "rehearsal/final-stream/grok-review-2b9e2d3b-84ab-45c4-a123-91d5953ca81f/stdout.txt",
+      "sha256": "4bb28f8da86a3a5f02cee10d5b16bb257ac15c2c8e69f42234af6b386191edc7"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/incomplete/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 1454,
+      "mode": "0o644",
+      "path": "rehearsal/incomplete/invocation.json",
+      "sha256": "a982e807b3d7d15f0e7985a1257f568dbb4e8d84b2ffe2374d186a941cf35e38"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/incomplete/results/grok-review-b175f66c-1043-46fb-957f-bef82ac6de47/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/incomplete/results/grok-review-b175f66c-1043-46fb-957f-bef82ac6de47/inspect.stdout.txt",
+      "sha256": "dac44d6a871f1dfe767c538ed13c5802f893ef00e570b9917417a86f65980367"
+    },
+    {
+      "bytes": 1261,
+      "mode": "0o644",
+      "path": "rehearsal/incomplete/results/grok-review-b175f66c-1043-46fb-957f-bef82ac6de47/invocation.json",
+      "sha256": "37a70f7f2b4f5eb2bb9d29909740c5b993325c685e666d452964600a5ad4a57e"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/incomplete/results/grok-review-b175f66c-1043-46fb-957f-bef82ac6de47/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 641,
+      "mode": "0o644",
+      "path": "rehearsal/incomplete/results/grok-review-b175f66c-1043-46fb-957f-bef82ac6de47/stdout.txt",
+      "sha256": "43e5589f886e065ac8d7c4228240ae14fe7ca778e185b6daef8c26f31a9047e9"
+    },
+    {
+      "bytes": 11,
+      "mode": "0o644",
+      "path": "rehearsal/incomplete/scenario.txt",
+      "sha256": "2d0ffd0d61facda134ae7325f59317526607541e74443c1a45c224fb36bb2525"
+    },
+    {
+      "bytes": 96,
+      "mode": "0o644",
+      "path": "rehearsal/injection-prompt.txt",
+      "sha256": "f4c1a794e3217731d3854576f70b93afb8f467afa43d1bca316a956bdc2069a4"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/invalid-json/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 1454,
+      "mode": "0o644",
+      "path": "rehearsal/invalid-json/invocation.json",
+      "sha256": "9bde44558b88533f7db33e3f3955c82ecfc2a93e8d165cc5975d78e7f1202a76"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/invalid-json/results/grok-review-459c9772-23ff-4f5c-a296-645c815e4f9b/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/invalid-json/results/grok-review-459c9772-23ff-4f5c-a296-645c815e4f9b/inspect.stdout.txt",
+      "sha256": "de939d3b1720ca71b0a9ef531290582bda63151076469cc8a3dc782f093977b4"
+    },
+    {
+      "bytes": 1263,
+      "mode": "0o644",
+      "path": "rehearsal/invalid-json/results/grok-review-459c9772-23ff-4f5c-a296-645c815e4f9b/invocation.json",
+      "sha256": "3e8424710d8a8e99ae682951adf8b3c7e5e84d5c158028933a170cf030ce8d85"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/invalid-json/results/grok-review-459c9772-23ff-4f5c-a296-645c815e4f9b/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 10,
+      "mode": "0o644",
+      "path": "rehearsal/invalid-json/results/grok-review-459c9772-23ff-4f5c-a296-645c815e4f9b/stdout.txt",
+      "sha256": "5715ea11351f96c1faee52d83ceb8edf41612427a452f7acc780b6bc05072500"
+    },
+    {
+      "bytes": 13,
+      "mode": "0o644",
+      "path": "rehearsal/invalid-json/scenario.txt",
+      "sha256": "bf8d37854f4266dfa6acfe4821be9935a0e279fc1cf89aa973fa9fa402291b79"
+    },
+    {
+      "bytes": 6735,
+      "mode": "0o644",
+      "path": "rehearsal/invocation.json",
+      "sha256": "0d9a88be347c5be160fe444d9b7afcc11040c125ad08146d607f9a69985525fc"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/max-turns/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 1454,
+      "mode": "0o644",
+      "path": "rehearsal/max-turns/invocation.json",
+      "sha256": "ed4d1ac3fcc6456e9a739ca52d0e2687f462b576d49f739bbbe511ccab881ab6"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/max-turns/results/grok-review-0af67a9d-55ae-4302-a4ec-af0537fd6659/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/max-turns/results/grok-review-0af67a9d-55ae-4302-a4ec-af0537fd6659/inspect.stdout.txt",
+      "sha256": "26d1ff041cfdf7972e93d7268fd92c1bbf671ba61dbc55fbc8197c29fbea90ea"
+    },
+    {
+      "bytes": 1260,
+      "mode": "0o644",
+      "path": "rehearsal/max-turns/results/grok-review-0af67a9d-55ae-4302-a4ec-af0537fd6659/invocation.json",
+      "sha256": "8cb40c14070e1ea3b05578363d548f92a3e1d487cbc46d5e79a5d376302b68ae"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/max-turns/results/grok-review-0af67a9d-55ae-4302-a4ec-af0537fd6659/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 67,
+      "mode": "0o644",
+      "path": "rehearsal/max-turns/results/grok-review-0af67a9d-55ae-4302-a4ec-af0537fd6659/stdout.txt",
+      "sha256": "4ad608bfac4e78f8309c86b4bb58ac317fc8220428ddf9ce7cd13cd2c931def6"
+    },
+    {
+      "bytes": 10,
+      "mode": "0o644",
+      "path": "rehearsal/max-turns/scenario.txt",
+      "sha256": "239038a8d0f5ba07430b066169bfe741417c51cc3b6fb99dd714bad239497668"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/missing-inspect-fields/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/missing-inspect-fields/results/grok-review-b68712a6-2d41-4272-bf22-235396ac614c/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1440,
+      "mode": "0o644",
+      "path": "rehearsal/missing-inspect-fields/results/grok-review-b68712a6-2d41-4272-bf22-235396ac614c/inspect.stdout.txt",
+      "sha256": "1b78a7aa7ab9d199a23cdb16fff4b5025e7bf9abf45f324a12a260a7e5db605f"
+    },
+    {
+      "bytes": 23,
+      "mode": "0o644",
+      "path": "rehearsal/missing-inspect-fields/scenario.txt",
+      "sha256": "1b867d853fa9c000cd32a01d063433f2d57424213f5c487353d34cb9e5519b88"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/nonzero/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 1454,
+      "mode": "0o644",
+      "path": "rehearsal/nonzero/invocation.json",
+      "sha256": "6f65a1005282a9cbb5b1a846c0ef274819437dc7c5ad32882b13331dc4a81ed4"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/nonzero/results/grok-review-87b63e44-1d88-418c-939e-82959fbf4b35/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/nonzero/results/grok-review-87b63e44-1d88-418c-939e-82959fbf4b35/inspect.stdout.txt",
+      "sha256": "92fc2dbf0ea07aef3083ad567733dc4b6439101f966d5025c4c1005cbff53f64"
+    },
+    {
+      "bytes": 1258,
+      "mode": "0o644",
+      "path": "rehearsal/nonzero/results/grok-review-87b63e44-1d88-418c-939e-82959fbf4b35/invocation.json",
+      "sha256": "4eef09f60023325381656d9fa8758eba55445a6d7be451854ae19eee03740629"
+    },
+    {
+      "bytes": 17,
+      "mode": "0o644",
+      "path": "rehearsal/nonzero/results/grok-review-87b63e44-1d88-418c-939e-82959fbf4b35/stderr.txt",
+      "sha256": "09867ef64544e1337986481d1cd1359998999beaf1bb3c23fb91ac8abfc3dffe"
+    },
+    {
+      "bytes": 50,
+      "mode": "0o644",
+      "path": "rehearsal/nonzero/results/grok-review-87b63e44-1d88-418c-939e-82959fbf4b35/stdout.txt",
+      "sha256": "7fde6c908bcc9e1ba5bc8ef01f4c9477e7cfd412f835297d9f8e310a18319178"
+    },
+    {
+      "bytes": 8,
+      "mode": "0o644",
+      "path": "rehearsal/nonzero/scenario.txt",
+      "sha256": "25306aaa469b360353309d67b9b88284863e603a7173eaa0ae54a7264164dc73"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/result-error/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 6735,
+      "mode": "0o644",
+      "path": "rehearsal/result-error/invocation.json",
+      "sha256": "3f1881afe0a11ada109a64d48abe5557c016188f28b651f2d2f9246f779f97b8"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/result-error/results/grok-review-76c7d50f-2872-4614-91c6-f583bc3901be/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/result-error/results/grok-review-76c7d50f-2872-4614-91c6-f583bc3901be/inspect.stdout.txt",
+      "sha256": "82257088db7a509bfa8f3765caf7d1120a4c58687c1950739340a7ebfa8a0845"
+    },
+    {
+      "bytes": 1385,
+      "mode": "0o644",
+      "path": "rehearsal/result-error/results/grok-review-76c7d50f-2872-4614-91c6-f583bc3901be/invocation.json",
+      "sha256": "7c0f9a3cd37bc0a3aa6f07ecab5fbe1677358d101db6da7f34dcd2eb9623d779"
+    },
+    {
+      "bytes": 192,
+      "mode": "0o644",
+      "path": "rehearsal/result-error/results/grok-review-76c7d50f-2872-4614-91c6-f583bc3901be/result.json",
+      "sha256": "d315a9b2930d05ed02923b5946c099baddc8f2971d63b2587e5149e44262e695"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/result-error/results/grok-review-76c7d50f-2872-4614-91c6-f583bc3901be/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 639,
+      "mode": "0o644",
+      "path": "rehearsal/result-error/results/grok-review-76c7d50f-2872-4614-91c6-f583bc3901be/stdout.txt",
+      "sha256": "b507ed8b94eea949d16fb7bb55040c5cb446e5578a92d84b4c6917e6aeeb9f6c"
+    },
+    {
+      "bytes": 13,
+      "mode": "0o644",
+      "path": "rehearsal/result-error/scenario.txt",
+      "sha256": "4457856b398c2b4370e219fa7cd62bde1b7f7b8f4767dc817f9a4942dfced649"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/results/grok-review-143ec06d-0073-44e5-887f-23cc617377a2/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/results/grok-review-143ec06d-0073-44e5-887f-23cc617377a2/inspect.stdout.txt",
+      "sha256": "82a78e07943e450e91cdfb70e85d3abf4c9b5ea0dbfc19edeb1a58215e6be644"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/results/grok-review-e6a87a93-34ad-44be-8555-f278b1d9925b/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/results/grok-review-e6a87a93-34ad-44be-8555-f278b1d9925b/inspect.stdout.txt",
+      "sha256": "61fe892c7c5ebe54ac999d8544e711b4b4374643a38b277202752f7eee1c4fe4"
+    },
+    {
+      "bytes": 1250,
+      "mode": "0o644",
+      "path": "rehearsal/results/grok-review-e6a87a93-34ad-44be-8555-f278b1d9925b/invocation.json",
+      "sha256": "6c5dbfadbe6458dc83a9de324605cd962a3b47f91f47b69e1f0a423f05bdadcd"
+    },
+    {
+      "bytes": 213,
+      "mode": "0o644",
+      "path": "rehearsal/results/grok-review-e6a87a93-34ad-44be-8555-f278b1d9925b/result.json",
+      "sha256": "71933d7946e365c2332d26e6b0f3c0ea52421613eb23f8a562b6364a20d0bb52"
+    },
+    {
+      "bytes": 296,
+      "mode": "0o644",
+      "path": "rehearsal/results/grok-review-e6a87a93-34ad-44be-8555-f278b1d9925b/review.json",
+      "sha256": "9baab12e0dedbab8bc1a54139987ee858e4ff1c3a98b3e65c4b9ccc2c2bb454d"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/results/grok-review-e6a87a93-34ad-44be-8555-f278b1d9925b/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 640,
+      "mode": "0o644",
+      "path": "rehearsal/results/grok-review-e6a87a93-34ad-44be-8555-f278b1d9925b/stdout.txt",
+      "sha256": "4bb28f8da86a3a5f02cee10d5b16bb257ac15c2c8e69f42234af6b386191edc7"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "rehearsal/runtime-tool-call/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 1454,
+      "mode": "0o644",
+      "path": "rehearsal/runtime-tool-call/invocation.json",
+      "sha256": "55a744a284a6833b9892d647b880e1e16d66147235a2a656317a4d5b8bb220c7"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/runtime-tool-call/results/grok-review-c55ed1d6-e762-47dc-9424-d6a61d4cfca5/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/runtime-tool-call/results/grok-review-c55ed1d6-e762-47dc-9424-d6a61d4cfca5/inspect.stdout.txt",
+      "sha256": "6de5e732022024dfd5eb47dc7686c157883162c367c23fa4547c9d5a2a84d335"
+    },
+    {
+      "bytes": 1268,
+      "mode": "0o644",
+      "path": "rehearsal/runtime-tool-call/results/grok-review-c55ed1d6-e762-47dc-9424-d6a61d4cfca5/invocation.json",
+      "sha256": "3a19303746f0000bddf375bb8e3687281e151a009514ebcb40385567d627001e"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/runtime-tool-call/results/grok-review-c55ed1d6-e762-47dc-9424-d6a61d4cfca5/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 745,
+      "mode": "0o644",
+      "path": "rehearsal/runtime-tool-call/results/grok-review-c55ed1d6-e762-47dc-9424-d6a61d4cfca5/stdout.txt",
+      "sha256": "36de2e3a9a3d6b60c1b40263ce5ad4413b631d88a8bccec625497e9d6b58b528"
+    },
+    {
+      "bytes": 18,
+      "mode": "0o644",
+      "path": "rehearsal/runtime-tool-call/scenario.txt",
+      "sha256": "cd4d33e0ece2e828b0a19330d3224d75ca2cca56d00f218ba69622aedaf59051"
+    },
+    {
+      "bytes": 5,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/child.pid",
+      "sha256": "f3677b711020bb4c74ecb713c042c22dc5e4a38a8cc6c9037c997ac1490d73fd"
+    },
+    {
+      "bytes": 5287,
+      "mode": "0o755",
+      "path": "rehearsal/timeout/fake_grok.py",
+      "sha256": "a97893ec6f2c7f17240abf842998a1a4ea85619e71acf5a6dc36eb78390f8d46"
+    },
+    {
+      "bytes": 6735,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/invocation.json",
+      "sha256": "4d13706fbce3dcc4d31207b3e49a0393a0b16db24a23a6ef36c23bc2fc6a32d8"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/results/grok-review-6b74c508-d7fe-4cf8-8540-d9d418354a46/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/results/grok-review-6b74c508-d7fe-4cf8-8540-d9d418354a46/inspect.stdout.txt",
+      "sha256": "c023daa1f994392883fa60a7f2d94ce6445423adf96bc4060d62f228b2444646"
+    },
+    {
+      "bytes": 1258,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/results/grok-review-6b74c508-d7fe-4cf8-8540-d9d418354a46/invocation.json",
+      "sha256": "4925bc1d2195c8f556aa2a26932c66a6c2efc9670eaab070f31bec2313c7746b"
+    },
+    {
+      "bytes": 1368,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/results/grok-review-6b74c508-d7fe-4cf8-8540-d9d418354a46/stderr.txt",
+      "sha256": "1dfb46ffe4752b91a52ea68e527c1e227afc2882b225f73654097b61bae8ddc3"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/results/grok-review-6b74c508-d7fe-4cf8-8540-d9d418354a46/stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/results/grok-review-ac2647c8-94a7-4834-8f09-337f3ed43cb9/inspect.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/results/grok-review-ac2647c8-94a7-4834-8f09-337f3ed43cb9/inspect.stdout.txt",
+      "sha256": "92d5414cbd100df5deb37ea6cb365f40a26d085daa00efdaa84309e4d40b9e5d"
+    },
+    {
+      "bytes": 1258,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/results/grok-review-ac2647c8-94a7-4834-8f09-337f3ed43cb9/invocation.json",
+      "sha256": "d904379a3dbe8097836451467fbadd593aaada8ad10fa086cd4c117b051f1843"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/results/grok-review-ac2647c8-94a7-4834-8f09-337f3ed43cb9/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/results/grok-review-ac2647c8-94a7-4834-8f09-337f3ed43cb9/stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 8,
+      "mode": "0o644",
+      "path": "rehearsal/timeout/scenario.txt",
+      "sha256": "7ed6120912d915f6ba8ef82ba3ec0b703265a0979bc0a243e0144580ad0c0b6b"
+    },
+    {
+      "bytes": 4882,
+      "mode": "0o644",
+      "path": "skills/toolboxmd-use-grok/SKILL.md",
+      "sha256": "efe62018090ec404b430587a5ca1b5bd1d360995d455f9831225042b9b29ceb2"
+    },
+    {
+      "bytes": 15149,
+      "mode": "0o755",
+      "path": "skills/toolboxmd-use-grok/scripts/consult-grok",
+      "sha256": "33d0c13b725e6b4d0d8b6b75b08e3014468ab2465ca9b7b485a4464539044910"
+    }
+  ],
+  "omittedSymlinks": [],
+  "symlinks": []
+}

@@ -65,3 +65,12 @@ arms with no critical failures, a known-task recommendation requires at least
 85 utility points and an 8-point lead. Otherwise the result is inconclusive.
 The exact scoring weights and held-out admission rule are frozen before any
 authoring output exists.
+
+## Recorded execution
+
+The 2026-08-19 execution is retained in
+[`results/2026-08-19/`](results/2026-08-19/README.md). Its formal verdict is
+`INELIGIBLE_TOKEN_CAP`, not a Creator ranking. Arms C and D exceeded the frozen
+750,000 input-token cap, so the abort rule stopped the semantic judge, paired
+repeat, and held-out stages. Deterministic fake-CLI grades are reported only as
+diagnostic observations.

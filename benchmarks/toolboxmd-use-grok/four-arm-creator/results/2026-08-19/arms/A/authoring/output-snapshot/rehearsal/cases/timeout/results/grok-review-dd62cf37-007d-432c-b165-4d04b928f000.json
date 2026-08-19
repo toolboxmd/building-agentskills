@@ -1,0 +1,165 @@
+{
+  "duration_seconds": 0.223739,
+  "exit_code": 1,
+  "inspection": {
+    "agents": [
+      {
+        "name": "general-purpose",
+        "source": {
+          "type": "builtin"
+        }
+      },
+      {
+        "name": "explore",
+        "source": {
+          "type": "builtin"
+        }
+      },
+      {
+        "name": "plan",
+        "source": {
+          "type": "builtin"
+        }
+      }
+    ],
+    "configSources": {
+      "layers": []
+    },
+    "configWarnings": null,
+    "cwd": "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/timeout/results/grok-review-dd62cf37-007d-432c-b165-4d04b928f000-insld7_o",
+    "externalCompat": {
+      "cells": [
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "skills",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "rules",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "agents",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "mcps",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "hooks",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "sessions",
+          "vendor": "cursor"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "skills",
+          "vendor": "claude"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "rules",
+          "vendor": "claude"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "agents",
+          "vendor": "claude"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "mcps",
+          "vendor": "claude"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "hooks",
+          "vendor": "claude"
+        },
+        {
+          "enabled": false,
+          "source": "env",
+          "surface": "sessions",
+          "vendor": "claude"
+        }
+      ],
+      "remoteSettingsLoaded": false
+    },
+    "grokVersion": "1.0.3",
+    "hooks": [],
+    "marketplaces": [],
+    "mcpServers": [],
+    "permissions": {
+      "managedSettingsActive": false
+    },
+    "plugins": [],
+    "projectInstructions": [],
+    "projectRoot": null,
+    "skills": []
+  },
+  "invocation": {
+    "argv": [
+      "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/timeout/fake_grok.py",
+      "--prompt-file",
+      "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/timeout/results/grok-review-dd62cf37-007d-432c-b165-4d04b928f000-insld7_o/prompt.txt",
+      "--agent",
+      "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/timeout/results/grok-review-dd62cf37-007d-432c-b165-4d04b928f000-insld7_o/review-agent.txt",
+      "--output-format",
+      "stream-json",
+      "--json-schema",
+      "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"verdict\",\"overengineering\",\"missing\",\"risks\",\"minimum_plan_delta\",\"user_decisions\"],\"properties\":{\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"]},\"overengineering\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"missing\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"risks\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"minimum_plan_delta\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_decisions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}",
+      "--sandbox",
+      "read-only",
+      "--no-memory",
+      "--no-subagents",
+      "--no-web",
+      "--max-turns",
+      "4"
+    ],
+    "cwd": "/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/timeout/results/grok-review-dd62cf37-007d-432c-b165-4d04b928f000-insld7_o",
+    "environment_keys": [
+      "GROK_DISABLE_CLAUDE_COMPAT",
+      "GROK_DISABLE_CURSOR_COMPAT",
+      "GROK_DISABLE_EXTERNAL_COMPAT",
+      "GROK_DISABLE_HOOKS",
+      "GROK_DISABLE_MCP",
+      "GROK_DISABLE_PLUGINS",
+      "GROK_DISABLE_PROJECT_INSTRUCTIONS",
+      "GROK_DISABLE_USER_MEMORY",
+      "GROK_HOME",
+      "HOME",
+      "LANG",
+      "LC_ALL",
+      "PATH",
+      "XDG_CACHE_HOME",
+      "XDG_CONFIG_HOME",
+      "XDG_DATA_HOME"
+    ]
+  },
+  "mode": "explicit",
+  "run_id": "dd62cf37-007d-432c-b165-4d04b928f000",
+  "schema_version": 1,
+  "status": "invalid-json",
+  "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/timeout/fake_grok.py\", line 162, in <module>\n    raise SystemExit(main())\n                     ~~~~^^\n  File \"/private/tmp/creator-four-arm-c650722b-85e8-4ef2-aa4a-5e21e98bcdbe/sandbox/output/rehearsal/cases/timeout/fake_grok.py\", line 153, in main\n    child = subprocess.Popen([sys.executable, \"-c\", \"import time; time.sleep(60)\"])\n  File \"/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py\", line 1039, in __init__\n    self._execute_child(args, executable, preexec_fn, close_fds,\n    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                        pass_fds, cwd, env,\n                        ^^^^^^^^^^^^^^^^^^^\n    ...<5 lines>...\n                        gid, gids, uid, umask,\n                        ^^^^^^^^^^^^^^^^^^^^^^\n                        start_new_session, process_group)\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py\", line 1990, in _execute_child\n    raise child_exception_type(errno_num, err_msg, err_filename)\nPermissionError: [Errno 1] Operation not permitted: '/opt/homebrew/opt/python@3.14/bin/python3.14'\n",
+  "stdout": "",
+  "timed_out": false
+}
