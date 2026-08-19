@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+from urllib.parse import urlsplit
 
 
 def readable(path: Path) -> bool:
@@ -16,6 +17,28 @@ def readable(path: Path) -> bool:
     except OSError:
         return False
     return True
+
+
+def valid_network_probe_url(value: str) -> bool:
+    try:
+        parsed = urlsplit(value)
+        port = parsed.port
+    except ValueError:
+        return False
+    return (
+        parsed.scheme == "http"
+        and parsed.hostname == "127.0.0.1"
+        and isinstance(port, int)
+        and parsed.path not in ("", "/")
+        and parsed.query == ""
+        and parsed.fragment == ""
+        and parsed.username is None
+        and parsed.password is None
+    )
+
+
+def network_denied(exit_status: int | None, control_succeeded: bool, probe_url_valid: bool) -> bool:
+    return control_succeeded and probe_url_valid and isinstance(exit_status, int) and exit_status != 0
 
 
 def main() -> int:
@@ -41,21 +64,35 @@ def main() -> int:
         except OSError:
             pass
 
-    network = subprocess.run(
-        [
-            "/usr/bin/curl",
-            "--fail",
-            "--silent",
-            "--show-error",
-            "--max-time",
-            "2",
-            "https://example.com/",
-        ],
-        text=True,
-        capture_output=True,
-        check=False,
+    network_probe_url = os.environ.get("BENCHMARK_NETWORK_PROBE_URL", "")
+    network_control_succeeded = os.environ.get("BENCHMARK_NETWORK_CONTROL_SUCCEEDED") == "1"
+    network_probe_url_valid = valid_network_probe_url(network_probe_url)
+    network_probe_exit_status = None
+    network_probe_stderr = "network probe URL is missing or invalid"
+    if network_probe_url_valid:
+        network = subprocess.run(
+            [
+                "/usr/bin/curl",
+                "--fail",
+                "--silent",
+                "--show-error",
+                "--noproxy",
+                "*",
+                "--max-time",
+                "2",
+                network_probe_url,
+            ],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        network_probe_exit_status = network.returncode
+        network_probe_stderr = network.stderr.strip()
+    network_is_denied = network_denied(
+        network_probe_exit_status,
+        network_control_succeeded,
+        network_probe_url_valid,
     )
-    network_denied = network.returncode != 0
 
     sensitive_fragments = ("KEY", "TOKEN", "SECRET", "PASSWORD", "AUTH", "CREDENTIAL")
     permitted_sensitive_names = {"CODEX_SANDBOX_NETWORK_DISABLED"}
@@ -72,7 +109,9 @@ def main() -> int:
         "deniedRepositoryRead": denied_repository_read,
         "deniedAuthRead": denied_auth_read,
         "allowedOutputWrite": output_write,
-        "networkDenied": network_denied,
+        "networkControlSucceeded": network_control_succeeded,
+        "networkProbeUrlValid": network_probe_url_valid,
+        "networkDenied": network_is_denied,
         "sensitiveEnvironmentNamesAbsent": not unexpected_sensitive,
     }
     report = {
@@ -83,8 +122,9 @@ def main() -> int:
         "passed": all(checks.values()),
         "environmentKeys": environment_keys,
         "unexpectedSensitiveEnvironmentKeys": unexpected_sensitive,
-        "networkProbeExitStatus": network.returncode,
-        "networkProbeStderr": network.stderr.strip(),
+        "networkProbeKind": "live-loopback-http",
+        "networkProbeExitStatus": network_probe_exit_status,
+        "networkProbeStderr": network_probe_stderr,
     }
     (output / f"isolation-preflight-{label}.json").write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n",

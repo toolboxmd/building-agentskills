@@ -22,7 +22,8 @@ Exact-HEAD reviews of commits `223e49d8697141b13c53fec249d5b5ebb3682f75`,
 `91533764d5c2336f7876f2565405e7ae74090a2f`, followed by review of
 `e5c5e8bceed532ff6a9968448a06edf13a69365c` and
 `5ef565ad6f251ec2b87686271e985f622f64c22d` and then
-`705e5eafd43b9164797243f1a2bb250cbb6f2a4b`, found eight findings after the
+`705e5eafd43b9164797243f1a2bb250cbb6f2a4b` and
+`03c55051faa0d53e3e50e0db57debaa3306a09b6`, found nine findings after the
 authoring outputs and deterministic grades had already been recorded.
 
 The active Grok product could accept a direct or enveloped success without a
@@ -63,6 +64,15 @@ exit code 2, no stderr usage text, and no run directory.
 Output-directory resolution or creation could also fail before the handler and
 produce a traceback. Those operations now return one `input` JSON object with
 exit code 2 and omit `runDir` when no evidence directory could be retained.
+
+The frozen network preflight treated any nonzero curl result as denial. The
+retained exit-6 DNS failures therefore do not independently prove sandbox
+network enforcement. The live harness now starts a loopback HTTP endpoint,
+requires an unsandboxed HTTP 200 control, and then requires the sandboxed probe
+against that same live endpoint to fail. A model-free preflight-only run passed
+with host HTTP 200 and sandboxed curl exit 7. Historical preflight artifacts and
+grades remain unchanged, while their network-isolation claim is explicitly
+insufficient.
 
 None of these corrections changes the token-cap abort, starts semantic judging,
 or makes ranking permissible.

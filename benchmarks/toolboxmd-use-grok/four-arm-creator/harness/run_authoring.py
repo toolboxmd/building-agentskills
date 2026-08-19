@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import http.client
 import json
 import os
 from pathlib import Path
@@ -12,6 +14,7 @@ import shutil
 import signal
 import subprocess
 import sys
+import threading
 import time
 import uuid
 
@@ -22,6 +25,7 @@ WALL_TIME_LIMIT_SECONDS = 600
 INPUT_TOKEN_LIMIT = 750_000
 OUTPUT_TOKEN_LIMIT = 30_000
 EXCLUDED_OUTPUT_DIRS = {".home", ".tmp", ".pycache"}
+NETWORK_PROBE_BODY = b"toolboxmd-live-loopback-control\n"
 
 
 def sha256(path: Path) -> str:
@@ -67,7 +71,63 @@ def inline_table(entries: dict[str, str]) -> str:
     return "{" + ",".join(f"{toml_string(key)}={toml_string(value)}" for key, value in entries.items()) + "}"
 
 
-def common_config(sandbox: Path, skill_path: Path, python_runtime_root: Path) -> list[str]:
+def start_network_probe() -> tuple[ThreadingHTTPServer, threading.Thread, str, dict]:
+    token = uuid.uuid4().hex
+    probe_path = f"/{token}"
+
+    class ProbeHandler(BaseHTTPRequestHandler):
+        def do_GET(self) -> None:
+            if self.path != probe_path:
+                self.send_error(404)
+                return
+            self.send_response(200)
+            self.send_header("Content-Length", str(len(NETWORK_PROBE_BODY)))
+            self.end_headers()
+            self.wfile.write(NETWORK_PROBE_BODY)
+
+        def log_message(self, _format: str, *_args: object) -> None:
+            return
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), ProbeHandler)
+    server.daemon_threads = True
+    thread = threading.Thread(target=server.serve_forever, name="benchmark-network-probe", daemon=True)
+    thread.start()
+    connection = http.client.HTTPConnection("127.0.0.1", server.server_port, timeout=2)
+    try:
+        connection.request("GET", probe_path)
+        response = connection.getresponse()
+        body = response.read()
+    except OSError as exc:
+        stop_network_probe(server, thread)
+        raise SystemExit(f"unsandboxed loopback network control failed: {exc}") from exc
+    finally:
+        connection.close()
+    if response.status != 200 or body != NETWORK_PROBE_BODY:
+        stop_network_probe(server, thread)
+        raise SystemExit("unsandboxed loopback network control returned unexpected content")
+    url = f"http://127.0.0.1:{server.server_port}{probe_path}"
+    control = {
+        "kind": "live-loopback-http",
+        "succeeded": True,
+        "httpStatus": response.status,
+        "bodySha256": hashlib.sha256(body).hexdigest(),
+        "url": url,
+    }
+    return server, thread, url, control
+
+
+def stop_network_probe(server: ThreadingHTTPServer, thread: threading.Thread) -> None:
+    server.shutdown()
+    server.server_close()
+    thread.join(timeout=2)
+
+
+def common_config(
+    sandbox: Path,
+    skill_path: Path,
+    python_runtime_root: Path,
+    network_probe_url: str,
+) -> list[str]:
     denied_read_probe = Path(__file__).resolve().parents[4] / "README.md"
     filesystem = inline_table(
         {
@@ -93,6 +153,8 @@ def common_config(sandbox: Path, skill_path: Path, python_runtime_root: Path) ->
             "GIT_CONFIG_NOSYSTEM": "1",
             "GIT_CONFIG_GLOBAL": "/dev/null",
             "BENCHMARK_DENIED_READ": str(denied_read_probe),
+            "BENCHMARK_NETWORK_CONTROL_SUCCEEDED": "1",
+            "BENCHMARK_NETWORK_PROBE_URL": network_probe_url,
         }
     )
     skill_config = f"[{{path={toml_string(str(skill_path))},enabled=true}}]"
@@ -323,8 +385,14 @@ def main() -> int:
     codex_home.mkdir(parents=True, exist_ok=True)
     (codex_home / "auth.json").symlink_to(auth_file)
 
+    network_server, network_thread, network_probe_url, network_probe_control = start_network_probe()
     environment = sanitized_process_environment(home, codex_bin)
-    config = common_config(sandbox, skill_dir / "SKILL.md", python_runtime_root)
+    config = common_config(
+        sandbox,
+        skill_dir / "SKILL.md",
+        python_runtime_root,
+        network_probe_url,
+    )
 
     version = subprocess.run(
         [str(codex_bin), "--version"],
@@ -474,6 +542,7 @@ def main() -> int:
             "prompt": {"bytes": prompt.stat().st_size, "sha256": sha256(prompt)},
         },
         "processEnvironmentKeys": sorted(environment),
+        "networkProbeControl": network_probe_control,
         "pythonRuntime": {
             "executable": str(python_bin),
             "root": str(python_runtime_root),
@@ -534,6 +603,7 @@ def main() -> int:
         json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
 
+    stop_network_probe(network_server, network_thread)
     print(
         json.dumps(
             {

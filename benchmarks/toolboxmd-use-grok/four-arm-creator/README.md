@@ -38,6 +38,13 @@ reads, an allowed output write, a denied network attempt, and absence of
 sensitive environment names. Failure in any arm makes the whole comparison
 ineligible for ranking.
 
+The live post-review harness proves network denial by comparison: it starts a
+loopback HTTP endpoint, first requires a successful unsandboxed control against
+that endpoint, and then requires the sandboxed probe against the same live
+endpoint to fail. A DNS or TLS failure without the live control is insufficient.
+The recorded 2026-08-19 run predates this correction and remains ineligible for
+ranking on its independent token-cap gate.
+
 ## Frozen execution conditions
 
 - authoring model: `gpt-5.6-sol`;

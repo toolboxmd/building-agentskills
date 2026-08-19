@@ -43,6 +43,38 @@ for path in sorted(Path(sys.argv[1]).glob("*.py")):
     ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
 PY
 
+PYTHONDONTWRITEBYTECODE=1 python3 -B - "$benchmark/harness" <<'PY'
+from pathlib import Path
+import runpy
+import sys
+
+harness = Path(sys.argv[1])
+runner = runpy.run_path(str(harness / "run_authoring.py"))
+preflight = runpy.run_path(str(harness / "isolation_preflight.py"))
+
+server, thread, url, control = runner["start_network_probe"]()
+try:
+    assert control["kind"] == "live-loopback-http"
+    assert control["succeeded"] is True
+    assert control["httpStatus"] == 200
+    assert preflight["valid_network_probe_url"](url) is True
+    assert preflight["valid_network_probe_url"]("https://example.com/") is False
+    assert preflight["network_denied"](6, False, True) is False
+    assert preflight["network_denied"](6, True, True) is True
+    assert preflight["network_denied"](0, True, True) is False
+    config = runner["common_config"](
+        Path("/tmp/sandbox"),
+        Path("/tmp/sandbox/home/.codex/skills/creator-under-test/SKILL.md"),
+        Path("/usr"),
+        url,
+    )
+    rendered = "\n".join(config)
+    assert "BENCHMARK_NETWORK_CONTROL_SUCCEEDED" in rendered
+    assert "BENCHMARK_NETWORK_PROBE_URL" in rendered
+finally:
+    runner["stop_network_probe"](server, thread)
+PY
+
 PYTHONDONTWRITEBYTECODE=1 python3 -B - "$benchmark/harness/grade_candidate.py" "$tmp" <<'PY'
 from pathlib import Path
 import runpy

@@ -18,6 +18,8 @@ from run_authoring import parse_usage
 from run_authoring import run_process
 from run_authoring import sanitized_process_environment
 from run_authoring import sha256
+from run_authoring import start_network_probe
+from run_authoring import stop_network_probe
 from run_authoring import toml_string
 from run_authoring import tree_manifest
 
@@ -29,7 +31,7 @@ INPUT_TOKEN_LIMIT = 250_000
 OUTPUT_TOKEN_LIMIT = 12_000
 
 
-def judge_config(sandbox: Path, python_runtime_root: Path) -> list[str]:
+def judge_config(sandbox: Path, python_runtime_root: Path, network_probe_url: str) -> list[str]:
     denied_read_probe = Path(__file__).resolve().parents[4] / "README.md"
     filesystem = inline_table(
         {
@@ -52,6 +54,8 @@ def judge_config(sandbox: Path, python_runtime_root: Path) -> list[str]:
             "TERM": "dumb",
             "NO_COLOR": "1",
             "BENCHMARK_DENIED_READ": str(denied_read_probe),
+            "BENCHMARK_NETWORK_CONTROL_SUCCEEDED": "1",
+            "BENCHMARK_NETWORK_PROBE_URL": network_probe_url,
         }
     )
     values = [
@@ -223,8 +227,9 @@ def main() -> int:
     codex_home.mkdir(parents=True, exist_ok=True)
     (codex_home / "auth.json").symlink_to(auth_file)
 
+    network_server, network_thread, network_probe_url, network_probe_control = start_network_probe()
     environment = sanitized_process_environment(home, codex_bin)
-    config = judge_config(sandbox, python_runtime_root)
+    config = judge_config(sandbox, python_runtime_root, network_probe_url)
     version = subprocess.run(
         [str(codex_bin), "--version"], env=environment, text=True, capture_output=True, check=True
     ).stdout.strip()
@@ -351,6 +356,7 @@ def main() -> int:
         "modelReasoningEffort": REASONING_EFFORT,
         "preflightOnly": args.preflight_only,
         "candidate": tree_manifest(candidate),
+        "networkProbeControl": network_probe_control,
         "pythonRuntime": {
             "executable": str(python_bin),
             "root": str(python_runtime_root),
@@ -396,6 +402,7 @@ def main() -> int:
     (result_dir / "run-metadata.json").write_text(
         json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
+    stop_network_probe(network_server, network_thread)
     print(
         json.dumps(
             {

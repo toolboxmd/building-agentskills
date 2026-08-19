@@ -45,7 +45,8 @@
       "91533764d5c2336f7876f2565405e7ae74090a2f",
       "e5c5e8bceed532ff6a9968448a06edf13a69365c",
       "5ef565ad6f251ec2b87686271e985f622f64c22d",
-      "705e5eafd43b9164797243f1a2bb250cbb6f2a4b"
+      "705e5eafd43b9164797243f1a2bb250cbb6f2a4b",
+      "03c55051faa0d53e3e50e0db57debaa3306a09b6"
     ],
     "activeGrokProductChangedAfterRun": true,
     "activeGrokFinding": "Direct or enveloped successful output could bypass complete runtime isolation evidence when no init event was present.",
@@ -68,8 +69,20 @@
     "harnessChangedAfterRun": true,
     "harnessFinding": "PID existence alone misclassified a terminated Linux zombie as a live timeout child.",
     "harnessResolution": "The live diagnostic harness now treats Linux Z, X, and x process states as terminated.",
+    "harnessNetworkFinding": "Any nonzero curl result was treated as network denial, so DNS exit 6 could pass without proving sandbox enforcement.",
+    "harnessNetworkResolution": "The live harness now requires a successful unsandboxed loopback HTTP control and a failed sandboxed probe against the same live endpoint.",
+    "historicalNetworkIsolationEvidenceSufficient": false,
+    "networkPreflightVerification": {
+      "mode": "preflight-only",
+      "modelCalls": 0,
+      "endpointKind": "live-loopback-http",
+      "unsandboxedControlHttpStatus": 200,
+      "sandboxProbeExitStatus": 7,
+      "sandboxPreflightPassed": true
+    },
     "preregisteredHarnessAggregateSha256": "275b92497731803373dcfd3fc24721295c3cbd34d473b44bd1b4a0aa0a3e9795",
-    "currentHarnessAggregateSha256": "713578a2b03233d72cfa83f226802b0cb1b30e5baa23f9548944684faae8c98b",
+    "currentHarnessAggregateSha256": "7f3695e359e2a414a6779b2c236d5bfdde686bac2ea95c1e0b7e9f7083f0670b",
+    "currentHarnessBytes": 83352,
     "storedDeterministicGradesRemainHistorical": true,
     "verdictChanged": false,
     "rankingAllowed": false

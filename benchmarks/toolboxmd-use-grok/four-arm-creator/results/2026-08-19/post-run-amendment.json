@@ -16,7 +16,8 @@
       "91533764d5c2336f7876f2565405e7ae74090a2f",
       "e5c5e8bceed532ff6a9968448a06edf13a69365c",
       "5ef565ad6f251ec2b87686271e985f622f64c22d",
-      "705e5eafd43b9164797243f1a2bb250cbb6f2a4b"
+      "705e5eafd43b9164797243f1a2bb250cbb6f2a4b",
+      "03c55051faa0d53e3e50e0db57debaa3306a09b6"
     ],
     "findings": [
       {
@@ -66,21 +67,37 @@
         "surface": "active Grok output directory",
         "finding": "Output-directory resolution or creation failures occurred before the adapter's exception handling and produced a traceback with no JSON status.",
         "resolution": "Output path resolution, directory creation, and permission setup now emit one input JSON object with exit code 2 and omit runDir when no evidence directory exists."
+      },
+      {
+        "priority": "P2",
+        "surface": "diagnostic network isolation preflight",
+        "finding": "Any nonzero curl result was treated as network denial, so DNS exit 6 could pass without proving sandbox enforcement.",
+        "resolution": "The live harness now starts a loopback HTTP endpoint, requires a successful unsandboxed control, and requires the sandboxed probe against that same live endpoint to fail."
       }
     ]
   },
   "liveAfterFix": {
-    "harnessAggregateSha256": "713578a2b03233d72cfa83f226802b0cb1b30e5baa23f9548944684faae8c98b",
-    "harnessBytes": 78804,
+    "harnessAggregateSha256": "7f3695e359e2a414a6779b2c236d5bfdde686bac2ea95c1e0b7e9f7083f0670b",
+    "harnessBytes": 83352,
     "activeGrokAggregateSha256": "0e2f03fb436e609f85ea242294a1037cd6d5f238b11527348fcf791e1bf9ed62",
     "activeGrokPackageBytes": 36721,
-    "activeGrokAdapterSha256": "ea5356dfb2c15dfb4b8fe3e39fe88a0d96fd165b1345ebee644800783065c643"
+    "activeGrokAdapterSha256": "ea5356dfb2c15dfb4b8fe3e39fe88a0d96fd165b1345ebee644800783065c643",
+    "networkPreflightVerification": {
+      "mode": "preflight-only",
+      "modelCalls": 0,
+      "endpointKind": "live-loopback-http",
+      "unsandboxedControlHttpStatus": 200,
+      "sandboxProbeExitStatus": 7,
+      "sandboxPreflightPassed": true
+    }
   },
   "claimBoundary": {
     "authoringOutputsChanged": false,
     "frozenTreatmentsChanged": false,
     "storedDeterministicGradesRemainHistorical": true,
     "historicalAcceptanceReferenceChanged": false,
+    "historicalNetworkIsolationEvidenceSufficient": false,
+    "futureNetworkPreflightRequiresLiveControl": true,
     "scoreWeightsChanged": false,
     "formalTokenCapVerdictChanged": false,
     "rankingAllowed": false,
