@@ -2,7 +2,7 @@
 
 OpenAI's Codex CLI (`openai/codex`) supports the agent-skills format natively, plus an optional Codex-specific sidecar manifest for OpenAI-side extensions. This page covers what is portable and what is Codex-specific.
 
-Source: `LANDSCAPE` 1.4, 2.2.
+Source: `LANDSCAPE` 1.4, 2.2, plus the current official [Codex sidecar reference](https://github.com/openai/codex/blob/main/codex-rs/skills/src/assets/samples/skill-creator/references/openai_yaml.md) and [interface resolver](https://github.com/openai/codex/blob/main/codex-rs/skills/src/interface.rs).
 
 ## Native Agent Skills support
 
@@ -36,18 +36,31 @@ Example sidecar:
 
 ```yaml
 interface:
-  display_name: My Wiki Skill
-  icon: book
+  display_name: "My Wiki Skill"
+  short_description: "Search and update the project wiki"
+  icon_small: "./assets/wiki-small.svg"
+  icon_large: "./assets/wiki.png"
   brand_color: "#3366cc"
-  default_prompt: "Use the wiki to answer this question."
+  default_prompt: "Use $my-wiki-skill to answer this question."
 
 policy:
   allow_implicit_invocation: true
 
 dependencies:
-  mcp_servers:
-    - filesystem
+  tools:
+    - type: "mcp"
+      value: "filesystem"
+      description: "Filesystem MCP server"
 ```
+
+The current Codex resolver accepts `display_name`, `short_description`,
+`icon_small`, `icon_large`, `brand_color`, and optional `default_prompt`.
+Display names are capped at 64 characters; short descriptions and default
+prompts are capped at 1,024. Icon paths are relative and must resolve under
+`assets/` for a standalone skill. OpenAI's creator guidance recommends a
+25–64-character `short_description`, quoted strings, and a default prompt that
+names the skill as `$skill-name`; ToolboxMD treats the short-description range
+as distribution policy rather than universal Codex validity.
 
 Other harnesses ignore the sidecar silently. Your skill remains portable.
 
@@ -78,5 +91,7 @@ Where Claude Code uses `CLAUDE.md` and Codex uses `AGENTS.md` for persistent alw
 
 - `LANDSCAPE` 1.4 (cross-platform comparison; Codex section).
 - `LANDSCAPE` 2.2 (Codex CLI: native Agent Skills, agents/openai.yaml sidecar, multi-agent opt-in, AGENTS.md).
+- [OpenAI Codex sidecar reference](https://github.com/openai/codex/blob/main/codex-rs/skills/src/assets/samples/skill-creator/references/openai_yaml.md).
+- [OpenAI Codex interface resolver](https://github.com/openai/codex/blob/main/codex-rs/skills/src/interface.rs).
 
 Cross-links: [Other harnesses](/docs/11-cross-platform/others).

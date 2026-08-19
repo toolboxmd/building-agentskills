@@ -38,21 +38,39 @@ Format constraints:
 
 ### `metadata` (optional)
 
-- Free-form key-value mapping. Harness-specific extensions can live here without breaking spec compliance.
-- Example from karpathy-wiki:
+- The portable Agent Skills field is a map from string keys to string values.
+- Nested vendor data is not portable core. For example, Hermes documents this optional extension for Hermes-targeted packages:
   ```yaml
   metadata:
     hermes:
       config:
-        - key: wiki.path
-          description: Path to main wiki directory
-          default: ~/wiki
+        - key: "wiki.path"
+          description: "Path to main wiki directory"
+          default: "~/wiki"
   ```
+
+Hermes extension source: [Hermes Agent, Creating Skills](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/developer-guide/creating-skills.md#config-settings-configyaml).
 
 ### `allowed-tools` (optional, experimental in the spec)
 
 - Per spec, marked experimental. Avoid for cross-platform; not honored uniformly.
 - Claude Code's `allowed-tools` is more developed and lives in the extensions column.
+
+### ToolboxMD generated form
+
+The Agent Skills specification permits ordinary YAML string forms. The active
+`toolboxmd-creating-skills` candidate deliberately emits a smaller canonical
+form: every portable string, including the exact directory-matching `name`,
+and every user-defined portable `metadata` key and value is a one-line JSON
+double-quoted string. This is a deterministic generation and checking policy,
+not an added Agent Skills requirement. It prevents YAML implicit typing of
+names, keys, or values such as dates, hexadecimal numbers, booleans, and
+nulls.
+
+For an explicitly Hermes-targeted package, the same policy applies to the
+vendor extension: fixed schema field names remain unquoted, each config item
+starts with `- key: "..."`, and every user-provided value is JSON double-quoted.
+Pass `--allow-hermes-metadata` to the ToolboxMD checker only for that target.
 
 ## Claude Code extensions
 
@@ -95,7 +113,7 @@ Three distinct numbers (1,024 / 1,536 / 8,000) constrain Claude Code-targeted sk
 
 ## Worked example: karpathy-wiki frontmatter
 
-Cross-platform safe (the spec-compliant minimum). Showing field shape only — full TRIGGER/SKIP body in [Description triggers — Karpathy-wiki's description](/docs/05-authoring/triggers).
+This example combines portable core fields with a Hermes vendor extension. It shows field shape only; the full TRIGGER/SKIP body is in [Karpathy-wiki description triggers](/docs/05-authoring/triggers).
 
 ```yaml
 ---
@@ -114,7 +132,11 @@ metadata:
 ---
 ```
 
-Source: [v2.2 SKILL.md lines 1–19](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L1-L19). No Claude Code extensions; works on every spec-compatible harness. The `metadata.hermes` block is harness-specific but lives inside the spec-compliant `metadata` field.
+Source: [v2.2 SKILL.md lines 1–19](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L1-L19). The `name` and `description` are portable core. The nested `metadata.hermes` block is a Hermes extension and must not be presented as string-to-string Agent Skills metadata.
+
+This pinned historical example uses YAML block and plain scalars. A new package
+created by the active ToolboxMD candidate uses the narrower double-quoted form
+described above.
 
 ## Auditing your frontmatter
 

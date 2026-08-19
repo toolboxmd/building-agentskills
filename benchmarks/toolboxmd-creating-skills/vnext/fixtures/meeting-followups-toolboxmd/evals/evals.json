@@ -1,0 +1,40 @@
+{
+  "skill_name": "meeting-followups",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Turn the attached 2026-07-20 tagged meeting notes into our team follow-up and update the attached actions.csv tracker. The notes say: E01 [DECISION] Keep the help center public. E02 [ACTION] Oliver Smith | 2026-07-22 | Publish the revised FAQ. E03 [IDEA] Maybe record a welcome video. E04 [QUESTION] Who will translate the FAQ?",
+      "expected_output": "Three files under output/: a four-section follow-up with cited entries, a copied tracker with only E02 appended as M-260720-01 for @oliver, and a QA object reporting one item in each classified category and no missing due dates.",
+      "files": ["actions.csv"],
+      "assertions": [
+        "The decision, action, question, and deferred idea remain in their explicitly tagged classes",
+        "The idea is absent from the tracker",
+        "Every follow-up bullet ends with its source marker",
+        "The original tracker rows remain before the one new action row"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Prepare the follow-up and tracker update for the 2026-08-03 meeting using the attached tracker. Notes: M01 [CHATTER] Nice weather today. M02 [ACTION] Draft the launch checklist. M03 [ACTION] Maya Chen | Confirm the venue. M04 [DECISION] Keep the beta private.",
+      "expected_output": "Three contract-compliant files; chatter omitted; two action rows appended in order with identifiers ending 01 and 02; missing owners or dates represented as TBD; both action identifiers listed in missing_due_dates.",
+      "files": ["actions.csv"],
+      "assertions": [
+        "No owner or due date is invented",
+        "M02 and M03 are the only appended tracker sources",
+        "The QA counts and missing_due_dates match the notes",
+        "The validator succeeds after generation"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "What are some good ways to make our weekly meetings shorter and ensure people follow through afterward?",
+      "expected_output": "General meeting and follow-through advice without invoking the tagged-note file-generation procedure or creating tracker artifacts.",
+      "files": [],
+      "assertions": [
+        "The meeting-followups procedure does not activate",
+        "The response does not demand tagged notes, a tracker, or a meeting date",
+        "No output files are created"
+      ]
+    }
+  ]
+}
