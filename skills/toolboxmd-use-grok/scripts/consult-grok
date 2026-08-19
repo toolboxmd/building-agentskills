@@ -587,10 +587,16 @@ def main() -> int:
     except ConsultationError as exc:
         return emit({"status": exc.category, "message": str(exc)}, EXIT[exc.category])
     run_id = str(uuid.uuid4())
-    run_dir = args.output_dir.expanduser().resolve() / f"run-{run_id}"
-    run_dir.mkdir(parents=True, exist_ok=False, mode=0o700)
-    if os.name == "posix":
-        run_dir.chmod(0o700)
+    try:
+        run_dir = args.output_dir.expanduser().resolve() / f"run-{run_id}"
+        run_dir.mkdir(parents=True, exist_ok=False, mode=0o700)
+        if os.name == "posix":
+            run_dir.chmod(0o700)
+    except (OSError, RuntimeError) as exc:
+        return emit(
+            {"status": "input", "message": f"Cannot create output directory: {exc}"},
+            EXIT["input"],
+        )
     metadata: dict = {"runId": run_id, "mode": args.mode, "status": "starting"}
     try:
         if not math.isfinite(args.timeout) or not 0 < args.timeout <= 600:

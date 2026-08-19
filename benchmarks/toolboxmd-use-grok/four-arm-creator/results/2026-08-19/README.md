@@ -21,7 +21,8 @@ Exact-HEAD reviews of commits `223e49d8697141b13c53fec249d5b5ebb3682f75`,
 `46938699eb21ad3f6167f147f956781704976b35`, and
 `91533764d5c2336f7876f2565405e7ae74090a2f`, followed by review of
 `e5c5e8bceed532ff6a9968448a06edf13a69365c` and
-`5ef565ad6f251ec2b87686271e985f622f64c22d`, found seven findings after the
+`5ef565ad6f251ec2b87686271e985f622f64c22d` and then
+`705e5eafd43b9164797243f1a2bb250cbb6f2a4b`, found eight findings after the
 authoring outputs and deterministic grades had already been recorded.
 
 The active Grok product could accept a direct or enveloped success without a
@@ -58,6 +59,10 @@ Parser-level invalid input previously exited through argparse before the stable
 status contract could run. Invalid mode, nonnumeric timeout, and missing
 required-argument fixtures now each receive one `input` JSON object on stdout,
 exit code 2, no stderr usage text, and no run directory.
+
+Output-directory resolution or creation could also fail before the handler and
+produce a traceback. Those operations now return one `input` JSON object with
+exit code 2 and omit `runDir` when no evidence directory could be retained.
 
 None of these corrections changes the token-cap abort, starts semantic judging,
 or makes ranking permissible.

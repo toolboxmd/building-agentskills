@@ -15,7 +15,8 @@
       "46938699eb21ad3f6167f147f956781704976b35",
       "91533764d5c2336f7876f2565405e7ae74090a2f",
       "e5c5e8bceed532ff6a9968448a06edf13a69365c",
-      "5ef565ad6f251ec2b87686271e985f622f64c22d"
+      "5ef565ad6f251ec2b87686271e985f622f64c22d",
+      "705e5eafd43b9164797243f1a2bb250cbb6f2a4b"
     ],
     "findings": [
       {
@@ -59,15 +60,21 @@
         "surface": "active Grok argument parser",
         "finding": "Parser-level invalid input exited through argparse before the adapter could emit its stable JSON status object.",
         "resolution": "The argument parser now raises the adapter's input category, and main emits one JSON status line with exit code 2 before creating a run directory."
+      },
+      {
+        "priority": "P2",
+        "surface": "active Grok output directory",
+        "finding": "Output-directory resolution or creation failures occurred before the adapter's exception handling and produced a traceback with no JSON status.",
+        "resolution": "Output path resolution, directory creation, and permission setup now emit one input JSON object with exit code 2 and omit runDir when no evidence directory exists."
       }
     ]
   },
   "liveAfterFix": {
     "harnessAggregateSha256": "713578a2b03233d72cfa83f226802b0cb1b30e5baa23f9548944684faae8c98b",
     "harnessBytes": 78804,
-    "activeGrokAggregateSha256": "fea334c07b895825ea4dd6c15611def135a7549e8aadb82965dbfa167b0756ea",
-    "activeGrokPackageBytes": 36509,
-    "activeGrokAdapterSha256": "9797a0ab584f73d13f0db704363aad11a312103148676d51a726b91edd6e7480"
+    "activeGrokAggregateSha256": "0e2f03fb436e609f85ea242294a1037cd6d5f238b11527348fcf791e1bf9ed62",
+    "activeGrokPackageBytes": 36721,
+    "activeGrokAdapterSha256": "ea5356dfb2c15dfb4b8fe3e39fe88a0d96fd165b1345ebee644800783065c643"
   },
   "claimBoundary": {
     "authoringOutputsChanged": false,

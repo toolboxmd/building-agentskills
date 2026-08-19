@@ -372,6 +372,34 @@ class UseGrokTests(unittest.TestCase):
                 self.assertTrue(payload["message"].startswith("Argument error:"))
                 self.assertFalse(self.output.exists())
 
+    def test_output_directory_failure_emits_input_json(self) -> None:
+        blocked_parent = self.root / "blocked-output-parent"
+        blocked_parent.write_text("not a directory\n", encoding="utf-8")
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ADAPTER),
+                "--mode",
+                "explicit",
+                "--prompt-file",
+                str(self.prompt),
+                "--output-dir",
+                str(blocked_parent / "child"),
+            ],
+            cwd=self.root,
+            env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(result.stderr, "")
+        self.assertEqual(len(result.stdout.splitlines()), 1)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["status"], "input")
+        self.assertTrue(payload["message"].startswith("Cannot create output directory:"))
+        self.assertNotIn("runDir", payload)
+
     def test_direct_and_enveloped_structured_output(self) -> None:
         for scenario in ("direct", "envelope"):
             with self.subTest(scenario=scenario):

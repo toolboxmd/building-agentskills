@@ -27,7 +27,12 @@ status contract. Invalid mode, nonnumeric timeout, and missing required flag
 fixtures now receive one `input` JSON object, exit code 2, no stderr usage text,
 and no run directory.
 
-The 36,509-byte two-file active package passes the final exact-reviewed Creator
+The following exact-HEAD review found the same bypass around output-directory
+creation. Resolution, creation, and permission failures now emit one `input`
+JSON object with exit code 2 and no `runDir` field when evidence storage does not
+exist.
+
+The 36,721-byte two-file active package passes the final exact-reviewed Creator
 vNext validator from commit `20fc268615079ade496e31cc5e55f51bcc5ad3b0` under
 the same 45,000-byte downstream package profile. The exact validator, adapter,
 arguments, and result are recorded in `validator-diagnostic.json`.

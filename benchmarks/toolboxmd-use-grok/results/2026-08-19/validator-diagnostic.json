@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "recordedOn": "2026-08-19",
-  "reason": "Post-review validation after requiring complete strict inspect evidence, rejecting generic credential assignments, recursively redacting structured review strings, and emitting JSON for parser-level input failures.",
+  "reason": "Post-review validation after requiring complete strict inspect evidence, rejecting generic credential assignments, recursively redacting structured review strings, and emitting JSON for parser and output-directory failures.",
   "validator": {
     "creatorCommit": "20fc268615079ade496e31cc5e55f51bcc5ad3b0",
     "repositoryPath": "skills/toolboxmd-creating-skills/scripts/validate_skill.py",
@@ -13,9 +13,9 @@
   },
   "scriptSyntaxAttestation": {
     "path": "scripts/consult-grok",
-    "sha256": "9797a0ab584f73d13f0db704363aad11a312103148676d51a726b91edd6e7480",
-    "argument": "--script-syntax-checked scripts/consult-grok=9797a0ab584f73d13f0db704363aad11a312103148676d51a726b91edd6e7480",
-    "basis": "The focused fake suite executes the exact active extensionless Python helper across twelve test methods; ToolboxMD validator reports executionVerifiedByToolboxMD=false."
+    "sha256": "ea5356dfb2c15dfb4b8fe3e39fe88a0d96fd165b1345ebee644800783065c643",
+    "argument": "--script-syntax-checked scripts/consult-grok=ea5356dfb2c15dfb4b8fe3e39fe88a0d96fd165b1345ebee644800783065c643",
+    "basis": "The focused fake suite executes the exact active extensionless Python helper across thirteen test methods; ToolboxMD validator reports executionVerifiedByToolboxMD=false."
   },
   "execution": {
     "outsideRepositoryCwd": true,
@@ -30,7 +30,7 @@
       "--creation-mode",
       "--warnings-as-errors",
       "--script-syntax-checked",
-      "scripts/consult-grok=9797a0ab584f73d13f0db704363aad11a312103148676d51a726b91edd6e7480",
+      "scripts/consult-grok=ea5356dfb2c15dfb4b8fe3e39fe88a0d96fd165b1345ebee644800783065c643",
       "--max-description-chars",
       "400",
       "--max-skill-lines",
@@ -55,8 +55,8 @@
     "status": "pass",
     "warningCount": 0,
     "errorCount": 0,
-    "aggregateSha256": "fea334c07b895825ea4dd6c15611def135a7549e8aadb82965dbfa167b0756ea",
-    "packageBytes": 36509,
+    "aggregateSha256": "0e2f03fb436e609f85ea242294a1037cd6d5f238b11527348fcf791e1bf9ed62",
+    "packageBytes": 36721,
     "fileCount": 2,
     "skillMdBytes": 5077,
     "skillMdLines": 81,
@@ -71,7 +71,8 @@
       "46938699eb21ad3f6167f147f956781704976b35",
       "91533764d5c2336f7876f2565405e7ae74090a2f",
       "e5c5e8bceed532ff6a9968448a06edf13a69365c",
-      "5ef565ad6f251ec2b87686271e985f622f64c22d"
+      "5ef565ad6f251ec2b87686271e985f622f64c22d",
+      "705e5eafd43b9164797243f1a2bb250cbb6f2a4b"
     ],
     "realGrokCalls": 0,
     "automaticModeAccepted": false,
