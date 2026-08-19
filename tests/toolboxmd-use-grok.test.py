@@ -410,6 +410,24 @@ class UseGrokTests(unittest.TestCase):
                 review = json.loads((Path(payload["runDir"]) / "review.json").read_text(encoding="utf-8"))
                 self.assertEqual(review, REVIEW)
 
+    def test_redaction_never_returns_ok_with_invalid_review_schema(self) -> None:
+        self.output = self.root / "output-redacted-verdict"
+        verdict_prompt = self.root / "verdict-brief.md"
+        verdict_prompt.write_text("PROCEED WITH CHANGES", encoding="utf-8")
+
+        result, payload, _ = self.run_adapter("streaming", prompt=verdict_prompt)
+
+        self.assertEqual(result.returncode, 7, result.stderr)
+        self.assertEqual(payload["status"], "invalid-json")
+        self.assertIn("redaction", payload["message"])
+        run_dir = Path(payload["runDir"])
+        self.assertFalse((run_dir / "review.json").exists())
+        metadata = json.loads((run_dir / "metadata.json").read_text(encoding="utf-8"))
+        self.assertEqual(metadata["status"], "invalid-json")
+        retained_stdout = (run_dir / "stdout.raw.txt").read_text(encoding="utf-8")
+        self.assertNotIn('"verdict": "PROCEED WITH CHANGES"', retained_stdout)
+        self.assertIn('"verdict": "[REDACTED]"', retained_stdout)
+
     def test_nonstreaming_success_requires_complete_inspect_fallback(self) -> None:
         scenarios = (
             "direct-ambient-skill",

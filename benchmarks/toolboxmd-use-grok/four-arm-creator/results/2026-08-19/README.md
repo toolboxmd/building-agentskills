@@ -23,7 +23,8 @@ Exact-HEAD reviews of commits `223e49d8697141b13c53fec249d5b5ebb3682f75`,
 `e5c5e8bceed532ff6a9968448a06edf13a69365c` and
 `5ef565ad6f251ec2b87686271e985f622f64c22d` and then
 `705e5eafd43b9164797243f1a2bb250cbb6f2a4b` and
-`03c55051faa0d53e3e50e0db57debaa3306a09b6`, found nine findings after the
+`03c55051faa0d53e3e50e0db57debaa3306a09b6` and
+`4ac626b38d1748dffe1beceaee050b7296a98cc0`, found ten findings after the
 authoring outputs and deterministic grades had already been recorded.
 
 The active Grok product could accept a direct or enveloped success without a
@@ -73,6 +74,12 @@ against that same live endpoint to fail. A model-free preflight-only run passed
 with host HTTP 200 and sandboxed curl exit 7. Historical preflight artifacts and
 grades remain unchanged, while their network-isolation claim is explicitly
 insufficient.
+
+A protected prompt equal to a fixed review verdict could also be redacted
+inside an already validated review, leaving an invalid enum while the adapter
+returned `ok`. The active adapter now validates the redacted review again;
+schema-breaking redaction returns `invalid-json` and does not retain
+`review.json`.
 
 None of these corrections changes the token-cap abort, starts semantic judging,
 or makes ranking permissible.

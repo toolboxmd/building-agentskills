@@ -32,7 +32,13 @@ creation. Resolution, creation, and permission failures now emit one `input`
 JSON object with exit code 2 and no `runDir` field when evidence storage does not
 exist.
 
-The 36,721-byte two-file active package passes the final exact-reviewed Creator
+The next exact-HEAD review found that redacting a prompt equal to a fixed
+verdict could mutate an already validated review into an invalid enum while the
+adapter still returned `ok`. The adapter now validates the redacted object and
+fails with `invalid-json` without retaining `review.json` if redaction breaks
+the closed schema.
+
+The 37,105-byte two-file active package passes the final exact-reviewed Creator
 vNext validator from commit `20fc268615079ade496e31cc5e55f51bcc5ad3b0` under
 the same 45,000-byte downstream package profile. The exact validator, adapter,
 arguments, and result are recorded in `validator-diagnostic.json`.

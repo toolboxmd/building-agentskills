@@ -746,7 +746,14 @@ def main() -> int:
             if category == "ok" and review is not None:
                 redacted_review, review_redactions = redact_value(review, prompt, path_replacements)
                 metadata["redactionsApplied"] += review_redactions
-                write_json(run_dir / "review.json", redacted_review)
+                redaction_problem = validate_review(redacted_review)
+                if redaction_problem:
+                    category = "invalid-json"
+                    message = f"Review redaction invalidated the structured schema: {redaction_problem}"
+                    metadata["status"] = category
+                    metadata["message"] = message
+                else:
+                    write_json(run_dir / "review.json", redacted_review)
             write_json(run_dir / "metadata.json", metadata)
             payload = {"status": category, "message": message, "runDir": str(run_dir)}
             return emit(payload, EXIT[category])

@@ -17,7 +17,8 @@
       "e5c5e8bceed532ff6a9968448a06edf13a69365c",
       "5ef565ad6f251ec2b87686271e985f622f64c22d",
       "705e5eafd43b9164797243f1a2bb250cbb6f2a4b",
-      "03c55051faa0d53e3e50e0db57debaa3306a09b6"
+      "03c55051faa0d53e3e50e0db57debaa3306a09b6",
+      "4ac626b38d1748dffe1beceaee050b7296a98cc0"
     ],
     "findings": [
       {
@@ -73,15 +74,21 @@
         "surface": "diagnostic network isolation preflight",
         "finding": "Any nonzero curl result was treated as network denial, so DNS exit 6 could pass without proving sandbox enforcement.",
         "resolution": "The live harness now starts a loopback HTTP endpoint, requires a successful unsandboxed control, and requires the sandboxed probe against that same live endpoint to fail."
+      },
+      {
+        "priority": "P2",
+        "surface": "active Grok redacted review schema",
+        "finding": "A protected prompt equal to a fixed verdict could be redacted inside an already validated review, producing an invalid verdict while the adapter still returned ok.",
+        "resolution": "The redacted review is now validated again; schema-breaking redaction returns invalid-json and does not retain review.json."
       }
     ]
   },
   "liveAfterFix": {
     "harnessAggregateSha256": "7f3695e359e2a414a6779b2c236d5bfdde686bac2ea95c1e0b7e9f7083f0670b",
     "harnessBytes": 83352,
-    "activeGrokAggregateSha256": "0e2f03fb436e609f85ea242294a1037cd6d5f238b11527348fcf791e1bf9ed62",
-    "activeGrokPackageBytes": 36721,
-    "activeGrokAdapterSha256": "ea5356dfb2c15dfb4b8fe3e39fe88a0d96fd165b1345ebee644800783065c643",
+    "activeGrokAggregateSha256": "253cc3644a89151e4e435451d69a4b83fd3886a96a7de2d93f961e96180f6fe7",
+    "activeGrokPackageBytes": 37105,
+    "activeGrokAdapterSha256": "753ece419c18512232e281c53a93ad1d883afb2cd36e82b3c14192a1bd58ced4",
     "networkPreflightVerification": {
       "mode": "preflight-only",
       "modelCalls": 0,
