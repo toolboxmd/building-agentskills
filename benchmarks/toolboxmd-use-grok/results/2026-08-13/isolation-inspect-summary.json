@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "commandKind": "non-model-grok-inspect",
+  "grokVersion": "grok 1.0.3 (1a29d5bc12d4) [stable]",
+  "sharedConditions": {
+    "cwd": "empty temporary directory",
+    "grokHome": "initially empty temporary profile",
+    "cursorAndClaudeCompatibilitySwitches": 12,
+    "allSelectedSwitchesDisabledByEnvironment": true,
+    "remoteCompatibilitySettingsLoaded": false
+  },
+  "normalHome": {
+    "rawBytes": 6925,
+    "rawSha256": "6a0c086abe8667fba5cadd4de4c74f5b6cb164b36951ae207ed8475aad803678",
+    "projectRootSet": false,
+    "projectInstructionCount": 0,
+    "skillCount": 4,
+    "skillNames": [
+      "cloudflare-browser-rendering",
+      "pinchtab",
+      "karpathy-project-wiki",
+      "skill-creator"
+    ],
+    "mcpServerCount": 1,
+    "mcpServerNames": [
+      "dash-api"
+    ],
+    "pluginCount": 0,
+    "hookCount": 0,
+    "marketplaceCount": 0
+  },
+  "stagedHome": {
+    "rawBytes": 3002,
+    "rawSha256": "776210e8e0f7fd5f53dc879415608da76f1099100ff37815ecec895f4a3ff83e",
+    "projectRootSet": false,
+    "projectInstructionCount": 0,
+    "skillCount": 0,
+    "skillNames": [],
+    "mcpServerCount": 0,
+    "mcpServerNames": [],
+    "pluginCount": 0,
+    "hookCount": 0,
+    "marketplaceCount": 0
+  },
+  "finding": "An empty GROK_HOME plus compatibility flags is not isolation while the normal HOME remains visible. A staged HOME removes the observed native .agents skills and Cursor MCP source from inspect.",
+  "retention": "Raw inspect output was hashed but not retained because it contains unrelated user paths and third-party skill descriptions. This summary retains only names, counts, and contract fields."
+}

@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "toolboxmd-use-grok-2026-08-13",
+  "publicDefault": "explicit-consultation-only",
+  "automaticPolicy": "opt-in-and-fail-closed",
+  "activationFixtures": {
+    "shouldTrigger": [
+      "Zapytaj Groka, czy ten plan nie jest przekombinowany.",
+      "Przekaz Grok Build ten brief i popros o druga opinie.",
+      "Ask Grok to review this implementation plan before we execute it.",
+      "Send this proposal to Grok Build and reconcile its feedback."
+    ],
+    "automaticOnlyWhenOptedIn": [
+      "A coherent implementation plan is ready to present or execute."
+    ],
+    "shouldNotTrigger": [
+      "Lets keep brainstorming possible approaches.",
+      "Run the two obvious formatting steps.",
+      "Tell me the current task status.",
+      "Summarize the Grok response we just received.",
+      "Repeat review of the unchanged plan hash.",
+      "This benchmark forbids nested agents.",
+      "Do not send this plan to Grok.",
+      "This brief contains credentials and cannot leave the session."
+    ]
+  },
+  "reviewSchema": {
+    "verdicts": [
+      "PROCEED",
+      "PROCEED WITH CHANGES",
+      "REPLAN",
+      "NEEDS HUMAN DECISION"
+    ],
+    "requiredSections": [
+      "overengineering",
+      "missing",
+      "risks",
+      "minimum_plan_delta",
+      "user_decisions"
+    ],
+    "additionalProperties": false
+  },
+  "automaticNearMisses": [
+    "brainstorming",
+    "trivial-work",
+    "status-reporting",
+    "same-plan-hash",
+    "grok-response-processing",
+    "nested-agent-benchmark",
+    "explicit-opt-out",
+    "unsafe-external-content"
+  ],
+  "adapterRequiredFailures": [
+    "missing-cli",
+    "isolation-failure",
+    "nonzero-exit",
+    "timeout",
+    "invalid-json",
+    "incomplete-stop-reason",
+    "max-turns"
+  ],
+  "productBudgets": {
+    "descriptionCharactersMaximum": 400,
+    "skillMdLinesMaximum": 150,
+    "skillMdBytesMaximum": 10500,
+    "fileCount": 2,
+    "packageBytesMaximum": 45000,
+    "referenceFileCount": 0,
+    "evalFileCount": 0,
+    "scriptFileCount": 1
+  }
+}

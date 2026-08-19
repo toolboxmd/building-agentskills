@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "toolboxmd-use-grok-raw-vnext-2026-08-13",
+  "frozenOn": "2026-08-13",
+  "creatorInputCommit": "bfbd679fceec4bf2d403b8aca3a4b09d9396340e",
+  "brief": {
+    "path": "benchmarks/toolboxmd-use-grok/base-brief.md",
+    "sha256": "8ae35d1e9a95e873e23bf33f2343734d64a873fc3642aef8a3246a0889519efe"
+  },
+  "package": {
+    "path": "benchmarks/toolboxmd-use-grok/development/raw-candidate/package",
+    "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
+    "aggregateSha256": "a886822d8416f79dfc345928a0b39a22aa95ac5357dc21943b970ea2eaa12521",
+    "fileCount": 2,
+    "packageBytes": 25980,
+    "files": [
+      {
+        "path": "SKILL.md",
+        "bytes": 4037,
+        "lines": 77,
+        "sha256": "ca3de96b380e44b5c80b1e12d482da1bb10acb20cdf10464140f707c5ac071f0"
+      },
+      {
+        "path": "scripts/consult-grok",
+        "bytes": 21943,
+        "sha256": "554e4f2c75573b0f636da153a5a9504f268bb4f91d3a1387e8c3b96ec7bd9565"
+      }
+    ]
+  },
+  "claimBoundary": {
+    "rawCandidateRetainedByteForByte": true,
+    "fakeAcceptanceRun": false,
+    "realAcceptanceRun": false,
+    "productAccepted": false,
+    "automaticReviewEnabled": false
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "preregisteredAt": "2026-08-19T19:01:13+02:00",
+  "branchBase": {
+    "commit": "20fc268615079ade496e31cc5e55f51bcc5ad3b0",
+    "pullRequest": "https://github.com/toolboxmd/building-agentskills/pull/2",
+    "pullRequestExactHeadReview": "clean",
+    "originMainAtRecovery": "5adfe5247376033d2e15e826fbf949b97c965a41"
+  },
+  "claimBoundary": {
+    "purpose": "Known-brief diagnostic of four frozen Creator treatments for one toolboxmd-use-grok package.",
+    "briefKnownDuringVNextAuthoring": true,
+    "generalSuperiorityClaimAllowed": false,
+    "productionPromotionClaimAllowed": false,
+    "defaultCreatorClaimAllowed": false,
+    "historicalGrokPackagesRanked": false,
+    "realGrokCallsAllowed": false,
+    "automaticGrokReviewRemainsDisabled": true
+  },
+  "inputs": {
+    "baseBrief": {
+      "path": "benchmarks/toolboxmd-use-grok/base-brief.md",
+      "bytes": 5246,
+      "sha256": "8ae35d1e9a95e873e23bf33f2343734d64a873fc3642aef8a3246a0889519efe"
+    },
+    "contract": {
+      "path": "benchmarks/toolboxmd-use-grok/contract.json",
+      "bytes": 2051,
+      "sha256": "d50124d66f29a9f4b6b0ef29ffba1f7d45890f8544cf540d43ea2228cbbf1742"
+    },
+    "authoringPrompt": {
+      "path": "benchmarks/toolboxmd-use-grok/four-arm-creator/authoring-prompt.md",
+      "sha256": "56f34312178db36f6a43a59b569b9bc37b56f052ab2d6a91f5d639f9d39fea31"
+    },
+    "judgePrompt": {
+      "path": "benchmarks/toolboxmd-use-grok/four-arm-creator/judge-prompt.md",
+      "sha256": "f1e89213656377dad72afcfbb52b0c1c5505acbfe999c05077b9a7173e966ebf"
+    }
+  },
+  "treatments": {
+    "A": {
+      "id": "legacy-toolboxmd",
+      "role": "historical ToolboxMD baseline",
+      "path": "benchmarks/toolboxmd-creating-skills/vnext/fixtures/legacy-toolboxmd-creator",
+      "sourcePathAtDiagnosticCommit": "benchmarks/toolboxmd-creating-skills/v1/results/2026-08-12/candidate/toolboxmd-creating-skills",
+      "aggregateSha256": "b06582ca95a430f5d0ae5a046019f8f7495db7bc0837dc035ea84acd1583c8d7",
+      "bytes": 34440,
+      "fileCount": 6
+    },
+    "B": {
+      "id": "early-vnext",
+      "role": "first vNext implementation that generated the historical raw Grok",
+      "path": "benchmarks/toolboxmd-use-grok/four-arm-creator/treatments/b-early-vnext/package",
+      "sourceCommit": "bfbd679fceec4bf2d403b8aca3a4b09d9396340e",
+      "sourcePathAtCommit": "skills/toolboxmd-creating-skills",
+      "aggregateSha256": "e76c24dda94e6228cdad895b3fc0abe89c22558bbdce7c11c9d062f66cd5212f",
+      "bytes": 23496,
+      "fileCount": 3
+    },
+    "C": {
+      "id": "final-vnext",
+      "role": "final exact-reviewed Creator vNext",
+      "path": "skills/toolboxmd-creating-skills",
+      "sourceCommit": "20fc268615079ade496e31cc5e55f51bcc5ad3b0",
+      "aggregateSha256": "e667aa1671dafc07df09289f8f1ed23bd36268c6a1a44b8868cac83eb429e22f",
+      "bytes": 46953,
+      "fileCount": 3,
+      "internalPackageCapBytes": 48000
+    },
+    "D": {
+      "id": "current-builtin-codex-skill-creator",
+      "role": "independent built-in baseline",
+      "path": "benchmarks/toolboxmd-use-grok/four-arm-creator/treatments/d-current-builtin/package",
+      "sourcePathAtFreeze": "<CODEX_HOME>/skills/.system/skill-creator",
+      "aggregateSha256": "6fe5b307747bb389d3e5171dccc418a6de523caaa71f09ee23f1f4b4914e31ca",
+      "bytes": 63340,
+      "fileCount": 9,
+      "freezeObservation": "The local system package refreshed during the audit. Arm D is the first stable double-read after that refresh and matches the retained Codex CLI 0.147.0 snapshot byte-for-byte."
+    }
+  },
+  "unrankedReferences": {
+    "historicalRawGrok": {
+      "path": "benchmarks/toolboxmd-use-grok/development/raw-candidate/package",
+      "aggregateSha256": "a886822d8416f79dfc345928a0b39a22aa95ac5357dc21943b970ea2eaa12521",
+      "bytes": 25980,
+      "fileCount": 2,
+      "creatorCommit": "bfbd679fceec4bf2d403b8aca3a4b09d9396340e"
+    },
+    "acceptanceRefinedGrok": {
+      "path": "skills/toolboxmd-use-grok",
+      "aggregateSha256": "cb2e0c3e607d57ae02ab613858a9a6d41ab8371a1067b810caccd75d32be017a",
+      "bytes": 34597,
+      "fileCount": 2,
+      "ranked": false
+    }
+  },
+  "authoringRun": {
+    "model": "gpt-5.6-sol",
+    "reasoningEffort": "medium",
+    "codexCliVersion": "0.147.0",
+    "pythonVersion": "3.14.6",
+    "pythonRuntimeRoot": "/opt/homebrew/Cellar/python@3.14/3.14.6",
+    "freshEphemeralContextPerArm": true,
+    "runsPerArm": 1,
+    "wallTimeLimitSeconds": 600,
+    "postRunInputTokenLimit": 750000,
+    "postRunOutputTokenLimit": 30000,
+    "commonPrompt": true,
+    "commonToolAndPermissionProfile": true,
+    "realGrokCalls": 0
+  },
+  "blindJudgeRun": {
+    "model": "gpt-5.6-sol",
+    "reasoningEffort": "medium",
+    "freshEphemeralContextPerCandidate": true,
+    "answerKeyModelVisible": false,
+    "wallTimeLimitSeconds": 300,
+    "postRunInputTokenLimit": 250000,
+    "postRunOutputTokenLimit": 12000
+  },
+  "isolation": {
+    "processEnvironment": "allow-listed",
+    "shellEnvironmentInherit": "none",
+    "filesystemDefault": "deny",
+    "minimalPlatformRuntimeRead": true,
+    "frozenPythonRuntimeRead": true,
+    "sandboxInputAndHarnessRead": true,
+    "treatmentRead": true,
+    "outputOnlyWrite": true,
+    "codexAuthReadByModelCommands": false,
+    "unrelatedRepositoryRead": false,
+    "directNetworkEnabledForModelCommands": false,
+    "syscallEnforcement": "macOS Seatbelt through Codex permission profile",
+    "controlAndModelPreflightRequired": true,
+    "denialLogRequired": true,
+    "modelVisiblePromptCaptureRequired": true,
+    "commandAndToolEventTraceRequired": true,
+    "abortRule": "If any authoring or judge run lacks required evidence, exceeds a boundary, or exceeds a cap, the entire four-arm comparison is ineligible for ranking."
+  },
+  "evaluation": {
+    "deterministicPoints": 70,
+    "semanticPoints": 30,
+    "totalPoints": 100,
+    "criticalDeterministicFailureDisqualifiesArtifact": true,
+    "customToolboxmdValidatorCompatibilityScored": false,
+    "semanticBreakdown": {
+      "activationBalancedAccuracyPoints": 10,
+      "procedureAdherencePoints": 10,
+      "privacyReliabilityPoints": 10
+    }
+  },
+  "decisionRules": {
+    "knownTaskWinner": "All four authoring and judge runs must be isolation-eligible. A recommended arm needs no critical deterministic failure, at least 85 total points, and at least an 8-point lead over the next eligible arm.",
+    "inconclusive": "Any isolation failure, no arm at 85 points, or a lead below 8 points is inconclusive.",
+    "pairedRepeat": "Run exactly one additional authoring and judging pass for each exactly tied eligible top arm. Average the two scores. A recommendation still needs no critical failure in either pass, at least 85 mean points, and an 8-point mean lead. Cost never creates a winner.",
+    "heldOutAdmission": "Admit at most two arms with isolation-eligible evidence, no critical deterministic failure, and at least 85 points. Order by total score, then deterministic score, then smaller package bytes only to break an admission tie. This admission is not promotion."
+  },
+  "harness": {
+    "path": "benchmarks/toolboxmd-use-grok/four-arm-creator/harness",
+    "aggregateSha256": "275b92497731803373dcfd3fc24721295c3cbd34d473b44bd1b4a0aa0a3e9795",
+    "bytes": 78302,
+    "fileCount": 11,
+    "hashAlgorithm": "SHA-256 of '<file-sha256>  <relative-path>\\n' lines sorted by relative path"
+  }
+}

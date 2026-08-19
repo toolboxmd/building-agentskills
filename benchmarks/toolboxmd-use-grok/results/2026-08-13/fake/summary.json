@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B tests/toolboxmd-use-grok.test.py",
+  "fakeInvokedRealGrok": false,
+  "testMethods": 9,
+  "status": "pass",
+  "durationSeconds": 7.449,
+  "coverage": [
+    "frozen raw candidate and activation contract",
+    "direct, enveloped, and streaming structured output",
+    "exact argv, exact controlled environment, prompt file, and no shell interpolation",
+    "closed JSON Schema plus streaming init interaction",
+    "stable dedicated profile and auth presence for automatic mode",
+    "runtime skill, runtime tool-surface, runtime tool-call, inspect MCP, and config-warning fail-closed paths",
+    "nonzero, invalid JSON, is_error result, incomplete stop, missing CLI, and max-turn errors",
+    "max-turns boundaries 0, 8, and 9 plus finite timeout boundaries 0, 600, and 601",
+    "NaN, positive infinity, and negative infinity timeout rejection before consultation",
+    "hard timeout with child process-tree termination separately from max turns",
+    "protected-content exclusion and retained-path redaction"
+  ]
+}

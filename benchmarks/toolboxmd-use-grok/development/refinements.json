@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "rawCandidateAggregateSha256": "a886822d8416f79dfc345928a0b39a22aa95ac5357dc21943b970ea2eaa12521",
+  "policy": "The raw candidate is immutable. Active product changes respond only to observed fake, inspect, source, or real acceptance findings.",
+  "changes": [
+    {
+      "finding": "An empty GROK_HOME with normal HOME and 12 compatibility switches disabled still exposed four native .agents skills and one Cursor MCP server in inspect.",
+      "evidence": "results/2026-08-13/isolation-inspect-summary.json",
+      "activeChange": "Stage both cwd and HOME, keep GROK_HOME separate for auth, and preflight effective configuration."
+    },
+    {
+      "finding": "The historical real argv used bare star as a deny, but pinned source parses it as an Any pattern instead of a global tool-wide deny.",
+      "evidence": "results/2026-08-13/README.md and sources.json",
+      "activeChange": "Replace it with bare Read and bare MCPTool deny classes."
+    },
+    {
+      "finding": "A restrictive allowlist still advertised todo_write, search_tool, and use_tool in the real runtime init.",
+      "evidence": "results/2026-08-13/real-explicit/stdout.raw.jsonl",
+      "activeChange": "Freeze the exact surface, reject surface drift in automatic mode, deny its Read and MCPTool access classes, and reject any emitted local or server tool call."
+    },
+    {
+      "finding": "Local Grok help says --json-schema implies JSON, while the real 1.0.3 call emitted streaming init and result frames when streaming-messages-json was also explicit.",
+      "evidence": "results/2026-08-13/real-explicit/metadata.json and stdout.raw.jsonl",
+      "activeChange": "Freeze flag order and require streaming init for automatic acceptance."
+    },
+    {
+      "finding": "The only real call used default-profile OAuth, not a dedicated authenticated profile.",
+      "evidence": "results/2026-08-13/real-explicit/metadata.json",
+      "activeChange": "Require a stable dedicated non-default profile and detected auth presence for automatic mode, and leave automatic policy disabled."
+    },
+    {
+      "finding": "Full real inspect output contained unrelated bundled skill descriptions.",
+      "evidence": "results/2026-08-13/real-explicit/inspect-summary.json",
+      "activeChange": "Retain only a trust-bearing inspect summary with counts, boolean states, and compatibility cells."
+    },
+    {
+      "finding": "The raw candidate could enter an automatic consultation after a clean fake preflight even though no dedicated-profile real acceptance existed.",
+      "evidence": "results/2026-08-13/fake/summary.json and real-explicit/metadata.json",
+      "activeChange": "Add a mechanical false acceptance gate that stops automatic mode after non-model preflight and before consultation."
+    },
+    {
+      "finding": "A zero-exit streaming result could carry is_error=true with a success subtype, end_turn, and valid structured review.",
+      "evidence": "results/2026-08-13/fake/summary.json",
+      "activeChange": "Classify the result as incomplete before accepting the structured review."
+    },
+    {
+      "finding": "The raw numeric check accepted unbounded max-turns and non-finite or arbitrarily large timeout values.",
+      "evidence": "results/2026-08-13/fake/summary.json",
+      "activeChange": "Accept max-turns only from 1 through 8 and finite timeouts greater than zero through 600 seconds, with exact boundary fixtures."
+    }
+  ]
+}

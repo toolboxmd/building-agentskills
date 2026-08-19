@@ -1,0 +1,121 @@
+{
+  "grokHome": {
+    "explicit": true,
+    "kind": "default"
+  },
+  "grokVersion": "1.0.3",
+  "invocation": {
+    "argv": [
+      "<grok-home>/bin/grok",
+      "--agent",
+      "<staging-dir>/review/reviewer-agent.md",
+      "--prompt-file",
+      "<staging-dir>/review/brief.md",
+      "--verbatim",
+      "--cwd",
+      "<staging-dir>/review",
+      "--session-id",
+      "c7871409-88dc-4ba9-ab22-8f75dea6e048",
+      "--leader-socket",
+      "<staging-dir>/leader.sock",
+      "--sandbox",
+      "read-only",
+      "--no-memory",
+      "--no-subagents",
+      "--disable-web-search",
+      "--no-plan",
+      "--max-turns",
+      "3",
+      "--tools",
+      "todo_write",
+      "--disallowed-tools",
+      "Agent",
+      "--permission-mode",
+      "dontAsk",
+      "--deny",
+      "*",
+      "--deny",
+      "MCPTool(*)",
+      "--output-format",
+      "streaming-messages-json",
+      "--json-schema",
+      "{\"additionalProperties\":false,\"properties\":{\"minimum_plan_delta\":{\"items\":{\"type\":\"string\"},\"type\":\"array\"},\"missing\":{\"items\":{\"type\":\"string\"},\"type\":\"array\"},\"overengineering\":{\"items\":{\"type\":\"string\"},\"type\":\"array\"},\"risks\":{\"items\":{\"type\":\"string\"},\"type\":\"array\"},\"user_decisions\":{\"items\":{\"type\":\"string\"},\"type\":\"array\"},\"verdict\":{\"enum\":[\"NEEDS HUMAN DECISION\",\"PROCEED\",\"PROCEED WITH CHANGES\",\"REPLAN\"],\"type\":\"string\"}},\"required\":[\"minimum_plan_delta\",\"missing\",\"overengineering\",\"risks\",\"user_decisions\",\"verdict\"],\"type\":\"object\"}"
+    ],
+    "environmentKeys": [
+      "GROK_CLAUDE_AGENTS_ENABLED",
+      "GROK_CLAUDE_HOOKS_ENABLED",
+      "GROK_CLAUDE_MCPS_ENABLED",
+      "GROK_CLAUDE_RULES_ENABLED",
+      "GROK_CLAUDE_SESSIONS_ENABLED",
+      "GROK_CLAUDE_SKILLS_ENABLED",
+      "GROK_CURSOR_AGENTS_ENABLED",
+      "GROK_CURSOR_HOOKS_ENABLED",
+      "GROK_CURSOR_MCPS_ENABLED",
+      "GROK_CURSOR_RULES_ENABLED",
+      "GROK_CURSOR_SESSIONS_ENABLED",
+      "GROK_CURSOR_SKILLS_ENABLED",
+      "GROK_DISABLE_AUTOUPDATER",
+      "GROK_HOME",
+      "HOME",
+      "LANG",
+      "LC_ALL",
+      "NO_COLOR",
+      "PATH",
+      "TERM",
+      "TMPDIR"
+    ],
+    "shell": false
+  },
+  "message": null,
+  "mode": "explicit",
+  "preflight": {
+    "compatibilityFlags": [
+      "GROK_CLAUDE_AGENTS_ENABLED",
+      "GROK_CLAUDE_HOOKS_ENABLED",
+      "GROK_CLAUDE_MCPS_ENABLED",
+      "GROK_CLAUDE_RULES_ENABLED",
+      "GROK_CLAUDE_SESSIONS_ENABLED",
+      "GROK_CLAUDE_SKILLS_ENABLED",
+      "GROK_CURSOR_AGENTS_ENABLED",
+      "GROK_CURSOR_HOOKS_ENABLED",
+      "GROK_CURSOR_MCPS_ENABLED",
+      "GROK_CURSOR_RULES_ENABLED",
+      "GROK_CURSOR_SESSIONS_ENABLED",
+      "GROK_CURSOR_SKILLS_ENABLED"
+    ],
+    "customAgentSha256": "4adbaaa39e3406b5d0969f7d4adbcd4945cb966b037842779525895bf6808915",
+    "passed": true,
+    "stagedCwd": true,
+    "stagedHome": true
+  },
+  "process": {
+    "durationMs": 20401,
+    "maxTurns": 3,
+    "returncode": 0,
+    "timedOut": false,
+    "timeoutSeconds": 120.0
+  },
+  "prompt": {
+    "bytes": 553,
+    "sha256": "2b918e06d751ef1864a6a05c1d6338032a0b0d8238954e8a2bc3d3c46b5f8e88"
+  },
+  "redactionsApplied": 0,
+  "runId": "c7871409-88dc-4ba9-ab22-8f75dea6e048",
+  "runtime": {
+    "initObserved": true,
+    "mcpServers": [],
+    "sessionId": "c7871409-88dc-4ba9-ab22-8f75dea6e048",
+    "skills": [],
+    "stopReason": "end_turn",
+    "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 128,
+      "input_tokens": 1280,
+      "output_tokens": 1403,
+      "server_tool_use": {
+        "web_search_requests": 0
+      }
+    }
+  },
+  "status": "ok"
+}

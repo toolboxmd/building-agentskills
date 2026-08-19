@@ -1,0 +1,541 @@
+#!/usr/bin/env python3
+"""Run a bounded, evidence-retaining Grok Build consultation."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import signal
+import subprocess
+import sys
+import tempfile
+import time
+import uuid
+
+
+EXIT = {
+    "ok": 0,
+    "input": 2,
+    "missing-cli": 3,
+    "isolation-failure": 4,
+    "nonzero-exit": 5,
+    "timeout": 6,
+    "invalid-json": 7,
+    "incomplete-stop-reason": 8,
+    "max-turns": 9,
+}
+SUPPORTED_AUTOMATIC_VERSIONS = {"1.0.3"}
+COMPAT_FLAGS = {
+    f"GROK_{vendor}_{surface}_ENABLED": "false"
+    for vendor in ("CURSOR", "CLAUDE")
+    for surface in ("SKILLS", "RULES", "AGENTS", "MCPS", "HOOKS", "SESSIONS")
+}
+VERDICTS = {"PROCEED", "PROCEED WITH CHANGES", "REPLAN", "NEEDS HUMAN DECISION"}
+REVIEW_KEYS = {
+    "verdict",
+    "overengineering",
+    "missing",
+    "risks",
+    "minimum_plan_delta",
+    "user_decisions",
+}
+SECRET_PATTERNS = [
+    re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
+    re.compile(
+        r"(?im)^\s*(?:XAI|OPENAI|ANTHROPIC|AWS|GITHUB|GH)_[A-Z0-9_]*(?:KEY|TOKEN|SECRET)\s*[:=]\s*\S+"
+    ),
+    re.compile(r"(?im)^\s*(?:password|passwd|secret|token)\s*[:=]\s*\S+"),
+]
+
+REVIEW_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": sorted(REVIEW_KEYS),
+    "properties": {
+        "verdict": {"type": "string", "enum": sorted(VERDICTS)},
+        "overengineering": {"type": "array", "items": {"type": "string"}},
+        "missing": {"type": "array", "items": {"type": "string"}},
+        "risks": {"type": "array", "items": {"type": "string"}},
+        "minimum_plan_delta": {"type": "array", "items": {"type": "string"}},
+        "user_decisions": {"type": "array", "items": {"type": "string"}},
+    },
+}
+
+AGENT_DEFINITION = """---
+name: toolboxmd-plan-reviewer
+description: Review only a supplied plan brief without external context.
+promptMode: full
+tools:
+  - todo_write
+disallowedTools:
+  - Agent
+discoverSkills: false
+inheritSkills: false
+agentsMd: false
+mcpInheritance: none
+permissionMode: dontAsk
+---
+
+Review only the text supplied in the user prompt. Do not inspect other files.
+Do not call tools, subagents, Codex, Claude, Grok, or another agentic CLI.
+Return only the requested structured review.
+"""
+
+
+class ConsultationError(Exception):
+    def __init__(self, category: str, message: str):
+        super().__init__(message)
+        self.category = category
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--mode", choices=("explicit", "automatic"), required=True)
+    parser.add_argument("--prompt-file", type=Path, required=True)
+    parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--grok-home", type=Path)
+    parser.add_argument("--grok-bin", default=os.environ.get("GROK_BINARY", "grok"))
+    parser.add_argument("--timeout", type=float, default=120.0)
+    parser.add_argument("--max-turns", type=int, default=3)
+    parser.add_argument("--model")
+    return parser.parse_args()
+
+
+def sha256_bytes(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
+def write_text(path: Path, value: str) -> None:
+    path.write_text(value, encoding="utf-8")
+
+
+def write_json(path: Path, value: object) -> None:
+    write_text(path, json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
+
+
+def emit(payload: dict, code: int) -> int:
+    print(json.dumps(payload, sort_keys=True, ensure_ascii=False))
+    return code
+
+
+def read_prompt(path: Path) -> bytes:
+    try:
+        data = path.read_bytes()
+    except OSError as exc:
+        raise ConsultationError("input", f"Cannot read prompt file: {exc}") from exc
+    if not data or not data.strip():
+        raise ConsultationError("input", "Prompt file is empty")
+    if len(data) > 100_000:
+        raise ConsultationError("input", "Prompt exceeds the 100000-byte limit")
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ConsultationError("input", "Prompt must be UTF-8") from exc
+    if any(pattern.search(text) for pattern in SECRET_PATTERNS):
+        raise ConsultationError("input", "Prompt matches a protected secret pattern")
+    return data
+
+
+def resolve_binary(name: str) -> str:
+    if os.sep in name or (os.altsep and os.altsep in name):
+        candidate = Path(name).expanduser().resolve()
+        if candidate.is_file() and os.access(candidate, os.X_OK):
+            return str(candidate)
+        raise ConsultationError("missing-cli", f"Grok executable not found: {candidate}")
+    found = shutil.which(name)
+    if not found:
+        raise ConsultationError("missing-cli", f"Grok executable not found on PATH: {name}")
+    return found
+
+
+def resolve_grok_home(args: argparse.Namespace) -> tuple[Path, bool]:
+    explicit_value = args.grok_home or (
+        Path(os.environ["TOOLBOXMD_GROK_HOME"]) if os.environ.get("TOOLBOXMD_GROK_HOME") else None
+    )
+    selected = explicit_value or (Path.home() / ".grok")
+    selected = selected.expanduser().resolve()
+    if args.mode == "automatic":
+        if explicit_value is None:
+            raise ConsultationError("isolation-failure", "Automatic mode requires an explicit stable GROK_HOME")
+        temporary_roots = (Path(tempfile.gettempdir()).resolve(), Path("/private/tmp"))
+        if any(selected == root or root in selected.parents for root in temporary_roots):
+            raise ConsultationError("isolation-failure", "Automatic GROK_HOME cannot be under a temporary directory")
+        if selected == (Path.home() / ".grok").resolve():
+            raise ConsultationError("isolation-failure", "Automatic GROK_HOME must be dedicated, not the default profile")
+    if not selected.is_dir():
+        raise ConsultationError("isolation-failure", f"GROK_HOME does not exist: {selected}")
+    return selected, explicit_value is not None
+
+
+def controlled_env(staged_home: Path, grok_home: Path) -> dict[str, str]:
+    allowed = ("PATH", "LANG", "LC_ALL", "TERM", "TMPDIR", "SSL_CERT_FILE", "SSL_CERT_DIR")
+    env = {key: os.environ[key] for key in allowed if os.environ.get(key)}
+    if os.environ.get("XAI_API_KEY"):
+        env["XAI_API_KEY"] = os.environ["XAI_API_KEY"]
+    env.update(COMPAT_FLAGS)
+    env.update(
+        {
+            "HOME": str(staged_home),
+            "GROK_HOME": str(grok_home),
+            "GROK_DISABLE_AUTOUPDATER": "1",
+            "NO_COLOR": "1",
+        }
+    )
+    return env
+
+
+def run_capture(argv: list[str], cwd: Path, env: dict[str, str], timeout: float = 20.0) -> subprocess.CompletedProcess:
+    try:
+        return subprocess.run(
+            argv,
+            cwd=cwd,
+            env=env,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=timeout,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise ConsultationError("isolation-failure", f"Preflight timed out: {argv[1]}") from exc
+
+
+def parse_version(stdout: str) -> str | None:
+    match = re.search(r"\bgrok\s+(\d+\.\d+\.\d+)\b", stdout, re.IGNORECASE)
+    return match.group(1) if match else None
+
+
+def inspect_reasons(value: object, automatic: bool) -> list[str]:
+    if not isinstance(value, dict):
+        return ["inspect output is not an object"]
+    reasons: list[str] = []
+    empty_fields = ("projectInstructions", "mcpServers", "plugins", "hooks", "marketplaces")
+    for field in empty_fields:
+        if value.get(field) not in (None, []):
+            reasons.append(f"inspect.{field} is not empty")
+    if value.get("projectRoot") not in (None, ""):
+        reasons.append("inspect.projectRoot is set")
+    warnings = value.get("configWarnings")
+    if warnings not in (None, [], {}):
+        reasons.append("inspect.configWarnings is not empty")
+    compat = value.get("externalCompat")
+    cells = compat.get("cells", []) if isinstance(compat, dict) else []
+    required = {(vendor, surface.lower()) for vendor in ("cursor", "claude") for surface in ("skills", "rules", "agents", "mcps", "hooks", "sessions")}
+    observed = {
+        (str(cell.get("vendor")), str(cell.get("surface"))): cell
+        for cell in cells
+        if isinstance(cell, dict)
+    }
+    for key in sorted(required):
+        cell = observed.get(key)
+        if not cell or cell.get("enabled") is not False or cell.get("source") != "env":
+            reasons.append(f"compat {key[0]}.{key[1]} is not disabled by env")
+    if isinstance(compat, dict) and compat.get("remoteSettingsLoaded") is not False:
+        reasons.append("remote compatibility settings were loaded")
+    permissions = value.get("permissions")
+    if automatic and isinstance(permissions, dict) and permissions.get("managedSettingsActive") is True:
+        reasons.append("managed settings are active")
+    layers = value.get("configSources", {}).get("layers", []) if isinstance(value.get("configSources"), dict) else []
+    if automatic and layers:
+        reasons.append("automatic profile has configuration layers")
+    return reasons
+
+
+def preflight(binary: str, args: argparse.Namespace, cwd: Path, env: dict[str, str], leader: Path) -> tuple[str, dict]:
+    version_run = run_capture([binary, "--version"], cwd, env)
+    if version_run.returncode != 0:
+        raise ConsultationError("missing-cli", "grok --version failed")
+    version = parse_version(version_run.stdout)
+    if not version:
+        raise ConsultationError("isolation-failure", "Could not parse Grok version")
+    if args.mode == "automatic" and version not in SUPPORTED_AUTOMATIC_VERSIONS:
+        raise ConsultationError("isolation-failure", f"Automatic mode is not accepted for Grok {version}")
+    inspect_run = run_capture([binary, "inspect", "--json", "--leader-socket", str(leader)], cwd, env)
+    if inspect_run.returncode != 0:
+        raise ConsultationError("isolation-failure", "grok inspect --json failed")
+    try:
+        inspected = json.loads(inspect_run.stdout)
+    except json.JSONDecodeError as exc:
+        raise ConsultationError("isolation-failure", "grok inspect did not return JSON") from exc
+    reasons = inspect_reasons(inspected, args.mode == "automatic")
+    if reasons:
+        raise ConsultationError("isolation-failure", "; ".join(reasons))
+    return version, inspected
+
+
+def stop_process_tree(process: subprocess.Popen, grace: float = 1.0) -> None:
+    if process.poll() is not None:
+        return
+    if os.name == "posix":
+        try:
+            os.killpg(process.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            return
+        try:
+            process.wait(timeout=grace)
+            return
+        except subprocess.TimeoutExpired:
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            process.wait(timeout=grace)
+    else:
+        subprocess.run(
+            ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+
+
+def run_grok(argv: list[str], cwd: Path, env: dict[str, str], timeout: float) -> tuple[int | None, str, str, bool, float]:
+    creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) if os.name == "nt" else 0
+    started = time.monotonic()
+    process = subprocess.Popen(
+        argv,
+        cwd=cwd,
+        env=env,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        start_new_session=os.name == "posix",
+        creationflags=creationflags,
+    )
+    try:
+        stdout, stderr = process.communicate(timeout=timeout)
+        return process.returncode, stdout, stderr, False, time.monotonic() - started
+    except subprocess.TimeoutExpired:
+        stop_process_tree(process)
+        stdout, stderr = process.communicate()
+        return process.returncode, stdout, stderr, True, time.monotonic() - started
+
+
+def redact(text: str, prompt: bytes) -> tuple[str, int]:
+    values = [prompt.decode("utf-8")]
+    for key, value in os.environ.items():
+        upper = key.upper()
+        if len(value) >= 8 and any(marker in upper for marker in ("KEY", "TOKEN", "SECRET", "PASSWORD")):
+            values.append(value)
+    redacted = text
+    count = 0
+    for value in sorted(set(values), key=len, reverse=True):
+        if value and value in redacted:
+            occurrences = redacted.count(value)
+            redacted = redacted.replace(value, "[REDACTED]")
+            count += occurrences
+    return redacted, count
+
+
+def parse_output(stdout: str) -> tuple[dict | None, dict | None, dict | None]:
+    text = stdout.strip()
+    if not text:
+        return None, None, None
+    try:
+        direct = json.loads(text)
+        if isinstance(direct, dict) and set(direct) == REVIEW_KEYS:
+            return direct, None, None
+        if isinstance(direct, dict) and isinstance(direct.get("structured_output"), dict):
+            return direct["structured_output"], direct, None
+    except json.JSONDecodeError:
+        pass
+    events = []
+    for line in text.splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            return None, None, None
+        if not isinstance(event, dict):
+            return None, None, None
+        events.append(event)
+    init = next((event for event in events if event.get("type") == "system" and event.get("subtype") == "init"), None)
+    result = next((event for event in reversed(events) if event.get("type") == "result"), None)
+    review = result.get("structured_output") if isinstance(result, dict) else None
+    return review if isinstance(review, dict) else None, result, init
+
+
+def validate_review(review: object) -> str | None:
+    if not isinstance(review, dict):
+        return "structured review is missing"
+    if set(review) != REVIEW_KEYS:
+        return "structured review keys do not match the closed schema"
+    if review.get("verdict") not in VERDICTS:
+        return "structured review verdict is invalid"
+    for key in REVIEW_KEYS - {"verdict"}:
+        value = review.get(key)
+        if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+            return f"structured review field {key} must be an array of strings"
+    return None
+
+
+def classify_result(returncode: int | None, timed_out: bool, review: dict | None, result: dict | None) -> tuple[str, str | None]:
+    if timed_out:
+        return "timeout", "wall-clock timeout terminated the Grok process tree"
+    if returncode != 0:
+        subtype = result.get("subtype") if isinstance(result, dict) else None
+        if subtype == "error_max_turns":
+            return "max-turns", "Grok reached the max-turn limit"
+        return "nonzero-exit", f"Grok exited with status {returncode}"
+    problem = validate_review(review)
+    if problem:
+        return "invalid-json", problem
+    if result is None:
+        return "ok", None
+    subtype = result.get("subtype")
+    stop = result.get("stop_reason") or result.get("stopReason")
+    if subtype == "error_max_turns" or stop in ("max_turns", "max_turns_reached"):
+        return "max-turns", "Grok reached the max-turn limit"
+    if subtype not in (None, "success") or stop != "end_turn":
+        return "incomplete-stop-reason", f"Grok stopped incompletely: subtype={subtype!r}, stop={stop!r}"
+    return "ok", None
+
+
+def runtime_reasons(init: dict | None) -> list[str]:
+    if init is None:
+        return ["streaming runtime init event is missing"]
+    reasons = []
+    if init.get("skills") not in (None, []):
+        reasons.append("runtime exposed skills")
+    if init.get("mcp_servers") not in (None, []):
+        reasons.append("runtime exposed MCP servers")
+    return reasons
+
+
+def main() -> int:
+    args = parse_args()
+    run_id = str(uuid.uuid4())
+    run_dir = args.output_dir.expanduser().resolve() / f"run-{run_id}"
+    run_dir.mkdir(parents=True, exist_ok=False)
+    metadata: dict = {"runId": run_id, "mode": args.mode, "status": "starting"}
+    try:
+        if args.timeout <= 0 or args.max_turns <= 0:
+            raise ConsultationError("input", "timeout and max-turns must be greater than zero")
+        prompt = read_prompt(args.prompt_file.expanduser().resolve())
+        binary = resolve_binary(args.grok_bin)
+        grok_home, grok_home_explicit = resolve_grok_home(args)
+        metadata["prompt"] = {"bytes": len(prompt), "sha256": sha256_bytes(prompt)}
+        metadata["grokHome"] = {"path": str(grok_home), "explicit": grok_home_explicit}
+
+        with tempfile.TemporaryDirectory(prefix="toolboxmd-use-grok-") as temp_name:
+            stage = Path(temp_name)
+            staged_home = stage / "home"
+            work = stage / "review"
+            staged_home.mkdir()
+            work.mkdir()
+            prompt_path = work / "brief.md"
+            agent_path = work / "reviewer-agent.md"
+            prompt_path.write_bytes(prompt)
+            write_text(agent_path, AGENT_DEFINITION)
+            env = controlled_env(staged_home, grok_home)
+            leader = stage / "leader.sock"
+            version, inspected = preflight(binary, args, work, env, leader)
+            write_json(run_dir / "inspect.json", inspected)
+            metadata["grokVersion"] = version
+            metadata["preflight"] = {
+                "passed": True,
+                "compatibilityFlags": sorted(COMPAT_FLAGS),
+                "customAgentSha256": sha256_bytes(AGENT_DEFINITION.encode()),
+                "stagedCwd": True,
+                "stagedHome": True,
+            }
+            schema = json.dumps(REVIEW_SCHEMA, separators=(",", ":"), sort_keys=True)
+            argv = [
+                binary,
+                "--agent",
+                str(agent_path),
+                "--prompt-file",
+                str(prompt_path),
+                "--verbatim",
+                "--cwd",
+                str(work),
+                "--session-id",
+                run_id,
+                "--leader-socket",
+                str(leader),
+                "--sandbox",
+                "read-only",
+                "--no-memory",
+                "--no-subagents",
+                "--disable-web-search",
+                "--no-plan",
+                "--max-turns",
+                str(args.max_turns),
+                "--tools",
+                "todo_write",
+                "--disallowed-tools",
+                "Agent",
+                "--permission-mode",
+                "dontAsk",
+                "--deny",
+                "*",
+                "--deny",
+                "MCPTool(*)",
+                "--output-format",
+                "streaming-messages-json",
+                "--json-schema",
+                schema,
+            ]
+            if args.model:
+                argv.extend(("--model", args.model))
+            returncode, stdout, stderr, timed_out, duration = run_grok(argv, work, env, args.timeout)
+            clean_stdout, stdout_redactions = redact(stdout, prompt)
+            clean_stderr, stderr_redactions = redact(stderr, prompt)
+            write_text(run_dir / "stdout.raw.txt", clean_stdout)
+            write_text(run_dir / "stderr.raw.txt", clean_stderr)
+            review, result, init = parse_output(stdout)
+            category, message = classify_result(returncode, timed_out, review, result)
+            if category == "ok" and args.mode == "automatic":
+                reasons = runtime_reasons(init)
+                if reasons:
+                    category, message = "isolation-failure", "; ".join(reasons)
+            metadata.update(
+                {
+                    "status": category,
+                    "message": message,
+                    "process": {
+                        "returncode": returncode,
+                        "timedOut": timed_out,
+                        "durationMs": round(duration * 1000),
+                        "maxTurns": args.max_turns,
+                        "timeoutSeconds": args.timeout,
+                    },
+                    "invocation": {
+                        "argv": argv,
+                        "environmentKeys": sorted(env),
+                        "shell": False,
+                    },
+                    "runtime": {
+                        "sessionId": result.get("session_id") if isinstance(result, dict) else run_id,
+                        "stopReason": result.get("stop_reason") if isinstance(result, dict) else None,
+                        "usage": result.get("usage") if isinstance(result, dict) else None,
+                        "initObserved": init is not None,
+                        "skills": init.get("skills") if isinstance(init, dict) else None,
+                        "mcpServers": init.get("mcp_servers") if isinstance(init, dict) else None,
+                    },
+                    "redactionsApplied": stdout_redactions + stderr_redactions,
+                }
+            )
+            if category == "ok" and review is not None:
+                write_json(run_dir / "review.json", review)
+            write_json(run_dir / "metadata.json", metadata)
+            payload = {"status": category, "message": message, "runDir": str(run_dir)}
+            return emit(payload, EXIT[category])
+    except ConsultationError as exc:
+        metadata.update({"status": exc.category, "message": str(exc)})
+        write_json(run_dir / "metadata.json", metadata)
+        return emit({"status": exc.category, "message": str(exc), "runDir": str(run_dir)}, EXIT[exc.category])
+    except Exception as exc:
+        metadata.update({"status": "input", "message": f"Unexpected adapter error: {exc}"})
+        write_json(run_dir / "metadata.json", metadata)
+        return emit({"status": "input", "message": metadata["message"], "runDir": str(run_dir)}, EXIT["input"])
+
+
+if __name__ == "__main__":
+    sys.exit(main())

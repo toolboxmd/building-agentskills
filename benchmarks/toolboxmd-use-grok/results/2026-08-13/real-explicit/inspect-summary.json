@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceRawBytes": 15333,
+  "sourceRawSha256": "6df3dae6a4a28971b2fe99cc0f38d2cdd28130645d03deacdb8202c4c43c6a9e",
+  "grokVersion": "1.0.3",
+  "projectRoot": null,
+  "projectInstructionCount": 0,
+  "inspectSkillCount": 22,
+  "inspectMcpServerCount": 0,
+  "pluginCount": 0,
+  "hookCount": 0,
+  "marketplaceCount": 0,
+  "configLayerCount": 1,
+  "configWarningCount": 1,
+  "managedSettingsActive": false,
+  "runtimeInit": {
+    "tools": [
+      "todo_write",
+      "search_tool",
+      "use_tool"
+    ],
+    "skills": [],
+    "mcpServers": []
+  },
+  "finding": "Inspect discovered bundled profile skills, while the custom agent runtime init exposed no skills or MCP servers. Runtime init, not inspect discovery alone, is the acceptance surface for session exposure.",
+  "retention": "The full inspect document was not retained because its bundled skill descriptions are unrelated to this acceptance. Its digest and contract summary are retained."
+}

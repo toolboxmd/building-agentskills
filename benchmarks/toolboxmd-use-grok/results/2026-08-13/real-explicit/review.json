@@ -1,0 +1,23 @@
+{
+  "minimum_plan_delta": [
+    "Add the actual local command: name, file-path argument, and registration in the existing CLI entrypoint.",
+    "Specify read/write behavior (load the file, run the formatter, write the result) and failure handling for a missing or unreadable path.",
+    "Reuse existing CLI/test/doc patterns instead of inventing a new command shape."
+  ],
+  "missing": [
+    "No step wires a user-invocable command; a formatter function alone does not add the command.",
+    "No file I/O or overwrite-vs-stdout behavior.",
+    "No error path for missing, unreadable, or non-Markdown input.",
+    "Formatting rules are unspecified beyond 'headings and lists' in one test."
+  ],
+  "overengineering": [],
+  "risks": [
+    "Undefined format semantics can rewrite files in unexpected ways if the command writes in place.",
+    "A single headings/lists fixture will not lock other Markdown constructs the formatter may still touch."
+  ],
+  "user_decisions": [
+    "Whether the command overwrites the file in place or prints formatted Markdown to stdout.",
+    "Which heading/list conventions the formatter should enforce, if the repo has no existing standard."
+  ],
+  "verdict": "PROCEED WITH CHANGES"
+}

@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-08-13",
+  "localCli": {
+    "version": "grok 1.0.3 (1a29d5bc12d4) [stable]",
+    "helpObservations": [
+      "--json-schema says it implies --output-format json",
+      "--output-format accepts streaming-messages-json",
+      "--tools is a built-in tool allowlist",
+      "--deny is a repeatable permission rule",
+      "--prompt-file, --sandbox, --no-memory, --no-subagents, --disable-web-search, --max-turns, and --leader-socket are present"
+    ]
+  },
+  "upstreams": [
+    {
+      "repository": "https://github.com/xai-org/grok-build",
+      "commit": "eb267feff13129e568df38fb6fdf0ceb65f735d6",
+      "commitUrl": "https://github.com/xai-org/grok-build/commit/eb267feff13129e568df38fb6fdf0ceb65f735d6",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/xai-org/grok-build/blob/eb267feff13129e568df38fb6fdf0ceb65f735d6/LICENSE"
+    },
+    {
+      "repository": "https://github.com/xai-org/grok-build-plugin-cc",
+      "commit": "92b76a670713335229644e94add15ab40c80e547",
+      "commitUrl": "https://github.com/xai-org/grok-build-plugin-cc/commit/92b76a670713335229644e94add15ab40c80e547",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/xai-org/grok-build-plugin-cc/blob/92b76a670713335229644e94add15ab40c80e547/LICENSE"
+    }
+  ],
+  "sourceBackedClaims": [
+    {
+      "claim": "A restrictive tool allowlist retains the MCP meta-tools search_tool and use_tool.",
+      "source": "https://github.com/xai-org/grok-build/blob/eb267feff13129e568df38fb6fdf0ceb65f735d6/crates/codegen/xai-grok-agent/src/builder.rs#L901-L961"
+    },
+    {
+      "claim": "TodoWrite and otherwise unmatched tool inputs map to Read access; UseTool maps to MCPTool access.",
+      "source": "https://github.com/xai-org/grok-build/blob/eb267feff13129e568df38fb6fdf0ceb65f735d6/crates/codegen/xai-grok-workspace/src/permission/types.rs#L305-L340"
+    },
+    {
+      "claim": "Bare Read and MCPTool names parse as tool-wide permission rules, while an unrecognized bare star falls through to an Any rule with a star pattern.",
+      "source": "https://github.com/xai-org/grok-build/blob/eb267feff13129e568df38fb6fdf0ceb65f735d6/crates/codegen/xai-grok-workspace/src/permission/rules.rs#L223-L295"
+    },
+    {
+      "claim": "A policy deny is evaluated before the YOLO fast path.",
+      "source": "https://github.com/xai-org/grok-build/blob/eb267feff13129e568df38fb6fdf0ceb65f735d6/crates/codegen/xai-grok-workspace/src/permission/manager/mod.rs#L1738-L1785"
+    },
+    {
+      "claim": "streaming-messages-json emits an init line, message frames, a terminal result, tool-use blocks, stop reason, and structured_output.",
+      "source": "https://github.com/xai-org/grok-build/blob/eb267feff13129e568df38fb6fdf0ceb65f735d6/crates/codegen/xai-grok-pager/docs/user-guide/14-headless-mode.md#L249-L301"
+    },
+    {
+      "claim": "The official Claude Code bridge demonstrates shell-free argv spawning and structured output, but its review path uses always-approve with a read-only sandbox and does not supply the adapter's hard process-tree timeout contract.",
+      "source": "https://github.com/xai-org/grok-build-plugin-cc/blob/92b76a670713335229644e94add15ab40c80e547/plugins/grok-build/scripts/lib/grok.mjs#L155-L277"
+    }
+  ],
+  "claimBoundary": {
+    "sourceInspectionProves": [
+      "flag and parser semantics at the pinned commits",
+      "why todo_write is kept as the smallest mapped allowlist instead of an empty or unknown allowlist",
+      "why Read and MCPTool are the final deny classes",
+      "the pinned source unit tests for bare MCPTool parsing, UseTool access mapping, and MCP deny policy pass"
+    ],
+    "sourceInspectionDoesNotProve": [
+      "that deny rules blocked a tool call in the one real acceptance",
+      "automatic-mode acceptance",
+      "behavior of a future Grok version"
+    ]
+  }
+}

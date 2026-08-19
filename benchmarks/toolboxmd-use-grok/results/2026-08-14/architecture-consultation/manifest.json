@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-08-14",
+  "sourceKind": "pre-existing-local-adapter-evidence",
+  "noNewModelCallDuringRetention": true,
+  "sourceLocation": {
+    "directory": "/private/tmp/toolboxmd-grok-architecture.tvu9yv",
+    "runDirectory": "result/run-1c59b683-8daa-4525-bec1-ebc0c8fd58bd",
+    "stillPresentWhenRecorded": true
+  },
+  "tool": {
+    "adapterInterface": "skills/toolboxmd-use-grok/scripts/consult-grok",
+    "adapterSha256AtRun": null,
+    "adapterHashLimitation": "The pre-existing run metadata did not record the adapter digest, so no exact at-run adapter hash is claimed.",
+    "cli": "grok",
+    "cliVersion": "1.0.3",
+    "runtimeModel": "grok-4.6",
+    "modelUsageKey": "grok-4.6-build"
+  },
+  "adapterRun": {
+    "runId": "1c59b683-8daa-4525-bec1-ebc0c8fd58bd",
+    "mode": "explicit",
+    "status": "ok",
+    "grokVersion": "1.0.3",
+    "authenticationSource": "profile-auth-file",
+    "durationMs": 99992,
+    "timeoutSeconds": 120.0,
+    "maxTurns": 3,
+    "numTurns": 1,
+    "returncode": 0,
+    "timedOut": false,
+    "promptBytes": 2462,
+    "promptSha256": "44499c18ef7877a58177ad0d41e67ba291f2107ede48e3893feaba93cbe5c171"
+  },
+  "runtime": {
+    "initObserved": true,
+    "tools": [
+      "todo_write",
+      "search_tool",
+      "use_tool"
+    ],
+    "skills": [],
+    "mcpServers": [],
+    "toolCallsObserved": 0,
+    "webSearchRequests": 0,
+    "stopReason": "end_turn",
+    "resultSubtype": "success",
+    "resultIsError": false,
+    "resultDurationMs": 99134,
+    "inputTokens": 1644,
+    "outputTokens": 5386,
+    "cacheReadInputTokens": 128,
+    "cacheCreationInputTokens": 0
+  },
+  "sourceArtifacts": [
+    {
+      "name": "capture-body.md",
+      "bytes": 3373,
+      "sha256": "6d95ca94545f19204dcfadb2f091015ad5ea32db6575db150d35c0df934dddd4",
+      "retained": false
+    },
+    {
+      "name": "prompt.md",
+      "bytes": 2462,
+      "sha256": "44499c18ef7877a58177ad0d41e67ba291f2107ede48e3893feaba93cbe5c171",
+      "retained": true
+    },
+    {
+      "name": "inspect-summary.json",
+      "bytes": 1676,
+      "sha256": "cc250b37bee59c732f15741f91155554a00706cd8becc53c54909411ab1f43ae",
+      "retained": false
+    },
+    {
+      "name": "metadata.json",
+      "bytes": 3842,
+      "sha256": "484b3bf95f0e6a89256009ec2f2b69fc91602a340da546c2a008377daeb84cf7",
+      "retained": false
+    },
+    {
+      "name": "review.json",
+      "bytes": 3390,
+      "sha256": "d1857c4af50dce570d29a56950ee5d784e10fa8761a62e48ff7c2a59a9cb6792",
+      "retained": true
+    },
+    {
+      "name": "stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retained": false
+    },
+    {
+      "name": "stdout.raw.txt",
+      "bytes": 43453,
+      "sha256": "07811e3c83f132580691911d372ae472f19eed777f520380d5a4621148e6ac0d",
+      "retained": false
+    }
+  ],
+  "structuredResult": {
+    "verdict": "REPLAN",
+    "retainedPath": "review.json",
+    "sha256": "d1857c4af50dce570d29a56950ee5d784e10fa8761a62e48ff7c2a59a9cb6792"
+  },
+  "copiedArtifactAudit": {
+    "paths": [
+      "prompt.md",
+      "review.json"
+    ],
+    "credentialAndPrivatePathPatternMatches": 0,
+    "patternsCovered": [
+      "assigned API keys",
+      "authorization bearer values",
+      "private-key markers",
+      "AWS access-key identifiers",
+      "GitHub token prefixes",
+      "JWT-shaped values",
+      "the local user-home path",
+      "auth.json"
+    ],
+    "claim": "No match was found by this bounded mechanical scan; this is not a proof that arbitrary prose contains no sensitive information."
+  },
+  "limitations": [
+    "This was an explicit consultation, not an automatic-mode run.",
+    "The pre-existing evidence does not bind the run to an exact adapter digest.",
+    "The runtime advertised todo_write, search_tool, and use_tool even though no tool call was observed.",
+    "No model tool attempt behaviorally exercised the Read or MCPTool deny rules.",
+    "The raw stream was not copied because it contains model thinking and a provider signature; its hash and byte count remain recorded.",
+    "The REPLAN advice is a model proposal and does not establish a repository decision or creator-quality result."
+  ],
+  "claimBoundary": {
+    "purpose": "Inspectable evidence that the explicit consultation product was used for a bounded architecture review.",
+    "separateFromDesignatedAdapterAcceptance": true,
+    "creatorBenchmarkClaimAllowed": false,
+    "creatorSuperiorityClaimAllowed": false,
+    "automaticReviewAcceptanceAllowed": false,
+    "modelAdviceIsRepositoryDecision": false
+  }
+}

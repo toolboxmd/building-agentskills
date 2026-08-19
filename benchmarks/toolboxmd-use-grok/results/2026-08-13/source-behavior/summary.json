@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/xai-org/grok-build",
+  "commit": "eb267feff13129e568df38fb6fdf0ceb65f735d6",
+  "modelCalls": 0,
+  "toolchain": {
+    "rust": "1.94.0-aarch64-apple-darwin",
+    "dotslash": "0.5.7",
+    "dotslashInstallScope": "temporary audit directory only"
+  },
+  "tests": [
+    {
+      "name": "permission::resolution::tests::parse_bare_mcp_tool_name",
+      "status": "pass",
+      "assertion": "bare MCPTool parses as a tool-wide deny for ToolFilter::Mcp"
+    },
+    {
+      "name": "permission::types::tests::use_tool_maps_to_mcp_tool_access",
+      "status": "pass",
+      "assertion": "UseTool maps to AccessKind::MCPTool"
+    },
+    {
+      "name": "permission::policy::tests::mcp_tool_respects_deny_policy",
+      "status": "pass",
+      "assertion": "an MCPTool access matching an MCP deny policy is rejected"
+    }
+  ],
+  "claimBoundary": "These are behavior tests of pinned source, not a real Grok CLI model attempt. The single real explicit acceptance emitted no tool call, so automatic permission behavior remains unaccepted."
+}

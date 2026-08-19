@@ -1,0 +1,3 @@
+# Preserve exact frozen Grok input and raw-candidate bytes.
+benchmarks/toolboxmd-use-grok/base-brief.md whitespace=-blank-at-eof
+benchmarks/toolboxmd-use-grok/development/raw-candidate/package/SKILL.md whitespace=-blank-at-eof

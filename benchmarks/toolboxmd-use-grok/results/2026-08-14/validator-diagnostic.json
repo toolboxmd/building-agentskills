@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-08-14",
+  "validator": {
+    "parentCommit": "23b9c693bbd1edabf229ec3a56e9dd4b260f96eb",
+    "repositoryPath": "skills/toolboxmd-creating-skills/scripts/validate_skill.py",
+    "sha256": "f1617e62e23f539295bda22f58e93af22814928b0f5cb1382e18b58ac15408f2",
+    "bytes": 41729,
+    "lines": 923,
+    "executedFromCommittedBlob": true,
+    "parentWorktreeBytesUsed": false
+  },
+  "scriptSyntaxAttestation": {
+    "path": "scripts/consult-grok",
+    "sha256": "80171856e3040fc6c67ccfff55f97f8ff56920ff62d5bb97188046b5341f0210",
+    "argument": "--script-syntax-checked scripts/consult-grok=80171856e3040fc6c67ccfff55f97f8ff56920ff62d5bb97188046b5341f0210",
+    "basis": "The focused fake suite executes the exact active extensionless Python helper across nine test methods; ToolboxMD validator reports executionVerifiedByToolboxMD=false."
+  },
+  "execution": {
+    "outsideRepositoryCwd": true,
+    "creationMode": true,
+    "warningsAsErrors": true,
+    "pythonBytecodeDisabled": true,
+    "validatorSourceCommand": "git -C <creator-worktree> show 23b9c693bbd1edabf229ec3a56e9dd4b260f96eb:skills/toolboxmd-creating-skills/scripts/validate_skill.py",
+    "argv": [
+      "python3",
+      "-",
+      "--json",
+      "--creation-mode",
+      "--warnings-as-errors",
+      "--script-syntax-checked",
+      "scripts/consult-grok=80171856e3040fc6c67ccfff55f97f8ff56920ff62d5bb97188046b5341f0210",
+      "--max-description-chars",
+      "400",
+      "--max-skill-lines",
+      "150",
+      "--max-skill-bytes",
+      "10500",
+      "--max-files",
+      "2",
+      "--max-package-bytes",
+      "45000",
+      "--max-reference-files",
+      "0",
+      "--max-eval-files",
+      "0",
+      "--max-script-files",
+      "1",
+      "<target-skill-dir>"
+    ]
+  },
+  "result": {
+    "exitCode": 0,
+    "status": "pass",
+    "warningCount": 0,
+    "errorCount": 0,
+    "aggregateSha256": "cb2e0c3e607d57ae02ab613858a9a6d41ab8371a1067b810caccd75d32be017a",
+    "packageBytes": 34597,
+    "fileCount": 2,
+    "skillMdBytes": 4891,
+    "skillMdLines": 80,
+    "descriptionCharacters": 310,
+    "scriptFileCount": 1,
+    "referenceFileCount": 0,
+    "evalFileCount": 0
+  },
+  "lineage": {
+    "validatorLineagePendingParentReview": true,
+    "finalParentValidatorClaimAllowed": false,
+    "reason": "The exact committed parent validator passed this diagnostic, but its creator PR review is unresolved and the child has not been rebased onto it."
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "frozenOn": "2026-08-13",
+  "candidateId": "toolboxmd-use-grok-2026-08-13",
+  "creatorInput": {
+    "commit": "bfbd679fceec4bf2d403b8aca3a4b09d9396340e",
+    "path": "skills/toolboxmd-creating-skills/SKILL.md",
+    "sha256": "a7881821051f5361d677506f884d3201144b7b316d5eaed757910d7dc63f2d2b",
+    "bytes": 6353,
+    "validatorLineagePendingParentReview": true
+  },
+  "frozenInputs": [
+    {
+      "path": "benchmarks/toolboxmd-use-grok/base-brief.md",
+      "sha256": "8ae35d1e9a95e873e23bf33f2343734d64a873fc3642aef8a3246a0889519efe",
+      "bytes": 5246
+    },
+    {
+      "path": "benchmarks/toolboxmd-use-grok/contract.json",
+      "sha256": "d50124d66f29a9f4b6b0ef29ffba1f7d45890f8544cf540d43ea2228cbbf1742",
+      "bytes": 2051
+    }
+  ],
+  "claimBoundary": {
+    "purpose": "Development brief and mechanical contract for dogfooding the frozen creator vNext on one Grok Build integration.",
+    "knownDuringCreatorAuthoring": true,
+    "blindComparison": false,
+    "creatorSuperiorityClaimAllowed": false,
+    "creatorPromotionClaimAllowed": false,
+    "productAcceptanceRequired": true,
+    "automaticReviewMustFailClosedUntilAccepted": true
+  },
+  "freezePolicy": {
+    "baseBriefMayChange": false,
+    "contractMayChange": false,
+    "rawCandidateMustBeRetainedByteForByte": true,
+    "activeProductMayChangeOnlyForObservedAcceptanceFailures": true
+  }
+}

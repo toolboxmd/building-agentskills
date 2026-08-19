@@ -1,0 +1,33 @@
+{
+  "minimum_plan_delta": [
+    "Replan away from A: do not add an `env` wrapper state or any further shell grammar to the custom scanner.",
+    "Adopt B as a contract shrink, not a product rewrite: scan only fenced `sh`/`bash`/`shell` blocks plus executable script/config files; ignore prose, headings, and Markdown link destinations.",
+    "Replace the lexical scanner with one visible-token rule: in that closed surface, reject `scripts/` or `./scripts/` unless the token is visibly prefixed by `<skill-dir>/`. Treat comments, strings, `env`, assignments, and wrappers the same.",
+    "Make the generator emit executable examples only as fenced shell, and rehearse those snippets separately as the runtime check.",
+    "Lock five acceptance cases: (1) fenced `./scripts/run.py` and `scripts/run.py` fail, while `<skill-dir>/scripts/run.py` passes; (2) the same relative tokens in prose/links do not fail; (3) fenced `env MODE=strict ./scripts/run.py` and `MODE=strict ./scripts/run.py` fail with no `env`-specific code; (4) non-shell fences are not scanned; script/config files are; (5) a generator-emitted skill never contains unfenced executable examples, and existing unfenced fixtures are updated or fail as an authoring 'fence this' error."
+  ],
+  "missing": [
+    "An explicit closed inventory of scanned fence languages and file kinds.",
+    "A one-line definition of 'visibly prefixed' (literal `<skill-dir>/` immediately before `scripts/`, including quoted forms).",
+    "A migration note for already-tested all-Markdown fixtures and any published skills that still put commands in unfenced lines.",
+    "Whether unfenced relative `scripts/` tokens are a hard authoring error or deliberately ignored."
+  ],
+  "overengineering": [
+    "A: another bounded wrapper state. After `env` come `sudo`, `nice`, `nohup`, `time`, `timeout`, `command`, `exec`, pipelines, and the next exact-head miss.",
+    "Keeping the existing quote/escape/comment/redirection/if-while scanner once prose is out of scope.",
+    "C: non-fatal warning. It keeps the scanner and lets non-canonical skills ship.",
+    "D: ShellCheck or any external parser. Breaks stdlib-only, availability-determinism, and inspectability for a job that is not shell validation."
+  ],
+  "risks": [
+    "Strongest reason to abandon A: warnings-as-errors plus an open shell grammar makes every missed form and every false positive a product blocker; the creator already controls the canonical form and can rehearse snippets.",
+    "Changing the already-tested 'scan every Markdown line' contract can silently drop unfenced command examples unless generation requires fences and tests are retargeted.",
+    "A dumb token rule will flag `./scripts/` in fenced comments, `echo`, and heredocs. That is acceptable only if the rule is documented as a style contract, not a command parser.",
+    "Rehearsal does not replace the static contract; it only checks the snippets that were actually run."
+  ],
+  "user_decisions": [
+    "Accept the breaking validator contract (fenced+files only) in exchange for deleting the scanner, versus spending another cycle on A.",
+    "Unfenced `./scripts/` / `scripts/`: hard authoring error ('put executable examples in a fence') or ignore-by-design.",
+    "Is `cd <skill-dir> && ./scripts/run.py` illegal? Current policy text says yes; the token rule will reject it."
+  ],
+  "verdict": "REPLAN"
+}
