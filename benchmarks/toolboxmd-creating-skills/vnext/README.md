@@ -246,6 +246,12 @@ reference, eval, and script budgets remain unchanged. The cumulative
 executable delta is 22,787 bytes and no lower total-package-cost claim is
 allowed.
 
+The next exact-HEAD correction adds 111 executable bytes. Invalid UTF-8 in a
+regular required `SKILL.md` now remains one structured package-invalid `UTF8`
+issue with exit 1 instead of becoming an inspection error with exit 2. The
+48,000-byte cap and every other budget remain unchanged. The cumulative
+executable delta is 22,898 bytes.
+
 Canonical subset v2 uses one-line JSON double quotes for every top-level string,
 including the exact directory-matching `name`, and every user-defined portable
 metadata key and value; portable metadata is mapping-only. Descriptions retain
@@ -274,6 +280,6 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 46,842 bytes: 3,973 bytes of activated `SKILL.md`, a
-216-byte sidecar, and a 42,653-byte read-only checker. The executable is not
+The frozen package is 46,953 bytes: 3,973 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 42,764-byte read-only checker. The executable is not
 loaded as activated core.

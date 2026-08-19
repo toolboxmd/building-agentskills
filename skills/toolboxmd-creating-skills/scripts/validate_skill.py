@@ -786,7 +786,10 @@ def validate(root, args):
         raise PackageError("SYMLINK", "symlink not allowed")
     if not mode or not stat.S_ISREG(mode):
         raise PackageError("SKILL_FILE", "required entry must be a regular file")
-    text = skill_path.read_text(encoding="utf-8")
+    try:
+        text = skill_path.read_text(encoding="utf-8")
+    except UnicodeError:
+        raise PackageError("UTF8", "required entry must be valid UTF-8")
     frontmatter_lines, body = split_frontmatter(text)
     metadata, problems = parse_frontmatter(frontmatter_lines, args.allow_hermes_metadata)
     files, file_problems = collect_files(root)

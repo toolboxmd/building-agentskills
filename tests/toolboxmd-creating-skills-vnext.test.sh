@@ -44,6 +44,18 @@ if [[ -n "$python39" ]]; then
   grep -Fq "Exit: 0 valid, 1 invalid, 2 inspection error." "$test_tmp/python39-help.out"
 fi
 
+baseline_bin="$test_tmp/baseline-bin"
+mkdir -p "$baseline_bin"
+cat > "$baseline_bin/skills-ref" <<'EOF'
+#!/usr/bin/env bash
+if [[ "$#" -eq 2 && "$1" == "validate" && -d "$2" ]]; then
+  exit 0
+fi
+exit 2
+EOF
+chmod +x "$baseline_bin/skills-ref"
+export PATH="$baseline_bin:$PATH"
+
 human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validator" \
   --creation-mode \
   --warnings-as-errors \
@@ -56,7 +68,7 @@ human_output="$(cd "$test_tmp" && PYTHONDONTWRITEBYTECODE=1 python3 -B "$validat
   --max-eval-files 0 \
   --max-script-files 1 \
   "$package")"
-[[ "$human_output" == *"COVERAGE: canonical=toolboxmd-portable-core-v2 extensions=none creation_mode=true script_paths=closed-surfaces shell_parsed=false script_syntax=python-ast+exact-digest-attestation official_skills_ref=not_available official_external_attested=false"* ]]
+[[ "$human_output" == *"COVERAGE: canonical=toolboxmd-portable-core-v2 extensions=none creation_mode=true script_paths=closed-surfaces shell_parsed=false script_syntax=python-ast+exact-digest-attestation official_skills_ref=pass official_external_attested=false"* ]]
 [[ "$human_output" == *"SCRIPT_SYNTAX_CHECKS: accepted_paths=[] execution_verified_by_toolboxmd=false"* ]]
 [[ "$human_output" == *"PASS: canonical ToolboxMD package checks succeeded"* ]]
 
@@ -149,6 +161,10 @@ sha256_file() {
   node -e 'const c=require("node:crypto"),f=require("node:fs");process.stdout.write(c.createHash("sha256").update(f.readFileSync(process.argv[1])).digest("hex"))' "$1"
 }
 
+inode_number() {
+  node -e 'process.stdout.write(String(require("node:fs").lstatSync(process.argv[1]).ino))' "$1"
+}
+
 run_bounded_skill_entry() {
   local runtime="$1"
   local directory="$2"
@@ -175,8 +191,8 @@ external_skill_fifo="$test_tmp/external-skill-fifo"
 node -e 'require("node:fs").writeFileSync(process.argv[1], "x".repeat(2 * 1024 * 1024))' "$external_skill"
 mkfifo "$external_skill_fifo"
 external_skill_before="$(sha256_file "$external_skill")"
-external_fifo_before="$(stat -f '%i' "$external_skill_fifo" 2>/dev/null || stat -c '%i' "$external_skill_fifo")"
-for name in skill-entry-symlink skill-entry-broken skill-entry-fifo-target skill-entry-device-target skill-entry-missing skill-entry-directory skill-entry-fifo; do
+external_fifo_before="$(inode_number "$external_skill_fifo")"
+for name in skill-entry-symlink skill-entry-broken skill-entry-fifo-target skill-entry-device-target skill-entry-missing skill-entry-directory skill-entry-fifo skill-entry-invalid-utf8; do
   mkdir -p "$test_tmp/$name"
 done
 ln -s "$external_skill" "$test_tmp/skill-entry-symlink/SKILL.md"
@@ -185,9 +201,10 @@ ln -s "$external_skill_fifo" "$test_tmp/skill-entry-fifo-target/SKILL.md"
 ln -s /dev/null "$test_tmp/skill-entry-device-target/SKILL.md"
 mkdir "$test_tmp/skill-entry-directory/SKILL.md"
 mkfifo "$test_tmp/skill-entry-fifo/SKILL.md"
+node -e 'require("node:fs").writeFileSync(process.argv[1], Buffer.from([0xff, 0xfe]))' "$test_tmp/skill-entry-invalid-utf8/SKILL.md"
 make_no_scripts_fixture "$test_tmp/skill-entry-regular"
 
-skill_entry_names=(skill-entry-symlink skill-entry-broken skill-entry-fifo-target skill-entry-device-target skill-entry-missing skill-entry-directory skill-entry-fifo skill-entry-regular)
+skill_entry_names=(skill-entry-symlink skill-entry-broken skill-entry-fifo-target skill-entry-device-target skill-entry-missing skill-entry-directory skill-entry-fifo skill-entry-invalid-utf8 skill-entry-regular)
 skill_entry_runtimes=("$(command -v python3)")
 if [[ -n "$python39" ]]; then
   skill_entry_runtimes+=("$python39")
@@ -203,7 +220,7 @@ for runtime_index in "${!skill_entry_runtimes[@]}"; do
 done
 skill_entry_runtime_count="${#skill_entry_runtimes[@]}"
 [[ "$(sha256_file "$external_skill")" == "$external_skill_before" ]]
-[[ "$(stat -f '%i' "$external_skill_fifo" 2>/dev/null || stat -c '%i' "$external_skill_fifo")" == "$external_fifo_before" ]]
+[[ "$(inode_number "$external_skill_fifo")" == "$external_fifo_before" ]]
 
 external_scripts="$test_tmp/external-scripts-malformed"
 mkdir -p "$external_scripts"
@@ -2287,7 +2304,7 @@ const freeze = JSON.parse(fs.readFileSync(freezePath));
 const product = JSON.parse(fs.readFileSync(path.join(temporary, "product.json")));
 const minimalExample = JSON.parse(fs.readFileSync(path.join(temporary, "minimal-example.json")));
 const retainedFixtureTrees = freeze.source.regressionFixtures.map((fixture, index) => ({fixture, tree: JSON.parse(fs.readFileSync(path.join(temporary, `retained-${index}-before.json`)))}));
-const skillEntryNames = ["skill-entry-symlink", "skill-entry-broken", "skill-entry-fifo-target", "skill-entry-device-target", "skill-entry-missing", "skill-entry-directory", "skill-entry-fifo", "skill-entry-regular"];
+const skillEntryNames = ["skill-entry-symlink", "skill-entry-broken", "skill-entry-fifo-target", "skill-entry-device-target", "skill-entry-missing", "skill-entry-directory", "skill-entry-fifo", "skill-entry-invalid-utf8", "skill-entry-regular"];
 const skillEntryRuns = [];
 for (let runtime = 0; fs.existsSync(path.join(temporary, `skill-entry-regular-${runtime}.json`)); runtime++) {
   for (const name of skillEntryNames) {
@@ -2526,7 +2543,8 @@ assert(freeze.budgetRevision.sidecarEntrySafetyExecutableDeltaBytes === -363, "s
 assert(freeze.budgetRevision.scriptsRootSafetyExecutableDeltaBytes === 292, "scripts-root-safety executable delta changed");
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeRequiredEntrySafety === 46000, "pre-required-entry-safety package cap changed");
 assert(freeze.budgetRevision.requiredEntryAndHermesDedentExecutableDeltaBytes === 924, "required-entry/Hermes-dedent executable delta changed");
-assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 22787, "current executable delta changed");
+assert(freeze.budgetRevision.skillMdUtf8ExecutableDeltaBytes === 111, "SKILL.md UTF-8 executable delta changed");
+assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 22898, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.baseCommit === "5adfe5247376033d2e15e826fbf949b97c965a41", "standalone base commit changed");
 assert(freeze.source.diagnosticSourceCommit === "e07502f2ced07917acdc8d7d3f8e5ad6f9301595", "parked diagnostic commit changed");
@@ -2554,14 +2572,14 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 46842, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 46953, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 const skillEntrySymlinks = new Set(["skill-entry-symlink", "skill-entry-broken", "skill-entry-fifo-target", "skill-entry-device-target"]);
 assert(skillEntryRuns.length >= skillEntryNames.length, "required SKILL.md entry matrix did not run");
 assert(skillEntryRuns.every(({name, result, exit}) => name === "skill-entry-regular"
   ? exit === 0 && result.status === "pass"
-  : exit === 1 && result.status === "fail" && result.issues.length === 1 && result.issues[0].code === (skillEntrySymlinks.has(name) ? "SYMLINK" : "SKILL_FILE")), "required SKILL.md entries must fail once without opening non-regular or symlink targets");
+  : exit === 1 && result.status === "fail" && result.issues.length === 1 && result.issues[0].code === (skillEntrySymlinks.has(name) ? "SYMLINK" : name === "skill-entry-invalid-utf8" ? "UTF8" : "SKILL_FILE")), "required SKILL.md entries must fail once without opening non-regular or symlink targets and invalid UTF-8 must remain package invalidity");
 
 assert([scriptsRootSymlink, scriptsRootLarge, scriptsRootBroken].every(result => result.status === "fail" && result.issues.length === 1 && result.issues[0].code === "SYMLINK" && result.coverage.scriptSyntaxChecks.acceptedPaths.length === 0), "scripts-root symlinks must not traverse or inspect external helper bytes");
 assert(scriptsRootMissing.status === "pass" && scriptsRootRegular.status === "pass", "missing and real scripts directories must retain current behavior");

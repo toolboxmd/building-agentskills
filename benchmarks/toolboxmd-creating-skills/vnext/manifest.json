@@ -155,7 +155,9 @@
     "requiredEntryAndHermesDedentExecutableDeltaBytes": 924,
     "requiredEntryAndHermesDedentReason": "Exact-HEAD review required lstat classification of the required SKILL.md entry before any read and required active Hermes config state to close on dedent. Symlinked, broken, missing, and non-regular required entries fail once without opening external bytes; valid portable and top-level dedents remain accepted while stray Hermes-only fields fail.",
     "requiredEntrySafetyCapRevisionReason": "The user-approved one-time 2,000-byte package-cap revision preserves readable required-entry and Hermes-dedent safety corrections after a bounded deletion review. Activated-core, description, file, reference, eval, and script budgets are unchanged, and no lower total package-size claim is allowed.",
-    "currentExecutableDeltaBytesFromPreRevisionFreeze": 22787,
+    "skillMdUtf8ExecutableDeltaBytes": 111,
+    "skillMdUtf8Reason": "Exact-HEAD review required invalid UTF-8 in a regular required SKILL.md entry to remain one structured package-invalid UTF8 issue with exit 1 rather than an inspection error with exit 2.",
+    "currentExecutableDeltaBytesFromPreRevisionFreeze": 22898,
     "unchanged": [
       "description maximum",
       "SKILL.md line and byte maximums",
@@ -169,9 +171,9 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "5801fac738db408f9ecee8ba9b7ed8a5ccbc313c8e7bfdeb97fce66ee00c7916",
+    "aggregateSha256": "e667aa1671dafc07df09289f8f1ed23bd36268c6a1a44b8868cac83eb429e22f",
     "fileCount": 3,
-    "packageBytes": 46842,
+    "packageBytes": 46953,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
@@ -193,8 +195,8 @@
       },
       {
         "path": "scripts/validate_skill.py",
-        "bytes": 42653,
-        "sha256": "81b0b54c88e43920bfc10aa64b5e71bd98863a7ceb93b273144dfe62a3cf3838"
+        "bytes": 42764,
+        "sha256": "f49186278510607eeb5dff2571dcb0ae70ed8cf90465e7f7b32dc92724af2713"
       }
     ]
   },
@@ -223,6 +225,7 @@
       "bare and comment-only metadata blocks fail while omitting optional metadata passes",
       "sidecar parsing lstat-checks the agents ancestor and openai.yaml leaf before reading, preserving package-level symlink failures while wrong-type ancestors, directories, FIFOs, devices, and other non-regular entries fail once without being opened",
       "the required SKILL.md entry is lstat-classified before reading so symlinks, broken symlinks, missing entries, directories, FIFOs, devices, and other non-regular entries fail once without opening external bytes",
+      "invalid UTF-8 in a regular required SKILL.md entry remains one structured package-invalid UTF8 issue with exit 1 rather than an inspection error",
       "active Hermes config and entry state closes when indentation leaves the explicit config subtree; portable or top-level dedents after a complete entry pass while stray prompt, default, and description fields fail",
       "canonical Markdown links ignore root, blockquote, and list-contained fenced code plus real single- and multi-backtick inline code, indented code, and odd-backslash escaped-link forms; zero and even backslashes preserve active links, odd-parity escaped backticks stay literal before active links, simple destinations validate, and complex or unresolved forms warn that they need official validation",
       "blank lines retain root, blockquote, list, and nested blockquote-list fence state without waiving required blockquote markers or nonblank container exits",
