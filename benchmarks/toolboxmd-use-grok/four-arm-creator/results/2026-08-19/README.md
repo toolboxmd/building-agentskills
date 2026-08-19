@@ -19,7 +19,8 @@ remains disabled.
 
 Exact-HEAD reviews of commits `223e49d8697141b13c53fec249d5b5ebb3682f75`,
 `46938699eb21ad3f6167f147f956781704976b35`, and
-`91533764d5c2336f7876f2565405e7ae74090a2f` found five findings after the
+`91533764d5c2336f7876f2565405e7ae74090a2f`, followed by review of
+`e5c5e8bceed532ff6a9968448a06edf13a69365c`, found six findings after the
 authoring outputs and deterministic grades had already been recorded.
 
 The active Grok product could accept a direct or enveloped success without a
@@ -46,6 +47,11 @@ Grok. A regression keeps an ordinary `MONKEY` assignment outside that boundary.
 
 The structural skill and benchmark result are now discoverable from the
 repository wiki index and log. No pending wiki capture was created.
+
+Applying the credential-assignment pattern to an already serialized structured
+review could consume JSON syntax and turn a valid response into an input error.
+Structured review strings are now redacted recursively before serialization,
+so credential-shaped review examples remain redacted without corrupting JSON.
 
 None of these corrections changes the token-cap abort, starts semantic judging,
 or makes ranking permissible.

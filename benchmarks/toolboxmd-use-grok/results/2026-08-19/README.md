@@ -16,7 +16,13 @@ assignments such as API keys, secret keys, tokens, credentials, and database
 connection values before invoking Grok, while a non-secret `MONKEY` assignment
 remains accepted in the regression fixture.
 
-The 35,491-byte two-file active package passes the final exact-reviewed Creator
+The following exact-HEAD review found that applying the same assignment pattern
+to serialized review JSON could corrupt otherwise valid output. Structured
+review strings are now redacted recursively before serialization, with a
+credential-shaped review fixture proving that the consultation remains `ok`
+and the retained `review.json` remains valid.
+
+The 36,206-byte two-file active package passes the final exact-reviewed Creator
 vNext validator from commit `20fc268615079ade496e31cc5e55f51bcc5ad3b0` under
 the same 45,000-byte downstream package profile. The exact validator, adapter,
 arguments, and result are recorded in `validator-diagnostic.json`.

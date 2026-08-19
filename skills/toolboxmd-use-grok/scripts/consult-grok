@@ -434,6 +434,28 @@ def redact(text: str, prompt: bytes, replacements: dict[str, str]) -> tuple[str,
     return redacted, count
 
 
+def redact_value(value: object, prompt: bytes, replacements: dict[str, str]) -> tuple[object, int]:
+    if isinstance(value, str):
+        return redact(value, prompt, replacements)
+    if isinstance(value, list):
+        redacted_items = []
+        count = 0
+        for item in value:
+            redacted_item, item_count = redact_value(item, prompt, replacements)
+            redacted_items.append(redacted_item)
+            count += item_count
+        return redacted_items, count
+    if isinstance(value, dict):
+        redacted_items = {}
+        count = 0
+        for key, item in value.items():
+            redacted_item, item_count = redact_value(item, prompt, replacements)
+            redacted_items[key] = redacted_item
+            count += item_count
+        return redacted_items, count
+    return value, 0
+
+
 def parse_output(stdout: str) -> tuple[dict | None, dict | None, dict | None]:
     text = stdout.strip()
     if not text:
@@ -708,13 +730,9 @@ def main() -> int:
                 }
             )
             if category == "ok" and review is not None:
-                review_text, review_redactions = redact(
-                    json.dumps(review, ensure_ascii=False),
-                    prompt,
-                    path_replacements,
-                )
+                redacted_review, review_redactions = redact_value(review, prompt, path_replacements)
                 metadata["redactionsApplied"] += review_redactions
-                write_json(run_dir / "review.json", json.loads(review_text))
+                write_json(run_dir / "review.json", redacted_review)
             write_json(run_dir / "metadata.json", metadata)
             payload = {"status": category, "message": message, "runDir": str(run_dir)}
             return emit(payload, EXIT[category])

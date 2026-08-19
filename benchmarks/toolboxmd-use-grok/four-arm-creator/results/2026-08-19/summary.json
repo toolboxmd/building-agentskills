@@ -42,7 +42,8 @@
     "reviewedCommit": "223e49d8697141b13c53fec249d5b5ebb3682f75",
     "subsequentReviewedCommits": [
       "46938699eb21ad3f6167f147f956781704976b35",
-      "91533764d5c2336f7876f2565405e7ae74090a2f"
+      "91533764d5c2336f7876f2565405e7ae74090a2f",
+      "e5c5e8bceed532ff6a9968448a06edf13a69365c"
     ],
     "activeGrokProductChangedAfterRun": true,
     "activeGrokFinding": "Direct or enveloped successful output could bypass complete runtime isolation evidence when no init event was present.",
@@ -53,8 +54,10 @@
     "activeGrokCredentialResolution": "A generic sensitive-name assignment pattern now rejects API keys, secret keys, tokens, credentials, and database connection values before consultation.",
     "wikiFinding": "The new public Grok skill and four-arm benchmark result were absent from the repository orientation surface.",
     "wikiResolution": "The existing wiki index and log now link the active skill and record the ineligible diagnostic without creating a pending capture.",
-    "currentActiveGrokAggregateSha256": "70402238a2de1c3a883924d0f002c9f28096432a87bc064302f457ae96be0c1d",
-    "currentActiveGrokPackageBytes": 35491,
+    "activeGrokStructuredRedactionFinding": "Applying the credential-assignment regex to serialized review JSON could consume JSON syntax and turn a valid Grok review into an input error.",
+    "activeGrokStructuredRedactionResolution": "Structured review string values are now redacted recursively before JSON serialization, preserving the review object and its syntax.",
+    "currentActiveGrokAggregateSha256": "c940cc0a69b562875a0541855a7e02b98cee9394705e61a811692c691486a350",
+    "currentActiveGrokPackageBytes": 36206,
     "historicalAcceptanceReferenceChanged": false,
     "harnessChangedAfterRun": true,
     "harnessFinding": "PID existence alone misclassified a terminated Linux zombie as a live timeout child.",

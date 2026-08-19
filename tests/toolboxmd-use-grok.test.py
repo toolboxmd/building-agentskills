@@ -146,6 +146,8 @@ review = {
 }
 if scenario == "runtime-secret":
     review["risks"] = [os.environ.get("XAI_API_KEY", "missing-test-secret")]
+if scenario == "runtime-secret-assignment":
+    review["risks"] = ["DATABASE_URL=postgresql://user:synthetic-password@example.invalid/db"]
 if scenario == "runtime-escaped-prompt":
     review["risks"] = [prompt_path.read_text(encoding="utf-8")]
 
@@ -156,7 +158,7 @@ elif scenario in ("envelope", "envelope-managed-settings"):
 elif scenario in (
     "streaming", "runtime-skills", "runtime-tools-changed", "runtime-tool-call",
     "runtime-server-tool", "runtime-fields-missing", "runtime-web", "runtime-secret",
-    "runtime-escaped-prompt", "config-warning", "result-error"
+    "runtime-secret-assignment", "runtime-escaped-prompt", "config-warning", "result-error"
 ):
     skills = ["ambient-trap"] if scenario == "runtime-skills" else []
     tools = ["todo_write", "search_tool", "use_tool"]
@@ -493,6 +495,19 @@ class UseGrokTests(unittest.TestCase):
         )
         self.assertNotIn("synthetic-output-secret-value", retained)
         self.assertIn("[REDACTED]", retained)
+
+        self.output = self.root / "output-secret-assignment-redaction"
+        result, payload, _ = self.run_adapter("runtime-secret-assignment")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(payload["status"], "ok")
+        review = json.loads((Path(payload["runDir"]) / "review.json").read_text(encoding="utf-8"))
+        self.assertEqual(review["risks"], ["[REDACTED_SECRET_PATTERN]"])
+        retained = "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in Path(payload["runDir"]).iterdir()
+            if path.is_file()
+        )
+        self.assertNotIn("synthetic-password", retained)
 
         self.output = self.root / "output-json-escaped-prompt-redaction"
         escaped_prompt = 'First line with "quotes".\nDruga linia z \\backslash i Unicode: żółć.\n'
