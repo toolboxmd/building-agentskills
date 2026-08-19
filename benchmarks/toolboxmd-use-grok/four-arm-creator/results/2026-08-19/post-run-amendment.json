@@ -11,7 +11,10 @@
   },
   "review": {
     "reviewedCommit": "223e49d8697141b13c53fec249d5b5ebb3682f75",
-    "subsequentReviewedCommit": "46938699eb21ad3f6167f147f956781704976b35",
+    "subsequentReviewedCommits": [
+      "46938699eb21ad3f6167f147f956781704976b35",
+      "91533764d5c2336f7876f2565405e7ae74090a2f"
+    ],
     "findings": [
       {
         "priority": "P1",
@@ -30,15 +33,27 @@
         "surface": "active Grok evidence redaction",
         "finding": "A JSON-escaped copy of a multiline or quote-containing protected prompt could survive retained-evidence redaction.",
         "resolution": "Redaction now removes literal, UTF-8 JSON-escaped, and ASCII JSON-escaped variants of every protected value."
+      },
+      {
+        "priority": "P1",
+        "surface": "active Grok input boundary",
+        "finding": "The pre-call prompt filter recognized only a short vendor allowlist and could send other credential assignments to Grok.",
+        "resolution": "A generic sensitive-name assignment pattern now rejects API keys, secret keys, tokens, credentials, and database connection values before consultation."
+      },
+      {
+        "priority": "P1",
+        "surface": "repository wiki",
+        "finding": "The new public Grok skill and four-arm benchmark result were absent from the repository orientation surface.",
+        "resolution": "The existing wiki index and log now link the active skill and record the ineligible diagnostic without creating a pending capture."
       }
     ]
   },
   "liveAfterFix": {
     "harnessAggregateSha256": "713578a2b03233d72cfa83f226802b0cb1b30e5baa23f9548944684faae8c98b",
     "harnessBytes": 78804,
-    "activeGrokAggregateSha256": "c6b9e0a3ca583adefa106a62156fffad2e4cb3f650ae4ebbf36e2b217fa3e8ba",
-    "activeGrokPackageBytes": 35048,
-    "activeGrokAdapterSha256": "569c0b54d2e98efc23009ee514e438d757f87af952bc47e9c36baf0028df1c4e"
+    "activeGrokAggregateSha256": "70402238a2de1c3a883924d0f002c9f28096432a87bc064302f457ae96be0c1d",
+    "activeGrokPackageBytes": 35491,
+    "activeGrokAdapterSha256": "0036e17b03e2cd4c867b9d21cb615842586c117f763972c0b0412e9d3d9049e4"
   },
   "claimBoundary": {
     "authoringOutputsChanged": false,

@@ -52,7 +52,21 @@ SECRET_PATTERNS = [
         re.DOTALL,
     ),
     re.compile(
-        r"(?im)^\s*(?:XAI|OPENAI|ANTHROPIC|AWS|GITHUB|GH)_[A-Z0-9_]*(?:KEY|TOKEN|SECRET)\s*[:=]\s*\S+"
+        r"""(?imx)
+        (?<![A-Z0-9_])
+        [\"']?
+        (?:
+            (?:[A-Z][A-Z0-9]*_)*
+            (?:
+                API_KEY|ACCESS_KEY(?:_ID)?|PRIVATE_KEY|SECRET(?:_KEY)?|
+                TOKEN|PASSWORD|PASSWD|CREDENTIALS?|DATABASE_URL|DB_URL|CONNECTION_STRING
+            )
+            |(?:[A-Z][A-Z0-9]*_)+KEY
+        )
+        (?:_[A-Z0-9]+)*
+        [\"']?\s*[:=]\s*
+        (?:[\"'][^\"'\r\n]+[\"']|[^\s,;}\]]+)
+        """
     ),
     re.compile(r"(?im)^\s*(?:password|passwd|secret|token)\s*[:=]\s*\S+"),
     re.compile(r"\b(?:eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}|(?:xai|sk)-[A-Za-z0-9_-]{16,})\b"),

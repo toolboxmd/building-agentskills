@@ -12,3 +12,7 @@
 
 ## Ideas
 - [[evidence-gated-continuous-learning]] — automatically detects upstream ships while keeping lesson promotion evidence-gated and human-reviewed.
+
+## Diagnostics
+- [`toolboxmd-use-grok` active skill](../skills/toolboxmd-use-grok/SKILL.md) - explicit-only Grok second opinions with automatic review disabled.
+- [Four-arm Creator diagnostic](../benchmarks/toolboxmd-use-grok/four-arm-creator/results/2026-08-19/README.md) - ineligible for ranking after the shared input-token cap was exceeded.

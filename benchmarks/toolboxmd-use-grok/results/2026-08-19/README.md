@@ -10,11 +10,17 @@ a JSON-escaped copy of a protected multiline or quote-containing prompt. The
 active adapter now redacts literal, UTF-8 JSON-escaped, and ASCII JSON-escaped
 variants, with a focused fake-runtime regression test covering all three.
 
-The two-file active package passes the final exact-reviewed Creator vNext
-validator from commit `20fc268615079ade496e31cc5e55f51bcc5ad3b0` under the
-same 45,000-byte downstream package profile. The exact validator, adapter,
+The next exact-HEAD review found that the pre-call input filter recognized only
+a short vendor list. The active adapter now rejects generic credential
+assignments such as API keys, secret keys, tokens, credentials, and database
+connection values before invoking Grok, while a non-secret `MONKEY` assignment
+remains accepted in the regression fixture.
+
+The 35,491-byte two-file active package passes the final exact-reviewed Creator
+vNext validator from commit `20fc268615079ade496e31cc5e55f51bcc5ad3b0` under
+the same 45,000-byte downstream package profile. The exact validator, adapter,
 arguments, and result are recorded in `validator-diagnostic.json`.
 
-This correction occurred after the four-arm authoring run. It does not replace
+These corrections occurred after the four-arm authoring run. They do not replace
 the historical acceptance-refined reference, repair the token-cap abort, enable
 automatic Grok review, or provide evidence from a new real Grok call.

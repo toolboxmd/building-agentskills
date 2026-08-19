@@ -455,13 +455,30 @@ class UseGrokTests(unittest.TestCase):
         if os.name == "posix":
             self.assertEqual(stat.S_IMODE(Path(payload["runDir"]).stat().st_mode), 0o700)
 
-        self.output = self.root / "output-secret-rejection"
-        secret_prompt = self.root / "secret-brief.md"
-        secret_prompt.write_text("XAI_API_KEY=synthetic-protected-value\n", encoding="utf-8")
-        result, payload, fake = self.run_adapter("no-secret-input-call", prompt=secret_prompt)
-        self.assertEqual(result.returncode, 2)
-        self.assertEqual(payload["status"], "input")
-        self.assertFalse(fake.with_suffix(".log").exists())
+        secret_assignments = {
+            "known-vendor": "XAI_API_KEY=synthetic-protected-value\n",
+            "generic-api-key": "GOOGLE_API_KEY=synthetic-google-secret-value\n",
+            "generic-secret-key": 'export STRIPE_SECRET_KEY="synthetic-stripe-secret-value"\n',
+            "database-url": "DATABASE_URL=postgresql://user:synthetic-password@example.invalid/db\n",
+            "json-key": '{"GOOGLE_API_KEY": "synthetic-json-secret-value"}\n',
+        }
+        for case, assignment in secret_assignments.items():
+            with self.subTest(secret_assignment=case):
+                self.output = self.root / f"output-secret-rejection-{case}"
+                secret_prompt = self.root / f"secret-brief-{case}.md"
+                secret_prompt.write_text(assignment, encoding="utf-8")
+                result, payload, fake = self.run_adapter("no-secret-input-call", prompt=secret_prompt)
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(payload["status"], "input")
+                self.assertFalse(fake.with_suffix(".log").exists())
+
+        self.output = self.root / "output-non-secret-key-suffix"
+        non_secret_prompt = self.root / "non-secret-key-suffix.md"
+        non_secret_prompt.write_text("MONKEY=banana\nReview this synthetic plan.\n", encoding="utf-8")
+        result, payload, fake = self.run_adapter("streaming", prompt=non_secret_prompt)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(payload["status"], "ok")
+        self.assertTrue(fake.with_suffix(".log").exists())
 
         self.output = self.root / "output-secret-redaction"
         result, payload, _ = self.run_adapter(

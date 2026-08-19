@@ -18,6 +18,7 @@ Ask Grok for a bounded second opinion, then reconcile it with the task evidence.
 
 1. Confirm the requested question and prepare the smallest self-contained brief. Include only context needed for the opinion.
 2. Exclude credentials, secrets, `.env` content, unrelated memory, and unrelated repository content. If safe minimization is not possible, stop and explain why.
+   The adapter rejects common credential-assignment and private-key patterns before starting Grok.
 3. Resolve `<skill-dir>` from this loaded `SKILL.md`. Choose an evidence directory outside the installed skill and a prompt file outside the product package.
 4. Run:
 

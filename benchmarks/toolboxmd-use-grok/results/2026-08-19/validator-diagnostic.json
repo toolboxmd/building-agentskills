@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "recordedOn": "2026-08-19",
-  "reason": "Post-review validation after requiring complete strict inspect evidence without a runtime init event and redacting JSON-escaped variants of protected values.",
+  "reason": "Post-review validation after requiring complete strict inspect evidence, redacting JSON-escaped protected values, and rejecting generic credential assignments before consultation.",
   "validator": {
     "creatorCommit": "20fc268615079ade496e31cc5e55f51bcc5ad3b0",
     "repositoryPath": "skills/toolboxmd-creating-skills/scripts/validate_skill.py",
@@ -13,8 +13,8 @@
   },
   "scriptSyntaxAttestation": {
     "path": "scripts/consult-grok",
-    "sha256": "569c0b54d2e98efc23009ee514e438d757f87af952bc47e9c36baf0028df1c4e",
-    "argument": "--script-syntax-checked scripts/consult-grok=569c0b54d2e98efc23009ee514e438d757f87af952bc47e9c36baf0028df1c4e",
+    "sha256": "0036e17b03e2cd4c867b9d21cb615842586c117f763972c0b0412e9d3d9049e4",
+    "argument": "--script-syntax-checked scripts/consult-grok=0036e17b03e2cd4c867b9d21cb615842586c117f763972c0b0412e9d3d9049e4",
     "basis": "The focused fake suite executes the exact active extensionless Python helper across eleven test methods; ToolboxMD validator reports executionVerifiedByToolboxMD=false."
   },
   "execution": {
@@ -30,7 +30,7 @@
       "--creation-mode",
       "--warnings-as-errors",
       "--script-syntax-checked",
-      "scripts/consult-grok=569c0b54d2e98efc23009ee514e438d757f87af952bc47e9c36baf0028df1c4e",
+      "scripts/consult-grok=0036e17b03e2cd4c867b9d21cb615842586c117f763972c0b0412e9d3d9049e4",
       "--max-description-chars",
       "400",
       "--max-skill-lines",
@@ -55,11 +55,11 @@
     "status": "pass",
     "warningCount": 0,
     "errorCount": 0,
-    "aggregateSha256": "c6b9e0a3ca583adefa106a62156fffad2e4cb3f650ae4ebbf36e2b217fa3e8ba",
-    "packageBytes": 35048,
+    "aggregateSha256": "70402238a2de1c3a883924d0f002c9f28096432a87bc064302f457ae96be0c1d",
+    "packageBytes": 35491,
     "fileCount": 2,
-    "skillMdBytes": 4978,
-    "skillMdLines": 80,
+    "skillMdBytes": 5077,
+    "skillMdLines": 81,
     "descriptionCharacters": 310,
     "scriptFileCount": 1,
     "referenceFileCount": 0,
@@ -67,7 +67,10 @@
   },
   "claimBoundary": {
     "reviewSourceCommit": "223e49d8697141b13c53fec249d5b5ebb3682f75",
-    "subsequentReviewSourceCommit": "46938699eb21ad3f6167f147f956781704976b35",
+    "subsequentReviewSourceCommits": [
+      "46938699eb21ad3f6167f147f956781704976b35",
+      "91533764d5c2336f7876f2565405e7ae74090a2f"
+    ],
     "realGrokCalls": 0,
     "automaticModeAccepted": false,
     "historicalFourArmReferenceReplaced": false,
