@@ -15,6 +15,28 @@ zero within 600 seconds, and every arm produced the required two-file Grok
 package without symlinks. No real Grok call occurred. Automatic Grok review
 remains disabled.
 
+## Post-run exact-HEAD review amendment
+
+Review of commit `223e49d8697141b13c53fec249d5b5ebb3682f75` found two
+implementation issues after the authoring outputs and deterministic grades had
+already been recorded.
+
+The active Grok product could accept a direct or enveloped success without a
+runtime init event and without applying the complete inspect allowlist. The
+active product now requires the strict inspect fallback whenever init is
+missing. This changes the live active package after the run, not the historical
+acceptance-refined reference scored below.
+
+The frozen grader's PID-existence probe could treat a terminated Linux zombie
+as a live timeout child. The live diagnostic harness now treats Linux `Z`, `X`,
+and `x` process states as terminated. The preregistered files remain unchanged;
+`post-run-amendment.json` binds their original hash and commit to the live
+post-review code. Stored deterministic grades remain historical evidence from
+the preregistered grader.
+
+Neither correction changes the token-cap abort, starts semantic judging, or
+makes ranking permissible.
+
 ## Authoring observations
 
 | Arm | Treatment | Input tokens | Cap status | Duration | Candidate | Deterministic diagnostic |

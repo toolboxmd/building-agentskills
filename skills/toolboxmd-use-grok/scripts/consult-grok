@@ -230,24 +230,24 @@ def parse_version(stdout: str) -> str | None:
     return match.group(1) if match else None
 
 
-def inspect_reasons(value: object, automatic: bool) -> list[str]:
+def inspect_reasons(value: object, strict: bool) -> list[str]:
     if not isinstance(value, dict):
         return ["inspect output is not an object"]
     reasons: list[str] = []
     empty_fields = ("projectInstructions", "mcpServers", "plugins", "hooks", "marketplaces")
     for field in empty_fields:
-        if automatic and (field not in value or value.get(field) != []):
-            reasons.append(f"automatic inspect.{field} is not exactly empty")
-        elif not automatic and value.get(field) not in (None, []):
+        if strict and (field not in value or value.get(field) != []):
+            reasons.append(f"strict inspect.{field} is not exactly empty")
+        elif not strict and value.get(field) not in (None, []):
             reasons.append(f"inspect.{field} is not empty")
-    if automatic and value.get("skills") != []:
-        reasons.append("automatic inspect.skills is not exactly empty")
-    if automatic and ("projectRoot" not in value or value.get("projectRoot") is not None):
-        reasons.append("automatic inspect.projectRoot is not null")
-    elif not automatic and value.get("projectRoot") not in (None, ""):
+    if strict and value.get("skills") != []:
+        reasons.append("strict inspect.skills is not exactly empty")
+    if strict and ("projectRoot" not in value or value.get("projectRoot") is not None):
+        reasons.append("strict inspect.projectRoot is not null")
+    elif not strict and value.get("projectRoot") not in (None, ""):
         reasons.append("inspect.projectRoot is set")
     warnings = value.get("configWarnings")
-    if automatic and ("configWarnings" not in value or warnings not in (None, [])):
+    if strict and ("configWarnings" not in value or warnings not in (None, [])):
         reasons.append("inspect.configWarnings is not empty")
     compat = value.get("externalCompat")
     cells = compat.get("cells", []) if isinstance(compat, dict) else []
@@ -264,15 +264,15 @@ def inspect_reasons(value: object, automatic: bool) -> list[str]:
     if isinstance(compat, dict) and compat.get("remoteSettingsLoaded") is not False:
         reasons.append("remote compatibility settings were loaded")
     permissions = value.get("permissions")
-    if automatic and (
+    if strict and (
         not isinstance(permissions, dict) or permissions.get("managedSettingsActive") is not False
     ):
         reasons.append("managed settings state is not explicitly inactive")
     config_sources = value.get("configSources")
-    if automatic and (
+    if strict and (
         not isinstance(config_sources, dict) or config_sources.get("layers") != []
     ):
-        reasons.append("automatic profile configuration layers are not exactly empty")
+        reasons.append("strict profile configuration layers are not exactly empty")
     return reasons
 
 
@@ -649,8 +649,12 @@ def main() -> int:
                 category, message = "isolation-failure", "Grok emitted a tool call despite the no-tools contract"
             if category == "ok" and isinstance(observed_web_requests, int) and observed_web_requests > 0:
                 category, message = "isolation-failure", "Grok used web search despite the no-web contract"
-            if category == "ok" and (args.mode == "automatic" or init is not None):
-                reasons = runtime_reasons(init, result)
+            if category == "ok":
+                reasons = (
+                    runtime_reasons(init, result)
+                    if init is not None
+                    else inspect_reasons(inspected, True)
+                )
                 if reasons:
                     category, message = "isolation-failure", "; ".join(reasons)
             metadata.update(
@@ -679,6 +683,7 @@ def main() -> int:
                         "mcpServers": init.get("mcp_servers") if isinstance(init, dict) else None,
                         "toolCallsObserved": tool_call_count,
                         "webSearchRequests": observed_web_requests,
+                        "isolationEvidence": "streaming-init" if init is not None else "strict-inspect-fallback",
                     },
                     "redactionsApplied": stdout_redactions + stderr_redactions,
                 }

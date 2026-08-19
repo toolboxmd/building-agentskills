@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "amendedOn": "2026-08-19",
+  "preregistration": {
+    "sourceCommit": "12b1540cd6d37e68f2972d03329bc9d2e9abd497",
+    "harnessAggregateSha256": "275b92497731803373dcfd3fc24721295c3cbd34d473b44bd1b4a0aa0a3e9795",
+    "harnessBytes": 78302,
+    "historicalAcceptanceReferenceAggregateSha256": "cb2e0c3e607d57ae02ab613858a9a6d41ab8371a1067b810caccd75d32be017a",
+    "historicalAcceptanceReferenceBytes": 34597,
+    "historicalAcceptanceReferencePathAtCommit": "skills/toolboxmd-use-grok"
+  },
+  "review": {
+    "reviewedCommit": "223e49d8697141b13c53fec249d5b5ebb3682f75",
+    "findings": [
+      {
+        "priority": "P1",
+        "surface": "active Grok adapter",
+        "finding": "Direct or enveloped successful output could bypass complete runtime isolation evidence when no init event was present.",
+        "resolution": "A missing init now requires the complete strict inspect allowlist before a review can be accepted."
+      },
+      {
+        "priority": "P2",
+        "surface": "diagnostic grader and timeout test",
+        "finding": "PID existence alone misclassified a terminated Linux zombie as a live timeout child.",
+        "resolution": "Linux Z, X, and x process states are now treated as terminated."
+      }
+    ]
+  },
+  "liveAfterFix": {
+    "harnessAggregateSha256": "713578a2b03233d72cfa83f226802b0cb1b30e5baa23f9548944684faae8c98b",
+    "harnessBytes": 78804,
+    "activeGrokAggregateSha256": "21fe602249ff19e8726ff69ccd9466f7b56d204085e6d6ee5e25ee8ea2094b12",
+    "activeGrokPackageBytes": 34846,
+    "activeGrokAdapterSha256": "a17d6a7e28838a861f5ddc329e004c8c8b95b9c8cd2e0094bf16e874cea8f6f7"
+  },
+  "claimBoundary": {
+    "authoringOutputsChanged": false,
+    "frozenTreatmentsChanged": false,
+    "storedDeterministicGradesRemainHistorical": true,
+    "historicalAcceptanceReferenceChanged": false,
+    "scoreWeightsChanged": false,
+    "formalTokenCapVerdictChanged": false,
+    "rankingAllowed": false,
+    "semanticJudgingStarted": false,
+    "realGrokCalls": 0,
+    "automaticGrokReviewEnabled": false
+  }
+}

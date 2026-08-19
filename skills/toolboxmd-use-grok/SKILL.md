@@ -75,6 +75,6 @@ Do not silently replace the plan. Keep the revised plan no larger than required 
 - An empty `GROK_HOME` does not isolate user `.agents` skills or Cursor MCP discovery when the normal `HOME` remains visible.
 - `grok inspect` reports discovered configuration, while the runtime init event reports what the session actually exposes. Preserve their minimized summaries, not unrelated skill descriptions.
 - A restrictive Grok allowlist still advertises `todo_write`, `search_tool`, and `use_tool`. The adapter denies the underlying `Read` and `MCPTool` access classes and rejects any observed tool call. The current deny claim is source-backed, not behaviorally accepted.
-- `--json-schema` implies JSON output in Grok 1.0.3. The adapter explicitly requests `streaming-messages-json` as well because automatic mode must inspect the runtime init event; a missing init fails closed.
+- `--json-schema` implies JSON output in Grok 1.0.3. The adapter explicitly requests `streaming-messages-json` so it can inspect the runtime init event. A direct or enveloped response without init is accepted only when the preflight inspect data satisfies the same complete isolation allowlist.
 - `--max-turns` limits model rounds; the adapter's wall-clock timeout is a separate process-tree boundary.
 - A zero exit code is insufficient. Completion requires valid schema output and an `end_turn` stop reason.

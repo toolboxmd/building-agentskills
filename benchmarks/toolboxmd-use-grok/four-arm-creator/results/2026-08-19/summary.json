@@ -38,6 +38,23 @@
     "realGrokCalls": 0,
     "automaticGrokReviewEnabled": false
   },
+  "postRunReviewAmendment": {
+    "reviewedCommit": "223e49d8697141b13c53fec249d5b5ebb3682f75",
+    "activeGrokProductChangedAfterRun": true,
+    "activeGrokFinding": "Direct or enveloped successful output could bypass complete runtime isolation evidence when no init event was present.",
+    "activeGrokResolution": "A missing init now requires the complete strict inspect allowlist before a review can be accepted.",
+    "currentActiveGrokAggregateSha256": "21fe602249ff19e8726ff69ccd9466f7b56d204085e6d6ee5e25ee8ea2094b12",
+    "currentActiveGrokPackageBytes": 34846,
+    "historicalAcceptanceReferenceChanged": false,
+    "harnessChangedAfterRun": true,
+    "harnessFinding": "PID existence alone misclassified a terminated Linux zombie as a live timeout child.",
+    "harnessResolution": "The live diagnostic harness now treats Linux Z, X, and x process states as terminated.",
+    "preregisteredHarnessAggregateSha256": "275b92497731803373dcfd3fc24721295c3cbd34d473b44bd1b4a0aa0a3e9795",
+    "currentHarnessAggregateSha256": "713578a2b03233d72cfa83f226802b0cb1b30e5baa23f9548944684faae8c98b",
+    "storedDeterministicGradesRemainHistorical": true,
+    "verdictChanged": false,
+    "rankingAllowed": false
+  },
   "arms": {
     "A": {
       "treatment": "legacy ToolboxMD Creator",

@@ -13,6 +13,7 @@ import shutil
 import signal
 import stat
 import subprocess
+import sys
 import tempfile
 import time
 
@@ -100,7 +101,23 @@ def retained_text(root: Path) -> str:
     return "\n".join(values)
 
 
-def process_alive(pid: int) -> bool:
+def process_alive(
+    pid: int,
+    *,
+    proc_root: Path = Path("/proc"),
+    linux: bool = sys.platform.startswith("linux"),
+) -> bool:
+    if linux:
+        try:
+            stat_text = (proc_root / str(pid) / "stat").read_text(encoding="utf-8")
+        except FileNotFoundError:
+            return False
+        except OSError:
+            pass
+        else:
+            state_fields = stat_text.rpartition(")")[2].strip().split()
+            if state_fields:
+                return state_fields[0] not in {"Z", "X", "x"}
     try:
         os.kill(pid, 0)
     except ProcessLookupError:

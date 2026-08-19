@@ -4,6 +4,7 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 benchmark="$root/benchmarks/toolboxmd-use-grok/four-arm-creator"
 prereg="$benchmark/preregistration.json"
+amendment="$benchmark/results/2026-08-19/post-run-amendment.json"
 tmp="$(mktemp -d "${TMPDIR:-/tmp}/toolboxmd-four-arm-test.XXXXXX")"
 trap 'rm -rf "$tmp"' EXIT
 
@@ -28,7 +29,9 @@ for arm in A B C D; do
   [[ "$actual" == "$expected" ]] || fail "treatment $arm hash drifted: $actual"
 done
 
-[[ "$(hash_tree "$benchmark/harness")" == "$(jq -r '.harness.aggregateSha256' "$prereg")" ]] || fail "harness hash drifted"
+[[ "$(hash_tree "$benchmark/harness")" == "$(jq -r '.liveAfterFix.harnessAggregateSha256' "$amendment")" ]] || fail "current harness hash drifted"
+[[ "$(jq -r '.harness.aggregateSha256' "$prereg")" == "$(jq -r '.preregistration.harnessAggregateSha256' "$amendment")" ]] || fail "preregistered harness hash drifted"
+[[ "$(jq -r '.claimBoundary.rankingAllowed' "$amendment")" == "false" ]] || fail "post-run amendment allowed ranking"
 
 find "$root/benchmarks/toolboxmd-use-grok" -name '*.json' -type f -print0 | xargs -0 -n 1 jq empty
 PYTHONDONTWRITEBYTECODE=1 python3 -B - "$benchmark/harness" <<'PY'
@@ -38,6 +41,22 @@ import sys
 
 for path in sorted(Path(sys.argv[1]).glob("*.py")):
     ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+PY
+
+PYTHONDONTWRITEBYTECODE=1 python3 -B - "$benchmark/harness/grade_candidate.py" "$tmp" <<'PY'
+from pathlib import Path
+import runpy
+import sys
+
+grader = runpy.run_path(sys.argv[1])
+process_alive = grader["process_alive"]
+proc_root = Path(sys.argv[2]) / "synthetic-proc"
+stat_path = proc_root / "123" / "stat"
+stat_path.parent.mkdir(parents=True)
+stat_path.write_text("123 (fake child) Z 1 2 3\n", encoding="utf-8")
+assert process_alive(123, proc_root=proc_root, linux=True) is False
+stat_path.write_text("123 (fake child) S 1 2 3\n", encoding="utf-8")
+assert process_alive(123, proc_root=proc_root, linux=True) is True
 PY
 
 for script in "$benchmark"/harness/*.py; do

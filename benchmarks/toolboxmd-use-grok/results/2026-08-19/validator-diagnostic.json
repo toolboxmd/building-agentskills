@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-08-19",
+  "reason": "Post-review validation after requiring complete strict inspect evidence for successful direct or enveloped Grok output without a runtime init event.",
+  "validator": {
+    "creatorCommit": "20fc268615079ade496e31cc5e55f51bcc5ad3b0",
+    "repositoryPath": "skills/toolboxmd-creating-skills/scripts/validate_skill.py",
+    "sha256": "f49186278510607eeb5dff2571dcb0ae70ed8cf90465e7f7b32dc92724af2713",
+    "bytes": 42764,
+    "lines": 948,
+    "creatorExactHeadReview": "clean",
+    "executedFromExactCommitAncestor": true
+  },
+  "scriptSyntaxAttestation": {
+    "path": "scripts/consult-grok",
+    "sha256": "a17d6a7e28838a861f5ddc329e004c8c8b95b9c8cd2e0094bf16e874cea8f6f7",
+    "argument": "--script-syntax-checked scripts/consult-grok=a17d6a7e28838a861f5ddc329e004c8c8b95b9c8cd2e0094bf16e874cea8f6f7",
+    "basis": "The focused fake suite executes the exact active extensionless Python helper across eleven test methods; ToolboxMD validator reports executionVerifiedByToolboxMD=false."
+  },
+  "execution": {
+    "outsideRepositoryCwd": true,
+    "creationMode": true,
+    "warningsAsErrors": true,
+    "pythonBytecodeDisabled": true,
+    "argv": [
+      "python3",
+      "-B",
+      "<creator-skill-dir>/scripts/validate_skill.py",
+      "--json",
+      "--creation-mode",
+      "--warnings-as-errors",
+      "--script-syntax-checked",
+      "scripts/consult-grok=a17d6a7e28838a861f5ddc329e004c8c8b95b9c8cd2e0094bf16e874cea8f6f7",
+      "--max-description-chars",
+      "400",
+      "--max-skill-lines",
+      "150",
+      "--max-skill-bytes",
+      "10500",
+      "--max-files",
+      "2",
+      "--max-package-bytes",
+      "45000",
+      "--max-reference-files",
+      "0",
+      "--max-eval-files",
+      "0",
+      "--max-script-files",
+      "1",
+      "<target-skill-dir>"
+    ]
+  },
+  "result": {
+    "exitCode": 0,
+    "status": "pass",
+    "warningCount": 0,
+    "errorCount": 0,
+    "aggregateSha256": "21fe602249ff19e8726ff69ccd9466f7b56d204085e6d6ee5e25ee8ea2094b12",
+    "packageBytes": 34846,
+    "fileCount": 2,
+    "skillMdBytes": 4978,
+    "skillMdLines": 80,
+    "descriptionCharacters": 310,
+    "scriptFileCount": 1,
+    "referenceFileCount": 0,
+    "evalFileCount": 0
+  },
+  "claimBoundary": {
+    "reviewSourceCommit": "223e49d8697141b13c53fec249d5b5ebb3682f75",
+    "realGrokCalls": 0,
+    "automaticModeAccepted": false,
+    "historicalFourArmReferenceReplaced": false,
+    "creatorComparisonRepaired": false
+  }
+}

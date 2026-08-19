@@ -24,7 +24,7 @@ RAW = ROOT / "benchmarks/toolboxmd-use-grok/development/raw-candidate/package"
 RAW_MANIFEST = ROOT / "benchmarks/toolboxmd-use-grok/development/raw-candidate/manifest.json"
 CONTRACT = ROOT / "benchmarks/toolboxmd-use-grok/contract.json"
 VALIDATOR_DIAGNOSTIC = (
-    ROOT / "benchmarks/toolboxmd-use-grok/results/2026-08-14/validator-diagnostic.json"
+    ROOT / "benchmarks/toolboxmd-use-grok/results/2026-08-19/validator-diagnostic.json"
 )
 
 REVIEW = {
@@ -35,6 +35,32 @@ REVIEW = {
     "minimum_plan_delta": ["Add one bounded canary."],
     "user_decisions": [],
 }
+
+
+def process_alive(
+    pid: int,
+    *,
+    proc_root: Path = Path("/proc"),
+    linux: bool = sys.platform.startswith("linux"),
+) -> bool:
+    if linux:
+        try:
+            stat_text = (proc_root / str(pid) / "stat").read_text(encoding="utf-8")
+        except FileNotFoundError:
+            return False
+        except OSError:
+            pass
+        else:
+            state_fields = stat_text.rpartition(")")[2].strip().split()
+            if state_fields:
+                return state_fields[0] not in {"Z", "X", "x"}
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
 
 FAKE_SOURCE = r'''#!/usr/bin/env python3
 import json
@@ -84,6 +110,12 @@ if len(sys.argv) > 1 and sys.argv[1] == "inspect":
     if scenario == "inspect-fields-missing":
         value.pop("mcpServers")
         value.pop("permissions")
+    if scenario == "direct-ambient-skill":
+        value["skills"] = [{"name": "ambient"}]
+    if scenario == "envelope-managed-settings":
+        value["permissions"] = {"managedSettingsActive": True}
+    if scenario == "direct-config-layer":
+        value["configSources"] = {"layers": [{"source": "ambient"}]}
     if scenario == "config-warning":
         value["configWarnings"] = [{"kind": "unknown-field", "path": "privacy"}]
     print(json.dumps(value))
@@ -115,9 +147,9 @@ review = {
 if scenario == "runtime-secret":
     review["risks"] = [os.environ.get("XAI_API_KEY", "missing-test-secret")]
 
-if scenario == "direct":
+if scenario in ("direct", "direct-ambient-skill", "direct-config-layer"):
     print(json.dumps(review))
-elif scenario == "envelope":
+elif scenario in ("envelope", "envelope-managed-settings"):
     print(json.dumps({"structured_output": review, "stopReason": "end_turn"}))
 elif scenario in (
     "streaming", "runtime-skills", "runtime-tools-changed", "runtime-tool-call",
@@ -276,7 +308,13 @@ class UseGrokTests(unittest.TestCase):
         self.assertTrue(diagnostic["execution"]["creationMode"])
         self.assertTrue(diagnostic["execution"]["warningsAsErrors"])
         self.assertTrue(diagnostic["execution"]["outsideRepositoryCwd"])
-        self.assertTrue(diagnostic["lineage"]["validatorLineagePendingParentReview"])
+        self.assertEqual(diagnostic["validator"]["creatorExactHeadReview"], "clean")
+        self.assertEqual(diagnostic["claimBoundary"]["realGrokCalls"], 0)
+        self.assertFalse(diagnostic["claimBoundary"]["automaticModeAccepted"])
+        self.assertEqual(
+            diagnostic["result"]["aggregateSha256"],
+            aggregate(ROOT / "skills/toolboxmd-use-grok"),
+        )
         contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
         active_text = (ROOT / "skills/toolboxmd-use-grok/SKILL.md").read_text(encoding="utf-8")
         raw_text = (RAW / "SKILL.md").read_text(encoding="utf-8")
@@ -298,6 +336,26 @@ class UseGrokTests(unittest.TestCase):
                 self.assertEqual(payload["status"], "ok")
                 review = json.loads((Path(payload["runDir"]) / "review.json").read_text(encoding="utf-8"))
                 self.assertEqual(review, REVIEW)
+
+    def test_nonstreaming_success_requires_complete_inspect_fallback(self) -> None:
+        scenarios = (
+            "direct-ambient-skill",
+            "envelope-managed-settings",
+            "direct-config-layer",
+        )
+        for scenario in scenarios:
+            with self.subTest(scenario=scenario):
+                self.output = self.root / f"output-{scenario}"
+                result, payload, fake = self.run_adapter(scenario)
+                self.assertEqual(result.returncode, 4, result.stderr)
+                self.assertEqual(payload["status"], "isolation-failure")
+                self.assertTrue(fake.with_suffix(".log").exists())
+                self.assertFalse((Path(payload["runDir"]) / "review.json").exists())
+                metadata = json.loads(
+                    (Path(payload["runDir"]) / "metadata.json").read_text(encoding="utf-8")
+                )
+                self.assertEqual(metadata["runtime"]["isolationEvidence"], "strict-inspect-fallback")
+                self.assertFalse(metadata["runtime"]["initObserved"])
 
     def test_frozen_argv_environment_prompt_and_no_protected_leak(self) -> None:
         protected = self.root / "protected.txt"
@@ -657,13 +715,20 @@ class UseGrokTests(unittest.TestCase):
         child_pid = int(fake.with_suffix(".childpid").read_text(encoding="utf-8"))
         alive = True
         for _ in range(30):
-            try:
-                os.kill(child_pid, 0)
-            except ProcessLookupError:
+            if not process_alive(child_pid):
                 alive = False
                 break
             time.sleep(0.1)
         self.assertFalse(alive, f"timeout child process {child_pid} survived process-tree termination")
+
+    def test_linux_zombie_state_is_not_effectively_alive(self) -> None:
+        proc_root = self.root / "synthetic-proc"
+        stat_path = proc_root / "123" / "stat"
+        stat_path.parent.mkdir(parents=True)
+        stat_path.write_text("123 (fake child) Z 1 2 3\n", encoding="utf-8")
+        self.assertFalse(process_alive(123, proc_root=proc_root, linux=True))
+        stat_path.write_text("123 (fake child) S 1 2 3\n", encoding="utf-8")
+        self.assertTrue(process_alive(123, proc_root=proc_root, linux=True))
 
 
 if __name__ == "__main__":
