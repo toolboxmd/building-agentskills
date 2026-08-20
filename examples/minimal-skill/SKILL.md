@@ -1,7 +1,7 @@
 ---
-name: "minimal-skill"
-description: "Use when the user asks to test a minimal skill template, or types \"ping minimal\"; replies with a one-line confirmation that the skill activated. Copy this file as a starting point for your own skill; replace name, description, and body to fit your domain."
-license: "Apache-2.0"
+name: minimal-skill
+description: Use when the user asks to test a minimal skill template, or types "ping minimal"; replies with a one-line confirmation that the skill activated. Copy this file as a starting point for your own skill; replace name, description, and body to fit your domain.
+license: Apache-2.0
 ---
 
 # Minimal Skill
@@ -14,7 +14,7 @@ A working minimal SKILL.md the quickstart references. Copy this file as your sta
 NO SKILL.md WITHOUT A DESCRIPTION THAT NAMES A TRIGGER
 ```
 
-If your description does not name when the skill should activate, the agent will never trigger your skill. See [Triggers](https://github.com/toolboxmd/building-agentskills/blob/main/docs/05-authoring/triggers.md) in the building-agentskills repo for the discipline.
+If your description does not name when the skill should activate, the agent will never trigger your skill. See [Triggers](/docs/05-authoring/triggers) in the building-agentskills repo for the discipline.
 
 ## Activation behavior
 

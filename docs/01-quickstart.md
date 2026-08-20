@@ -37,7 +37,7 @@ Create `~/.claude/skills/hello-skill/SKILL.md` with this content:
 ```markdown
 ---
 name: hello-skill
-description: "Use when the user asks to test that a custom skill is working, or types \"ping skill\"; replies with a one-line confirmation that the skill activated."
+description: Use when the user asks to test that a custom skill is working, or types "ping skill"; replies with a one-line confirmation that the skill activated.
 ---
 
 # Hello Skill

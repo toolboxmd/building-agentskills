@@ -1,4 +1,0 @@
-interface:
-  display_name: "ToolboxMD Creating Skills"
-  short_description: "Create evidence-backed portable Agent Skills"
-  default_prompt: "Use $toolboxmd-creating-skills to create a new skill from concrete user needs and evidence."
