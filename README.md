@@ -85,10 +85,9 @@ These three docs close the audience gap a layered repo would otherwise leave. Re
 - [`case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md`](case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md). Provider-neutral runtime and benchmark-integrity ship.
 - [`examples/minimal-skill/SKILL.md`](examples/minimal-skill/SKILL.md). A working ~30-line minimal skill.
 
-### Included skills
+### Loader skill
 
 - [`skills/building-agentskills/SKILL.md`](skills/building-agentskills/SKILL.md). The thin loader; install this in your `~/.claude/skills/` to get the docs in your agent's hands.
-- [`skills/toolboxmd-use-grok/SKILL.md`](skills/toolboxmd-use-grok/SKILL.md). An explicit-only, bounded Grok Build consultation skill. Automatic review remains disabled; its deterministic adapter contract is covered by [`tests/toolboxmd-use-grok.test.py`](tests/toolboxmd-use-grok.test.py).
 
 ## Contributing
 
