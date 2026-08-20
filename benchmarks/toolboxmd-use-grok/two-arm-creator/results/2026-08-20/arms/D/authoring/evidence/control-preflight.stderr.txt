@@ -1,0 +1,9 @@
+
+=== Sandbox denials ===
+(Python) file-read-data /Users/lukaszmaj/dev/toolboxmd/building-agentskills-two-arm-semantic/README.md
+(Python) file-read-data /Users/lukaszmaj/.codex/auth.json
+(curl) sysctl-read security.mac.lockdown_mode_state
+(curl) sysctl-read kern.bootargs
+(curl) file-read-metadata /System/Cryptexes/OS
+(curl) mach-lookup com.apple.SystemConfiguration.configd
+(curl) network-outbound remote:*:53997

@@ -1,0 +1,45 @@
+{
+  "aggregateSha256": "fd98e659dca7254188a80c4dfe02987e13af284deacb54e0fa76099a1624f022",
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+  "bytes": 41027,
+  "excludedDirectories": [
+    ".home",
+    ".pycache",
+    ".tmp"
+  ],
+  "fileCount": 5,
+  "files": [
+    {
+      "bytes": 22350,
+      "mode": "0o644",
+      "path": ".pycache/private/tmp/creator-two-arm-e3e0453f-c10e-4e4e-8782-a2b887f35a7a/sandbox/output/skills/toolboxmd-use-grok/scripts/consult-grokcpython-314.pyc",
+      "sha256": "248055ab312925990178b3513e7eee13d065024c3e14d2ae2122eef3f110ed00"
+    },
+    {
+      "bytes": 1099,
+      "mode": "0o644",
+      "path": "isolation-preflight-control.json",
+      "sha256": "c11c463debb33b2c123fc703efe60e19721ee6e1c7de673803a6563fefc7cca8"
+    },
+    {
+      "bytes": 1309,
+      "mode": "0o644",
+      "path": "isolation-preflight-model.json",
+      "sha256": "986fbbe70f9cbaf4ddc012c2ed315dce889c58c547877451d2c1f8eb70b5e870"
+    },
+    {
+      "bytes": 3171,
+      "mode": "0o644",
+      "path": "skills/toolboxmd-use-grok/SKILL.md",
+      "sha256": "cf8bed05439c129c7e26037cfec77823826aebb7ee25688d64f3d1891a72ce7c"
+    },
+    {
+      "bytes": 13098,
+      "mode": "0o755",
+      "path": "skills/toolboxmd-use-grok/scripts/consult-grok",
+      "sha256": "ddc2c03815348d61ba7a450c997dbaf8bf25bc365f15b5108adbe9073324ef3e"
+    }
+  ],
+  "omittedSymlinks": [],
+  "symlinks": []
+}

@@ -1,0 +1,172 @@
+{
+  "allArmsIsolationEligible": true,
+  "arms": {
+    "C": {
+      "artifactCost": {
+        "descriptionCharactersApproximate": 360,
+        "fileCount": 2,
+        "packageBytes": 18101,
+        "skillMdLines": 48
+      },
+      "authoringCost": {
+        "commandCount": 19,
+        "commands": [
+          "/bin/zsh -c 'python3 harness/isolation_preflight.py model'",
+          "/bin/zsh -c \"sed -n '1,240p' home/.codex/skills/creator-under-test/SKILL.md\"",
+          "/bin/zsh -c 'rg --files input harness home/.codex/skills/creator-under-test'",
+          "/bin/zsh -c \"sed -n '1,320p' input/contract.json\"",
+          "/bin/zsh -c \"sed -n '1,260p' input/base-brief.md\"",
+          "/bin/zsh -c \"sed -n '1,320p' harness/fake_grok.py && sed -n '1,240p' harness/final-message.schema.json && sed -n '1,240p' harness/isolation_preflight.py\"",
+          "/bin/zsh -c \"sed -n '1,360p' home/.codex/skills/creator-under-test/scripts/validate_skill.py\"",
+          "/bin/zsh -c \"sed -n '361,760p' home/.codex/skills/creator-under-test/scripts/validate_skill.py\"",
+          "/bin/zsh -c \"sed -n '761,1040p' home/.codex/skills/creator-under-test/scripts/validate_skill.py\"",
+          "/bin/zsh -c \"chmod 755 output/skills/toolboxmd-use-grok/scripts/consult-grok\npython3 -c 'import ast, pathlib; ast.parse(pathlib.Path(\\\"output/skills/toolboxmd-use-grok/scripts/consult-grok\\\").read_text())'\nwc -lc output/skills/toolboxmd-use-grok/SKILL.md\nfind output/skills/toolboxmd-use-grok -type f -print\nfind output/skills/toolboxmd-use-grok -type l -print\"",
+          "/bin/zsh -c 'openssl dgst -sha256 output/skills/toolboxmd-use-grok/scripts/consult-grok'",
+          "/bin/zsh -c \"PYTHONDONTWRITEBYTECODE=1 python3 -B home/.codex/skills/creator-under-test/scripts/validate_skill.py --creation-mode --warnings-as-errors --script-syntax-checked 'scripts/consult-grok=57050bab90f2abdd2e9ce075fb50349af180154c604d1cd48b19b7518896146c' --max-description-chars 400 --max-skill-lines 150 --max-skill-bytes 10500 --max-files 2 --max-package-bytes 45000 --max-reference-files 0 --max-eval-files 0 --max-script-files 1 output/skills/toolboxmd-use-grok\"",
+          "/bin/zsh -c \"PYTHONDONTWRITEBYTECODE=1 python3 -B - <<'PY'\nimport json, os, pathlib, shutil, subprocess, tempfile, time\nroot = pathlib.Path.cwd()\nadapter = root / 'output/skills/toolboxmd-use-grok/scripts/consult-grok'\nfake_source = root / 'harness/fake_grok.py'\nexpected = {\n    'direct': 'ok', 'envelope': 'ok', 'streaming': 'ok',\n    'bad-inspect': 'isolation-failure', 'missing-inspect-fields': 'isolation-failure',\n    'runtime-tool-call': 'isolation-failure', 'incomplete': 'incomplete-stop-reason',\n    'result-error': 'nonzero-exit', 'max-turns': 'max-turns',\n    'invalid-json': 'invalid-json', 'nonzero': 'nonzero-exit', 'timeout': 'timeout',\n}\nrows = []\nwith tempfile.TemporaryDirectory(prefix='rehearsal-', dir=root / 'output') as td:\n    base = pathlib.Path(td)\n    profile = base / 'profile'; profile.mkdir()\n    prompt = base / 'prompt.txt'\n    prompt.write_text('Review literal shell text: \"'$(touch SHOULD_NOT_EXIST); `id`; ; echo nope'\"\\\\n', encoding='utf-8')\n    for scenario, wanted in expected.items():\n        case = base / scenario; case.mkdir()\n        fake = case / 'grok'; shutil.copyfile(fake_source, fake); fake.chmod(0o755)\n        (case / 'scenario.txt').write_text(scenario, encoding='utf-8')\n        evidence = case / 'evidence'\n        timeout = '0.25' if scenario == 'timeout' else '5'\n        command = [str(adapter), '--mode', 'explicit', '--prompt-file', str(prompt), '--output-dir', str(evidence), '--grok-home', str(profile), '--grok-bin', str(fake), '--timeout', timeout, '--max-turns', '2']\n        started = time.monotonic()\n        done = subprocess.run(command, text=True, capture_output=True, env={**os.environ, 'PYTHONDONTWRITEBYTECODE':'1'})\n        elapsed = time.monotonic() - started\n        lines = done.stdout.splitlines()\n        assert len(lines) == 1, (scenario, done.stdout, done.stderr)\n        status = json.loads(lines[0])['status']\n        assert status == wanted, (scenario, wanted, status, done.stdout, done.stderr)\n        assert (done.returncode == 0) == (wanted == 'ok')\n        assert not (root / 'SHOULD_NOT_EXIST').exists()\n        assert len(list(evidence.glob('*/evidence.json'))) == 1\n        if scenario in {'direct','envelope','streaming'}:\n            payload = json.loads(lines[0]); assert payload['review']['verdict'] == 'PROCEED WITH CHANGES'\n            invocation = json.loads((case / 'invocation.json').read_text(encoding='utf-8'))\n            assert invocation['prompt'].startswith('Review literal shell text: \"'$('\"')\n            assert invocation['cwdFiles'] == ['prompt.txt', 'review-schema.json', 'reviewer.json']\n            assert invocation['agent'] and '\\\"tools\\\": []' in invocation['agent']\n        if scenario == 'timeout':\n            assert elapsed < 3, elapsed\n            pid = int((case / 'child.pid').read_text())\n            time.sleep(.1)\n            try:\n                os.kill(pid, 0)\n            except ProcessLookupError:\n                pass\n            else:\n                raise AssertionError(f'child still alive: {pid}')\n        rows.append(f'{scenario}={status}')\n    missing = subprocess.run([str(adapter), '--mode','explicit','--prompt-file',str(prompt),'--output-dir',str(base/'missing-evidence'),'--grok-home',str(profile),'--grok-bin',str(base/'absent'),'--timeout','2','--max-turns','2'], text=True, capture_output=True)\n    assert json.loads(missing.stdout)['status'] == 'missing-cli'\n    auto_case = base / 'auto'; auto_case.mkdir(); auto_fake = auto_case / 'grok'; shutil.copyfile(fake_source, auto_fake); auto_fake.chmod(0o755)\n    automatic = subprocess.run([str(adapter), '--mode','automatic','--prompt-file',str(prompt),'--output-dir',str(base/'auto-evidence'),'--grok-home',str(profile),'--grok-bin',str(auto_fake),'--timeout','2','--max-turns','2'], text=True, capture_output=True)\n    assert json.loads(automatic.stdout)['status'] == 'isolation-failure'\n    assert not (auto_case / 'invocation.json').exists()\n    rows.extend(['missing-cli=missing-cli','automatic=isolation-failure(no invocation)'])\nprint('PASS ' + ' '.join(rows))\nPY\"",
+          "/bin/zsh -c \"python3 -B - <<'PY'\nfrom pathlib import Path\nimport shutil\ncase=Path('output/timeout-debug'); case.mkdir(exist_ok=True)\nshutil.copyfile('harness/fake_grok.py',case/'grok'); (case/'grok').chmod(0o755)\n(case/'scenario.txt').write_text('timeout',encoding='utf-8')\n(case/'prompt.txt').write_text('review',encoding='utf-8')\n(case/'profile').mkdir(exist_ok=True)\nPY\noutput/skills/toolboxmd-use-grok/scripts/consult-grok --mode explicit --prompt-file output/timeout-debug/prompt.txt --output-dir output/timeout-debug/evidence --grok-home output/timeout-debug/profile --grok-bin output/timeout-debug/grok --timeout 0.25 --max-turns 2\nfind output/timeout-debug/evidence -type f -maxdepth 2 -print -exec sed -n '1,160p' {} \\\\;\"",
+          "/bin/zsh -c \"PYTHONDONTWRITEBYTECODE=1 python3 -B - <<'PY'\nimport json, os, pathlib, shutil, subprocess, tempfile, time\nroot = pathlib.Path.cwd()\ndebug = root / 'output/timeout-debug'\nif debug.exists():\n    shutil.rmtree(debug)\nadapter = root / 'output/skills/toolboxmd-use-grok/scripts/consult-grok'\nfake_source = root / 'harness/fake_grok.py'\npython_target = pathlib.Path('/opt/homebrew/Cellar/python@3.14/3.14.6/bin/python3.14')\nexpected = {\n    'direct': 'ok', 'envelope': 'ok', 'streaming': 'ok',\n    'bad-inspect': 'isolation-failure', 'missing-inspect-fields': 'isolation-failure',\n    'runtime-tool-call': 'isolation-failure', 'incomplete': 'incomplete-stop-reason',\n    'result-error': 'nonzero-exit', 'max-turns': 'max-turns',\n    'invalid-json': 'invalid-json', 'nonzero': 'nonzero-exit', 'timeout': 'timeout',\n}\nrows = []\nwith tempfile.TemporaryDirectory(prefix='rehearsal-', dir=root / 'output') as td:\n    base = pathlib.Path(td)\n    launcher = base / 'launcher'; launcher.mkdir(); (launcher / 'python3').symlink_to(python_target)\n    test_env = {**os.environ, 'PATH': str(launcher) + os.pathsep + os.environ['PATH'], 'PYTHONDONTWRITEBYTECODE':'1'}\n    profile = base / 'profile'; profile.mkdir()\n    prompt = base / 'prompt.txt'\n    injection = '\"'$'\"' + '(touch SHOULD_NOT_EXIST); ' + chr(96) + 'id' + chr(96) + '; ; echo nope'\n    prompt.write_text('Review literal shell text: ' + injection + '\\\\n', encoding='utf-8')\n    for scenario, wanted in expected.items():\n        case = base / scenario; case.mkdir()\n        fake = case / 'grok'; shutil.copyfile(fake_source, fake); fake.chmod(0o755)\n        (case / 'scenario.txt').write_text(scenario, encoding='utf-8')\n        evidence = case / 'evidence'\n        timeout = '0.25' if scenario == 'timeout' else '5'\n        command = [str(adapter), '--mode', 'explicit', '--prompt-file', str(prompt), '--output-dir', str(evidence), '--grok-home', str(profile), '--grok-bin', str(fake), '--timeout', timeout, '--max-turns', '2']\n        started = time.monotonic()\n        done = subprocess.run(command, text=True, capture_output=True, env=test_env)\n        elapsed = time.monotonic() - started\n        lines = done.stdout.splitlines()\n        assert len(lines) == 1, (scenario, done.stdout, done.stderr)\n        status = json.loads(lines[0])['status']\n        assert status == wanted, (scenario, wanted, status, done.stdout, done.stderr)\n        assert (done.returncode == 0) == (wanted == 'ok')\n        assert not (root / 'SHOULD_NOT_EXIST').exists()\n        assert len(list(evidence.glob('*/evidence.json'))) == 1\n        if scenario in {'direct','envelope','streaming'}:\n            payload = json.loads(lines[0]); assert payload['review']['verdict'] == 'PROCEED WITH CHANGES'\n            invocation = json.loads((case / 'invocation.json').read_text(encoding='utf-8'))\n            assert invocation['prompt'].startswith('Review literal shell text: \"'$'\"')\n            assert invocation['cwdFiles'] == ['prompt.txt', 'review-schema.json', 'reviewer.json']\n            assert invocation['agent'] and '\\\"tools\\\": []' in invocation['agent']\n        if scenario == 'timeout':\n            assert elapsed < 3, elapsed\n            pid = int((case / 'child.pid').read_text())\n            time.sleep(.1)\n            try:\n                os.kill(pid, 0)\n            except ProcessLookupError:\n                pass\n            else:\n                raise AssertionError(f'child still alive: {pid}')\n        rows.append(f'{scenario}={status}')\n    missing = subprocess.run([str(adapter), '--mode','explicit','--prompt-file',str(prompt),'--output-dir',str(base/'missing-evidence'),'--grok-home',str(profile),'--grok-bin',str(base/'absent'),'--timeout','2','--max-turns','2'], text=True, capture_output=True, env=test_env)\n    assert json.loads(missing.stdout)['status'] == 'missing-cli'\n    auto_case = base / 'auto'; auto_case.mkdir(); auto_fake = auto_case / 'grok'; shutil.copyfile(fake_source, auto_fake); auto_fake.chmod(0o755)\n    automatic = subprocess.run([str(adapter), '--mode','automatic','--prompt-file',str(prompt),'--output-dir',str(base/'auto-evidence'),'--grok-home',str(profile),'--grok-bin',str(auto_fake),'--timeout','2','--max-turns','2'], text=True, capture_output=True, env=test_env)\n    assert json.loads(automatic.stdout)['status'] == 'isolation-failure'\n    assert not (auto_case / 'invocation.json').exists()\n    rows.extend(['missing-cli=missing-cli','automatic=isolation-failure(no-invocation)'])\nprint('PASS ' + ' '.join(rows))\nPY\"",
+          "/bin/zsh -c \"PYTHONDONTWRITEBYTECODE=1 python3 -B - <<'PY'\nimport json, os, pathlib, shutil, subprocess, tempfile, time\nroot = pathlib.Path.cwd()\nadapter = root / 'output/skills/toolboxmd-use-grok/scripts/consult-grok'\nfake_text = (root / 'harness/fake_grok.py').read_text(encoding='utf-8')\npython_target = pathlib.Path('/opt/homebrew/Cellar/python@3.14/3.14.6/bin/python3.14')\nfake_text = fake_text.replace('#\"'!/usr/bin/env python3'\"', '#\"'!'\"' + str(python_target), 1)\nexpected = {\n    'direct': 'ok', 'envelope': 'ok', 'streaming': 'ok',\n    'bad-inspect': 'isolation-failure', 'missing-inspect-fields': 'isolation-failure',\n    'runtime-tool-call': 'isolation-failure', 'incomplete': 'incomplete-stop-reason',\n    'result-error': 'nonzero-exit', 'max-turns': 'max-turns',\n    'invalid-json': 'invalid-json', 'nonzero': 'nonzero-exit', 'timeout': 'timeout',\n}\nrows = []\nwith tempfile.TemporaryDirectory(prefix='rehearsal-', dir=root / 'output') as td:\n    base = pathlib.Path(td)\n    test_env = {**os.environ, 'PYTHONDONTWRITEBYTECODE':'1'}\n    profile = base / 'profile'; profile.mkdir()\n    prompt = base / 'prompt.txt'\n    injection = '\"'$'\"' + '(touch SHOULD_NOT_EXIST); ' + chr(96) + 'id' + chr(96) + '; ; echo nope'\n    prompt.write_text('Review literal shell text: ' + injection + '\\\\n', encoding='utf-8')\n    for scenario, wanted in expected.items():\n        case = base / scenario; case.mkdir()\n        fake = case / 'grok'; fake.write_text(fake_text, encoding='utf-8'); fake.chmod(0o755)\n        (case / 'scenario.txt').write_text(scenario, encoding='utf-8')\n        evidence = case / 'evidence'\n        timeout = '0.25' if scenario == 'timeout' else '5'\n        command = [str(adapter), '--mode', 'explicit', '--prompt-file', str(prompt), '--output-dir', str(evidence), '--grok-home', str(profile), '--grok-bin', str(fake), '--timeout', timeout, '--max-turns', '2']\n        started = time.monotonic()\n        done = subprocess.run(command, text=True, capture_output=True, env=test_env)\n        elapsed = time.monotonic() - started\n        lines = done.stdout.splitlines()\n        assert len(lines) == 1, (scenario, done.stdout, done.stderr)\n        status = json.loads(lines[0])['status']\n        assert status == wanted, (scenario, wanted, status, done.stdout, done.stderr)\n        assert (done.returncode == 0) == (wanted == 'ok')\n        assert not (root / 'SHOULD_NOT_EXIST').exists()\n        assert len(list(evidence.glob('*/evidence.json'))) == 1\n        if scenario in {'direct','envelope','streaming'}:\n            payload = json.loads(lines[0]); assert payload['review']['verdict'] == 'PROCEED WITH CHANGES'\n            invocation = json.loads((case / 'invocation.json').read_text(encoding='utf-8'))\n            assert invocation['prompt'].startswith('Review literal shell text: \"'$'\"')\n            assert invocation['cwdFiles'] == ['prompt.txt', 'review-schema.json', 'reviewer.json']\n            assert invocation['agent'] and '\\\"tools\\\": []' in invocation['agent']\n        if scenario == 'timeout':\n            assert elapsed < 3, elapsed\n            pid = int((case / 'child.pid').read_text())\n            time.sleep(.1)\n            try:\n                os.kill(pid, 0)\n            except ProcessLookupError:\n                pass\n            else:\n                raise AssertionError(f'child still alive: {pid}')\n        rows.append(f'{scenario}={status}')\n    missing = subprocess.run([str(adapter), '--mode','explicit','--prompt-file',str(prompt),'--output-dir',str(base/'missing-evidence'),'--grok-home',str(profile),'--grok-bin',str(base/'absent'),'--timeout','2','--max-turns','2'], text=True, capture_output=True, env=test_env)\n    assert json.loads(missing.stdout)['status'] == 'missing-cli'\n    auto_case = base / 'auto'; auto_case.mkdir(); auto_fake = auto_case / 'grok'; auto_fake.write_text(fake_text, encoding='utf-8'); auto_fake.chmod(0o755)\n    automatic = subprocess.run([str(adapter), '--mode','automatic','--prompt-file',str(prompt),'--output-dir',str(base/'auto-evidence'),'--grok-home',str(profile),'--grok-bin',str(auto_fake),'--timeout','2','--max-turns','2'], text=True, capture_output=True, env=test_env)\n    assert json.loads(automatic.stdout)['status'] == 'isolation-failure'\n    assert not (auto_case / 'invocation.json').exists()\n    rows.extend(['missing-cli=missing-cli','automatic=isolation-failure(no-invocation)'])\nprint('PASS ' + ' '.join(rows))\nPY\"",
+          "/bin/zsh -c \"/opt/homebrew/Cellar/python@3.14/3.14.6/bin/python3.14 -c 'import sys; print(sys.executable)'\"",
+          "/bin/zsh -c \"PYTHONDONTWRITEBYTECODE=1 python3 -B - <<'PY'\nimport json, os, pathlib, subprocess, tempfile, time\nroot = pathlib.Path.cwd()\nadapter = root / 'output/skills/toolboxmd-use-grok/scripts/consult-grok'\nfake_text = (root / 'harness/fake_grok.py').read_text(encoding='utf-8')\npython_target = '/opt/homebrew/Cellar/python@3.14/3.14.6/bin/python3.14'\nfake_text = fake_text.replace('#\"'!/usr/bin/env python3'\"', '#\"'!'\"' + python_target, 1)\nfake_text = fake_text.replace('[sys.executable, \\\"-c\\\", \\\"import time; time.sleep(60)\\\"]', '[' + repr(python_target) + ', \\\"-c\\\", \\\"import time; time.sleep(60)\\\"]', 1)\nexpected = {\n    'direct': 'ok', 'envelope': 'ok', 'streaming': 'ok',\n    'bad-inspect': 'isolation-failure', 'missing-inspect-fields': 'isolation-failure',\n    'runtime-tool-call': 'isolation-failure', 'incomplete': 'incomplete-stop-reason',\n    'result-error': 'nonzero-exit', 'max-turns': 'max-turns',\n    'invalid-json': 'invalid-json', 'nonzero': 'nonzero-exit', 'timeout': 'timeout',\n}\nrows = []\nwith tempfile.TemporaryDirectory(prefix='rehearsal-', dir=root / 'output') as td:\n    base = pathlib.Path(td)\n    test_env = {**os.environ, 'PYTHONDONTWRITEBYTECODE':'1'}\n    profile = base / 'profile'; profile.mkdir()\n    prompt = base / 'prompt.txt'\n    injection = '\"'$'\"' + '(touch SHOULD_NOT_EXIST); ' + chr(96) + 'id' + chr(96) + '; ; echo nope'\n    prompt.write_text('Review literal shell text: ' + injection + '\\\\n', encoding='utf-8')\n    for scenario, wanted in expected.items():\n        case = base / scenario; case.mkdir()\n        fake = case / 'grok'; fake.write_text(fake_text, encoding='utf-8'); fake.chmod(0o755)\n        (case / 'scenario.txt').write_text(scenario, encoding='utf-8')\n        evidence = case / 'evidence'\n        timeout = '0.25' if scenario == 'timeout' else '5'\n        command = [str(adapter), '--mode', 'explicit', '--prompt-file', str(prompt), '--output-dir', str(evidence), '--grok-home', str(profile), '--grok-bin', str(fake), '--timeout', timeout, '--max-turns', '2']\n        started = time.monotonic(); done = subprocess.run(command, text=True, capture_output=True, env=test_env); elapsed = time.monotonic() - started\n        lines = done.stdout.splitlines(); assert len(lines) == 1, (scenario, done.stdout, done.stderr)\n        status = json.loads(lines[0])['status']; assert status == wanted, (scenario, wanted, status, done.stdout, done.stderr)\n        assert (done.returncode == 0) == (wanted == 'ok')\n        assert not (root / 'SHOULD_NOT_EXIST').exists()\n        assert len(list(evidence.glob('*/evidence.json'))) == 1\n        if scenario in {'direct','envelope','streaming'}:\n            payload = json.loads(lines[0]); assert payload['review']['verdict'] == 'PROCEED WITH CHANGES'\n            invocation = json.loads((case / 'invocation.json').read_text(encoding='utf-8'))\n            assert invocation['prompt'].startswith('Review literal shell text: \"'$'\"')\n            assert invocation['cwdFiles'] == ['prompt.txt', 'review-schema.json', 'reviewer.json']\n            assert invocation['agent'] and '\\\"tools\\\": []' in invocation['agent']\n        if scenario == 'timeout':\n            assert elapsed < 3, elapsed\n            pid = int((case / 'child.pid').read_text()); time.sleep(.1)\n            try: os.kill(pid, 0)\n            except ProcessLookupError: pass\n            else: raise AssertionError(f'child still alive: {pid}')\n        rows.append(f'{scenario}={status}')\n    missing = subprocess.run([str(adapter), '--mode','explicit','--prompt-file',str(prompt),'--output-dir',str(base/'missing-evidence'),'--grok-home',str(profile),'--grok-bin',str(base/'absent'),'--timeout','2','--max-turns','2'], text=True, capture_output=True, env=test_env)\n    assert json.loads(missing.stdout)['status'] == 'missing-cli'\n    auto_case = base / 'auto'; auto_case.mkdir(); auto_fake = auto_case / 'grok'; auto_fake.write_text(fake_text, encoding='utf-8'); auto_fake.chmod(0o755)\n    automatic = subprocess.run([str(adapter), '--mode','automatic','--prompt-file',str(prompt),'--output-dir',str(base/'auto-evidence'),'--grok-home',str(profile),'--grok-bin',str(auto_fake),'--timeout','2','--max-turns','2'], text=True, capture_output=True, env=test_env)\n    assert json.loads(automatic.stdout)['status'] == 'isolation-failure'; assert not (auto_case / 'invocation.json').exists()\n    rows.extend(['missing-cli=missing-cli','automatic=isolation-failure(no-invocation)'])\nprint('PASS ' + ' '.join(rows))\nPY\"",
+          "/bin/zsh -c 'digest=$(openssl dgst -sha256 output/skills/toolboxmd-use-grok/scripts/consult-grok | awk '\"'{print \"'$2}'\"')\nPYTHONDONTWRITEBYTECODE=1 python3 -B home/.codex/skills/creator-under-test/scripts/validate_skill.py --creation-mode --warnings-as-errors --script-syntax-checked \\\"scripts/consult-grok=\"'$digest\" --max-description-chars 400 --max-skill-lines 150 --max-skill-bytes 10500 --max-files 2 --max-package-bytes 45000 --max-reference-files 0 --max-eval-files 0 --max-script-files 1 output/skills/toolboxmd-use-grok\npython3 -B - <<'\"'PY'\nimport os, pathlib, stat\nroot=pathlib.Path('output/skills/toolboxmd-use-grok')\nentries=list(root.rglob('*'))\nfiles=[p for p in entries if p.is_file() and not p.is_symlink()]\nassert sorted(p.relative_to(root).as_posix() for p in files)==['SKILL.md','scripts/consult-grok']\nassert not any(p.is_symlink() for p in entries)\nassert os.access(root/'scripts/consult-grok',os.X_OK)\nassert not any(p.name == '__pycache__' or p.suffix in {'.pyc','.pyo'} for p in entries)\nprint('PASS exact-files=2 symlinks=0 adapter-executable=true package-bytes=' + str(sum(p.stat().st_size for p in files)))\nPY\""
+        ],
+        "durationSeconds": 433.083,
+        "toolItemCount": 42,
+        "usage": {
+          "cached_input_tokens": 617472,
+          "input_tokens": 680310,
+          "output_tokens": 19607,
+          "reasoning_output_tokens": 4675
+        }
+      },
+      "authoringIsolationEligible": true,
+      "criticalFailures": [
+        "direct-envelope-streaming-success",
+        "safe-argv-prompt-and-environment",
+        "concrete-failure-classification",
+        "credential-shaped-input-rejected-before-call"
+      ],
+      "isolationEligible": true,
+      "judgeIsolationEligible": true,
+      "recommendableArtifact": false,
+      "score": {
+        "available": 100,
+        "deterministic": 35.0,
+        "semantic": 29.0,
+        "total": 64.0
+      },
+      "treatment": {
+        "aggregateSha256": "e667aa1671dafc07df09289f8f1ed23bd36268c6a1a44b8868cac83eb429e22f",
+        "bytes": 46953,
+        "fileCount": 3,
+        "id": "final-vnext",
+        "internalPackageCapBytes": 48000,
+        "path": "skills/toolboxmd-creating-skills",
+        "role": "final exact-reviewed Creator vNext merged through pull request 2",
+        "sourceCommit": "20fc268615079ade496e31cc5e55f51bcc5ad3b0"
+      }
+    },
+    "D": {
+      "artifactCost": {
+        "descriptionCharactersApproximate": 350,
+        "fileCount": 2,
+        "packageBytes": 16269,
+        "skillMdLines": 30
+      },
+      "authoringCost": {
+        "commandCount": 30,
+        "commands": [
+          "/bin/zsh -c 'python3 harness/isolation_preflight.py model'",
+          "/bin/zsh -c \"sed -n '1,320p' input/contract.json\"",
+          "/bin/zsh -c \"sed -n '1,240p' home/.codex/skills/creator-under-test/SKILL.md\"",
+          "/bin/zsh -c \"sed -n '1,260p' input/base-brief.md\"",
+          "/bin/zsh -c 'rg --files harness'",
+          "/bin/zsh -c \"sed -n '1,360p' harness/fake_grok.py\"",
+          "/bin/zsh -c \"sed -n '1,260p' harness/final-message.schema.json\"",
+          "/bin/zsh -c \"sed -n '241,520p' home/.codex/skills/creator-under-test/SKILL.md\"",
+          "/bin/zsh -c \"sed -n '1,360p' harness/isolation_preflight.py\"",
+          "/bin/zsh -c 'rg --files home/.codex/skills/creator-under-test'",
+          "/bin/zsh -c \"python3 home/.codex/skills/creator-under-test/scripts/init_skill.py toolboxmd-use-grok --path output/skills --resources scripts --interface 'display_name=Use Grok' --interface 'short_description=Ask Grok for a bounded second opinion' --interface 'default_prompt=Ask Grok to review this material and reconcile its feedback.'\"",
+          "/bin/zsh -c 'rmdir output/skills/toolboxmd-use-grok/agents && chmod 755 output/skills/toolboxmd-use-grok/scripts/consult-grok && python3 -m py_compile output/skills/toolboxmd-use-grok/scripts/consult-grok'",
+          "/bin/zsh -c 'rm output/skills/toolboxmd-use-grok/scripts/__pycache__/consult-grok.cpython-314.pyc && rmdir output/skills/toolboxmd-use-grok/scripts/__pycache__ && mkdir -p output/rehearsal/grok-home output/rehearsal/evidence && cp harness/fake_grok.py output/rehearsal/fake_grok.py && chmod 755 output/rehearsal/fake_grok.py && output/skills/toolboxmd-use-grok/scripts/consult-grok --mode explicit --prompt-file output/rehearsal/prompt.txt --output-dir output/rehearsal/evidence --grok-home output/rehearsal/grok-home --grok-bin output/rehearsal/fake_grok.py --timeout 5 --max-turns 4'",
+          "/bin/zsh -c 'rg --files output/skills/toolboxmd-use-grok output/rehearsal'",
+          "/bin/zsh -c 'mkdir -p output/rehearsal/grok-home output/rehearsal/evidence && cp harness/fake_grok.py output/rehearsal/fake_grok.py && chmod 755 output/rehearsal/fake_grok.py && output/skills/toolboxmd-use-grok/scripts/consult-grok --mode explicit --prompt-file output/rehearsal/prompt.txt --output-dir output/rehearsal/evidence --grok-home output/rehearsal/grok-home --grok-bin output/rehearsal/fake_grok.py --timeout 5 --max-turns 4'",
+          "/bin/zsh -c \"sed -n '1,260p' output/rehearsal/invocation.json && test \"'! -e output/rehearsal/SHOULD_NOT_EXIST && test ! -e output/rehearsal/ALSO_NOT && find output/rehearsal/evidence -type f -maxdepth 2 -print'",
+          "/bin/zsh -c 'output/skills/toolboxmd-use-grok/scripts/consult-grok --mode explicit --prompt-file output/rehearsal/prompt.txt --output-dir output/rehearsal/evidence --grok-home output/rehearsal/grok-home --grok-bin output/rehearsal/fake_grok.py --timeout 5 --max-turns 4'",
+          "/bin/zsh -c 'for scenario_dir in output/rehearsal/envelope output/rehearsal/bad-inspect output/rehearsal/invalid-json output/rehearsal/incomplete output/rehearsal/nonzero output/rehearsal/max-turns output/rehearsal/runtime-tool-call; do cp harness/fake_grok.py \"$scenario_dir/fake_grok.py\"; chmod 755 \"$scenario_dir/fake_grok.py\"; output/skills/toolboxmd-use-grok/scripts/consult-grok --mode explicit --prompt-file output/rehearsal/prompt.txt --output-dir output/rehearsal/evidence --grok-home output/rehearsal/grok-home --grok-bin \"$scenario_dir/fake_grok.py\" --timeout 5 --max-turns 4 || true; done'",
+          "/bin/zsh -c 'cp harness/fake_grok.py output/rehearsal/timeout/fake_grok.py && chmod 755 output/rehearsal/timeout/fake_grok.py && output/skills/toolboxmd-use-grok/scripts/consult-grok --mode explicit --prompt-file output/rehearsal/prompt.txt --output-dir output/rehearsal/evidence --grok-home output/rehearsal/grok-home --grok-bin output/rehearsal/timeout/fake_grok.py --timeout 0.5 --max-turns 4'",
+          "/bin/zsh -c \"sed -n '1,200p' output/rehearsal/evidence/a7260e7d-b16b-4ea2-9032-4adc6cea9d4a/stderr.redacted.txt && sed -n '1,120p' output/rehearsal/evidence/a7260e7d-b16b-4ea2-9032-4adc6cea9d4a/stdout.redacted.txt\"",
+          "/bin/zsh -c 'output/skills/toolboxmd-use-grok/scripts/consult-grok --mode explicit --prompt-file output/rehearsal/prompt.txt --output-dir output/rehearsal/evidence --grok-home output/rehearsal/grok-home --grok-bin output/rehearsal/timeout/fake_grok.py --timeout 0.5 --max-turns 4'",
+          "/bin/zsh -c '! xargs -n 1 ps -p < output/rehearsal/timeout/child.pid'",
+          "/bin/zsh -c '! xargs -n 1 kill -0 < output/rehearsal/timeout/child.pid'",
+          "/bin/zsh -c 'output/skills/toolboxmd-use-grok/scripts/consult-grok --mode automatic --prompt-file output/rehearsal/prompt.txt --output-dir output/rehearsal/evidence --grok-home output/rehearsal/grok-home --grok-bin output/rehearsal/fake_grok.py --timeout 5 --max-turns 4 || true\noutput/skills/toolboxmd-use-grok/scripts/consult-grok --mode explicit --prompt-file output/rehearsal/prompt.txt --output-dir output/rehearsal/evidence --grok-home output/rehearsal/grok-home --grok-bin output/rehearsal/does-not-exist --timeout 5 --max-turns 4 || true'",
+          "/bin/zsh -c 'python3 home/.codex/skills/creator-under-test/scripts/quick_validate.py output/skills/toolboxmd-use-grok'",
+          "/bin/zsh -c \"find output/skills/toolboxmd-use-grok -type f -print && find output/skills/toolboxmd-use-grok -type l -print && wc -l -c output/skills/toolboxmd-use-grok/SKILL.md output/skills/toolboxmd-use-grok/scripts/consult-grok && stat -f '%Sp %N' output/skills/toolboxmd-use-grok/SKILL.md output/skills/toolboxmd-use-grok/scripts/consult-grok\"",
+          "/bin/zsh -c 'for scenario_dir in output/rehearsal/result-error output/rehearsal/missing-inspect-fields; do cp harness/fake_grok.py \"$scenario_dir/fake_grok.py\"; chmod 755 \"$scenario_dir/fake_grok.py\"; output/skills/toolboxmd-use-grok/scripts/consult-grok --mode explicit --prompt-file output/rehearsal/prompt.txt --output-dir output/rehearsal/evidence --grok-home output/rehearsal/grok-home --grok-bin \"$scenario_dir/fake_grok.py\" --timeout 5 --max-turns 4 || true; done'",
+          "/bin/zsh -c \"python3 -c 'import ast,json,os,re,stat; from pathlib import Path; root=Path(\\\"output/skills/toolboxmd-use-grok\\\"); skill=root/\\\"SKILL.md\\\"; script=root/\\\"scripts/consult-grok\\\"; contract=json.loads(Path(\\\"input/contract.json\\\").read_text()); files=[p for p in root.rglob(\\\"*\\\") if p.is_file()]; links=[p for p in root.rglob(\\\"*\\\") if p.is_symlink()]; text=skill.read_text(); desc=re.search(r\\\"\"'^description: (.*)$\",text,re.M).group(1); budgets=contract[\"productBudgets\"]; ast.parse(script.read_text()); assert sorted(str(p.relative_to(root)) for p in files)==[\"SKILL.md\",\"scripts/consult-grok\"]; assert not links; assert len(text.splitlines())<=budgets[\"skillMdLinesMaximum\"]; assert len(skill.read_bytes())<=budgets[\"skillMdBytesMaximum\"]; assert len(desc)<=budgets[\"descriptionCharactersMaximum\"]; assert sum(len(p.read_bytes()) for p in files)<=budgets[\"packageBytesMaximum\"]; assert os.access(script,os.X_OK); print(json.dumps({\"files\":len(files),\"symlinks\":len(links),\"skillLines\":len(text.splitlines()),\"skillBytes\":len(skill.read_bytes()),\"descriptionCharacters\":len(desc),\"packageBytes\":sum(len(p.read_bytes()) for p in files),\"scriptExecutable\":True},sort_keys=True))'\"'\"",
+          "/bin/zsh -c 'rm -r /private/tmp/creator-two-arm-e3e0453f-c10e-4e4e-8782-a2b887f35a7a/sandbox/output/rehearsal'",
+          "/bin/zsh -c 'find output/skills/toolboxmd-use-grok -type f -print && find output/skills/toolboxmd-use-grok -type l -print && test -x output/skills/toolboxmd-use-grok/scripts/consult-grok && wc -l -c output/skills/toolboxmd-use-grok/SKILL.md output/skills/toolboxmd-use-grok/scripts/consult-grok'"
+        ],
+        "durationSeconds": 376.502,
+        "toolItemCount": 76,
+        "usage": {
+          "cached_input_tokens": 856320,
+          "input_tokens": 949164,
+          "output_tokens": 15783,
+          "reasoning_output_tokens": 4037
+        }
+      },
+      "authoringIsolationEligible": true,
+      "criticalFailures": [
+        "direct-envelope-streaming-success",
+        "safe-argv-prompt-and-environment",
+        "inspect-allowlist-fails-closed",
+        "concrete-failure-classification",
+        "timeout-kills-complete-process-tree",
+        "automatic-mode-disabled-and-fail-closed",
+        "credential-shaped-input-rejected-before-call"
+      ],
+      "isolationEligible": true,
+      "judgeIsolationEligible": true,
+      "recommendableArtifact": false,
+      "score": {
+        "available": 100,
+        "deterministic": 20.0,
+        "semantic": 27.0,
+        "total": 47.0
+      },
+      "treatment": {
+        "aggregateSha256": "6fe5b307747bb389d3e5171dccc418a6de523caaa71f09ee23f1f4b4914e31ca",
+        "bytes": 63340,
+        "fileCount": 9,
+        "id": "frozen-builtin-codex-skill-creator",
+        "path": "benchmarks/toolboxmd-use-grok/four-arm-creator/treatments/d-current-builtin/package",
+        "role": "independent built-in baseline retained from the four-arm freeze"
+      }
+    }
+  },
+  "claimBoundary": {
+    "automaticGrokReviewRemainsDisabled": true,
+    "briefKnownDuringVNextAuthoring": true,
+    "defaultCreatorClaimAllowed": false,
+    "generalSuperiorityClaimAllowed": false,
+    "oldFourArmOutputsRanked": false,
+    "oneRunPerTreatmentIsDirectionalOnly": true,
+    "productionPromotionClaimAllowed": false,
+    "purpose": "Fresh known-brief diagnostic of final Creator vNext versus the frozen built-in Codex skill-creator.",
+    "realGrokCallsAllowed": false
+  },
+  "decision": {
+    "pairedRepeatRequired": false,
+    "pairedRepeatRule": "No paired repeat is part of this execution. A later repeat requires a new preregistration and cannot retroactively change this result.",
+    "recommendation": null,
+    "verdict": "INCONCLUSIVE"
+  },
+  "heldOut": {
+    "admittedArms": [],
+    "readyToFreeze": false,
+    "rule": "This known-brief run cannot promote a Creator. A later acceptance-refinement treatment requires a fixed repair budget and at least one held-out skill brief."
+  },
+  "schemaVersion": 1
+}

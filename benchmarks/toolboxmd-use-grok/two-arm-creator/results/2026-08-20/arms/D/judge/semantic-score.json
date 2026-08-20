@@ -1,0 +1,10 @@
+{
+  "activationPoints": 10.0,
+  "activationPredictionIdsValid": true,
+  "privacyReliabilityPoints": 7,
+  "procedurePoints": 10,
+  "semanticPointsAvailable": 30,
+  "semanticPointsAwarded": 27.0,
+  "trueNegativeRate": 1.0,
+  "truePositiveRate": 1.0
+}

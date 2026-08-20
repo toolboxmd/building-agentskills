@@ -40,3 +40,11 @@ estimate or a general Creator promotion.
 The 70/70 acceptance-refined Grok reference is not a ranked treatment here. Its
 generate-test-repair lineage motivates a separate future Creator hypothesis
 that must be evaluated with a fixed repair budget and held-out skill brief.
+
+## Recorded execution
+
+The frozen 2026-08-20 execution is retained in
+[`results/2026-08-20/`](results/2026-08-20/README.md). Both authoring and judge
+runs were isolation-eligible and semantic grading completed. The verdict is
+`INCONCLUSIVE` because both generated artifacts had critical deterministic
+failures.

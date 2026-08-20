@@ -1,0 +1,316 @@
+#!/usr/bin/env python3
+"""Fail-closed adapter for a bounded, explicit Grok Build consultation."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import signal
+import subprocess
+import sys
+import tempfile
+import time
+import uuid
+
+
+FAILURES = {
+    "missing-cli", "isolation-failure", "nonzero-exit", "timeout",
+    "invalid-json", "incomplete-stop-reason", "max-turns",
+}
+VERDICTS = {"PROCEED", "PROCEED WITH CHANGES", "REPLAN", "NEEDS HUMAN DECISION"}
+SECTIONS = ("overengineering", "missing", "risks", "minimum_plan_delta", "user_decisions")
+SAFE_ENV_KEYS = ("PATH", "LANG", "LC_ALL", "TZ", "TMPDIR", "SYSTEMROOT", "WINDIR")
+COMPAT_ENV = {
+    "GROK_DISABLE_CURSOR_COMPAT": "1",
+    "GROK_DISABLE_CLAUDE_COMPAT": "1",
+    "GROK_DISABLE_PROJECT_INSTRUCTIONS": "1",
+    "GROK_DISABLE_USER_MEMORY": "1",
+    "GROK_DISABLE_PLUGINS": "1",
+    "GROK_DISABLE_HOOKS": "1",
+    "GROK_DISABLE_MCP": "1",
+    "GROK_DISABLE_WEB": "1",
+}
+
+
+def emit(status: str, **fields: object) -> int:
+    payload = {"status": status, **fields}
+    print(json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
+    return 0 if status == "ok" else 1
+
+
+def parser() -> argparse.ArgumentParser:
+    value = argparse.ArgumentParser(add_help=True)
+    value.add_argument("--mode", required=True, choices=("explicit", "automatic"))
+    value.add_argument("--prompt-file", required=True)
+    value.add_argument("--output-dir", required=True)
+    value.add_argument("--grok-home", required=True)
+    value.add_argument("--grok-bin", required=True)
+    value.add_argument("--timeout", required=True, type=float)
+    value.add_argument("--max-turns", required=True, type=int)
+    return value
+
+
+def clean_environment(grok_home: Path) -> tuple[dict[str, str], list[str]]:
+    env = {key: os.environ[key] for key in SAFE_ENV_KEYS if key in os.environ}
+    env.update(COMPAT_ENV)
+    env["GROK_HOME"] = str(grok_home)
+    forwarded: list[str] = []
+    if os.environ.get("XAI_API_KEY"):
+        env["XAI_API_KEY"] = os.environ["XAI_API_KEY"]
+        forwarded.append("XAI_API_KEY")
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
+    return env, forwarded
+
+
+def run_bounded(argv: list[str], cwd: Path, env: dict[str, str], timeout: float) -> tuple[str, str, int, bool]:
+    process = subprocess.Popen(
+        argv, cwd=cwd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, text=True, encoding="utf-8", errors="replace",
+        start_new_session=True,
+    )
+    try:
+        stdout, stderr = process.communicate(timeout=timeout)
+        return stdout, stderr, process.returncode, False
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(process.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        try:
+            stdout, stderr = process.communicate(timeout=1.0)
+        except subprocess.TimeoutExpired:
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            stdout, stderr = process.communicate()
+        return stdout, stderr, process.returncode, True
+
+
+def inspect_is_safe(value: object, cwd: Path) -> bool:
+    if not isinstance(value, dict):
+        return False
+    required = {
+        "grokVersion", "cwd", "projectRoot", "projectInstructions", "skills",
+        "agents", "mcpServers", "plugins", "hooks", "marketplaces",
+        "externalCompat", "configSources", "configWarnings", "permissions",
+    }
+    if set(value) != required or not isinstance(value["grokVersion"], str):
+        return False
+    if value["cwd"] != str(cwd) or value["projectRoot"] is not None:
+        return False
+    for key in ("projectInstructions", "skills", "mcpServers", "plugins", "hooks", "marketplaces"):
+        if value[key] != []:
+            return False
+    agents = value["agents"]
+    if not isinstance(agents, list) or any(
+        not isinstance(item, dict) or item.get("name") not in {"general-purpose", "explore", "plan"}
+        or item.get("source") != {"type": "builtin"} for item in agents
+    ):
+        return False
+    external = value["externalCompat"]
+    expected_cells = {(vendor, surface) for vendor in ("cursor", "claude") for surface in ("skills", "rules", "agents", "mcps", "hooks", "sessions")}
+    cells = external.get("cells") if isinstance(external, dict) else None
+    if set(external or {}) != {"remoteSettingsLoaded", "cells"} or external["remoteSettingsLoaded"] is not False or not isinstance(cells, list):
+        return False
+    actual_cells = set()
+    for cell in cells:
+        if not isinstance(cell, dict) or set(cell) != {"vendor", "surface", "enabled", "source"} or cell["enabled"] is not False:
+            return False
+        actual_cells.add((cell["vendor"], cell["surface"]))
+    if actual_cells != expected_cells:
+        return False
+    return (
+        value["configSources"] == {"layers": []}
+        and value["configWarnings"] is None
+        and value["permissions"] == {"managedSettingsActive": False}
+    )
+
+
+def review_is_valid(value: object) -> bool:
+    if not isinstance(value, dict) or set(value) != {"verdict", *SECTIONS}:
+        return False
+    return value["verdict"] in VERDICTS and all(
+        isinstance(value[key], list) and all(isinstance(item, str) for item in value[key])
+        for key in SECTIONS
+    )
+
+
+def contains_tool_use(value: object) -> bool:
+    if isinstance(value, dict):
+        if value.get("type") in {"tool_use", "tool_call", "mcp_tool_call"}:
+            return True
+        return any(contains_tool_use(item) for item in value.values())
+    if isinstance(value, list):
+        return any(contains_tool_use(item) for item in value)
+    return False
+
+
+def parse_output(raw: str) -> tuple[str, dict[str, object] | None, dict[str, object]]:
+    try:
+        values = [json.loads(line) for line in raw.splitlines() if line.strip()]
+    except (json.JSONDecodeError, UnicodeError):
+        return "invalid-json", None, {}
+    if not values:
+        return "invalid-json", None, {}
+    if any(contains_tool_use(value) for value in values):
+        return "isolation-failure", None, {}
+    if len(values) == 1 and review_is_valid(values[0]):
+        return "ok", values[0], {"stop_reason": "direct"}
+    if len(values) == 1 and isinstance(values[0], dict) and "structured_output" in values[0]:
+        envelope = values[0]
+        stop = envelope.get("stopReason", envelope.get("stop_reason"))
+        if stop not in (None, "end_turn"):
+            return ("max-turns" if stop in {"max_turns", "max-turns"} else "incomplete-stop-reason"), None, {}
+        review = envelope["structured_output"]
+        return ("ok", review, {"stop_reason": stop or "envelope"}) if review_is_valid(review) else ("invalid-json", None, {})
+    result = next((value for value in reversed(values) if isinstance(value, dict) and value.get("type") == "result"), None)
+    if result is None:
+        return "invalid-json", None, {}
+    subtype = result.get("subtype")
+    stop = result.get("stop_reason", result.get("stopReason"))
+    if subtype == "error_max_turns" or stop in {"max_turns", "max-turns"}:
+        return "max-turns", None, {}
+    if result.get("is_error") is True or subtype not in (None, "success"):
+        return "nonzero-exit", None, {}
+    if stop != "end_turn":
+        return "incomplete-stop-reason", None, {}
+    review = result.get("structured_output")
+    if not review_is_valid(review):
+        return "invalid-json", None, {}
+    meta = {key: result.get(key) for key in ("session_id", "usage", "stop_reason")}
+    return "ok", review, meta
+
+
+def redact(text: str, secrets: list[str]) -> str:
+    result = text
+    for secret in sorted((item for item in secrets if item), key=len, reverse=True):
+        result = result.replace(secret, "[REDACTED]")
+    result = re.sub(r'(?i)(api[_-]?key|token|secret|password)(["\s:=]+)[^\s",}]+', r'\1\2[REDACTED]', result)
+    return result
+
+
+def write_evidence(directory: Path, stdout: str, stderr: str, metadata: dict[str, object], secrets: list[str]) -> None:
+    directory.mkdir(parents=True, exist_ok=False)
+    (directory / "stdout.txt").write_text(redact(stdout, secrets), encoding="utf-8")
+    (directory / "stderr.txt").write_text(redact(stderr, secrets), encoding="utf-8")
+    (directory / "evidence.json").write_text(
+        json.dumps(metadata, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+
+
+def main() -> int:
+    try:
+        args = parser().parse_args()
+    except SystemExit as exc:
+        if exc.code == 0:
+            return 0
+        return emit("isolation-failure", error="invalid-arguments")
+    if args.mode == "automatic":
+        return emit("isolation-failure", error="automatic-mode-disabled")
+    if args.timeout <= 0 or args.max_turns <= 0:
+        return emit("isolation-failure", error="invalid-bounds")
+    prompt_source = Path(args.prompt_file).resolve()
+    output_root = Path(args.output_dir).resolve()
+    grok_home = Path(args.grok_home).resolve()
+    grok_bin = Path(args.grok_bin).resolve()
+    if not grok_bin.is_file() or not os.access(grok_bin, os.X_OK):
+        return emit("missing-cli")
+    try:
+        if not prompt_source.is_file() or not grok_home.is_dir():
+            return emit("isolation-failure", error="missing-input-or-profile")
+        prompt = prompt_source.read_text(encoding="utf-8")
+        if not prompt.strip() or "\x00" in prompt:
+            return emit("isolation-failure", error="invalid-prompt")
+        output_root.mkdir(parents=True, exist_ok=True)
+    except (OSError, UnicodeError):
+        return emit("isolation-failure", error="unreadable-input-or-output")
+
+    consultation_id = str(uuid.uuid4())
+    evidence_dir = output_root / consultation_id
+    env, forwarded = clean_environment(grok_home)
+    secrets = [env.get("XAI_API_KEY", "")]
+    started = time.monotonic()
+    stdout = stderr = ""
+    metadata: dict[str, object] = {
+        "schemaVersion": 1, "consultationId": consultation_id, "mode": "explicit",
+        "grokBin": str(grok_bin), "grokHome": str(grok_home), "timeoutSeconds": args.timeout,
+        "maxTurns": args.max_turns, "forwardedCredentialNames": forwarded,
+    }
+    try:
+        with tempfile.TemporaryDirectory(prefix=f"grok-{consultation_id}-", dir=output_root) as temporary:
+            stage = Path(temporary)
+            staged_prompt = stage / "prompt.txt"
+            agent = stage / "reviewer.json"
+            schema = stage / "review-schema.json"
+            staged_prompt.write_text(prompt, encoding="utf-8")
+            agent.write_text(json.dumps({
+                "name": "isolated-reviewer", "description": "Bounded second-opinion reviewer",
+                "instructions": "Review only the supplied prompt. Do not invoke tools, agents, agentic CLIs, web, memory, or project files.",
+                "tools": [],
+            }, sort_keys=True), encoding="utf-8")
+            schema.write_text(json.dumps({
+                "type": "object", "additionalProperties": False,
+                "required": ["verdict", *SECTIONS],
+                "properties": {
+                    "verdict": {"enum": sorted(VERDICTS)},
+                    **{key: {"type": "array", "items": {"type": "string"}} for key in SECTIONS},
+                },
+            }, sort_keys=True), encoding="utf-8")
+            inspect_argv = [str(grok_bin), "inspect", "--json"]
+            inspect_out, inspect_err, inspect_code, inspect_timeout = run_bounded(inspect_argv, stage, env, min(args.timeout, 15.0))
+            metadata["inspect"] = {"argv": inspect_argv[1:], "exitCode": inspect_code, "timedOut": inspect_timeout}
+            stdout += inspect_out
+            stderr += inspect_err
+            try:
+                inspect_value = json.loads(inspect_out)
+            except json.JSONDecodeError:
+                inspect_value = None
+            if inspect_timeout or inspect_code != 0 or not inspect_is_safe(inspect_value, stage):
+                category = "isolation-failure"
+                review = None
+                result_meta = {}
+            else:
+                argv = [
+                    str(grok_bin), "--prompt-file", str(staged_prompt), "--agent", str(agent),
+                    "--output-format", "stream-json", "--json-schema-file", str(schema),
+                    "--permission-mode", "read-only", "--no-web", "--no-memory",
+                    "--no-subagents", "--max-turns", str(args.max_turns),
+                ]
+                run_out, run_err, exit_code, timed_out = run_bounded(argv, stage, env, args.timeout)
+                stdout += run_out
+                stderr += run_err
+                metadata["invocation"] = {"argv": ["[GROK_BIN]", *argv[1:]], "exitCode": exit_code, "timedOut": timed_out}
+                if timed_out:
+                    category, review, result_meta = "timeout", None, {}
+                else:
+                    parsed_category, review, result_meta = parse_output(run_out)
+                    if parsed_category == "max-turns":
+                        category = "max-turns"
+                    elif exit_code != 0:
+                        category = "nonzero-exit"
+                    else:
+                        category = parsed_category
+                metadata["result"] = result_meta
+    except (OSError, UnicodeError, subprocess.SubprocessError) as exc:
+        category, review = "isolation-failure", None
+        metadata["adapterError"] = type(exc).__name__
+    metadata["durationMilliseconds"] = round((time.monotonic() - started) * 1000)
+    metadata["status"] = category
+    try:
+        write_evidence(evidence_dir, stdout, stderr, metadata, secrets)
+    except OSError:
+        return emit("isolation-failure", error="evidence-write-failed")
+    if category == "ok" and review is not None:
+        return emit("ok", review=review, evidence_dir=str(evidence_dir), consultation_id=consultation_id)
+    if category not in FAILURES:
+        category = "isolation-failure"
+    return emit(category, evidence_dir=str(evidence_dir), consultation_id=consultation_id)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

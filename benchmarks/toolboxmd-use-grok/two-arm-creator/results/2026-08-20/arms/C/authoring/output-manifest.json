@@ -1,0 +1,39 @@
+{
+  "aggregateSha256": "7b654697612a11f74a7780130663d163b5fc784a763e20549b002141c2bd85d0",
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+  "bytes": 20509,
+  "excludedDirectories": [
+    ".home",
+    ".pycache",
+    ".tmp"
+  ],
+  "fileCount": 4,
+  "files": [
+    {
+      "bytes": 1099,
+      "mode": "0o644",
+      "path": "isolation-preflight-control.json",
+      "sha256": "375ceb5333df2376ec82d57283f1db43e1ea8ad5055a508ea2b97d2f250e6f13"
+    },
+    {
+      "bytes": 1309,
+      "mode": "0o644",
+      "path": "isolation-preflight-model.json",
+      "sha256": "c957432414d932f644a71403c37f6129a37b12da85d82ca0e965a4055a02afc3"
+    },
+    {
+      "bytes": 3906,
+      "mode": "0o644",
+      "path": "skills/toolboxmd-use-grok/SKILL.md",
+      "sha256": "a93c203c1fd9c558a3581c50d018c36b4d0588a2bb4b8b876a2b67b5f3f3b13b"
+    },
+    {
+      "bytes": 14195,
+      "mode": "0o755",
+      "path": "skills/toolboxmd-use-grok/scripts/consult-grok",
+      "sha256": "57050bab90f2abdd2e9ce075fb50349af180154c604d1cd48b19b7518896146c"
+    }
+  ],
+  "omittedSymlinks": [],
+  "symlinks": []
+}

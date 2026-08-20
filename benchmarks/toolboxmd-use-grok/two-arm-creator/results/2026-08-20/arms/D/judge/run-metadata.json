@@ -1,0 +1,82 @@
+{
+  "actualCommandCwd": "/private/tmp/creator-two-arm-judge-6842e4d0-d628-4deb-bf63-7e4ff1d1d434/sandbox",
+  "arm": "D",
+  "candidate": {
+    "aggregateSha256": "c0f6cef189fb882207a920a14c64202dc2341784967d14f153743783b42cea9e",
+    "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+    "bytes": 16269,
+    "fileCount": 2,
+    "files": [
+      {
+        "bytes": 3171,
+        "mode": "0o644",
+        "path": "SKILL.md",
+        "sha256": "cf8bed05439c129c7e26037cfec77823826aebb7ee25688d64f3d1891a72ce7c"
+      },
+      {
+        "bytes": 13098,
+        "mode": "0o755",
+        "path": "scripts/consult-grok",
+        "sha256": "ddc2c03815348d61ba7a450c997dbaf8bf25bc365f15b5108adbe9073324ef3e"
+      }
+    ],
+    "symlinks": []
+  },
+  "codexVersion": "codex-cli 0.147.0",
+  "controlPreflight": {
+    "durationSeconds": 0.246,
+    "exitStatus": 0,
+    "passed": true,
+    "timedOut": false
+  },
+  "debugPromptInput": {
+    "durationSeconds": 0.86,
+    "exitStatus": 0,
+    "timedOut": false
+  },
+  "inputs": {
+    "answerKeySha256": "8f7fb569893953f347a59e4dde259cdab772463089b221c29b55e32ee3fd1975",
+    "baseBriefSha256": "8ae35d1e9a95e873e23bf33f2343734d64a873fc3642aef8a3246a0889519efe",
+    "fixturesSha256": "89aa80d95d60b58f9c03f5093fbcdc116e802b07e9348005c57df2b4f48f8254",
+    "promptSha256": "f1e89213656377dad72afcfbb52b0c1c5505acbfe999c05077b9a7173e966ebf",
+    "rubricSha256": "54747ebd8c9b03ea20cba618303396ab995bfa18d74cbcfe3a0906d7e4230456",
+    "schemaSha256": "d4500347e9cc98cf940495f1f07c203ca2e127b5cde9d1f97d66afceab058864"
+  },
+  "isolationEligible": true,
+  "judge": {
+    "durationSeconds": 71.396,
+    "exitStatus": 0,
+    "modelPreflightPassed": true,
+    "timedOut": false,
+    "tokenUsageRecorded": true,
+    "usage": {
+      "cached_input_tokens": 7936,
+      "input_tokens": 32168,
+      "output_tokens": 2984,
+      "reasoning_output_tokens": 1523
+    }
+  },
+  "limits": {
+    "tokenEligibilityCap": null,
+    "tokenUsageRequired": true,
+    "wallTimeSeconds": 600
+  },
+  "model": "gpt-5.6-sol",
+  "modelReasoningEffort": "medium",
+  "networkProbeControl": {
+    "bodySha256": "01eaebb21d7c530b941e6456e5d5f5ee80da370646ef99b3f1870149235e9c27",
+    "httpStatus": 200,
+    "kind": "live-loopback-http",
+    "succeeded": true,
+    "url": "http://127.0.0.1:54339/e0dec5f9a78646509f172c92450f23f7"
+  },
+  "opaqueRunId": "6842e4d0-d628-4deb-bf63-7e4ff1d1d434",
+  "preflightEligible": true,
+  "preflightOnly": false,
+  "pythonRuntime": {
+    "executable": "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+    "root": "/opt/homebrew/Cellar/python@3.14/3.14.6",
+    "version": "Python 3.14.6"
+  },
+  "schemaVersion": 1
+}

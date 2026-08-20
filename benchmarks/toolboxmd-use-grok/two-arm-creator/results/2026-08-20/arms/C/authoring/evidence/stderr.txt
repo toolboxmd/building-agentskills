@@ -1,0 +1,65 @@
+2026-08-20T09:38:25.418737Z ERROR codex_core::tools::router: error=exec_command failed for `/bin/zsh -c "rm -rf output/timeout-debug
+PYTHONDONTWRITEBYTECODE=1 python3 -B - <<'PY'
+import json, os, pathlib, shutil, subprocess, tempfile, time
+root = pathlib.Path.cwd()
+adapter = root / 'output/skills/toolboxmd-use-grok/scripts/consult-grok'
+fake_source = root / 'harness/fake_grok.py'
+python_target = pathlib.Path('/opt/homebrew/Cellar/python@3.14/3.14.6/bin/python3.14')
+expected = {
+    'direct': 'ok', 'envelope': 'ok', 'streaming': 'ok',
+    'bad-inspect': 'isolation-failure', 'missing-inspect-fields': 'isolation-failure',
+    'runtime-tool-call': 'isolation-failure', 'incomplete': 'incomplete-stop-reason',
+    'result-error': 'nonzero-exit', 'max-turns': 'max-turns',
+    'invalid-json': 'invalid-json', 'nonzero': 'nonzero-exit', 'timeout': 'timeout',
+}
+rows = []
+with tempfile.TemporaryDirectory(prefix='rehearsal-', dir=root / 'output') as td:
+    base = pathlib.Path(td)
+    launcher = base / 'launcher'; launcher.mkdir(); (launcher / 'python3').symlink_to(python_target)
+    test_env = {**os.environ, 'PATH': str(launcher) + os.pathsep + os.environ['PATH'], 'PYTHONDONTWRITEBYTECODE':'1'}
+    profile = base / 'profile'; profile.mkdir()
+    prompt = base / 'prompt.txt'
+    prompt.write_text('Review literal shell text: "'$(touch SHOULD_NOT_EXIST); `id`; ; echo nope'"\\n', encoding='utf-8')
+    for scenario, wanted in expected.items():
+        case = base / scenario; case.mkdir()
+        fake = case / 'grok'; shutil.copyfile(fake_source, fake); fake.chmod(0o755)
+        (case / 'scenario.txt').write_text(scenario, encoding='utf-8')
+        evidence = case / 'evidence'
+        timeout = '0.25' if scenario == 'timeout' else '5'
+        command = [str(adapter), '--mode', 'explicit', '--prompt-file', str(prompt), '--output-dir', str(evidence), '--grok-home', str(profile), '--grok-bin', str(fake), '--timeout', timeout, '--max-turns', '2']
+        started = time.monotonic()
+        done = subprocess.run(command, text=True, capture_output=True, env=test_env)
+        elapsed = time.monotonic() - started
+        lines = done.stdout.splitlines()
+        assert len(lines) == 1, (scenario, done.stdout, done.stderr)
+        status = json.loads(lines[0])['status']
+        assert status == wanted, (scenario, wanted, status, done.stdout, done.stderr)
+        assert (done.returncode == 0) == (wanted == 'ok')
+        assert not (root / 'SHOULD_NOT_EXIST').exists()
+        assert len(list(evidence.glob('*/evidence.json'))) == 1
+        if scenario in {'direct','envelope','streaming'}:
+            payload = json.loads(lines[0]); assert payload['review']['verdict'] == 'PROCEED WITH CHANGES'
+            invocation = json.loads((case / 'invocation.json').read_text(encoding='utf-8'))
+            assert invocation['prompt'].startswith('Review literal shell text: "'$('"')
+            assert invocation['cwdFiles'] == ['prompt.txt', 'review-schema.json', 'reviewer.json']
+            assert invocation['agent'] and '\"tools\": []' in invocation['agent']
+        if scenario == 'timeout':
+            assert elapsed < 3, elapsed
+            pid = int((case / 'child.pid').read_text())
+            time.sleep(.1)
+            try:
+                os.kill(pid, 0)
+            except ProcessLookupError:
+                pass
+            else:
+                raise AssertionError(f'child still alive: {pid}')
+        rows.append(f'{scenario}={status}')
+    missing = subprocess.run([str(adapter), '--mode','explicit','--prompt-file',str(prompt),'--output-dir',str(base/'missing-evidence'),'--grok-home',str(profile),'--grok-bin',str(base/'absent'),'--timeout','2','--max-turns','2'], text=True, capture_output=True, env=test_env)
+    assert json.loads(missing.stdout)['status'] == 'missing-cli'
+    auto_case = base / 'auto'; auto_case.mkdir(); auto_fake = auto_case / 'grok'; shutil.copyfile(fake_source, auto_fake); auto_fake.chmod(0o755)
+    automatic = subprocess.run([str(adapter), '--mode','automatic','--prompt-file',str(prompt),'--output-dir',str(base/'auto-evidence'),'--grok-home',str(profile),'--grok-bin',str(auto_fake),'--timeout','2','--max-turns','2'], text=True, capture_output=True, env=test_env)
+    assert json.loads(automatic.stdout)['status'] == 'isolation-failure'
+    assert not (auto_case / 'invocation.json').exists()
+    rows.extend(['missing-cli=missing-cli','automatic=isolation-failure(no-invocation)'])
+print('PASS ' + ' '.join(rows))
+PY"`: CreateProcess { message: "Rejected(\"`/bin/zsh -c \\\"rm -rf output/timeout-debug\\nPYTHONDONTWRITEBYTECODE=1 python3 -B - <<'PY'\\nimport json, os, pathlib, shutil, subprocess, tempfile, time\\nroot = pathlib.Path.cwd()\\nadapter = root / 'output/skills/toolboxmd-use-grok/scripts/consult-grok'\\nfake_source = root / 'harness/fake_grok.py'\\npython_target = pathlib.Path('/opt/homebrew/Cellar/python@3.14/3.14.6/bin/python3.14')\\nexpected = {\\n    'direct': 'ok', 'envelope': 'ok', 'streaming': 'ok',\\n    'bad-inspect': 'isolation-failure', 'missing-inspect-fields': 'isolation-failure',\\n    'runtime-tool-call': 'isolation-failure', 'incomplete': 'incomplete-stop-reason',\\n    'result-error': 'nonzero-exit', 'max-turns': 'max-turns',\\n    'invalid-json': 'invalid-json', 'nonzero': 'nonzero-exit', 'timeout': 'timeout',\\n}\\nrows = []\\nwith tempfile.TemporaryDirectory(prefix='rehearsal-', dir=root / 'output') as td:\\n    base = pathlib.Path(td)\\n    launcher = base / 'launcher'; launcher.mkdir(); (launcher / 'python3').symlink_to(python_target)\\n    test_env = {**os.environ, 'PATH': str(launcher) + os.pathsep + os.environ['PATH'], 'PYTHONDONTWRITEBYTECODE':'1'}\\n    profile = base / 'profile'; profile.mkdir()\\n    prompt = base / 'prompt.txt'\\n    prompt.write_text('Review literal shell text: \\\"'$(touch SHOULD_NOT_EXIST); `id`; ; echo nope'\\\"\\\\\\\\n', encoding='utf-8')\\n    for scenario, wanted in expected.items():\\n        case = base / scenario; case.mkdir()\\n        fake = case / 'grok'; shutil.copyfile(fake_source, fake); fake.chmod(0o755)\\n        (case / 'scenario.txt').write_text(scenario, encoding='utf-8')\\n        evidence = case / 'evidence'\\n        timeout = '0.25' if scenario == 'timeout' else '5'\\n        command = [str(adapter), '--mode', 'explicit', '--prompt-file', str(prompt), '--output-dir', str(evidence), '--grok-home', str(profile), '--grok-bin', str(fake), '--timeout', timeout, '--max-turns', '2']\\n        started = time.monotonic()\\n        done = subprocess.run(command, text=True, capture_output=True, env=test_env)\\n        elapsed = time.monotonic() - started\\n        lines = done.stdout.splitlines()\\n        assert len(lines) == 1, (scenario, done.stdout, done.stderr)\\n        status = json.loads(lines[0])['status']\\n        assert status == wanted, (scenario, wanted, status, done.stdout, done.stderr)\\n        assert (done.returncode == 0) == (wanted == 'ok')\\n        assert not (root / 'SHOULD_NOT_EXIST').exists()\\n        assert len(list(evidence.glob('*/evidence.json'))) == 1\\n        if scenario in {'direct','envelope','streaming'}:\\n            payload = json.loads(lines[0]); assert payload['review']['verdict'] == 'PROCEED WITH CHANGES'\\n            invocation = json.loads((case / 'invocation.json').read_text(encoding='utf-8'))\\n            assert invocation['prompt'].startswith('Review literal shell text: \\\"'$('\\\"')\\n            assert invocation['cwdFiles'] == ['prompt.txt', 'review-schema.json', 'reviewer.json']\\n            assert invocation['agent'] and '\\\\\\\"tools\\\\\\\": []' in invocation['agent']\\n        if scenario == 'timeout':\\n            assert elapsed < 3, elapsed\\n            pid = int((case / 'child.pid').read_text())\\n            time.sleep(.1)\\n            try:\\n                os.kill(pid, 0)\\n            except ProcessLookupError:\\n                pass\\n            else:\\n                raise AssertionError(f'child still alive: {pid}')\\n        rows.append(f'{scenario}={status}')\\n    missing = subprocess.run([str(adapter), '--mode','explicit','--prompt-file',str(prompt),'--output-dir',str(base/'missing-evidence'),'--grok-home',str(profile),'--grok-bin',str(base/'absent'),'--timeout','2','--max-turns','2'], text=True, capture_output=True, env=test_env)\\n    assert json.loads(missing.stdout)['status'] == 'missing-cli'\\n    auto_case = base / 'auto'; auto_case.mkdir(); auto_fake = auto_case / 'grok'; shutil.copyfile(fake_source, auto_fake); auto_fake.chmod(0o755)\\n    automatic = subprocess.run([str(adapter), '--mode','automatic','--prompt-file',str(prompt),'--output-dir',str(base/'auto-evidence'),'--grok-home',str(profile),'--grok-bin',str(auto_fake),'--timeout','2','--max-turns','2'], text=True, capture_output=True, env=test_env)\\n    assert json.loads(automatic.stdout)['status'] == 'isolation-failure'\\n    assert not (auto_case / 'invocation.json').exists()\\n    rows.extend(['missing-cli=missing-cli','automatic=isolation-failure(no-invocation)'])\\nprint('PASS ' + ' '.join(rows))\\nPY\\\"` rejected: rm -f style commands are not permitted. Use a safer approach\")" }
