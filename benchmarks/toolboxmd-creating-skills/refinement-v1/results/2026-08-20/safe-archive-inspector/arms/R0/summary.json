@@ -1,0 +1,52 @@
+{
+  "arm": "R0",
+  "finalCandidate": {
+    "aggregateSha256": "1e661c226a62e4e58bbf93f05f5a6734d985bad74076d0971bae74b8c906ceba",
+    "bytes": 8323,
+    "fileCount": 2
+  },
+  "finalRecommendableArtifact": true,
+  "promotionEligibleTask": false,
+  "repairLimit": 2,
+  "roundLimit": 3,
+  "rounds": [
+    {
+      "candidate": {
+        "aggregateSha256": "1e661c226a62e4e58bbf93f05f5a6734d985bad74076d0971bae74b8c906ceba",
+        "bytes": 8323,
+        "fileCount": 2
+      },
+      "criticalFailures": [],
+      "deterministicPointsAvailable": 70,
+      "deterministicPointsAwarded": 70,
+      "durationSeconds": 287.301,
+      "isolationEligible": true,
+      "phase": "initial",
+      "recommendableArtifact": true,
+      "round": 0,
+      "usage": {
+        "cached_input_tokens": 195328,
+        "input_tokens": 249634,
+        "output_tokens": 12274,
+        "reasoning_output_tokens": 4576
+      }
+    }
+  ],
+  "schemaVersion": 1,
+  "stoppedEarlyOnGreen": true,
+  "task": "safe-archive-inspector",
+  "tokenEligibilityCap": null,
+  "totalDurationSeconds": 287.301,
+  "totalUsage": {
+    "cached_input_tokens": 195328,
+    "input_tokens": 249634,
+    "output_tokens": 12274,
+    "reasoning_output_tokens": 4576
+  },
+  "treatment": {
+    "aggregateSha256": "e667aa1671dafc07df09289f8f1ed23bd36268c6a1a44b8868cac83eb429e22f",
+    "bytes": 46953,
+    "fileCount": 3
+  },
+  "treatmentId": "r0-merged-vnext"
+}

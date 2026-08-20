@@ -39,6 +39,28 @@ at least two preregistered held-out skill families and repeatable evidence.
 No real Grok call occurs, automatic Grok review stays disabled, and no wiki
 capture is created.
 
+## Observed result
+
+The known Grok task remained unranked. R0 moved `45 -> 47 -> 42/70`; R1 moved
+`35 -> 45 -> 45/70`. Both final artifacts retained three critical failures and
+were not recommendable. R1 recovered more strongly after the first feedback
+round and finished three points higher, but that does not establish a Creator
+advantage.
+
+Both held-out archive arms stopped after their initial session with a reported
+70/70 deterministic score. The blind semantic judge reported 30/30 for R0 and
+28/30 for R1. A required post-run contract audit then proved that both graded
+candidates accept a ZIP member with an embedded NUL because Python exposes the
+truncated value through `ZipInfo.filename` while preserving the original value
+in `ZipInfo.orig_filename`. The frozen contract requires NUL rejection, but the
+deterministic grader omitted that case. The semantic judge also penalized only
+R1 for this shared implementation defect.
+
+The held-out comparison is therefore **INCONCLUSIVE**, not 100 versus 98. The
+raw scores and evidence remain retained, but neither a treatment lead nor a
+promotion claim is allowed. The grader gap must be fixed and frozen before a
+new, genuinely held-out skill family is run.
+
 ## Commands
 
 Run the structural and grader regression first:

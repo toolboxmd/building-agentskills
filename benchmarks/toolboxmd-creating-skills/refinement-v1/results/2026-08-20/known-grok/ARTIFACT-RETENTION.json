@@ -2,11 +2,20 @@
   "schemaVersion": 1,
   "resultEligibilityAffected": false,
   "retained": "All arm summaries, run metadata, event traces, deterministic grades, feedback, final graded candidates, and output manifests.",
-  "omittedGeneratedArtifacts": {
-    "path": "arms/R1/round-2/authoring/output-snapshot/debug",
-    "reason": "Six disposable debugging files were not part of the graded candidate and are excluded from Git. The original output manifest remains retained as the generation-time record.",
-    "fileCount": 6,
-    "bytes": 16130,
-    "aggregateSha256": "6eedccd2aa83094a9e28221d67233ee8d54f4ce70439f17e480810a32fb59c24"
-  }
+  "omittedGeneratedArtifacts": [
+    {
+      "path": "arms/R1/round-2/authoring/output-snapshot/debug",
+      "reason": "Six disposable debugging files were not part of the graded candidate and are excluded from Git. The original output manifest remains retained as the generation-time record.",
+      "fileCount": 6,
+      "bytes": 16130,
+      "aggregateSha256": "6eedccd2aa83094a9e28221d67233ee8d54f4ce70439f17e480810a32fb59c24"
+    },
+    {
+      "path": "arms/R1/round-1/authoring/output-snapshot/repair-work/acceptance.py",
+      "reason": "This non-graded repair helper contained a fake but credential-shaped test string and is excluded from the current Git tree. The original output manifest remains retained as the generation-time record.",
+      "fileCount": 1,
+      "bytes": 6498,
+      "aggregateSha256": "0984847c9fe2b9b9e5f6e0fac8158b2037a4ac3d8534c05f58d989a2834f59de"
+    }
+  ]
 }

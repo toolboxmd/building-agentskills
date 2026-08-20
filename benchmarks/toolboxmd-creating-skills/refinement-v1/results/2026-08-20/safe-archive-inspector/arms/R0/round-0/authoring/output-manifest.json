@@ -1,0 +1,99 @@
+{
+  "aggregateSha256": "1e428f6c9d45367e1c8e545dcdfe16691fe9e52e10a6c698877c8d70d5d3a68b",
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+  "bytes": 37906,
+  "excludedDirectories": [
+    ".home",
+    ".pycache",
+    ".tmp"
+  ],
+  "fileCount": 14,
+  "files": [
+    {
+      "bytes": 126,
+      "mode": "0o644",
+      "path": "acceptance/fixtures/corrupt-payload.zip",
+      "sha256": "e90277b96031630463c915117cfa52bfdaf81f6589a417f4c0f147f7b737f98d"
+    },
+    {
+      "bytes": 192,
+      "mode": "0o644",
+      "path": "acceptance/fixtures/duplicate.zip",
+      "sha256": "a88b4e9e08e9d82bd3449d72e2088f1792910b2af3ca73bdfcb05d0716611bec"
+    },
+    {
+      "bytes": 116,
+      "mode": "0o644",
+      "path": "acceptance/fixtures/encrypted-flag.zip",
+      "sha256": "fb6c56462298d749a77e224166025770222aab214ab51bee0a159ac20f542407"
+    },
+    {
+      "bytes": 14,
+      "mode": "0o644",
+      "path": "acceptance/fixtures/malformed.bin",
+      "sha256": "6bbf954ab0045bc546f16a6db16c95afef820dccd807348411ea924dabb972e9"
+    },
+    {
+      "bytes": 475,
+      "mode": "0o644",
+      "path": "acceptance/fixtures/paths.zip",
+      "sha256": "d009e261ad88db3a834ae956c47ad219d96161382037361fc0627736335b7969"
+    },
+    {
+      "bytes": 10240,
+      "mode": "0o644",
+      "path": "acceptance/fixtures/safe.tar",
+      "sha256": "0cc529deac9938f4fbb753fe14fa8f3323e0cf271dcf0b910732d7aaf4db0103"
+    },
+    {
+      "bytes": 224,
+      "mode": "0o644",
+      "path": "acceptance/fixtures/safe.zip",
+      "sha256": "f466c028c5549ef4a17508804362074591bc2d8d6beb816c1640e45caa60b70b"
+    },
+    {
+      "bytes": 196,
+      "mode": "0o644",
+      "path": "acceptance/fixtures/special.zip",
+      "sha256": "03548466780579c07376162b9a4c593a6babfe81ea0c0ea8506b18ca6aae0cbc"
+    },
+    {
+      "bytes": 10240,
+      "mode": "0o644",
+      "path": "acceptance/fixtures/unsafe.tar",
+      "sha256": "1cd735710474a4f554d96d7b716657802ce5f08be49ffdec5a051ff33eb0e922"
+    },
+    {
+      "bytes": 5346,
+      "mode": "0o644",
+      "path": "acceptance/test_inspector.py",
+      "sha256": "0bc3f6ecd27a39aef722afddf6c5cbe4f5809bee1ec867c62ce19241c05a4665"
+    },
+    {
+      "bytes": 1102,
+      "mode": "0o644",
+      "path": "isolation-preflight-control.json",
+      "sha256": "c360fbd9986a9a27708509a6bd4c021d664e0a4bb73dc00476699a8b05a49ca3"
+    },
+    {
+      "bytes": 1312,
+      "mode": "0o644",
+      "path": "isolation-preflight-model.json",
+      "sha256": "1653106f8f625e5f8683e6238f3560f38165499893107a703a8c4fddd751507c"
+    },
+    {
+      "bytes": 2978,
+      "mode": "0o644",
+      "path": "skills/safe-archive-inspector/SKILL.md",
+      "sha256": "7093398c0608afdc8dcbc857cce7dc98b18f8efd969868bcf40d26af123e8604"
+    },
+    {
+      "bytes": 5345,
+      "mode": "0o755",
+      "path": "skills/safe-archive-inspector/scripts/inspect_archive.py",
+      "sha256": "884267626d6435ce13f4d71990a9d1ca325d349e18dedcf39b0f1e3103fd2b65"
+    }
+  ],
+  "omittedSymlinks": [],
+  "symlinks": []
+}

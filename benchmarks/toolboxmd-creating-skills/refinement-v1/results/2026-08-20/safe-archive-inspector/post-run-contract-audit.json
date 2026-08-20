@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "auditType": "required-post-run-contract-audit",
+  "resultEligibilityAffected": true,
+  "contractRequirement": "nul-or-ascii-control",
+  "fixture": {
+    "path": "post-run-audit-fixtures/nul-name.zip",
+    "bytes": 116,
+    "sha256": "563d7fc9a4abee276f93025af0bde830b156ac87064d6decd1116e71e1f0d9b7",
+    "memberNameBytes": "safe\\x00name"
+  },
+  "runtimeObservations": {
+    "python3.14": {
+      "ZipInfo.filename": "safe",
+      "ZipInfo.orig_filename": "safe\\u0000name"
+    },
+    "python3.9": {
+      "ZipInfo.filename": "safe",
+      "ZipInfo.orig_filename": "safe\\u0000name"
+    }
+  },
+  "candidateObservations": {
+    "R0": {
+      "candidateAggregateSha256": "1e661c226a62e4e58bbf93f05f5a6734d985bad74076d0971bae74b8c906ceba",
+      "fieldInspected": "ZipInfo.filename",
+      "exitStatus": 0,
+      "result": {
+        "status": "safe",
+        "format": "zip",
+        "entryCount": 1,
+        "declaredBytes": 0,
+        "issues": []
+      }
+    },
+    "R1": {
+      "candidateAggregateSha256": "f865c12fa6534a923dd579bd1c01966eed1830dcfea26eade8e16210aae8abf9",
+      "fieldInspected": "ZipInfo.filename",
+      "exitStatus": 0,
+      "result": {
+        "status": "safe",
+        "format": "zip",
+        "entryCount": 1,
+        "declaredBytes": 0,
+        "issues": []
+      }
+    }
+  },
+  "graderFinding": "The frozen deterministic grader tests an invalid archive containing NUL bytes, but does not test a valid ZIP member name containing NUL even though the frozen contract requires that name to be rejected.",
+  "semanticJudgeFinding": "The judge deducted one privacy point from R1 for this exact defect but awarded full privacy points to R0 despite the shared ZipInfo.filename implementation pattern.",
+  "disposition": "Invalidate the directional treatment comparison, retain the raw scores as diagnostic evidence, do not recompute scores post hoc, and freeze a repaired grader before any new held-out family."
+}

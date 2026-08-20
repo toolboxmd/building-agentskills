@@ -1,0 +1,964 @@
+{
+  "candidateAggregateSha256": "f865c12fa6534a923dd579bd1c01966eed1830dcfea26eade8e16210aae8abf9",
+  "caseResults": {
+    "absolute": {
+      "actual": {
+        "declaredBytes": 1,
+        "entryCount": 1,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "tar",
+        "issueCodes": [
+          "PATH_ABSOLUTE"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "PATH_ABSOLUTE",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "backslash-parent": {
+      "actual": {
+        "declaredBytes": 1,
+        "entryCount": 1,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "zip",
+        "issueCodes": [
+          "PATH_PARENT"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "PATH_PARENT",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "case-collision": {
+      "actual": {
+        "declaredBytes": 6,
+        "entryCount": 2,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "zip",
+        "issueCodes": [
+          "PATH_CASE_COLLISION"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "PATH_CASE_COLLISION",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "corrupt": {
+      "actual": {
+        "declaredBytes": 0,
+        "entryCount": 0,
+        "escapeMarkerExists": false,
+        "exitStatus": 2,
+        "filesystemChanged": false,
+        "format": "unknown",
+        "issueCodes": [
+          "ARCHIVE_INVALID"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "error",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 2,
+        "issue": "ARCHIVE_INVALID",
+        "status": "error"
+      },
+      "passed": true
+    },
+    "duplicate": {
+      "actual": {
+        "declaredBytes": 6,
+        "entryCount": 2,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "zip",
+        "issueCodes": [
+          "PATH_DUPLICATE"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "PATH_DUPLICATE",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "encrypted-zip": {
+      "actual": {
+        "declaredBytes": 13,
+        "entryCount": 1,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "zip",
+        "issueCodes": [
+          "ZIP_ENCRYPTED"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "ZIP_ENCRYPTED",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "entry-limit": {
+      "actual": {
+        "declaredBytes": 3,
+        "entryCount": 3,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "zip",
+        "issueCodes": [
+          "ENTRY_LIMIT"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "ENTRY_LIMIT",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "fifo-tar": {
+      "actual": {
+        "declaredBytes": 0,
+        "entryCount": 1,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "tar",
+        "issueCodes": [
+          "TYPE_SPECIAL"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "TYPE_SPECIAL",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "hardlink-tar": {
+      "actual": {
+        "declaredBytes": 0,
+        "entryCount": 1,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "tar",
+        "issueCodes": [
+          "TYPE_LINK"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "TYPE_LINK",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "invalid-limit": {
+      "actual": {
+        "declaredBytes": 0,
+        "entryCount": 0,
+        "escapeMarkerExists": false,
+        "exitStatus": 2,
+        "filesystemChanged": false,
+        "format": "unknown",
+        "issueCodes": [
+          "INPUT"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "error",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 2,
+        "issue": "INPUT",
+        "status": "error"
+      },
+      "passed": true
+    },
+    "missing-input": {
+      "actual": {
+        "declaredBytes": 0,
+        "entryCount": 0,
+        "escapeMarkerExists": false,
+        "exitStatus": 2,
+        "filesystemChanged": false,
+        "format": "unknown",
+        "issueCodes": [
+          "INPUT"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "error",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 2,
+        "issue": "INPUT",
+        "status": "error"
+      },
+      "passed": true
+    },
+    "parent": {
+      "actual": {
+        "declaredBytes": 1,
+        "entryCount": 1,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "tar",
+        "issueCodes": [
+          "PATH_PARENT"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "PATH_PARENT",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "safe-tar": {
+      "actual": {
+        "declaredBytes": 7,
+        "entryCount": 2,
+        "escapeMarkerExists": false,
+        "exitStatus": 0,
+        "filesystemChanged": false,
+        "format": "tar",
+        "issueCodes": [],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "safe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 0,
+        "issue": null,
+        "status": "safe"
+      },
+      "passed": true
+    },
+    "safe-zip": {
+      "actual": {
+        "declaredBytes": 7,
+        "entryCount": 2,
+        "escapeMarkerExists": false,
+        "exitStatus": 0,
+        "filesystemChanged": false,
+        "format": "zip",
+        "issueCodes": [],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "safe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 0,
+        "issue": null,
+        "status": "safe"
+      },
+      "passed": true
+    },
+    "size-limit": {
+      "actual": {
+        "declaredBytes": 64,
+        "entryCount": 1,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "zip",
+        "issueCodes": [
+          "SIZE_LIMIT"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "SIZE_LIMIT",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "symlink-tar": {
+      "actual": {
+        "declaredBytes": 0,
+        "entryCount": 1,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "tar",
+        "issueCodes": [
+          "TYPE_LINK"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "TYPE_LINK",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "symlink-zip": {
+      "actual": {
+        "declaredBytes": 10,
+        "entryCount": 1,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "zip",
+        "issueCodes": [
+          "TYPE_LINK"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "TYPE_LINK",
+        "status": "unsafe"
+      },
+      "passed": true
+    },
+    "windows-drive": {
+      "actual": {
+        "declaredBytes": 1,
+        "entryCount": 1,
+        "escapeMarkerExists": false,
+        "exitStatus": 1,
+        "filesystemChanged": false,
+        "format": "zip",
+        "issueCodes": [
+          "PATH_ABSOLUTE"
+        ],
+        "oneJsonLine": true,
+        "requiredFieldsPresent": true,
+        "status": "unsafe",
+        "stderrEmpty": true,
+        "timedOut": false
+      },
+      "expected": {
+        "exitStatus": 1,
+        "issue": "PATH_ABSOLUTE",
+        "status": "unsafe"
+      },
+      "passed": true
+    }
+  },
+  "checks": {
+    "ambiguous-member-names": {
+      "critical": true,
+      "detail": {
+        "case-collision": {
+          "actual": {
+            "declaredBytes": 6,
+            "entryCount": 2,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "zip",
+            "issueCodes": [
+              "PATH_CASE_COLLISION"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "PATH_CASE_COLLISION",
+            "status": "unsafe"
+          },
+          "passed": true
+        },
+        "duplicate": {
+          "actual": {
+            "declaredBytes": 6,
+            "entryCount": 2,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "zip",
+            "issueCodes": [
+              "PATH_DUPLICATE"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "PATH_DUPLICATE",
+            "status": "unsafe"
+          },
+          "passed": true
+        }
+      },
+      "passed": true,
+      "pointsAvailable": 6,
+      "pointsAwarded": 6
+    },
+    "exact-portable-package": {
+      "critical": true,
+      "detail": {
+        "bytes": 8422,
+        "files": [
+          "SKILL.md",
+          "scripts/inspect_archive.py"
+        ],
+        "nonregular": [],
+        "symlinks": []
+      },
+      "passed": true,
+      "pointsAvailable": 8,
+      "pointsAwarded": 8
+    },
+    "executable-stdlib-metadata-only-helper": {
+      "critical": true,
+      "detail": {
+        "executable": true,
+        "forbiddenCalls": [],
+        "forbiddenImports": [],
+        "syntaxError": null
+      },
+      "passed": true,
+      "pointsAvailable": 8,
+      "pointsAwarded": 8
+    },
+    "links-special-and-encrypted": {
+      "critical": true,
+      "detail": {
+        "encrypted-zip": {
+          "actual": {
+            "declaredBytes": 13,
+            "entryCount": 1,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "zip",
+            "issueCodes": [
+              "ZIP_ENCRYPTED"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "ZIP_ENCRYPTED",
+            "status": "unsafe"
+          },
+          "passed": true
+        },
+        "fifo-tar": {
+          "actual": {
+            "declaredBytes": 0,
+            "entryCount": 1,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "tar",
+            "issueCodes": [
+              "TYPE_SPECIAL"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "TYPE_SPECIAL",
+            "status": "unsafe"
+          },
+          "passed": true
+        },
+        "hardlink-tar": {
+          "actual": {
+            "declaredBytes": 0,
+            "entryCount": 1,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "tar",
+            "issueCodes": [
+              "TYPE_LINK"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "TYPE_LINK",
+            "status": "unsafe"
+          },
+          "passed": true
+        },
+        "symlink-tar": {
+          "actual": {
+            "declaredBytes": 0,
+            "entryCount": 1,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "tar",
+            "issueCodes": [
+              "TYPE_LINK"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "TYPE_LINK",
+            "status": "unsafe"
+          },
+          "passed": true
+        },
+        "symlink-zip": {
+          "actual": {
+            "declaredBytes": 10,
+            "entryCount": 1,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "zip",
+            "issueCodes": [
+              "TYPE_LINK"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "TYPE_LINK",
+            "status": "unsafe"
+          },
+          "passed": true
+        }
+      },
+      "passed": true,
+      "pointsAvailable": 8,
+      "pointsAwarded": 8
+    },
+    "metadata-resource-limits": {
+      "critical": true,
+      "detail": {
+        "entry-limit": {
+          "actual": {
+            "declaredBytes": 3,
+            "entryCount": 3,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "zip",
+            "issueCodes": [
+              "ENTRY_LIMIT"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "ENTRY_LIMIT",
+            "status": "unsafe"
+          },
+          "passed": true
+        },
+        "size-limit": {
+          "actual": {
+            "declaredBytes": 64,
+            "entryCount": 1,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "zip",
+            "issueCodes": [
+              "SIZE_LIMIT"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "SIZE_LIMIT",
+            "status": "unsafe"
+          },
+          "passed": true
+        }
+      },
+      "passed": true,
+      "pointsAvailable": 8,
+      "pointsAwarded": 8
+    },
+    "no-extraction-side-effects": {
+      "critical": true,
+      "detail": {
+        "allCasesFilesystemStable": true
+      },
+      "passed": true,
+      "pointsAvailable": 2,
+      "pointsAwarded": 2
+    },
+    "portable-frontmatter-and-activation-boundary": {
+      "critical": true,
+      "detail": {
+        "description": "Inspect or audit an untrusted TAR or ZIP before a human extraction decision. Use when a user explicitly asks to screen, inspect, list, or audit an archive. Do not use for general compression questions, archive creation, or extraction of a trusted archive.",
+        "name": "safe-archive-inspector",
+        "skillBytes": 2987,
+        "skillLines": 69
+      },
+      "passed": true,
+      "pointsAvailable": 6,
+      "pointsAwarded": 6
+    },
+    "portable-path-rejection": {
+      "critical": true,
+      "detail": {
+        "absolute": {
+          "actual": {
+            "declaredBytes": 1,
+            "entryCount": 1,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "tar",
+            "issueCodes": [
+              "PATH_ABSOLUTE"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "PATH_ABSOLUTE",
+            "status": "unsafe"
+          },
+          "passed": true
+        },
+        "backslash-parent": {
+          "actual": {
+            "declaredBytes": 1,
+            "entryCount": 1,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "zip",
+            "issueCodes": [
+              "PATH_PARENT"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "PATH_PARENT",
+            "status": "unsafe"
+          },
+          "passed": true
+        },
+        "parent": {
+          "actual": {
+            "declaredBytes": 1,
+            "entryCount": 1,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "tar",
+            "issueCodes": [
+              "PATH_PARENT"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "PATH_PARENT",
+            "status": "unsafe"
+          },
+          "passed": true
+        },
+        "windows-drive": {
+          "actual": {
+            "declaredBytes": 1,
+            "entryCount": 1,
+            "escapeMarkerExists": false,
+            "exitStatus": 1,
+            "filesystemChanged": false,
+            "format": "zip",
+            "issueCodes": [
+              "PATH_ABSOLUTE"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "unsafe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 1,
+            "issue": "PATH_ABSOLUTE",
+            "status": "unsafe"
+          },
+          "passed": true
+        }
+      },
+      "passed": true,
+      "pointsAvailable": 10,
+      "pointsAwarded": 10
+    },
+    "safe-tar-and-zip": {
+      "critical": true,
+      "detail": {
+        "safe-tar": {
+          "actual": {
+            "declaredBytes": 7,
+            "entryCount": 2,
+            "escapeMarkerExists": false,
+            "exitStatus": 0,
+            "filesystemChanged": false,
+            "format": "tar",
+            "issueCodes": [],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "safe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 0,
+            "issue": null,
+            "status": "safe"
+          },
+          "passed": true
+        },
+        "safe-zip": {
+          "actual": {
+            "declaredBytes": 7,
+            "entryCount": 2,
+            "escapeMarkerExists": false,
+            "exitStatus": 0,
+            "filesystemChanged": false,
+            "format": "zip",
+            "issueCodes": [],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "safe",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 0,
+            "issue": null,
+            "status": "safe"
+          },
+          "passed": true
+        }
+      },
+      "passed": true,
+      "pointsAvailable": 10,
+      "pointsAwarded": 10
+    },
+    "stable-error-contract": {
+      "critical": true,
+      "detail": {
+        "corrupt": {
+          "actual": {
+            "declaredBytes": 0,
+            "entryCount": 0,
+            "escapeMarkerExists": false,
+            "exitStatus": 2,
+            "filesystemChanged": false,
+            "format": "unknown",
+            "issueCodes": [
+              "ARCHIVE_INVALID"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "error",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 2,
+            "issue": "ARCHIVE_INVALID",
+            "status": "error"
+          },
+          "passed": true
+        },
+        "invalid-limit": {
+          "actual": {
+            "declaredBytes": 0,
+            "entryCount": 0,
+            "escapeMarkerExists": false,
+            "exitStatus": 2,
+            "filesystemChanged": false,
+            "format": "unknown",
+            "issueCodes": [
+              "INPUT"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "error",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 2,
+            "issue": "INPUT",
+            "status": "error"
+          },
+          "passed": true
+        },
+        "missing-input": {
+          "actual": {
+            "declaredBytes": 0,
+            "entryCount": 0,
+            "escapeMarkerExists": false,
+            "exitStatus": 2,
+            "filesystemChanged": false,
+            "format": "unknown",
+            "issueCodes": [
+              "INPUT"
+            ],
+            "oneJsonLine": true,
+            "requiredFieldsPresent": true,
+            "status": "error",
+            "stderrEmpty": true,
+            "timedOut": false
+          },
+          "expected": {
+            "exitStatus": 2,
+            "issue": "INPUT",
+            "status": "error"
+          },
+          "passed": true
+        }
+      },
+      "passed": true,
+      "pointsAvailable": 4,
+      "pointsAwarded": 4
+    }
+  },
+  "criticalFailures": [],
+  "deterministicPointsAvailable": 70,
+  "deterministicPointsAwarded": 70,
+  "recommendableArtifact": true,
+  "schemaVersion": 1
+}

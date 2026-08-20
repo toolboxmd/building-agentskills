@@ -1,0 +1,69 @@
+{
+  "aggregateSha256": "deabb3c256b2f2e23fa1d16546e100bb23592c9ad8f65243d13dbd372a3b488f",
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+  "bytes": 41717,
+  "excludedDirectories": [
+    ".home",
+    ".pycache",
+    ".tmp"
+  ],
+  "fileCount": 9,
+  "files": [
+    {
+      "bytes": 8928,
+      "mode": "0o644",
+      "path": ".pycache/private/tmp/creator-refinement-adfe9495-6565-4c1c-9cb6-55bdd178a4b7/sandbox/output/acceptance/test_inspector.cpython-314.pyc",
+      "sha256": "a06ee2ec44052f57a18d5b0263694978d7383ba4d2f3c04441943b1fdc29f155"
+    },
+    {
+      "bytes": 8549,
+      "mode": "0o644",
+      "path": ".pycache/private/tmp/creator-refinement-adfe9495-6565-4c1c-9cb6-55bdd178a4b7/sandbox/output/skills/safe-archive-inspector/scripts/inspect_archive.cpython-314.pyc",
+      "sha256": "a3b1dc7a51db5be934414472c32004a79ce306cb236dfaf051d92ff65ac39558"
+    },
+    {
+      "bytes": 4982,
+      "mode": "0o644",
+      "path": "acceptance/test_inspector.py",
+      "sha256": "6b7f60eae322a1774971bc956329955ca9a5ede523ffc7639a147243a138a59a"
+    },
+    {
+      "bytes": 1102,
+      "mode": "0o644",
+      "path": "isolation-preflight-control.json",
+      "sha256": "f16f517e04e1b31d6a82e82f40fe59e9211ae6cc25ba7755616a234139b1ec8e"
+    },
+    {
+      "bytes": 1312,
+      "mode": "0o644",
+      "path": "isolation-preflight-model.json",
+      "sha256": "671afc5ff81845f5177392f9b9a5cf540feb9b31550c604b888db0366d98bc06"
+    },
+    {
+      "bytes": 2987,
+      "mode": "0o644",
+      "path": "skills/safe-archive-inspector/SKILL.md",
+      "sha256": "65f3af5dd9db96ecdca0853c1d2b2370fd88e0002f0f5e295dee0e0ce510c860"
+    },
+    {
+      "bytes": 5435,
+      "mode": "0o755",
+      "path": "skills/safe-archive-inspector/scripts/inspect_archive.py",
+      "sha256": "0119148106a9814fe2c9f75f677876202e01a3aec99bf11ec953783109b6278f"
+    },
+    {
+      "bytes": 2987,
+      "mode": "0o644",
+      "path": "working/raw-candidate/safe-archive-inspector/SKILL.md",
+      "sha256": "65f3af5dd9db96ecdca0853c1d2b2370fd88e0002f0f5e295dee0e0ce510c860"
+    },
+    {
+      "bytes": 5435,
+      "mode": "0o644",
+      "path": "working/raw-candidate/safe-archive-inspector/scripts/inspect_archive.py",
+      "sha256": "e8402fad06a2207a763949441e9c07fa87e3f59ae5548dd219f66bdea215865b"
+    }
+  ],
+  "omittedSymlinks": [],
+  "symlinks": []
+}

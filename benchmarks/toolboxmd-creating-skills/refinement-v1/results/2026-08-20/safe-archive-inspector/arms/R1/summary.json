@@ -1,0 +1,52 @@
+{
+  "arm": "R1",
+  "finalCandidate": {
+    "aggregateSha256": "f865c12fa6534a923dd579bd1c01966eed1830dcfea26eade8e16210aae8abf9",
+    "bytes": 8422,
+    "fileCount": 2
+  },
+  "finalRecommendableArtifact": true,
+  "promotionEligibleTask": false,
+  "repairLimit": 2,
+  "roundLimit": 3,
+  "rounds": [
+    {
+      "candidate": {
+        "aggregateSha256": "f865c12fa6534a923dd579bd1c01966eed1830dcfea26eade8e16210aae8abf9",
+        "bytes": 8422,
+        "fileCount": 2
+      },
+      "criticalFailures": [],
+      "deterministicPointsAvailable": 70,
+      "deterministicPointsAwarded": 70,
+      "durationSeconds": 361.683,
+      "isolationEligible": true,
+      "phase": "initial",
+      "recommendableArtifact": true,
+      "round": 0,
+      "usage": {
+        "cached_input_tokens": 384768,
+        "input_tokens": 445642,
+        "output_tokens": 15512,
+        "reasoning_output_tokens": 5895
+      }
+    }
+  ],
+  "schemaVersion": 1,
+  "stoppedEarlyOnGreen": true,
+  "task": "safe-archive-inspector",
+  "tokenEligibilityCap": null,
+  "totalDurationSeconds": 361.683,
+  "totalUsage": {
+    "cached_input_tokens": 384768,
+    "input_tokens": 445642,
+    "output_tokens": 15512,
+    "reasoning_output_tokens": 5895
+  },
+  "treatment": {
+    "aggregateSha256": "b1528337383a5c0a2b1c5f49a3d17bc07c8a341f753c418d7bd29a055f2b5d49",
+    "bytes": 47214,
+    "fileCount": 3
+  },
+  "treatmentId": "r1-bounded-refinement"
+}

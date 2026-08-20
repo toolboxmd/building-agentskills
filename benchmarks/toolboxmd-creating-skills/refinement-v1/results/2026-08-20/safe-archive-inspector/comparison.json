@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "task": "safe-archive-inspector",
+  "reportedScores": {
+    "R0": {
+      "deterministic": 70,
+      "semantic": 30,
+      "total": 100,
+      "rounds": 1
+    },
+    "R1": {
+      "deterministic": 70,
+      "semantic": 28,
+      "total": 98,
+      "rounds": 1
+    }
+  },
+  "postRunContractAudit": "post-run-contract-audit.json",
+  "comparisonEligible": false,
+  "verdict": "INCONCLUSIVE",
+  "treatmentLeadClaimAllowed": false,
+  "promotionClaimAllowed": false,
+  "generalCreatorImprovementClaimAllowed": false,
+  "reasons": [
+    "Both candidates violate the frozen NUL-name contract through the same ZipInfo.filename truncation behavior.",
+    "The deterministic grader omitted the required valid-ZIP NUL fixture and incorrectly marked both candidates recommendable.",
+    "The blind semantic judge penalized R1 but not R0 for the shared defect, so its two-point differential is not reliable treatment evidence.",
+    "Only one held-out skill family ran, while the preregistered claim boundary requires at least two independent families for a general Creator claim."
+  ]
+}
