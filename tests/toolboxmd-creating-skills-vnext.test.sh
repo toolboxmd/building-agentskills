@@ -2544,6 +2544,7 @@ assert(freeze.budgetRevision.scriptsRootSafetyExecutableDeltaBytes === 292, "scr
 assert(freeze.budgetRevision.previousPackageBytesMaximumBeforeRequiredEntrySafety === 46000, "pre-required-entry-safety package cap changed");
 assert(freeze.budgetRevision.requiredEntryAndHermesDedentExecutableDeltaBytes === 924, "required-entry/Hermes-dedent executable delta changed");
 assert(freeze.budgetRevision.skillMdUtf8ExecutableDeltaBytes === 111, "SKILL.md UTF-8 executable delta changed");
+assert(freeze.budgetRevision.boundedAcceptanceRefinementSkillMdDeltaBytes === 261, "bounded acceptance-refinement core delta changed");
 assert(freeze.budgetRevision.currentExecutableDeltaBytesFromPreRevisionFreeze === 22898, "current executable delta changed");
 assert(freeze.budgetRevision.lowerTotalPackageCostClaimAllowed === false, "budget revision must not imply lower package cost");
 assert(freeze.source.baseCommit === "5adfe5247376033d2e15e826fbf949b97c965a41", "standalone base commit changed");
@@ -2551,6 +2552,8 @@ assert(freeze.source.diagnosticSourceCommit === "e07502f2ced07917acdc8d7d3f8e5ad
 assert(freeze.source.diagnosticSourcePullRequest === "https://github.com/toolboxmd/building-agentskills/pull/1", "parked diagnostic pull request changed");
 assert(freeze.source.v1ResultManifest.eligibleCreatorComparisons === 0, "v1 claim boundary changed");
 assert(freeze.source.v2ResultManifest.eligibleCreatorComparisons === 0, "v2 claim boundary changed");
+assert(freeze.acceptanceRefinement.skillMdDeltaBytes === 261 && freeze.acceptanceRefinement.validatorChanged === false && freeze.acceptanceRefinement.packageCapChanged === false, "bounded refinement product boundary changed");
+assert(freeze.acceptanceRefinement.knownGrokResultRanked === false && freeze.acceptanceRefinement.heldOutEvidenceComplete === false && freeze.acceptanceRefinement.improvementClaimAllowed === false, "bounded refinement claim boundary changed");
 const parkedSources = [freeze.source.v1ResultManifest, freeze.source.v2ResultManifest, freeze.source.diagnosticRecommendations];
 const parkedSourceHashes = ["ad35da1d92f2d750c3c95ccf55d826cf2fe6c5ca185b5399edc74fdb071a4ea6", "8fbbefc402bd7ff5d3be98d9080e35fa46c92177395889c41ab2d123e96af23d", "5a37de766e6b6a96b8b7f0f69b42aa2cef3f44b9d02f28e7db2a9e073fdfaa0b"];
 assert(parkedSources.every((source, index) => source.retainedInCurrentTree === false && source.repositoryPathAtCommit && source.sha256 === parkedSourceHashes[index]), "parked benchmark lineage changed or became a dangling local path");
@@ -2572,7 +2575,7 @@ assert(independentAggregate === freeze.package.aggregateSha256, "bytewise UTF-8 
 assert(product.metrics.descriptionCharacters === freeze.package.skillMd.descriptionCharacters, "description metric changed");
 assert(product.metrics.skillMdLines === freeze.package.skillMd.lines, "line metric changed");
 assert(product.metrics.skillMdBytes === freeze.package.skillMd.bytes, "core byte metric changed");
-assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 46953, "package budget changed");
+assert(product.metrics.fileCount === 3 && product.metrics.packageBytes === 47214, "package budget changed");
 assert(product.metrics.referenceFileCount === 0 && product.metrics.evalFileCount === 0 && product.metrics.scriptFileCount === 1, "package ownership changed");
 
 const skillEntrySymlinks = new Set(["skill-entry-symlink", "skill-entry-broken", "skill-entry-fifo-target", "skill-entry-device-target"]);

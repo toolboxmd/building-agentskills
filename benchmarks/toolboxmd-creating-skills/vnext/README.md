@@ -280,6 +280,15 @@ files/artifacts than the retained v1 candidate, but claims no lower total
 package byte cost and no benchmark-backed advantage, superiority, or
 promotion readiness.
 
-The frozen package is 46,953 bytes: 3,973 bytes of activated `SKILL.md`, a
+The bounded-refinement candidate package is 47,214 bytes: 4,234 bytes of
+activated `SKILL.md`, a
 216-byte sidecar, and a 42,764-byte read-only checker. The executable is not
 loaded as activated core.
+
+The 261-byte activated-core follow-up preserves the raw candidate before
+repairs, derives acceptance cases from the evidence brief and runtime contract,
+and asks for the smallest supported repair until an external gate is green or
+the agreed repair budget ends. The broad checker and exact 48,000-byte cap are
+unchanged. The loop's hashes, rounds, grader, and promotion rules remain outside
+the distributed package. This product delta is a candidate hypothesis, not
+held-out evidence of a Creator improvement.

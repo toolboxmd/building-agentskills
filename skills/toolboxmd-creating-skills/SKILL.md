@@ -56,11 +56,11 @@ Pass custom budgets. Fence executable examples as `sh`, `bash`, or `shell`; use 
 
 Checker scope is ToolboxMD policy, not general YAML, CommonMark, shell, or helper syntax. Keep executable/shebang helpers in `scripts/`; Python uses AST. For others, run/report a syntax check, hash bytes, and pass `--script-syntax-checked '<helper-path>=<lowercase-sha256>'`; this binds bytes, not execution. Do not install `skills-ref`: portable mode uses a local copy; Hermes reports `skipped_extension`.
 
-### 6. Test, delete, and deliver
+### 6. Test, repair, and deliver
 
-- Validate structure/budgets and test bundled scripts.
-- Smoke-check a realistic task when possible. Add pressure only for observed variance, risk, or strong claims.
-- Record description, core/reference/package bytes and line/file/script/eval counts. Delete unsupported files; rerun.
+Preserve the raw candidate outside the package before repairs. Derive acceptance cases from the evidence brief and runtime contract; keep evals outside. Validate structure/budgets, test bundled scripts, and rehearse a representative task. Classify failures by the broken contract, apply the smallest supported repair, and rerun until the gate is green or the agreed repair budget ends.
+
+Record raw/refined lineage, remaining failures, description, core/reference/package bytes, and line/file/script/eval counts. Delete unsupported files; rerun.
 
 Inspect Git state only when the user requests Git delivery. Do not search ancestors for package-only work.
 

@@ -1,9 +1,10 @@
 {
   "schemaVersion": 1,
-  "candidateId": "toolboxmd-creating-skills-vnext-2026-08-19",
-  "recordedOn": "2026-08-19",
+  "candidateId": "toolboxmd-creating-skills-vnext-bounded-refinement-2026-08-20",
+  "recordedOn": "2026-08-20",
   "source": {
     "baseCommit": "5adfe5247376033d2e15e826fbf949b97c965a41",
+    "parentProductCommit": "20fc268615079ade496e31cc5e55f51bcc5ad3b0",
     "diagnosticSourceCommit": "e07502f2ced07917acdc8d7d3f8e5ad6f9301595",
     "diagnosticSourcePullRequest": "https://github.com/toolboxmd/building-agentskills/pull/1",
     "diagnosticSourceArchiveRef": "refs/tags/archive/creating-skills-vnext-pre-restack-23b9c693",
@@ -46,7 +47,7 @@
     ]
   },
   "claimBoundary": {
-    "purpose": "A product candidate responding to diagnostic failure patterns retained in v2, not to an eligible creator win.",
+    "purpose": "A thin bounded acceptance-refinement product candidate responding to observed one-pass failures, not evidence of a Creator win.",
     "newModelSessions": 0,
     "deterministicRegressionOnly": true,
     "superiorityClaimAllowed": false,
@@ -55,6 +56,15 @@
       "meeting-followups",
       "weekly-status-deck"
     ]
+  },
+  "acceptanceRefinement": {
+    "plan": "SPECS/creator-vnext-bounded-acceptance-refinement/plan.md",
+    "skillMdDeltaBytes": 261,
+    "validatorChanged": false,
+    "packageCapChanged": false,
+    "knownGrokResultRanked": false,
+    "heldOutEvidenceComplete": false,
+    "improvementClaimAllowed": false
   },
   "creatorBudgets": {
     "descriptionCharactersMaximum": 300,
@@ -157,6 +167,8 @@
     "requiredEntrySafetyCapRevisionReason": "The user-approved one-time 2,000-byte package-cap revision preserves readable required-entry and Hermes-dedent safety corrections after a bounded deletion review. Activated-core, description, file, reference, eval, and script budgets are unchanged, and no lower total package-size claim is allowed.",
     "skillMdUtf8ExecutableDeltaBytes": 111,
     "skillMdUtf8Reason": "Exact-HEAD review required invalid UTF-8 in a regular required SKILL.md entry to remain one structured package-invalid UTF8 issue with exit 1 rather than an inspection error with exit 2.",
+    "boundedAcceptanceRefinementSkillMdDeltaBytes": 261,
+    "boundedAcceptanceRefinementReason": "The user-approved follow-up preserves a raw candidate, derives external acceptance cases from the evidence brief and runtime contract, applies the smallest supported repair, and stops on a green gate or agreed repair budget. The validator and 48,000-byte package cap are unchanged, and no Creator-improvement claim is allowed without held-out evidence.",
     "currentExecutableDeltaBytesFromPreRevisionFreeze": 22898,
     "unchanged": [
       "description maximum",
@@ -171,22 +183,22 @@
   "package": {
     "path": "skills/toolboxmd-creating-skills",
     "aggregateAlgorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' with entries sorted by bytewise UTF-8 relative path ascending",
-    "aggregateSha256": "e667aa1671dafc07df09289f8f1ed23bd36268c6a1a44b8868cac83eb429e22f",
+    "aggregateSha256": "b1528337383a5c0a2b1c5f49a3d17bc07c8a341f753c418d7bd29a055f2b5d49",
     "fileCount": 3,
-    "packageBytes": 46953,
+    "packageBytes": 47214,
     "referenceFileCount": 0,
     "scriptFileCount": 1,
     "evalFileCount": 0,
     "skillMd": {
-      "bytes": 3973,
+      "bytes": 4234,
       "lines": 74,
       "descriptionCharacters": 226
     },
     "files": [
       {
         "path": "SKILL.md",
-        "bytes": 3973,
-        "sha256": "de2e9423fa6a0ef6a03a8008028d4ba3261b0a7ae00cb3d04f0c7e6c9f724e90"
+        "bytes": 4234,
+        "sha256": "afccf4dac09ed5499d40ff474023d5e1fd379f7170c24190160b37e07565c3d8"
       },
       {
         "path": "agents/openai.yaml",

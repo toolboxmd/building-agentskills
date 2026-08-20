@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "runId": "8668b9c0-d43d-4da6-ab56-083d2e4f435b",
+  "mode": "explicit",
+  "grokVersion": "1.0.5",
+  "verdict": "PROCEED WITH CHANGES",
+  "process": {
+    "returncode": 0,
+    "timedOut": false,
+    "durationMs": 95643,
+    "stopReason": "end_turn",
+    "toolCallsObserved": 0,
+    "webSearchRequests": 0,
+    "redactionsApplied": 0
+  },
+  "usage": {
+    "inputTokens": 1848,
+    "cacheReadInputTokens": 128,
+    "outputTokens": 5106
+  },
+  "evidence": {
+    "reviewSha256": "9eaef25c7606867e0bc0d373b1bd45fc0587b0efa85b6d899a2418f631ee83da",
+    "metadataSha256": "611da4c224230eea2ffe1fc6b9a94ed48dbfea5d1f3bdf13cab40c018a09565a",
+    "reviewBytes": 4753,
+    "metadataBytes": 3885,
+    "rawFilesCommitted": false,
+    "rawFilesReason": "The repository retains the reconciled decision summary, not transient process output or profile metadata."
+  },
+  "accepted": [
+    "Keep a thin Creator-facing repair instruction and put benchmark governance in the external harness.",
+    "Give the baseline the same model, tools, time, attempts, and feedback surface.",
+    "Freeze the loop and held-out contract before a new known-Grok development run.",
+    "Keep the broad validator and 48,000-byte package cap unchanged.",
+    "Require held-out evidence with no critical failures before an improvement claim."
+  ],
+  "rejectedOrNarrowed": [
+    "A harness-only treatment would not test the user-approved Creator behavior hypothesis, so the product receives a 261-byte activated-core delta.",
+    "Token usage is reported cost rather than an eligibility cap; attempt and wall-clock limits keep the experiment bounded."
+  ]
+}
