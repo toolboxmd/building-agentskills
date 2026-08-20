@@ -1,0 +1,285 @@
+# ToolboxMD creating-skills vNext freeze
+
+This directory freezes the product package at
+`skills/toolboxmd-creating-skills/` and the deterministic regression contract
+that screens it before any new comparative model run.
+
+The candidate responds to diagnostic failure patterns recorded by the parked
+benchmark pull request at commit `e07502f`: working-directory-relative script
+examples, default eval baggage, always-read reference cost, unconditional Git
+inspection, and unenforced artifact budgets. Both corrected benchmark v1 and
+v2 contain zero eligible creator comparisons. Their source manifests and
+recommendations remain on pull request 1 and are identified here by commit,
+repository path, and SHA-256. No model session was run to produce this
+regression record, so it supports no creator winner, superiority claim, or
+promotion.
+
+Run the regression from the repository root:
+
+```bash
+bash tests/toolboxmd-creating-skills-vnext.test.sh
+```
+
+The test verifies package bytes, budgets, validator behavior from another
+working directory, Python bytecode isolation, known failure-pattern fixtures,
+and non-mutation of the three minimal fixture copies retained under
+`fixtures/`. It does not test triggering or semantic downstream usefulness.
+
+The package budget was 36,000 bytes. Exact-HEAD review first added 2,256 bytes
+of deterministic executable validator code for quote-aware YAML comments and
+the reviewed Hermes metadata surface, then 460 bytes for optional
+`default_prompt`, all-decodable-file local-path scanning, and single-line
+reference-definition destinations. The bounded round-5 adversarial audit added
+7,353 executable bytes and corrected the claim: this is a canonical ToolboxMD
+package-policy checker, not a general YAML or CommonMark validator. A later
+two-finding exact-HEAD pass added 27 executable bytes for YAML special-float
+classification and dot-relative script commands. A subsequent two-finding pass
+added 353 executable bytes for exact Hermes sequence state and a
+separator-bounded same-line command detector. The quote-only canonical
+correction then removed 312 executable bytes by deleting partial implicit-YAML
+classification while adding mapping-only metadata and parity-aware handling of
+shell line continuations. Only an odd terminal backslash run joins the next
+physical line. The cumulative executable delta from the pre-revision freeze is
+10,137 bytes. A follow-up metadata-key correction added 273 executable bytes
+to require JSON-double-quoted user-defined portable keys and brought the
+cumulative delta to 10,410 bytes after a bounded deletion pass consolidated
+duplicate diagnostic paths without dropping contract fixtures. Empty and
+comment-only metadata hardening then added 142 executable bytes, bringing the
+cumulative delta to 10,552 bytes; optional metadata must be omitted when empty.
+Direct command-position helper detection added 116 executable bytes and the
+copyable validator command now treats warnings as errors. The cumulative
+executable delta is 10,668 bytes. Optional Codex sidecar subsets and a bounded
+lexical command scanner added 2,766 executable bytes, bringing the cumulative
+delta to 13,434 bytes. The package cap became 40,000 bytes at that stage. This
+4,000-byte
+revision preserves the readable activated workflow and an executable-only
+scanner with quote, escape, operator, redirection, comment, command-position,
+and assignment provenance. Activated-core, description, file, reference, eval,
+and script budgets are unchanged, and no lower total package-size claim is made.
+Grouping-operator hardening then added 226 executable bytes for unquoted shell
+parentheses and canonical Markdown-link masking, bringing the cumulative
+executable delta to 13,660 bytes. Exact-digest operator attestation and
+standalone grouping-brace hardening added 2,673 executable bytes, bringing the
+cumulative delta to 16,333 bytes and the package cap to 44,000 bytes. The checker can now
+bind a separately reported non-Python syntax check to exact current helper
+bytes without adding an evidence artifact. It does not execute or prove that
+external check. Activated-core, description, file, reference, eval, and script
+budgets remain unchanged, and no lower total package-size claim is made.
+Bounded same-line clause state for a fixed shell control-prefix set then added
+959 executable bytes, bringing the cumulative delta to 17,292 bytes. It
+preserves command position after `if`, `while`, `until`, `then`, `do`, `elif`,
+`else`, and `!` without treating quoted, escaped, prose, argument, `fi`, or
+`done` tokens as control boundaries. Multiline and nested shell parsing remain
+outside the checker contract. A final host-validator compatibility check added
+132 executable bytes so descriptions containing `<` or `>` fail even when the
+optional `skills-ref` executable is unavailable. The cumulative executable
+delta was 17,424 bytes. Those shell-scanner stages are retained here as review
+history, not as the current checker contract. A later exact-HEAD `env` bypass
+and Grok architecture audit replaced the open-ended shell lexer with a closed
+surface rule. Root, blockquote, and list fence handling plus explicit context
+diagnostics added 1,189 executable bytes overall, bringing the cumulative
+delta at that stage to 18,613 bytes without changing the 44,000-byte cap. The checker now treats
+an immediate non-whitespace child after a task-relative `scripts/` prefix as a portability error inside closed
+case-insensitive `sh`, `bash`, or `shell` fences, without interpreting strings,
+comments, heredocs, wrappers, or control flow. It also fails helper paths in
+single-line inline, indented, and other fenced code with an authoring-context error, scans
+all UTF-8 files below `scripts/` plus executable or shebang files, and ignores
+ordinary prose, Markdown link destinations, directory-only mentions, and
+generic configuration files without a schema. Child names beginning with whitespace
+and multiline inline code spans are explicitly outside the custom lexical subset.
+A later exact-HEAD correction reused those root, blockquote, and list fence
+surfaces when masking Markdown links and added 345 executable bytes. Its
+real-interpreter shim regression is test-only. The next exact-HEAD correction
+JSON-quoted `name` like every other generated string and rejects executable or
+shebang helpers outside `scripts/`. Reusing package collection and deleting
+obsolete scalar special cases reduced the executable by 197 bytes, so the
+current cumulative executable delta at that stage was 18,761 bytes. A bounded
+follow-up preserves blank lines inside list-contained fences for both script
+checks and link masking without waiving blockquote markers or nonblank exits.
+It added 128 executable bytes, bringing the cumulative delta to 18,889 bytes.
+A current exact-HEAD correction makes only the Windows drive-user path branch
+case-insensitive and adds an explicit creation mode. General validation still
+accepts supported partial or policy-only existing sidecars; creation mode
+requires both nonempty UI fields when the optional sidecar is present. This
+adds 119 executable bytes, bringing the cumulative delta to 19,008 bytes.
+An independent exact-current audit then added 277 executable bytes. Remote and
+anchor Markdown destinations now hide query and fragment text from workstation
+path scanning while file and drive-root destinations remain local, and present
+sidecar interface strings must contain non-whitespace text. The cumulative
+delta is 19,285 bytes. The next exact-HEAD correction adds 26 executable bytes
+to catch one-or-more parent-relative helper prefixes at the existing token
+boundary and empty or case-insensitive localhost file URI authorities. Embedded
+parent segments and remote file authorities remain outside those checks. The
+cumulative executable delta is 19,311 bytes.
+The following exact-HEAD correction rejects YAML-invalid lone and paired JSON
+surrogate escapes through the shared canonical scalar decoder while literal
+Unicode and escaped backslash text remain valid. Reusing the decoder and
+deleting redundant runtime annotation and module declarations reduces the
+executable by 25 bytes, bringing the cumulative executable delta to 19,286
+bytes.
+The next exact-HEAD correction accepts any combination of canonical `./` and
+`../` segments at the existing task-relative token boundary and keeps invalid
+UTF-8 Python helpers as package-validation failures rather than later AST
+inspection errors. Prefix-rule reuse and deletion of a redundant subprocess
+default add 17 executable bytes, bringing the cumulative delta to 19,303 bytes.
+The following exact-HEAD correction scopes case-insensitivity to the `file`
+scheme and optional localhost authority while retaining case-sensitive POSIX
+roots and remote-authority nonmatches. It adds 4 executable bytes, bringing the
+cumulative delta to 19,307 bytes.
+The current exact-HEAD correction keeps invalid UTF-8 OpenAI sidecars as one
+package-validation error and skips the portable `skills-ref` cross-check before
+executable discovery in explicit Hermes extension mode. It adds 187 executable
+bytes, bringing the cumulative executable delta to 19,494 bytes. A bounded
+active-core deletion pass removed 127 bytes without changing its workflow. The
+package cap is now 45,000 bytes, leaving readable headroom for the deterministic
+checker. Activated-core, description, file, reference, eval, and script budgets
+remain unchanged, and no lower total package-size claim is made.
+The next exact-HEAD correction adds 789 executable bytes. The portable
+1,024-character description ceiling now remains invariant when a caller raises
+the package budget, while a lower budget still tightens acceptance. Local file
+URI paths are percent-decoded before case-sensitive POSIX-root classification.
+Only lexically bounded empty-authority or localhost tokens are classified;
+embedded text, remote authorities, and remote or anchor destinations remain
+nonlocal. The cumulative executable delta is 20,283 bytes, and the 45,000-byte
+package cap is unchanged.
+The following exact-HEAD correction adds 57 executable bytes. Task-relative
+helper detection now accepts slash or backslash separators, decoded local file
+URIs classify mixed-separator Windows drive-user roots, and reference labels
+discard their permitted zero-to-three-space definition indentation. The
+cumulative executable delta is 20,340 bytes; package and activated-core budgets
+remain unchanged.
+The next exact-HEAD correction adds 167 executable bytes. Local single-slash
+`file:/...` roots now share the decoded local-file check, MCP dependency values
+must contain non-whitespace text, and the closed lexical helper rule rejects
+bare, leading-dot, or embedded static task-relative segment prefixes. Literal
+`<skill-dir>` and standalone leading home roots, URI and remote tokens, and
+ordinary Markdown link destinations, including those in helper-source
+Markdown, stay safe. A readable
+deletion pass removed 87 activated-core bytes without changing the workflow.
+The executable avoids runtime-evaluated PEP 604 optional annotations so system
+Python 3.9 reaches the CLI. The cumulative executable delta is 20,507 bytes;
+package and activated-core budgets remain unchanged.
+The latest exact-HEAD correction adds 595 executable bytes. Malformed HTTP and
+file URI destinations now produce one stable `URI_SYNTAX` package issue across
+Markdown masking, destination validation, and local-file classification rather
+than an uncaught `urlsplit` traceback. A readable deletion pass removed 109
+activated-core bytes without changing the workflow. The cumulative executable
+delta is 21,102 bytes and the package cap is 46,000 bytes. Description,
+activated-core, file, reference, eval, and script budgets remain unchanged, and
+no lower package-cost, superiority, or promotion claim is made.
+The following exact-HEAD correction adds 524 executable bytes. Relative file
+and directory links now compare every lexically normalized component with its
+stored spelling, independent of host filesystem casing, without expanding
+symlinks. Hermes config entries decode `key` before accepting it and reject
+empty or whitespace-only text once. A bounded deletion pass removed 34
+activated-core bytes without changing the workflow. The cumulative executable
+delta is 21,626 bytes; the 46,000-byte cap and all other budgets are unchanged.
+The next exact-HEAD correction adds 98 executable bytes. Declared sidecar icon
+paths now reuse the exact component-name walk, so file or directory casing
+cannot vary by host while the prior assets-root, missing, escape, and symlink
+outcomes remain unchanged. Independent audit keeps icon symlink loops as
+structured package-level failures without resolving them. Static helper
+detection includes `foo~`, `~foo`, and `foo~bar` ordinary segments across slash
+and backslash forms; only a standalone leading `~/` or `~\` home segment
+remains excluded. A bounded
+deletion pass removed 169 activated-core bytes without changing the workflow.
+The cumulative executable delta is 21,724 bytes; the 46,000-byte cap and all
+other budgets are unchanged.
+The next exact-HEAD correction adds 162 executable bytes. The target `scripts`
+component now matches case-insensitively after one lexical token boundary,
+while `scripts` text inside ordinary components such as `foo+scripts` remains
+outside the helper-path rule, including around quoted portable punctuation and
+after an unquoted comma within the same path component. A bounded wording pass
+removed 67 activated-core bytes without changing the workflow. The cumulative
+executable delta is 21,886 bytes; the 46,000-byte cap
+and all budgets remain unchanged.
+The next exact-HEAD correction adds 35 executable bytes. Direct Windows
+drive-user paths accept slash or backslash independently around `Users`, the
+exact `127.0.0.1` file URI authority is local, and single-line CommonMark
+reference labels collapse internal whitespace before case-insensitive
+matching. POSIX roots remain case-sensitive and other file authorities remain
+remote. The cumulative executable delta is 21,921 bytes; the 46,000-byte cap
+and all budgets remain unchanged.
+The next exact-HEAD correction adds 6 executable bytes after reusing the
+parity-aware code-span matcher. Odd-parity escaped backticks remain literal so
+an active link after them is validated, while real single- and multi-backtick
+code spans remain masked. The shared canonical scalar decoder now enforces the
+YAML 1.2 printable-character set across frontmatter, portable and Hermes
+metadata, and the OpenAI sidecar. A shared physical-line splitter recognizes
+only CRLF, CR, and LF, preserving printable NEL, LS, PS, BMP, and non-BMP
+Unicode as scalar content and physical-line metrics count only those three
+break forms. The cumulative executable delta is 21,927
+bytes; the 46,000-byte cap and all budgets remain unchanged.
+The next exact-HEAD correction adds 7 executable bytes. Escaped inline and
+reference links now honor backslash parity: odd runs remain escaped, while zero
+or even runs preserve an active link. The exact bracketed IPv6 loopback
+authority `[::1]` joins the existing local file URI authorities without making
+remote IPv6 or outer URL contexts local. A bounded readable deletion pass keeps
+the cumulative executable delta at 21,934 bytes and the fixed 46,000-byte cap
+with all other budgets unchanged.
+The next exact-HEAD correction removes 363 executable bytes while adding a
+bounded `lstat` gate before sidecar reads. `agents/openai.yaml` and its `agents`
+ancestor must be non-symlink entries, the ancestor must be a directory, and a
+present sidecar must be a regular file. Wrong-type ancestors, directories,
+FIFOs, devices, and other non-regular entries fail without being opened.
+Missing optional sidecars and valid regular sidecars retain their behavior.
+Consolidating the two component checks and removing runtime-neutral internal
+function annotations brings the cumulative executable delta to 21,571 bytes
+with the fixed cap and all budgets unchanged.
+The next exact-HEAD correction adds 292 executable bytes for a pre-traversal
+`lstat` boundary on the package `scripts` entry. Symlinked and broken-symlink
+roots retain the existing package-level `SYMLINK` issue without resolving,
+walking, attesting, or parsing external helpers; missing roots, real
+directories, and non-directory package data retain their prior behavior. The
+cumulative executable delta is 21,863 bytes with the fixed cap and all budgets
+unchanged.
+
+The final recovery correction adds 924 executable bytes. The required
+`SKILL.md` entry is now classified with `lstat` before any read, so symlinks,
+broken symlinks, missing entries, directories, FIFOs, devices, and other
+non-regular entries fail once without opening external bytes. Active Hermes
+config state closes when indentation leaves its explicit subtree: valid
+portable or top-level fields after a complete entry remain accepted, while
+stray `prompt`, `default`, and `description` fields fail. The user-approved
+one-time package cap is 48,000 bytes; all activated-core, description, file,
+reference, eval, and script budgets remain unchanged. The cumulative
+executable delta is 22,787 bytes and no lower total-package-cost claim is
+allowed.
+
+The next exact-HEAD correction adds 111 executable bytes. Invalid UTF-8 in a
+regular required `SKILL.md` now remains one structured package-invalid `UTF8`
+issue with exit 1 instead of becoming an inspection error with exit 2. The
+48,000-byte cap and every other budget remain unchanged. The cumulative
+executable delta is 22,898 bytes.
+
+Canonical subset v2 uses one-line JSON double quotes for every top-level string,
+including the exact directory-matching `name`, and every user-defined portable
+metadata key and value; portable metadata is mapping-only. Descriptions retain
+an invariant 1,024-character portable ceiling; package budgets may only tighten
+it. The exact
+`metadata.hermes.config` vendor extension is enabled only by
+`--allow-hermes-metadata` for an explicitly Hermes-targeted package, with
+fixed unquoted schema field names and double-quoted user-provided values. The
+checker reports its canonical coverage, Python AST checks, accepted exact-byte
+operator attestations for separately checked non-Python helpers, and the
+availability/result of `skills-ref validate` in portable mode. Explicit Hermes
+extension mode reports `skipped_extension` and does not discover or invoke that
+portable cross-check. The frozen portable host recorded `not_available`, and no
+install or network fallback is used.
+ToolboxMD reports accepted helper paths but does not claim it executed their
+language-specific syntax commands. Executable and shebang helpers outside
+`scripts/` fail canonical package policy; non-executable data without a
+shebang remains allowed outside that directory.
+When available, `skills-ref` is a local external executable. The ToolboxMD
+checker neither constrains nor attests that program's filesystem or network
+behavior.
+
+Description, activated-core, file, reference, eval, and script budgets did not
+change. VNext retains a smaller activated core and fewer distributed
+files/artifacts than the retained v1 candidate, but claims no lower total
+package byte cost and no benchmark-backed advantage, superiority, or
+promotion readiness.
+
+The frozen package is 46,953 bytes: 3,973 bytes of activated `SKILL.md`, a
+216-byte sidecar, and a 42,764-byte read-only checker. The executable is not
+loaded as activated core.

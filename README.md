@@ -89,6 +89,11 @@ These three docs close the audience gap a layered repo would otherwise leave. Re
 
 - [`skills/building-agentskills/SKILL.md`](skills/building-agentskills/SKILL.md). The thin loader; install this in your `~/.claude/skills/` to get the docs in your agent's hands.
 
+### Product candidate
+
+- [`skills/toolboxmd-creating-skills/SKILL.md`](skills/toolboxmd-creating-skills/SKILL.md). A frozen, compact creator candidate with a cwd-independent validator and a deterministic known-problem regression screen. It responds to diagnostic v2 failure patterns but is not yet promoted or claimed superior.
+- [`benchmarks/toolboxmd-creating-skills/vnext/README.md`](benchmarks/toolboxmd-creating-skills/vnext/README.md). Package freeze, exact budgets, regression contract, and claim boundary.
+
 ## Contributing
 
 How new lessons enter this repo: per-ship retrospectives, reader-submitted issues, quarterly landscape audits. See [`docs/12-update-mechanism.md`](docs/12-update-mechanism.md) for the case-study shape and the contribution model.
