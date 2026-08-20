@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "fixtures": [
+    {"id": "f01", "prompt": "Sprawdz prosze nieznany backup.tar.gz zanim cokolwiek z niego wypakujemy."},
+    {"id": "f02", "prompt": "Audit suspicious.zip for traversal paths, links, and size limits before extraction."},
+    {"id": "f03", "prompt": "Use the safe archive inspector on vendor-drop.tar and give me the JSON verdict."},
+    {"id": "f04", "prompt": "List only the metadata of this untrusted ZIP and flag anything unsafe."},
+    {"id": "f05", "prompt": "Create a ZIP archive from these product photos."},
+    {"id": "f06", "prompt": "Extract this trusted release archive into the build folder."},
+    {"id": "f07", "prompt": "What is the difference between gzip and zstd compression ratios?"},
+    {"id": "f08", "prompt": "Scan the already extracted folder for malware."},
+    {"id": "f09", "prompt": "Open README.md inside docs.tar and summarize its contents."},
+    {"id": "f10", "prompt": "Verify the publisher signature and provenance of release.zip."},
+    {"id": "f11", "prompt": "Compress yesterday's logs and upload the archive."},
+    {"id": "f12", "prompt": "Show disk usage for the current directory."}
+  ]
+}

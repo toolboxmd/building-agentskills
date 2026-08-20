@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "skillName": "safe-archive-inspector",
+  "package": {
+    "requiredFiles": [
+      "SKILL.md",
+      "scripts/inspect_archive.py"
+    ],
+    "fileCount": 2,
+    "referenceFileCount": 0,
+    "evalFileCount": 0,
+    "scriptFileCount": 1,
+    "descriptionCharactersMaximum": 400,
+    "skillMdLinesMaximum": 150,
+    "skillMdBytesMaximum": 10500,
+    "packageBytesMaximum": 30000
+  },
+  "cli": {
+    "argv": "scripts/inspect_archive.py --archive <path> --max-entries <positive-int> --max-total-bytes <positive-int>",
+    "safeExitStatus": 0,
+    "unsafeExitStatus": 1,
+    "inputOrMalformedExitStatus": 2,
+    "stdout": "exactly one compact JSON object followed by one newline",
+    "stderr": "empty",
+    "requiredJsonFields": [
+      "schemaVersion",
+      "status",
+      "format",
+      "entryCount",
+      "declaredBytes",
+      "issues"
+    ],
+    "statusValues": [
+      "safe",
+      "unsafe",
+      "error"
+    ],
+    "formatValues": [
+      "tar",
+      "zip",
+      "unknown"
+    ]
+  },
+  "inspection": {
+    "metadataOnly": true,
+    "payloadReadsAllowed": false,
+    "extractionAllowed": false,
+    "networkAllowed": false,
+    "subprocessAllowed": false,
+    "archiveMutationAllowed": false,
+    "allowedMemberTypes": [
+      "regular-file",
+      "directory"
+    ],
+    "unsafePathClasses": [
+      "empty",
+      "absolute-posix",
+      "windows-drive",
+      "windows-unc",
+      "parent-after-slash-or-backslash-normalization",
+      "nul-or-ascii-control"
+    ],
+    "ambiguousNames": [
+      "duplicate-normalized-path",
+      "case-insensitive-normalized-collision"
+    ],
+    "unsafeMemberClasses": [
+      "tar-symbolic-link",
+      "tar-hard-link",
+      "tar-device",
+      "tar-fifo",
+      "zip-symbolic-link",
+      "encrypted-zip-member"
+    ],
+    "limitsUseDeclaredMetadataBeforePayload": true
+  },
+  "issueCodes": [
+    "INPUT",
+    "ARCHIVE_INVALID",
+    "PATH_EMPTY",
+    "PATH_ABSOLUTE",
+    "PATH_PARENT",
+    "PATH_CONTROL",
+    "PATH_DUPLICATE",
+    "PATH_CASE_COLLISION",
+    "TYPE_LINK",
+    "TYPE_SPECIAL",
+    "ZIP_ENCRYPTED",
+    "ENTRY_LIMIT",
+    "SIZE_LIMIT"
+  ],
+  "claimBoundary": {
+    "safeMeans": "No violation was found within this metadata-only frozen policy and the supplied budgets.",
+    "safeDoesNotMean": "The archive is malware-free, payload-safe, authentic, or safe to extract.",
+    "automaticExtractionAllowed": false
+  }
+}

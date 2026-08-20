@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "preregisteredAt": "2026-08-20T14:20:00+02:00",
+  "branchBase": {
+    "commit": "3ad85d67341b00254c288764fd70cd60350ad94e",
+    "parentPullRequest": "https://github.com/toolboxmd/building-agentskills/pull/3",
+    "originMain": "f3def36d4a9b9e978264f1db4ac6fbc4c2d490d3"
+  },
+  "productCandidate": {
+    "sourceCommit": "abe2fd32e2ecd7a8b4163ecc332ffaed69752cd6",
+    "sourceBranch": "codex/creating-skills-bounded-refinement",
+    "plan": "SPECS/creator-vnext-bounded-acceptance-refinement/plan.md",
+    "merged": false,
+    "packageCapBytes": 48000,
+    "validatorChangedFromR0": false
+  },
+  "claimBoundary": {
+    "purpose": "Test a thin bounded acceptance-refinement Creator instruction against the merged Creator under equal execution budgets.",
+    "knownGrokDevelopmentRunRanked": false,
+    "firstHeldOutRunDirectionalOnly": true,
+    "generalCreatorImprovementClaimAllowed": false,
+    "productionPromotionClaimAllowed": false,
+    "defaultCreatorClaimAllowed": false,
+    "realGrokCallsAllowed": false,
+    "automaticGrokReviewEnabled": false
+  },
+  "treatments": {
+    "R0": {
+      "id": "r0-merged-vnext",
+      "role": "merged Creator vNext generic equal-budget retry baseline",
+      "sourceCommit": "20fc268615079ade496e31cc5e55f51bcc5ad3b0",
+      "path": "benchmarks/toolboxmd-creating-skills/refinement-v1/treatments/r0-merged-vnext/package",
+      "fileCount": 3,
+      "bytes": 46953,
+      "aggregateSha256": "e667aa1671dafc07df09289f8f1ed23bd36268c6a1a44b8868cac83eb429e22f"
+    },
+    "R1": {
+      "id": "r1-bounded-refinement",
+      "role": "thin structured acceptance-refinement candidate",
+      "sourceCommit": "abe2fd32e2ecd7a8b4163ecc332ffaed69752cd6",
+      "path": "benchmarks/toolboxmd-creating-skills/refinement-v1/treatments/r1-bounded-refinement/package",
+      "fileCount": 3,
+      "bytes": 47214,
+      "aggregateSha256": "b1528337383a5c0a2b1c5f49a3d17bc07c8a341f753c418d7bd29a055f2b5d49"
+    }
+  },
+  "execution": {
+    "model": "gpt-5.6-sol",
+    "reasoningEffort": "medium",
+    "codexCliVersion": "0.147.0",
+    "pythonVersion": "3.14.6",
+    "freshEphemeralContextPerPhase": true,
+    "initialSessionsPerArm": 1,
+    "repairSessionsMaximumPerArm": 2,
+    "wallTimeSecondsPerSession": 900,
+    "wallTimeSecondsMaximumPerArm": 2700,
+    "tokenEligibilityCap": null,
+    "tokenUsageRequiredAndReported": true,
+    "stopEarlyOnGreen": true,
+    "sameModelToolsPromptFeedbackAndLimits": true,
+    "feedbackSurface": "The same bounded failing check IDs, expected/actual evidence, and points from the external deterministic grade.",
+    "realExternalCalls": 0
+  },
+  "isolation": {
+    "processEnvironment": "allow-listed",
+    "shellEnvironmentInherit": "none",
+    "filesystemDefault": "deny",
+    "sandboxInputAndHarnessRead": true,
+    "treatmentRead": true,
+    "outputOnlyWrite": true,
+    "homeDenied": true,
+    "directNetworkEnabled": false,
+    "controlAndModelPreflightRequiredEachPhase": true,
+    "commandAndToolEventTraceRequired": true,
+    "tokenUsageRequired": true,
+    "preflightOnlyVerification": {
+      "modelSessions": 0,
+      "R0": "pass",
+      "R1": "pass",
+      "liveLoopbackControlHttpStatus": 200,
+      "sandboxedNetworkProbeDenied": true
+    }
+  },
+  "tasks": {
+    "knownGrok": {
+      "role": "unranked development diagnostic after every treatment, loop, held-out task, grader, and decision rule is frozen",
+      "brief": {
+        "path": "benchmarks/toolboxmd-use-grok/base-brief.md",
+        "bytes": 5246,
+        "sha256": "8ae35d1e9a95e873e23bf33f2343734d64a873fc3642aef8a3246a0889519efe"
+      },
+      "contract": {
+        "path": "benchmarks/toolboxmd-use-grok/contract.json",
+        "bytes": 2051,
+        "sha256": "d50124d66f29a9f4b6b0ef29ffba1f7d45890f8544cf540d43ea2228cbbf1742"
+      },
+      "authoringPrompt": {
+        "path": "benchmarks/toolboxmd-use-grok/two-arm-creator/authoring-prompt.md",
+        "bytes": 2159,
+        "sha256": "56f34312178db36f6a43a59b569b9bc37b56f052ab2d6a91f5d639f9d39fea31"
+      },
+      "fakeCli": {
+        "path": "benchmarks/toolboxmd-use-grok/two-arm-creator/harness/fake_grok.py",
+        "bytes": 5320,
+        "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+      },
+      "grader": {
+        "path": "benchmarks/toolboxmd-use-grok/two-arm-creator/harness/grade_candidate.py",
+        "bytes": 23292,
+        "sha256": "1d0a5acca54a365bfbdccc74076ae1f6d0e45a8a991628af18e3a5c50fd181d2"
+      }
+    },
+    "safeArchiveInspector": {
+      "role": "first preregistered held-out directional task",
+      "path": "benchmarks/toolboxmd-creating-skills/refinement-v1/held-out/safe-archive-inspector",
+      "fileCount": 8,
+      "bytes": 10586,
+      "aggregateSha256": "ec46999b0771ef153d7332b67c83bbf7bba113296fd61b85608ad16946f6d141",
+      "availableDuringLoopDesign": false,
+      "externalGraderModelVisible": false,
+      "answerKeyModelVisible": false,
+      "primarySources": [
+        "https://docs.python.org/3/library/tarfile.html",
+        "https://docs.python.org/3/library/zipfile.html"
+      ]
+    }
+  },
+  "repairPrompt": {
+    "path": "benchmarks/toolboxmd-creating-skills/refinement-v1/repair-prompt.md",
+    "bytes": 850,
+    "sha256": "08ddba0a494d57c3026d233adcf10b0c020b34cdf8eaa3d692e6d05ad844a665"
+  },
+  "evaluation": {
+    "deterministicPoints": 70,
+    "semanticPoints": 30,
+    "deterministicGreenFloor": 63,
+    "criticalDeterministicFailureDisqualifiesArtifact": true,
+    "semanticJudgeRunsOnFinalIsolationEligibleCandidateDespiteCriticalFailure": true,
+    "semanticDoesNotOverrideCriticalFailure": true,
+    "rawAndEveryRepairRoundGraded": true,
+    "lineageShapeScoredAsUtility": false
+  },
+  "decisionRules": {
+    "artifactRecommendable": "No critical deterministic failure and at least 63/70 deterministic points.",
+    "knownGrok": "Report raw-to-refined behavior and cost only; never rank or promote from this known task.",
+    "firstHeldOut": "Report a directional equal-budget comparison. One brief cannot establish general improvement or promotion.",
+    "generalImprovement": "Requires at least two preregistered held-out briefs from different skill families, no critical failure, semantic non-regression, and a repeatable equal-budget lead.",
+    "inconclusive": "Any isolation failure, critical final failure, missing semantic evidence, or unsupported generalization remains inconclusive."
+  },
+  "harness": {
+    "path": "benchmarks/toolboxmd-creating-skills/refinement-v1/harness",
+    "fileCount": 9,
+    "bytes": 81698,
+    "aggregateSha256": "40667b30c13b1322fba926a9bb63c487ffcde6b6ccfa1b9e707742da15fab107",
+    "referenceFixtureExpectedScore": "70/70",
+    "hashAlgorithm": "SHA-256 of '<file-sha256>  <relative-path>\\n' lines sorted by bytewise UTF-8 relative path"
+  }
+}

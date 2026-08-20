@@ -1,0 +1,4 @@
+interface:
+  display_name: "ToolboxMD Creating Skills"
+  short_description: "Create evidence-backed portable skills"
+  default_prompt: "Use $toolboxmd-creating-skills to create and validate the requested new skill."
