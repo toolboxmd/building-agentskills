@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "package_path", "tests", "notes"],
+  "properties": {
+    "status": {
+      "enum": ["complete", "blocked"]
+    },
+    "package_path": {
+      "type": "string"
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["command", "outcome"],
+        "properties": {
+          "command": {"type": "string"},
+          "outcome": {"type": "string"}
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

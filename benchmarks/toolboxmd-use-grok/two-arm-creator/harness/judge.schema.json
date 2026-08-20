@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "activation_predictions",
+    "procedure_adherence_score",
+    "privacy_reliability_score",
+    "procedure_evidence",
+    "privacy_evidence",
+    "limitations"
+  ],
+  "properties": {
+    "activation_predictions": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "activate", "reason"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^f(0[1-9]|1[0-2])$"},
+          "activate": {"type": "boolean"},
+          "reason": {"type": "string", "maxLength": 300}
+        }
+      }
+    },
+    "procedure_adherence_score": {"type": "integer", "minimum": 0, "maximum": 10},
+    "privacy_reliability_score": {"type": "integer", "minimum": 0, "maximum": 10},
+    "procedure_evidence": {
+      "type": "array",
+      "items": {"type": "string", "maxLength": 500},
+      "maxItems": 10
+    },
+    "privacy_evidence": {
+      "type": "array",
+      "items": {"type": "string", "maxLength": 500},
+      "maxItems": 10
+    },
+    "limitations": {
+      "type": "array",
+      "items": {"type": "string", "maxLength": 500},
+      "maxItems": 5
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "expected": {
+    "f01": true,
+    "f02": false,
+    "f03": true,
+    "f04": false,
+    "f05": false,
+    "f06": true,
+    "f07": false,
+    "f08": true,
+    "f09": false,
+    "f10": false,
+    "f11": false,
+    "f12": false
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "fixtures": [
+    {"id": "f01", "prompt": "Zapytaj Groka, czy ten plan nie jest przekombinowany."},
+    {"id": "f02", "prompt": "Lets keep brainstorming possible approaches."},
+    {"id": "f03", "prompt": "Send this proposal to Grok Build and reconcile its feedback."},
+    {"id": "f04", "prompt": "Tell me the current task status."},
+    {"id": "f05", "prompt": "Do not send this plan to Grok."},
+    {"id": "f06", "prompt": "Ask Grok to review this implementation plan before we execute it."},
+    {"id": "f07", "prompt": "This brief contains credentials and cannot leave the session."},
+    {"id": "f08", "prompt": "Przekaz Grok Build ten brief i popros o druga opinie."},
+    {"id": "f09", "prompt": "Repeat review of the unchanged plan hash."},
+    {"id": "f10", "prompt": "Summarize the Grok response we just received."},
+    {"id": "f11", "prompt": "This benchmark forbids nested agents."},
+    {"id": "f12", "prompt": "Run the two obvious formatting steps."}
+  ]
+}
