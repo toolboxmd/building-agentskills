@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "task": "known-grok",
+  "ranked": false,
+  "semanticJudgeRun": false,
+  "armTrajectories": {
+    "R0": {
+      "scores": [45, 47, 42],
+      "finalCriticalFailureCount": 3,
+      "finalRecommendableArtifact": false,
+      "finalCandidateAggregateSha256": "05e2a36dc0e9ce4949843180211d4de68b3b769c5beb05690adeb544ddbe73c3"
+    },
+    "R1": {
+      "scores": [35, 45, 45],
+      "finalCriticalFailureCount": 3,
+      "finalRecommendableArtifact": false,
+      "finalCandidateAggregateSha256": "d7579ff0ec544189a403cee92d398b46601a255b04c62d41c170f1f15da82c0c"
+    }
+  },
+  "finalDeterministicLeadR1Points": 3,
+  "interpretation": "R1 recovered more strongly after the first external feedback round and finished three deterministic points above R0, but neither arm produced a recommendable artifact. This known-task diagnostic cannot establish Creator superiority or promotion readiness."
+}

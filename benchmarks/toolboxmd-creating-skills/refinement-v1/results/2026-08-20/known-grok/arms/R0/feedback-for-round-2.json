@@ -1,0 +1,68 @@
+{
+  "boundary": "Reproduce failures from the visible brief and contract. Do not search for or infer the hidden grader.",
+  "criticalFailures": [
+    "direct-envelope-streaming-success",
+    "safe-argv-prompt-and-environment"
+  ],
+  "deterministicPointsAvailable": 70,
+  "deterministicPointsAwarded": 47,
+  "failedChecks": [
+    {
+      "critical": true,
+      "evidence": {
+        "direct": {
+          "exitStatus": 0,
+          "fakeInvoked": true
+        },
+        "envelope": {
+          "exitStatus": 0,
+          "fakeInvoked": true
+        },
+        "streaming": {
+          "exitStatus": 0,
+          "fakeInvoked": true
+        }
+      },
+      "id": "direct-envelope-streaming-success",
+      "pointsAvailable": 8,
+      "pointsAwarded": 0
+    },
+    {
+      "critical": false,
+      "evidence": [
+        {
+          "passed": true
+        },
+        {
+          "passed": true
+        },
+        {
+          "passed": true
+        },
+        {
+          "passed": true
+        },
+        {
+          "passed": false
+        }
+      ],
+      "id": "numeric-bounds-fail-before-call",
+      "pointsAvailable": 5,
+      "pointsAwarded": 0
+    },
+    {
+      "critical": true,
+      "evidence": {
+        "argvContractPassed": false,
+        "promptFilePreserved": true,
+        "retainedSyntheticSecrets": false
+      },
+      "id": "safe-argv-prompt-and-environment",
+      "pointsAvailable": 10,
+      "pointsAwarded": 0
+    }
+  ],
+  "repairRound": 2,
+  "schemaVersion": 1,
+  "sourceGradeSha256": "70f17e30a4b4e5dbf20a0bf4c75f78d45cdfb57214ba6695245c6828ba364db3"
+}

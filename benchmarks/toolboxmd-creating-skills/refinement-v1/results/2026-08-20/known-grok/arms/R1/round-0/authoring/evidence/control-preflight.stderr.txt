@@ -1,0 +1,13 @@
+
+=== Sandbox denials ===
+(python3.14) file-read-data /Users/lukaszmaj/.CFUserTextEncoding
+(Python) sysctl-read security.mac.lockdown_mode_state
+(Python) sysctl-read kern.bootargs
+(Python) file-read-metadata /System/Cryptexes/OS
+(Python) file-read-data /Users/lukaszmaj/dev/toolboxmd/building-agentskills-creator-refinement-benchmark/README.md
+(Python) file-read-data /Users/lukaszmaj/.codex/auth.json
+(curl) sysctl-read security.mac.lockdown_mode_state
+(curl) sysctl-read kern.bootargs
+(curl) file-read-metadata /System/Cryptexes/OS
+(curl) mach-lookup com.apple.SystemConfiguration.configd
+(curl) network-outbound remote:*:60305

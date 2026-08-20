@@ -1,0 +1,93 @@
+{
+  "aggregateSha256": "582f2a7b73a9d46cac9d6df40633e522ea50d487e0e28d3559172e8dd0556750",
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+  "bytes": 61231,
+  "excludedDirectories": [
+    ".home",
+    ".pycache",
+    ".tmp"
+  ],
+  "fileCount": 13,
+  "files": [
+    {
+      "bytes": 151,
+      "mode": "0o644",
+      "path": "debug/evidence/465287e30fd4d341fc3f39caef6ec62d/inspect.stderr.txt",
+      "sha256": "11d2e397df3f2de7e8fed08ee7fdb9c9f5bbd9b2f4636c2d7b6e154d71240896"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "debug/evidence/465287e30fd4d341fc3f39caef6ec62d/inspect.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 5246,
+      "mode": "0o644",
+      "path": "debug/evidence/465287e30fd4d341fc3f39caef6ec62d/stage/prompt.txt",
+      "sha256": "8ae35d1e9a95e873e23bf33f2343734d64a873fc3642aef8a3246a0889519efe"
+    },
+    {
+      "bytes": 167,
+      "mode": "0o644",
+      "path": "debug/evidence/465287e30fd4d341fc3f39caef6ec62d/stage/review-agent.md",
+      "sha256": "c8a0c5eb2da969c6ff98a87503e11b4caffa1797aa425e92e00217c00f2dd693"
+    },
+    {
+      "bytes": 5320,
+      "mode": "0o755",
+      "path": "debug/fake_grok.py",
+      "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+    },
+    {
+      "bytes": 5246,
+      "mode": "0o644",
+      "path": "debug/prompt.txt",
+      "sha256": "8ae35d1e9a95e873e23bf33f2343734d64a873fc3642aef8a3246a0889519efe"
+    },
+    {
+      "bytes": 1102,
+      "mode": "0o644",
+      "path": "isolation-preflight-control.json",
+      "sha256": "7b42bbab92df0957ca6122b3a069370cb5f88cf44819f798c163857c44e08500"
+    },
+    {
+      "bytes": 1312,
+      "mode": "0o644",
+      "path": "isolation-preflight-model.json",
+      "sha256": "280759822eb02460988fc78b119f0a0d1b0f438d96b9dee81942e40344327acb"
+    },
+    {
+      "bytes": 3539,
+      "mode": "0o644",
+      "path": "raw-candidate/toolboxmd-use-grok/SKILL.md",
+      "sha256": "3a39c3d0379a0af32fc78eee7a9e14b2e0180e7ae2992816fb1ea3916c1f4dae"
+    },
+    {
+      "bytes": 14785,
+      "mode": "0o755",
+      "path": "raw-candidate/toolboxmd-use-grok/scripts/consult-grok",
+      "sha256": "4b8295b86c087a66c76e9d8bd07a3b4045192d8aa574ea38294d2f32e9b90a3e"
+    },
+    {
+      "bytes": 5560,
+      "mode": "0o644",
+      "path": "repair_acceptance.py",
+      "sha256": "e67e3d6e5fa4259e01bb1448fd37a60ad19fa49944cf2f08741ab9116d1717b6"
+    },
+    {
+      "bytes": 3539,
+      "mode": "0o644",
+      "path": "skills/toolboxmd-use-grok/SKILL.md",
+      "sha256": "3a39c3d0379a0af32fc78eee7a9e14b2e0180e7ae2992816fb1ea3916c1f4dae"
+    },
+    {
+      "bytes": 15264,
+      "mode": "0o755",
+      "path": "skills/toolboxmd-use-grok/scripts/consult-grok",
+      "sha256": "36cc7d51866136c15f2662dc658d0bfda7eb61c7bca3734353b1ea51c4448ec0"
+    }
+  ],
+  "omittedSymlinks": [],
+  "symlinks": []
+}

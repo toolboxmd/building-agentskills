@@ -1,0 +1,182 @@
+{
+  "actualCommandCwd": "/private/tmp/creator-refinement-94f74afc-a7f5-4cfa-a09a-6f5201e8077d/sandbox",
+  "arm": "R0",
+  "authoring": {
+    "durationSeconds": 303.557,
+    "exitStatus": 0,
+    "modelPreflightPassed": true,
+    "startedEpoch": 1787230267.510468,
+    "timedOut": false,
+    "tokenUsageRecorded": true,
+    "usage": {
+      "cached_input_tokens": 335104,
+      "input_tokens": 425135,
+      "output_tokens": 12179,
+      "reasoning_output_tokens": 4828
+    }
+  },
+  "codexVersion": "codex-cli 0.147.0",
+  "controlPreflight": {
+    "durationSeconds": 0.259,
+    "exitStatus": 0,
+    "passed": true,
+    "timedOut": false
+  },
+  "debugPromptInput": {
+    "durationSeconds": 1.235,
+    "exitStatus": 0,
+    "timedOut": false
+  },
+  "filesystemProfile": {
+    "default": "deny",
+    "homeDenied": "/private/tmp/creator-refinement-94f74afc-a7f5-4cfa-a09a-6f5201e8077d/sandbox/home",
+    "minimalRuntimeRead": true,
+    "networkEnabled": false,
+    "outputWrite": "/private/tmp/creator-refinement-94f74afc-a7f5-4cfa-a09a-6f5201e8077d/sandbox/output",
+    "pythonRuntimeRead": "/opt/homebrew/Cellar/python@3.14/3.14.6",
+    "sandboxRootRead": "/private/tmp/creator-refinement-94f74afc-a7f5-4cfa-a09a-6f5201e8077d/sandbox",
+    "treatmentRead": "/private/tmp/creator-refinement-94f74afc-a7f5-4cfa-a09a-6f5201e8077d/sandbox/home/.codex/skills/creator-under-test"
+  },
+  "freshEphemeralContext": true,
+  "ignoreRules": true,
+  "ignoreUserConfig": true,
+  "inputs": {
+    "baseBrief": {
+      "bytes": 5246,
+      "sha256": "8ae35d1e9a95e873e23bf33f2343734d64a873fc3642aef8a3246a0889519efe"
+    },
+    "candidate": {
+      "aggregateSha256": "72890a64beae880171b6b05757c363db448cfdb25733d84fe0479ccdafe9749d",
+      "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+      "bytes": 15401,
+      "fileCount": 2,
+      "files": [
+        {
+          "bytes": 3189,
+          "mode": "0o644",
+          "path": "SKILL.md",
+          "sha256": "ef88f941cedfe6a454acde7e4c544fe6c2cb8923a5382850d3830228a22cc724"
+        },
+        {
+          "bytes": 12212,
+          "mode": "0o755",
+          "path": "scripts/consult-grok",
+          "sha256": "709b3b2de03720e3b26abf843a44c9f4b31196cce4bad8be487c5a54776e37ed"
+        }
+      ],
+      "symlinks": []
+    },
+    "contract": {
+      "bytes": 2051,
+      "sha256": "d50124d66f29a9f4b6b0ef29ffba1f7d45890f8544cf540d43ea2228cbbf1742"
+    },
+    "copiedTreatment": {
+      "aggregateSha256": "e667aa1671dafc07df09289f8f1ed23bd36268c6a1a44b8868cac83eb429e22f",
+      "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+      "bytes": 46953,
+      "fileCount": 3,
+      "files": [
+        {
+          "bytes": 3973,
+          "mode": "0o644",
+          "path": "SKILL.md",
+          "sha256": "de2e9423fa6a0ef6a03a8008028d4ba3261b0a7ae00cb3d04f0c7e6c9f724e90"
+        },
+        {
+          "bytes": 216,
+          "mode": "0o644",
+          "path": "agents/openai.yaml",
+          "sha256": "681fec1eaaf543fa748fa9fb0b387c59e5a2d23b8e428c7575d3b9a3e0bece7d"
+        },
+        {
+          "bytes": 42764,
+          "mode": "0o644",
+          "path": "scripts/validate_skill.py",
+          "sha256": "f49186278510607eeb5dff2571dcb0ae70ed8cf90465e7f7b32dc92724af2713"
+        }
+      ],
+      "symlinks": []
+    },
+    "feedback": {
+      "bytes": 1579,
+      "sha256": "7f390bc911e1dcb483532d3266d5c4a4f718c70fa360c6ab1099436859f042bb"
+    },
+    "prompt": {
+      "bytes": 850,
+      "sha256": "08ddba0a494d57c3026d233adcf10b0c020b34cdf8eaa3d692e6d05ad844a665"
+    },
+    "supportFiles": [
+      {
+        "bytes": 5320,
+        "name": "fake_grok.py",
+        "sha256": "af15db1b8ebd87a48e79e98b1c17f16aba7a2c18ede1d7c59059f0bd1b6b1903"
+      }
+    ],
+    "treatment": {
+      "aggregateSha256": "e667aa1671dafc07df09289f8f1ed23bd36268c6a1a44b8868cac83eb429e22f",
+      "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+      "bytes": 46953,
+      "fileCount": 3,
+      "files": [
+        {
+          "bytes": 3973,
+          "mode": "0o644",
+          "path": "SKILL.md",
+          "sha256": "de2e9423fa6a0ef6a03a8008028d4ba3261b0a7ae00cb3d04f0c7e6c9f724e90"
+        },
+        {
+          "bytes": 216,
+          "mode": "0o644",
+          "path": "agents/openai.yaml",
+          "sha256": "681fec1eaaf543fa748fa9fb0b387c59e5a2d23b8e428c7575d3b9a3e0bece7d"
+        },
+        {
+          "bytes": 42764,
+          "mode": "0o644",
+          "path": "scripts/validate_skill.py",
+          "sha256": "f49186278510607eeb5dff2571dcb0ae70ed8cf90465e7f7b32dc92724af2713"
+        }
+      ],
+      "symlinks": []
+    }
+  },
+  "isolationEligible": true,
+  "limits": {
+    "tokenEligibilityCap": null,
+    "tokenUsageRequired": true,
+    "wallTimeSeconds": 900
+  },
+  "model": "gpt-5.6-sol",
+  "modelReasoningEffort": "medium",
+  "networkProbeControl": {
+    "bodySha256": "01eaebb21d7c530b941e6456e5d5f5ee80da370646ef99b3f1870149235e9c27",
+    "httpStatus": 200,
+    "kind": "live-loopback-http",
+    "succeeded": true,
+    "url": "http://127.0.0.1:60847/02f24b8258084f92912efc0eaa88c31f"
+  },
+  "opaqueRunId": "94f74afc-a7f5-4cfa-a09a-6f5201e8077d",
+  "phase": "repair-2",
+  "preflightEligible": true,
+  "preflightOnly": false,
+  "processEnvironmentKeys": [
+    "CODEX_CI",
+    "CODEX_HOME",
+    "HOME",
+    "LANG",
+    "LC_ALL",
+    "NO_COLOR",
+    "PATH",
+    "TERM",
+    "TMPDIR"
+  ],
+  "projectDocMaxBytes": 0,
+  "pythonRuntime": {
+    "executable": "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+    "root": "/opt/homebrew/Cellar/python@3.14/3.14.6",
+    "version": "Python 3.14.6"
+  },
+  "realExternalCalls": 0,
+  "schemaVersion": 1,
+  "shellEnvironmentInherit": "none"
+}

@@ -1,0 +1,107 @@
+{
+  "arm": "R1",
+  "finalCandidate": {
+    "aggregateSha256": "d7579ff0ec544189a403cee92d398b46601a255b04c62d41c170f1f15da82c0c",
+    "bytes": 18803,
+    "fileCount": 2
+  },
+  "finalRecommendableArtifact": false,
+  "promotionEligibleTask": false,
+  "repairLimit": 2,
+  "roundLimit": 3,
+  "rounds": [
+    {
+      "candidate": {
+        "aggregateSha256": "c0ef5f3e6faa2fa38aa3f426bd4b5af043107e9a8fd7cd8be46b02be5ffc15cc",
+        "bytes": 17739,
+        "fileCount": 2
+      },
+      "criticalFailures": [
+        "direct-envelope-streaming-success",
+        "safe-argv-prompt-and-environment",
+        "concrete-failure-classification",
+        "credential-shaped-input-rejected-before-call"
+      ],
+      "deterministicPointsAvailable": 70,
+      "deterministicPointsAwarded": 35,
+      "durationSeconds": 412.467,
+      "isolationEligible": true,
+      "phase": "initial",
+      "recommendableArtifact": false,
+      "round": 0,
+      "usage": {
+        "cached_input_tokens": 635648,
+        "input_tokens": 690549,
+        "output_tokens": 17749,
+        "reasoning_output_tokens": 3506
+      }
+    },
+    {
+      "candidate": {
+        "aggregateSha256": "463ba22ca527ff463ae1104516926996ede8223d88461566828e3c02df258f4a",
+        "bytes": 18324,
+        "fileCount": 2
+      },
+      "criticalFailures": [
+        "direct-envelope-streaming-success",
+        "safe-argv-prompt-and-environment",
+        "credential-shaped-input-rejected-before-call"
+      ],
+      "deterministicPointsAvailable": 70,
+      "deterministicPointsAwarded": 45,
+      "durationSeconds": 284.292,
+      "isolationEligible": true,
+      "phase": "repair-1",
+      "recommendableArtifact": false,
+      "round": 1,
+      "usage": {
+        "cached_input_tokens": 291328,
+        "input_tokens": 363200,
+        "output_tokens": 10530,
+        "reasoning_output_tokens": 4343
+      }
+    },
+    {
+      "candidate": {
+        "aggregateSha256": "d7579ff0ec544189a403cee92d398b46601a255b04c62d41c170f1f15da82c0c",
+        "bytes": 18803,
+        "fileCount": 2
+      },
+      "criticalFailures": [
+        "direct-envelope-streaming-success",
+        "safe-argv-prompt-and-environment",
+        "credential-shaped-input-rejected-before-call"
+      ],
+      "deterministicPointsAvailable": 70,
+      "deterministicPointsAwarded": 45,
+      "durationSeconds": 296.642,
+      "isolationEligible": true,
+      "phase": "repair-2",
+      "recommendableArtifact": false,
+      "round": 2,
+      "usage": {
+        "cached_input_tokens": 411392,
+        "input_tokens": 466017,
+        "output_tokens": 10258,
+        "reasoning_output_tokens": 3858
+      }
+    }
+  ],
+  "schemaVersion": 1,
+  "stoppedEarlyOnGreen": false,
+  "task": "known-grok",
+  "tokenEligibilityCap": null,
+  "totalDurationSeconds": 993.401,
+  "totalUsage": {
+    "cached_input_tokens": 1338368,
+    "input_tokens": 1519766,
+    "output_tokens": 38537,
+    "reasoning_output_tokens": 11707
+  },
+  "treatment": {
+    "aggregateSha256": "b1528337383a5c0a2b1c5f49a3d17bc07c8a341f753c418d7bd29a055f2b5d49",
+    "bytes": 47214,
+    "fileCount": 3
+  },
+  "treatmentId": "r1-bounded-refinement"
+}

@@ -1,0 +1,105 @@
+{
+  "arm": "R0",
+  "finalCandidate": {
+    "aggregateSha256": "05e2a36dc0e9ce4949843180211d4de68b3b769c5beb05690adeb544ddbe73c3",
+    "bytes": 15466,
+    "fileCount": 2
+  },
+  "finalRecommendableArtifact": false,
+  "promotionEligibleTask": false,
+  "repairLimit": 2,
+  "roundLimit": 3,
+  "rounds": [
+    {
+      "candidate": {
+        "aggregateSha256": "836990dd555880f6492e8b5945d285345e7c0b55693656e2d7058f346811df3c",
+        "bytes": 14446,
+        "fileCount": 2
+      },
+      "criticalFailures": [
+        "direct-envelope-streaming-success",
+        "safe-argv-prompt-and-environment",
+        "credential-shaped-input-rejected-before-call"
+      ],
+      "deterministicPointsAvailable": 70,
+      "deterministicPointsAwarded": 45,
+      "durationSeconds": 350.015,
+      "isolationEligible": true,
+      "phase": "initial",
+      "recommendableArtifact": false,
+      "round": 0,
+      "usage": {
+        "cached_input_tokens": 574720,
+        "input_tokens": 637599,
+        "output_tokens": 14629,
+        "reasoning_output_tokens": 3944
+      }
+    },
+    {
+      "candidate": {
+        "aggregateSha256": "72890a64beae880171b6b05757c363db448cfdb25733d84fe0479ccdafe9749d",
+        "bytes": 15401,
+        "fileCount": 2
+      },
+      "criticalFailures": [
+        "direct-envelope-streaming-success",
+        "safe-argv-prompt-and-environment"
+      ],
+      "deterministicPointsAvailable": 70,
+      "deterministicPointsAwarded": 47,
+      "durationSeconds": 310.88,
+      "isolationEligible": true,
+      "phase": "repair-1",
+      "recommendableArtifact": false,
+      "round": 1,
+      "usage": {
+        "cached_input_tokens": 548608,
+        "input_tokens": 626699,
+        "output_tokens": 11752,
+        "reasoning_output_tokens": 5184
+      }
+    },
+    {
+      "candidate": {
+        "aggregateSha256": "05e2a36dc0e9ce4949843180211d4de68b3b769c5beb05690adeb544ddbe73c3",
+        "bytes": 15466,
+        "fileCount": 2
+      },
+      "criticalFailures": [
+        "direct-envelope-streaming-success",
+        "safe-argv-prompt-and-environment",
+        "timeout-kills-complete-process-tree"
+      ],
+      "deterministicPointsAvailable": 70,
+      "deterministicPointsAwarded": 42,
+      "durationSeconds": 303.557,
+      "isolationEligible": true,
+      "phase": "repair-2",
+      "recommendableArtifact": false,
+      "round": 2,
+      "usage": {
+        "cached_input_tokens": 335104,
+        "input_tokens": 425135,
+        "output_tokens": 12179,
+        "reasoning_output_tokens": 4828
+      }
+    }
+  ],
+  "schemaVersion": 1,
+  "stoppedEarlyOnGreen": false,
+  "task": "known-grok",
+  "tokenEligibilityCap": null,
+  "totalDurationSeconds": 964.452,
+  "totalUsage": {
+    "cached_input_tokens": 1458432,
+    "input_tokens": 1689433,
+    "output_tokens": 38560,
+    "reasoning_output_tokens": 13956
+  },
+  "treatment": {
+    "aggregateSha256": "e667aa1671dafc07df09289f8f1ed23bd36268c6a1a44b8868cac83eb429e22f",
+    "bytes": 46953,
+    "fileCount": 3
+  },
+  "treatmentId": "r0-merged-vnext"
+}

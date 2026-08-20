@@ -1,0 +1,57 @@
+{
+  "aggregateSha256": "4e1ff9ed6ed8eb50670dc660062bd554b3abb714f19bd12041ccafc8dd5587a4",
+  "algorithm": "SHA-256 of lines '<file-sha256>  <relative-path>\\n' sorted by path",
+  "bytes": 44975,
+  "excludedDirectories": [
+    ".home",
+    ".pycache",
+    ".tmp"
+  ],
+  "fileCount": 7,
+  "files": [
+    {
+      "bytes": 1102,
+      "mode": "0o644",
+      "path": "isolation-preflight-control.json",
+      "sha256": "755963d01b4860e9adebd0cb55d8e14cdc3c6448f70b529548702e01dbf48b94"
+    },
+    {
+      "bytes": 1312,
+      "mode": "0o644",
+      "path": "isolation-preflight-model.json",
+      "sha256": "49ff7dae326df4932aac5e9dcf5081ec559f1220e44013eb130157ed997230fb"
+    },
+    {
+      "bytes": 3539,
+      "mode": "0o644",
+      "path": "raw-candidate/toolboxmd-use-grok/SKILL.md",
+      "sha256": "3a39c3d0379a0af32fc78eee7a9e14b2e0180e7ae2992816fb1ea3916c1f4dae"
+    },
+    {
+      "bytes": 14200,
+      "mode": "0o755",
+      "path": "raw-candidate/toolboxmd-use-grok/scripts/consult-grok",
+      "sha256": "2c69fc8d5483263d5843996237b30a48bf0253a7f91025a87bd749a2c4e1fdfc"
+    },
+    {
+      "bytes": 6498,
+      "mode": "0o644",
+      "path": "repair-work/acceptance.py",
+      "sha256": "0984847c9fe2b9b9e5f6e0fac8158b2037a4ac3d8534c05f58d989a2834f59de"
+    },
+    {
+      "bytes": 3539,
+      "mode": "0o644",
+      "path": "skills/toolboxmd-use-grok/SKILL.md",
+      "sha256": "3a39c3d0379a0af32fc78eee7a9e14b2e0180e7ae2992816fb1ea3916c1f4dae"
+    },
+    {
+      "bytes": 14785,
+      "mode": "0o755",
+      "path": "skills/toolboxmd-use-grok/scripts/consult-grok",
+      "sha256": "4b8295b86c087a66c76e9d8bd07a3b4045192d8aa574ea38294d2f32e9b90a3e"
+    }
+  ],
+  "omittedSymlinks": [],
+  "symlinks": []
+}

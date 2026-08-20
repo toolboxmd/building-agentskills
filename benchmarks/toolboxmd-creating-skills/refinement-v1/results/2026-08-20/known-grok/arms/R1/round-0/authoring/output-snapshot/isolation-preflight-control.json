@@ -1,0 +1,39 @@
+{
+  "checks": {
+    "allowedInputRead": true,
+    "allowedOutputWrite": true,
+    "deniedAuthRead": true,
+    "deniedRepositoryRead": true,
+    "networkControlSucceeded": true,
+    "networkDenied": true,
+    "networkProbeUrlValid": true,
+    "sensitiveEnvironmentNamesAbsent": true
+  },
+  "cwd": "/private/tmp/creator-refinement-e04abb82-f381-47c2-a08d-efe142e011bd/sandbox",
+  "environmentKeys": [
+    "BENCHMARK_DENIED_READ",
+    "BENCHMARK_NETWORK_CONTROL_SUCCEEDED",
+    "BENCHMARK_NETWORK_PROBE_URL",
+    "CODEX_SANDBOX",
+    "CODEX_SANDBOX_NETWORK_DISABLED",
+    "GIT_CONFIG_GLOBAL",
+    "GIT_CONFIG_NOSYSTEM",
+    "HOME",
+    "LANG",
+    "LC_ALL",
+    "NO_COLOR",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "PYTHONPYCACHEPREFIX",
+    "TERM",
+    "TMPDIR",
+    "__CF_USER_TEXT_ENCODING"
+  ],
+  "label": "control",
+  "networkProbeExitStatus": 7,
+  "networkProbeKind": "live-loopback-http",
+  "networkProbeStderr": "curl: (7) Failed to connect to 127.0.0.1 port 60305 after 0 ms: Couldn't connect to server",
+  "passed": true,
+  "schemaVersion": 1,
+  "unexpectedSensitiveEnvironmentKeys": []
+}

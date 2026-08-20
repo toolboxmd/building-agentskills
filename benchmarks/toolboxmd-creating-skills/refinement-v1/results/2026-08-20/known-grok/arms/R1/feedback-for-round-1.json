@@ -1,0 +1,112 @@
+{
+  "boundary": "Reproduce failures from the visible brief and contract. Do not search for or infer the hidden grader.",
+  "criticalFailures": [
+    "direct-envelope-streaming-success",
+    "safe-argv-prompt-and-environment",
+    "concrete-failure-classification",
+    "credential-shaped-input-rejected-before-call"
+  ],
+  "deterministicPointsAvailable": 70,
+  "deterministicPointsAwarded": 35,
+  "failedChecks": [
+    {
+      "critical": true,
+      "evidence": {
+        "incomplete": {
+          "expected": "incomplete-stop-reason",
+          "passed": true
+        },
+        "invalid-json": {
+          "expected": "invalid-json",
+          "passed": true
+        },
+        "max-turns": {
+          "expected": "max-turns",
+          "passed": true
+        },
+        "missing-cli": {
+          "expected": "missing-cli",
+          "passed": true
+        },
+        "nonzero": {
+          "expected": "nonzero-exit",
+          "passed": true
+        },
+        "result-error": {
+          "expected": "incomplete-stop-reason",
+          "passed": false
+        }
+      },
+      "id": "concrete-failure-classification",
+      "pointsAvailable": 10,
+      "pointsAwarded": 0
+    },
+    {
+      "critical": true,
+      "evidence": {
+        "exitStatus": 0,
+        "fakeInvoked": true
+      },
+      "id": "credential-shaped-input-rejected-before-call",
+      "pointsAvailable": 2,
+      "pointsAwarded": 0
+    },
+    {
+      "critical": true,
+      "evidence": {
+        "direct": {
+          "exitStatus": 0,
+          "fakeInvoked": true
+        },
+        "envelope": {
+          "exitStatus": 0,
+          "fakeInvoked": true
+        },
+        "streaming": {
+          "exitStatus": 0,
+          "fakeInvoked": true
+        }
+      },
+      "id": "direct-envelope-streaming-success",
+      "pointsAvailable": 8,
+      "pointsAwarded": 0
+    },
+    {
+      "critical": false,
+      "evidence": [
+        {
+          "passed": true
+        },
+        {
+          "passed": false
+        },
+        {
+          "passed": true
+        },
+        {
+          "passed": true
+        },
+        {
+          "passed": false
+        }
+      ],
+      "id": "numeric-bounds-fail-before-call",
+      "pointsAvailable": 5,
+      "pointsAwarded": 0
+    },
+    {
+      "critical": true,
+      "evidence": {
+        "argvContractPassed": false,
+        "promptFilePreserved": true,
+        "retainedSyntheticSecrets": false
+      },
+      "id": "safe-argv-prompt-and-environment",
+      "pointsAvailable": 10,
+      "pointsAwarded": 0
+    }
+  ],
+  "repairRound": 1,
+  "schemaVersion": 1,
+  "sourceGradeSha256": "90d23a1c107b75073c84fabc9fac7c74cf06312840d488d58546c92e9ffefb02"
+}
