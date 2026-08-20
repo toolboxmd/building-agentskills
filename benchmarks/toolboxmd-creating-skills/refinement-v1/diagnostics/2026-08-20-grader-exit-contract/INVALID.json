@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "eligibleBenchmarkResult": false,
+  "preregistrationCommit": "436093fb6c129a4c8741f4093b256188282c1b5a",
+  "reason": "The known-Grok grader correctly wrote a non-green report and returned exit 1, but the first orchestrator revision treated every nonzero grader status as an infrastructure failure and stopped before the preregistered repair sessions.",
+  "scope": "Both arms completed only round 0. These scores are diagnostic and must not be compared as final bounded-refinement outcomes.",
+  "arms": {
+    "R0": {
+      "round0DeterministicPoints": 35,
+      "deterministicPointsAvailable": 70,
+      "authoringDurationSeconds": 461.983,
+      "authoringExitStatus": 0,
+      "graderExitStatus": 1,
+      "inputTokens": 839905,
+      "cachedInputTokens": 784640,
+      "outputTokens": 18580,
+      "reasoningOutputTokens": 5959
+    },
+    "R1": {
+      "round0DeterministicPoints": 28,
+      "deterministicPointsAvailable": 70,
+      "authoringDurationSeconds": 525.08,
+      "authoringExitStatus": 0,
+      "graderExitStatus": 1,
+      "inputTokens": 948225,
+      "cachedInputTokens": 876032,
+      "outputTokens": 18564,
+      "reasoningOutputTokens": 4670
+    }
+  },
+  "omittedGeneratedArtifacts": {
+    "scope": "R0 output-snapshot/rehearsal only",
+    "reason": "The invalid run's 287 disposable fake-CLI rehearsal files are excluded from Git; the retained deterministic grade contains every case result and the retained candidate snapshot is the graded artifact.",
+    "fileCount": 287,
+    "bytes": 257393,
+    "aggregateSha256": "5e81f726ba7b8a4ed135458bd7bb5c7ab33245fc179cb413612033ab6ed57d76"
+  },
+  "disposition": "Preserve the isolated evidence, correct only the grader exit-code contract, freeze a new harness hash, then restart both arms from fresh model contexts."
+}

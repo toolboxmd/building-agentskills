@@ -25,6 +25,17 @@ def run(argv):
         raise SystemExit(f"command failed with exit {completed.returncode}: {argv[0]}")
 
 
+def run_grader(argv, grade_path: Path) -> int:
+    completed = subprocess.run(argv, text=True)
+    if completed.returncode not in (0, 1):
+        raise SystemExit(f"grader failed with exit {completed.returncode}: {argv[0]}")
+    if not grade_path.is_file():
+        raise SystemExit(
+            f"grader exited {completed.returncode} without writing its report: {grade_path}"
+        )
+    return completed.returncode
+
+
 def task_config(root: Path, task: str) -> dict:
     if task == "known-grok":
         grok_root = root.parents[1] / "toolboxmd-use-grok"
@@ -130,7 +141,7 @@ def main():
             "--output",
             str(grade_path),
         ]
-        run(grade_command)
+        run_grader(grade_command, grade_path)
         grade = json.loads(grade_path.read_text(encoding="utf-8"))
         candidate_hash = tree_hash(candidate)
         rounds.append(

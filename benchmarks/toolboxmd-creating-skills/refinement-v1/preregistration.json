@@ -1,6 +1,16 @@
 {
   "schemaVersion": 1,
+  "preregistrationRevision": 2,
   "preregisteredAt": "2026-08-20T14:20:00+02:00",
+  "revisedAt": "2026-08-20T14:34:14+02:00",
+  "revisionHistory": [
+    {
+      "revision": 1,
+      "commit": "436093fb6c129a4c8741f4093b256188282c1b5a",
+      "status": "invalidated-before-any-eligible-result",
+      "reason": "The known-Grok grader uses exit 1 for a valid non-green report; the first orchestrator revision stopped instead of passing that report to the preregistered repair loop. Both round-0 diagnostics are preserved outside ranked results."
+    }
+  ],
   "branchBase": {
     "commit": "3ad85d67341b00254c288764fd70cd60350ad94e",
     "parentPullRequest": "https://github.com/toolboxmd/building-agentskills/pull/3",
@@ -150,8 +160,8 @@
   "harness": {
     "path": "benchmarks/toolboxmd-creating-skills/refinement-v1/harness",
     "fileCount": 9,
-    "bytes": 81698,
-    "aggregateSha256": "40667b30c13b1322fba926a9bb63c487ffcde6b6ccfa1b9e707742da15fab107",
+    "bytes": 82138,
+    "aggregateSha256": "19bb5b8cc9a647956389f83b1b223e2af2acd9939105c7b1f6e1d83af7758d60",
     "referenceFixtureExpectedScore": "70/70",
     "hashAlgorithm": "SHA-256 of '<file-sha256>  <relative-path>\\n' lines sorted by bytewise UTF-8 relative path"
   }

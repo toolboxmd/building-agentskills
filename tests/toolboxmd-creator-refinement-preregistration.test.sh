@@ -15,6 +15,7 @@ done
 PYTHONDONTWRITEBYTECODE=1 python3 -B - "$root" "$temporary" <<'PY'
 from hashlib import sha256
 import ast
+import importlib.util
 import json
 from pathlib import Path
 import subprocess
@@ -55,7 +56,29 @@ assert actual_task == {key: task[key] for key in ("fileCount", "bytes", "aggrega
 for path in (benchmark / "harness").glob("*.py"):
     ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
 
+runner_path = benchmark / "harness/run_bounded_refinement.py"
+runner_spec = importlib.util.spec_from_file_location("bounded_refinement_runner", runner_path)
+assert runner_spec and runner_spec.loader
+runner = importlib.util.module_from_spec(runner_spec)
+runner_spec.loader.exec_module(runner)
+non_green_grade = temporary / "non-green-grade.json"
+grader_status = runner.run_grader(
+    [
+        sys.executable,
+        "-B",
+        "-c",
+        "from pathlib import Path; import sys; Path(sys.argv[1]).write_text('{}\\n', encoding='utf-8'); raise SystemExit(1)",
+        str(non_green_grade),
+    ],
+    non_green_grade,
+)
+assert grader_status == 1
+assert json.loads(non_green_grade.read_text(encoding="utf-8")) == {}
+
 assert manifest["execution"]["tokenEligibilityCap"] is None
+assert manifest["preregistrationRevision"] == 2
+assert manifest["revisionHistory"][0]["commit"] == "436093fb6c129a4c8741f4093b256188282c1b5a"
+assert manifest["revisionHistory"][0]["status"] == "invalidated-before-any-eligible-result"
 assert manifest["execution"]["repairSessionsMaximumPerArm"] == 2
 assert manifest["execution"]["wallTimeSecondsPerSession"] == 900
 assert manifest["claimBoundary"]["generalCreatorImprovementClaimAllowed"] is False

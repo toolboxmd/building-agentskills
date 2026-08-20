@@ -1,0 +1,292 @@
+#!/usr/bin/env python3
+"""Fail-closed adapter for a bounded, explicit Grok Build consultation."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import signal
+import subprocess
+import sys
+import tempfile
+import time
+import uuid
+
+
+FAILURES = {"missing-cli", "isolation-failure", "nonzero-exit", "timeout",
+            "invalid-json", "incomplete-stop-reason", "max-turns"}
+VERDICTS = {"PROCEED", "PROCEED WITH CHANGES", "REPLAN", "NEEDS HUMAN DECISION"}
+FIELDS = {"verdict", "overengineering", "missing", "risks", "minimum_plan_delta", "user_decisions"}
+SECRET = re.compile(r"(?i)(xai[_-]?api[_-]?key|authorization|api[_-]?key)(\s*[:=]\s*)([^\s\"']+)")
+
+
+class AdapterError(Exception):
+    def __init__(self, category: str, message: str):
+        super().__init__(message)
+        self.category = category
+
+
+class Parser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        raise AdapterError("isolation-failure", "invalid arguments: " + message)
+
+
+def parser() -> Parser:
+    p = Parser(add_help=True)
+    p.add_argument("--mode", required=True, choices=("explicit", "automatic"))
+    p.add_argument("--prompt-file", required=True)
+    p.add_argument("--output-dir", required=True)
+    p.add_argument("--grok-home", required=True)
+    p.add_argument("--grok-bin", required=True)
+    p.add_argument("--timeout", required=True, type=float)
+    p.add_argument("--max-turns", required=True, type=int)
+    return p
+
+
+def emit(status: str, **values: object) -> None:
+    print(json.dumps({"status": status, **values}, sort_keys=True, separators=(",", ":")))
+
+
+def redact(value: str) -> str:
+    return SECRET.sub(lambda m: m.group(1) + m.group(2) + "[REDACTED]", value)
+
+
+def write_json(path: Path, value: object) -> None:
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def safe_run(argv: list[str], cwd: Path, env: dict[str, str], timeout: float) -> subprocess.CompletedProcess[str]:
+    proc = subprocess.Popen(argv, cwd=cwd, env=env, stdin=subprocess.DEVNULL,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                            start_new_session=True)
+    try:
+        stdout, stderr = proc.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(proc.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        try:
+            stdout, stderr = proc.communicate(timeout=1.0)
+        except subprocess.TimeoutExpired:
+            try:
+                os.killpg(proc.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            stdout, stderr = proc.communicate()
+        error = AdapterError("timeout", "Grok exceeded the wall-clock timeout")
+        error.stdout, error.stderr = stdout, stderr
+        raise error
+    return subprocess.CompletedProcess(argv, proc.returncode, stdout, stderr)
+
+
+def isolated_env(grok_home: Path) -> dict[str, str]:
+    env = {
+        "HOME": str(grok_home),
+        "GROK_HOME": str(grok_home),
+        "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1",
+        "CURSOR_DISABLE_SKILLS": "1",
+        "CURSOR_DISABLE_RULES": "1",
+        "CURSOR_DISABLE_AGENTS": "1",
+        "CURSOR_DISABLE_MCPS": "1",
+        "CURSOR_DISABLE_HOOKS": "1",
+        "CURSOR_DISABLE_SESSIONS": "1",
+        "CLAUDE_DISABLE_SKILLS": "1",
+        "CLAUDE_DISABLE_RULES": "1",
+        "CLAUDE_DISABLE_AGENTS": "1",
+        "CLAUDE_DISABLE_MCPS": "1",
+        "CLAUDE_DISABLE_HOOKS": "1",
+        "CLAUDE_DISABLE_SESSIONS": "1",
+    }
+    if "XAI_API_KEY" in os.environ:
+        env["XAI_API_KEY"] = os.environ["XAI_API_KEY"]
+    return env
+
+
+def check_inspect(value: object, expected_cwd: Path) -> None:
+    if not isinstance(value, dict):
+        raise AdapterError("isolation-failure", "inspect output is not an object")
+    required = {"grokVersion", "projectRoot", "projectInstructions", "skills", "agents",
+                "mcpServers", "plugins", "hooks", "marketplaces", "externalCompat",
+                "configSources", "configWarnings", "permissions", "cwd"}
+    if set(value) != required:
+        raise AdapterError("isolation-failure", "inspect fields differ from the isolation allow-list")
+    if (not isinstance(value["grokVersion"], str) or not isinstance(value["cwd"], str)
+            or Path(value["cwd"]).resolve() != expected_cwd.resolve()):
+        raise AdapterError("isolation-failure", "inspect version or working directory is invalid")
+    empty = ("projectInstructions", "skills", "mcpServers", "plugins", "hooks", "marketplaces")
+    if value["projectRoot"] is not None or any(value[name] != [] for name in empty):
+        raise AdapterError("isolation-failure", "inspect found ambient project or extension state")
+    agents = value["agents"]
+    allowed_agents = {"general-purpose", "explore", "plan"}
+    if not isinstance(agents, list) or any(not isinstance(x, dict) or set(x) != {"name", "source"}
+                                           or x.get("name") not in allowed_agents
+                                           or x.get("source") != {"type": "builtin"} for x in agents):
+        raise AdapterError("isolation-failure", "inspect found an unapproved agent")
+    compat = value["externalCompat"]
+    if not isinstance(compat, dict):
+        raise AdapterError("isolation-failure", "external compatibility state is malformed")
+    cells = compat.get("cells")
+    if compat.get("remoteSettingsLoaded") is not False or not isinstance(cells, list) or len(cells) != 12:
+        raise AdapterError("isolation-failure", "external compatibility state is not fully disabled")
+    expected = {(v, s) for v in ("cursor", "claude") for s in
+                ("skills", "rules", "agents", "mcps", "hooks", "sessions")}
+    observed = {(c.get("vendor"), c.get("surface")) for c in cells
+                if isinstance(c, dict) and set(c) == {"vendor", "surface", "enabled", "source"}
+                and c.get("enabled") is False and c.get("source") == "env"}
+    if observed != expected:
+        raise AdapterError("isolation-failure", "a compatibility surface is not disabled")
+    sources, permissions = value["configSources"], value["permissions"]
+    if sources != {"layers": []} or value["configWarnings"] is not None:
+        raise AdapterError("isolation-failure", "inspect found configuration layers or warnings")
+    if permissions != {"managedSettingsActive": False}:
+        raise AdapterError("isolation-failure", "unexpected managed settings state")
+
+
+def schema() -> dict[str, object]:
+    strings = {"type": "array", "items": {"type": "string"}}
+    return {
+        "type": "object", "additionalProperties": False,
+        "required": sorted(FIELDS),
+        "properties": {"verdict": {"enum": sorted(VERDICTS)},
+                       **{name: strings for name in FIELDS - {"verdict"}}},
+    }
+
+
+def valid_review(value: object) -> bool:
+    return (isinstance(value, dict) and set(value) == FIELDS and value.get("verdict") in VERDICTS
+            and all(isinstance(value.get(k), list) and all(isinstance(x, str) for x in value[k])
+                    for k in FIELDS - {"verdict"}))
+
+
+def parse_result(stdout: str) -> tuple[dict[str, object], dict[str, object]]:
+    try:
+        records = [json.loads(line) for line in stdout.splitlines() if line.strip()]
+    except json.JSONDecodeError as exc:
+        raise AdapterError("invalid-json", "Grok output is not valid JSON") from exc
+    if not records:
+        raise AdapterError("invalid-json", "Grok returned no JSON")
+    if len(records) == 1 and valid_review(records[0]):
+        return records[0], {"session_id": None, "usage": None, "stop_reason": None}
+    if len(records) == 1 and isinstance(records[0], dict) and valid_review(records[0].get("structured_output")):
+        stop = records[0].get("stopReason", records[0].get("stop_reason"))
+        if stop not in (None, "end_turn"):
+            raise AdapterError("incomplete-stop-reason", "Grok did not finish normally")
+        return records[0]["structured_output"], {"session_id": records[0].get("session_id"),
+                                                  "usage": records[0].get("usage"), "stop_reason": stop}
+    for record in records:
+        if not isinstance(record, dict):
+            raise AdapterError("invalid-json", "Grok stream contains a non-object")
+        if record.get("subtype") == "error_max_turns":
+            raise AdapterError("max-turns", "Grok exhausted the turn limit")
+        content = record.get("message", {}).get("content", []) if isinstance(record.get("message"), dict) else []
+        if any(isinstance(block, dict) and block.get("type") in ("tool_use", "tool_call") for block in content):
+            raise AdapterError("isolation-failure", "Grok attempted a runtime tool call")
+    results = [r for r in records if r.get("type") == "result"]
+    if len(results) != 1:
+        raise AdapterError("invalid-json", "Grok stream lacks one terminal result")
+    result = results[0]
+    if result.get("is_error") is True:
+        if result.get("subtype") == "error_max_turns":
+            raise AdapterError("max-turns", "Grok exhausted the turn limit")
+        raise AdapterError("nonzero-exit", "Grok reported an error result")
+    if result.get("stop_reason") != "end_turn":
+        raise AdapterError("incomplete-stop-reason", "Grok did not finish with end_turn")
+    review = result.get("structured_output")
+    if not valid_review(review):
+        raise AdapterError("invalid-json", "structured review does not match the required schema")
+    return review, {"session_id": result.get("session_id"), "usage": result.get("usage"),
+                    "stop_reason": result.get("stop_reason")}
+
+
+def main() -> None:
+    args = parser().parse_args()
+    if args.timeout <= 0 or args.max_turns <= 0:
+        raise AdapterError("isolation-failure", "timeout and max-turns must be positive")
+    prompt_source = Path(args.prompt_file).resolve()
+    output = Path(args.output_dir).resolve()
+    grok_home = Path(args.grok_home).resolve()
+    grok_bin = Path(args.grok_bin).resolve()
+    output.mkdir(parents=True, exist_ok=True)
+    if args.mode == "automatic":
+        raise AdapterError("isolation-failure", "automatic mode is disabled pending real profile acceptance")
+    if not grok_bin.is_file() or not os.access(grok_bin, os.X_OK):
+        raise AdapterError("missing-cli", "Grok CLI is missing or not executable")
+    if not prompt_source.is_file() or not grok_home.is_dir():
+        raise AdapterError("isolation-failure", "prompt file or Grok home is unavailable")
+    prompt = prompt_source.read_text(encoding="utf-8")
+    if not prompt.strip():
+        raise AdapterError("isolation-failure", "prompt file is empty")
+    run_id = str(uuid.uuid4())
+    started = time.time()
+    env = isolated_env(grok_home)
+    with tempfile.TemporaryDirectory(prefix="toolboxmd-grok-") as temporary:
+        stage = Path(temporary)
+        staged_prompt = stage / "prompt.txt"
+        agent = stage / "reviewer.txt"
+        schema_path = stage / "review-schema.json"
+        staged_prompt.write_text(prompt, encoding="utf-8")
+        agent.write_text("Review only the supplied prompt. Do not use tools, web, memory, subagents, MCP, plugins, hooks, project files, or any agentic CLI. Return only the required structured review.\n", encoding="utf-8")
+        write_json(schema_path, schema())
+        inspect = safe_run([str(grok_bin), "inspect", "--json"], stage, env, min(args.timeout, 30.0))
+        if inspect.returncode != 0:
+            raise AdapterError("isolation-failure", "Grok inspect failed")
+        metadata_path = output / "invocation.json"
+        invocation = {"run_id": run_id, "mode": args.mode, "started_at_unix": started,
+                      "grok_bin": str(grok_bin), "grok_home": str(grok_home),
+                      "prompt_sha256": __import__("hashlib").sha256(prompt.encode()).hexdigest(),
+                      "max_turns": args.max_turns, "timeout_seconds": args.timeout,
+                      "argv": ["<grok-bin>", "--prompt-file", "<staged-prompt>", "--agent",
+                               "<staged-agent>", "--output-format", "stream-json", "--json-schema",
+                               "<staged-schema>", "--permission-mode", "plan", "--sandbox",
+                               "read-only", "--no-memory", "--no-subagents", "--no-web",
+                               "--max-turns", str(args.max_turns)]}
+        write_json(metadata_path, invocation)
+        try:
+            check_inspect(json.loads(inspect.stdout), stage)
+        except json.JSONDecodeError as exc:
+            raise AdapterError("isolation-failure", "Grok inspect returned invalid JSON") from exc
+        argv = [str(grok_bin), "--prompt-file", str(staged_prompt), "--agent", str(agent),
+                "--output-format", "stream-json", "--json-schema", str(schema_path),
+                "--permission-mode", "plan", "--sandbox", "read-only", "--no-memory",
+                "--no-subagents", "--no-web", "--max-turns", str(args.max_turns)]
+        try:
+            result = safe_run(argv, stage, env, args.timeout)
+            raw_stdout, raw_stderr = result.stdout, result.stderr
+        except AdapterError as exc:
+            raw_stdout = getattr(exc, "stdout", "")
+            raw_stderr = getattr(exc, "stderr", "")
+            (output / "stdout.redacted.txt").write_text(redact(raw_stdout), encoding="utf-8")
+            (output / "stderr.redacted.txt").write_text(redact(raw_stderr), encoding="utf-8")
+            raise
+        (output / "stdout.redacted.txt").write_text(redact(raw_stdout), encoding="utf-8")
+        (output / "stderr.redacted.txt").write_text(redact(raw_stderr), encoding="utf-8")
+        if result.returncode != 0:
+            try:
+                parse_result(raw_stdout)
+            except AdapterError as exc:
+                if exc.category == "max-turns":
+                    raise
+            raise AdapterError("nonzero-exit", "Grok exited nonzero")
+        review, terminal = parse_result(raw_stdout)
+    review_path = output / "review.json"
+    write_json(review_path, review)
+    invocation.update({"duration_seconds": round(time.time() - started, 3), **terminal})
+    write_json(metadata_path, invocation)
+    emit("ok", review=review, review_path=str(review_path), evidence_path=str(metadata_path), run_id=run_id)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except AdapterError as exc:
+        emit(exc.category if exc.category in FAILURES else "isolation-failure", error=str(exc))
+    except (OSError, UnicodeError, ValueError) as exc:
+        emit("isolation-failure", error=str(exc))
