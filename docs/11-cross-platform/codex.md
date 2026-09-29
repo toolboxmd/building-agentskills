@@ -95,7 +95,7 @@ Codex reads `AGENTS.md`; Claude Code reads `CLAUDE.md`. Some authors symlink one
 
 ## What Codex does not share with Claude Code
 
-- **No `${CLAUDE_PLUGIN_ROOT}` or `${CLAUDE_SKILL_DIR}` substitution.** Refer to bundled files by paths relative to the Skill directory; the listing gives the model each Skill's file path.
+- **No `${CLAUDE_PLUGIN_ROOT}` or `${CLAUDE_SKILL_DIR}` substitution in Skill bodies.** Codex sets `CLAUDE_PLUGIN_ROOT` only in the environment of plugin hooks ([`discovery.rs`](https://github.com/openai/codex/blob/687a119f0fcaace47e1f1abcc77cec6c813fd6da/codex-rs/hooks/src/engine/discovery.rs#L267)). In a Skill, refer to bundled files by paths relative to the Skill directory; the listing gives the model each Skill's file path.
 - **No Claude Code frontmatter extensions.** `when_to_use`, `disable-model-invocation`, `user-invocable`, `paths`, `model` and `effort` are Claude Code fields. Use `agents/openai.yaml` for Codex-specific behavior.
 
 ## Sources

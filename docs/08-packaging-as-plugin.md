@@ -84,13 +84,13 @@ The variable is NOT in the environment of commands Claude runs through the Bash 
 bash "${CLAUDE_PLUGIN_ROOT}/scripts/foo.sh"
 ```
 
-works when the skill loads from the installed plugin, because Claude Code substitutes the path into the body. It fails with `No such file or directory` when the same skill loads as a personal skill (the symlink-install case) or on another harness. The literal string `${CLAUDE_PLUGIN_ROOT}` reaches Bash, expands to the empty string (Bash sees an unset variable), and the command becomes `bash /scripts/foo.sh`, which does not exist.
+works when the skill loads from the installed plugin, because Claude Code substitutes the path into the body. It fails with `No such file or directory` when the same skill loads as a personal skill (the symlink-install case) or on Codex, OpenCode or Gemini CLI, which do not substitute it. Grok Build substitutes it in plugin skills ([`skill.rs` at `97f190f`](https://github.com/xai-org/grok-build/blob/97f190f644ae1ba07fd6ee185ef54c650e142666/crates/codegen/xai-grok-tools/src/implementations/skills/skill.rs#L286-L310)). The literal string `${CLAUDE_PLUGIN_ROOT}` reaches Bash, expands to the empty string (Bash sees an unset variable), and the command becomes `bash /scripts/foo.sh`, which does not exist.
 
 The failure is silent during plugin install; it surfaces only when someone installs the skill another way and invokes it.
 
 Three workarounds:
 
-1. **Use `${CLAUDE_SKILL_DIR}` instead.** Claude Code substitutes it with the skill's own directory in the body of any skill, plugin or not ([Skills docs](https://code.claude.com/docs/en/skills)). It is Claude Code-only: other harnesses leave it literal.
+1. **Use `${CLAUDE_SKILL_DIR}` instead.** Claude Code substitutes it with the skill's own directory in the body of any skill, plugin or not ([Skills docs](https://code.claude.com/docs/en/skills)). Grok Build substitutes it too ([`skill.rs` at `97f190f`](https://github.com/xai-org/grok-build/blob/97f190f644ae1ba07fd6ee185ef54c650e142666/crates/codegen/xai-grok-tools/src/implementations/skills/skill.rs#L286-L310)); Codex, OpenCode and Gemini CLI leave it literal, so pair it with workaround 3 for those hosts.
 2. **Use a relative path.** `bash scripts/foo.sh` works if the skill's working directory is set to the skill's base directory. Some skills do `cd "$(dirname "$0")"` first; some rely on Claude Code setting `pwd` correctly.
 3. **Compute the path explicitly.** From a SKILL.md prose preamble: "All script paths below are relative to this skill's base directory (shown at the top of the skill as `Base directory for this skill: ...`). `cd` into that directory before invoking any script, or prefix each script with the absolute base path." This is karpathy-wiki's chosen workaround.
 

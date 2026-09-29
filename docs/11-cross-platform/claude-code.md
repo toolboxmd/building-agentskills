@@ -89,7 +89,7 @@ Because reads default to the whole computer, confining a harness needs `denyRead
 
 ## `${CLAUDE_PLUGIN_ROOT}` and `${CLAUDE_SKILL_DIR}`
 
-Claude Code substitutes `${CLAUDE_SKILL_DIR}` in any Skill's Markdown body, and `${CLAUDE_PLUGIN_ROOT}` in a plugin Skill's body, when it loads the content. Neither variable exists in the environment of Bash commands Claude runs ([Plugins reference](https://code.claude.com/docs/en/plugins-reference#where-each-variable-resolves)). Full discussion in [Packaging as a plugin: the `${CLAUDE_PLUGIN_ROOT}` gotcha](/docs/08-packaging-as-plugin#the-claude_plugin_root-gotcha).
+Claude Code substitutes `${CLAUDE_SKILL_DIR}` in any Skill's Markdown body, and `${CLAUDE_PLUGIN_ROOT}` in a plugin Skill's body, when it loads the content. Neither variable exists in the environment of Bash commands Claude runs ([Plugins reference](https://code.claude.com/docs/en/plugins-reference#where-each-variable-resolves)). Grok Build substitutes both; Codex, OpenCode and Gemini CLI do not ([Other harnesses](/docs/11-cross-platform/others)). Full discussion in [Packaging as a plugin: the `${CLAUDE_PLUGIN_ROOT}` gotcha](/docs/08-packaging-as-plugin#the-claude_plugin_root-gotcha).
 
 ## Invocation: `disable-model-invocation` and `user-invocable`
 
