@@ -40,7 +40,7 @@ A small manifest, following the shape of [karpathy-wiki's `plugin.json` at `d810
 }
 ```
 
-Per the [Plugins reference](https://code.claude.com/docs/en/plugins-reference) (read 2026-09-29), `name` is the only required field. `author` is an object with a required `name` and optional `email` and `url`. `version`, `description`, `repository`, `license` and `keywords` are optional; `claude plugin validate` warns when `version`, `description` or `author` is missing, and `--strict` turns those warnings into failures.
+Per the [Plugins reference](https://code.claude.com/docs/en/plugins-reference) (read 2026-09-29), `name` is the only required field. `author` is an object with a required `name` and optional `email` and `url`. A string `author` fails validation: Claude Code 2.1.284 then refuses to load the plugin, and Grok Build 1.0.44 installs it with no Skills, while Codex 0.159.0 accepts it ([loader case study](/case-studies/2026-09-30-loader-trigger-benchmark)). `version`, `description`, `repository`, `license` and `keywords` are optional; `claude plugin validate` warns when `version`, `description` or `author` is missing, and `--strict` turns those warnings into failures.
 
 The `name` is the namespace prefix for your plugin's skills (Claude Code uses `plugin-name:skill-name` for namespacing). Pick a name that will not collide with other plugins.
 

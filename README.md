@@ -95,6 +95,7 @@ These three docs close the audience gap a layered repo would otherwise leave. Re
 - [`case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md`](case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md). Provider-neutral runtime and benchmark-integrity ship.
 - [`case-studies/2026-09-29-agentsmd-routing-benchmarks.md`](case-studies/2026-09-29-agentsmd-routing-benchmarks.md). AgentsMD routing and trigger benchmarks on four hosts: setup, instrument failures, fixes and numbers.
 - [`case-studies/2026-09-29-t3-delegation-tool-descriptions.md`](case-studies/2026-09-29-t3-delegation-tool-descriptions.md). MCP tool descriptions as activation contracts, and what deferred tool loading hides.
+- [`case-studies/2026-09-30-loader-trigger-benchmark.md`](case-studies/2026-09-30-loader-trigger-benchmark.md). Whether this repository's loader Skill installs and loads on four hosts: a manifest defect that hid it, then authoring, audit and tool-description prompts.
 - [`examples/minimal-skill/SKILL.md`](examples/minimal-skill/SKILL.md). A working minimal skill to copy.
 
 ### Loader skill
