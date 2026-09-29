@@ -26,7 +26,7 @@ Examples:
 - A discipline rule for prose changes ("RED-GREEN-REFACTOR for prose"). Triggers when the agent is editing a SKILL.md.
 - A reference for a heavy domain (Anthropic's `pdf` skill in `anthropics/skills/skills/pdf`). Triggers when the user mentions a PDF; the body lists every PDF operation the skill supports.
 
-The cost trade-off: skills have zero per-session cost when not invoked (Claude Code only reads the description, not the body, until activation). The cost of activation is the body size in tokens, which sits in the conversation for the rest of the session.
+The cost trade-off: a skill that is never invoked still costs its description in every session, because the description sits in the skill listing (about 100 tokens, per the table above). The body loads only on activation, and then sits in the conversation for the rest of the session.
 
 ### Use CLAUDE.md (or AGENTS.md) when
 
@@ -71,7 +71,7 @@ Claude Code's `context: fork` + `agent: Explore | Plan | general-purpose` runs a
 When to fork:
 
 - The skill produces an artifact and does not need the parent's context. Karpathy-wiki's headless ingester is morally a fork (in practice, it is a `claude -p` subprocess; see [Mechanism vs decoration](/docs/07-mechanism-vs-decoration)).
-- The skill needs a different model. Set `model: claude-opus-4-7` in frontmatter; the fork uses Opus while the parent uses Sonnet.
+- The skill needs a different model. Set `model: opus` in frontmatter (an alias, so the example does not pin a dated model ID); the fork uses Opus while the parent uses Sonnet.
 - The parent context is heavy and the skill's output is small. Forking saves the parent from carrying the skill's body for the rest of the session.
 
 When NOT to fork:
@@ -87,13 +87,14 @@ If you are still unsure, these heuristics resolve most cases:
 
 - "I want this loaded every session" → CLAUDE.md (if it is a fact) or SessionStart hook (if it is a mechanism).
 - "I want the agent to pick this up when relevant" → skill, with a description that names the triggers.
+- "This must be read before a specific action" (an edit, a commit, a pull request) → skill with a routing row worded as a before-clause, plus a short always-loaded pointer that names the skill and the actions, on hosts that do not load it from the description. On Claude Code, the description alone loaded such a skill in 0 of 40 runs; see [Triggers](/docs/05-authoring/triggers).
 - "I want the user to call this explicitly" → skill with `disable-model-invocation: true`, or a `.claude/commands/` markdown file.
 - "I want the harness to enforce this" → hook. Skills are advisory; hooks are mechanism. See [Mechanism vs decoration](/docs/07-mechanism-vs-decoration).
 - "I have a CLAUDE.md section over 30 lines that reads like a procedure" → it is a skill candidate.
 
 ## Cost matters
 
-Per-session cost differs by primitive. CLAUDE.md is paid every session, every turn. Skills are paid only when activated. Hooks are paid only when the event fires. The dollar consequences are real for long-running sessions; the full numbers are in [Token economics](/docs/04-token-economics) (Question 3 of the hero framework).
+Per-session cost differs by primitive. CLAUDE.md is paid every session, every turn. A skill's description is paid every session; its body only when activated. Hooks are paid only when the event fires. The dollar consequences are real for long-running sessions; the full numbers are in [Token economics](/docs/04-token-economics) (Question 3 of the hero framework).
 
 ## Source layering
 
