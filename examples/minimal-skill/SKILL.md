@@ -14,7 +14,7 @@ A working minimal SKILL.md the quickstart references. Copy this file as your sta
 NO SKILL.md WITHOUT A DESCRIPTION THAT NAMES A TRIGGER
 ```
 
-If your description does not name when the skill should activate, the agent will never trigger your skill. See [Triggers](/docs/05-authoring/triggers) in the building-agentskills repo for the discipline.
+A trigger in the description is necessary, not sufficient. Without one, the agent has no reason to load your skill. With one, it still may not load it: on Claude Code, Opus 5.5 loaded the AgentsMD `operations` Skill from its description in 0 of 40 naive runs, and in 20 of 20 once a session-start pointer named it. Test the trigger before you rely on it. See [Triggers](https://github.com/toolboxmd/building-agentskills/blob/main/docs/05-authoring/triggers.md) in the building-agentskills repo for the discipline and the evidence.
 
 ## Activation behavior
 
