@@ -111,7 +111,7 @@ while IFS= read -r match; do
   # Not allowlisted, not inside a link — violation.
   echo "${file}:${lineno}: bare chip \`${chip}\` outside link syntax: ${line_content}"
   violations_found=1
-done < <(grep -rnE "$chip_regex" "${grep_exclude_args[@]}" "${scan_paths[@]}" 2>/dev/null || true)
+done < <(grep -rnHE "$chip_regex" "${grep_exclude_args[@]}" "${scan_paths[@]}" 2>/dev/null || true)
 
 if [[ $violations_found -eq 1 ]]; then
   exit 1
