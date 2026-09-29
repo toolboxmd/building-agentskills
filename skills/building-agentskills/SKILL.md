@@ -120,6 +120,9 @@ The seed case study. The v2.2 ship retrospective, written for the public audienc
 ### `case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md`
 The provider-neutral runtime and benchmark-integrity case study, including invalid-attempt lessons and real-harness acceptance.
 
+### `case-studies/2026-09-29-agentsmd-routing-benchmarks.md`
+The AgentsMD routing and trigger benchmarks (Claude Code, Codex, Grok Build, OpenCode): how the harness was set up, what it scored wrong, which trigger wordings made agents read the routed procedure, with numbers and record paths. Read before designing Skill routing or a trigger benchmark.
+
 ### `examples/minimal-skill/SKILL.md`
 A working ~30-line SKILL.md the quickstart references. Copy as a starting point.
 

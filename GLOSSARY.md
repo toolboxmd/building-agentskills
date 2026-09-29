@@ -9,7 +9,7 @@ One entry of a routing table: a trigger and the procedure files it links.
 _Avoid_: route, rule
 
 **Before-clause**:
-A trigger worded as "Before <action>, read <file>", which names the observable action the read must precede.
+A trigger worded as `Before <action>, read <file>`, which names the observable action the read must precede.
 _Avoid_: timing hint, when-clause
 
 **Bare conjunct**:
