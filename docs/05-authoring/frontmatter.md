@@ -21,7 +21,7 @@ Format constraints:
 ### `description` (required)
 
 - Maximum 1,024 characters per the spec.
-- Plain text. The harness reads this on every turn to decide whether to activate the skill.
+- Plain text. By default, Claude Code keeps skill descriptions in context so the agent knows what is available ([Claude Code skills docs](https://code.claude.com/docs/en/skills)). A listed description does not guarantee activation: in the AgentsMD benchmark, Claude Code (Opus 5.5) loaded a moment-driven Skill in 0 of 20 naive runs ([results at `06b7af6`](https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/164-trigger-audit/results.md)). See [Triggers](/docs/05-authoring/triggers).
 - See [Triggers](/docs/05-authoring/triggers) for the discipline of writing triggering descriptions.
 
 ### `license` (optional)
@@ -65,7 +65,7 @@ These fields are recognized by Claude Code only. Other harnesses ignore them sil
 - **`when_to_use`** (optional). Appended to `description` for triggering decisions. Counts toward the 1,536-char combined description + when_to_use truncation cap (see "Per-skill character budgets" below).
 - **`disable-model-invocation`** (optional, default false). Set `true` to forbid the agent from auto-invoking. Use for side-effecting workflows (`/deploy`, `/release`).
 - **`user-invocable`** (optional, default true). Set `false` to hide from the `/` slash-command menu. Combined with `disable-model-invocation: false` (the default), this is "agent-only background skill."
-- **`paths`** (optional). Glob patterns limiting when the skill activates. Accepts a comma-separated string OR a YAML list. Example: `paths: ["**/*.md", "**/*.txt"]`. The skill only auto-loads when the agent is working with files matching the patterns. Source: `REVIEWER` G8.
+- **`paths`** (optional). Glob patterns limiting when the skill activates. Accepts a comma-separated string OR a YAML list. Example: `paths: ["**/*.md", "**/*.txt"]`. The skill only auto-loads when the agent is working with files matching the patterns ([Claude Code skills docs](https://code.claude.com/docs/en/skills)). Grok Build also honors it: it holds a `paths:` skill out of the listing until a tool touches a matching file ([`conditional.rs` at `97f190f`](https://github.com/xai-org/grok-build/blob/97f190f/crates/codegen/xai-grok-tools/src/types/skill_discovery_tracker/conditional.rs)). Other harnesses ignore it. Source: `REVIEWER` G8.
 
 ### Argument handling
 
@@ -80,7 +80,7 @@ These fields are recognized by Claude Code only. Other harnesses ignore them sil
 
 ### Model and effort overrides
 
-- **`model`** (optional, default `inherit`). Per-skill model override. Example: `model: claude-opus-4-7` for a skill that demands deep reasoning. Source: `REVIEWER` G7.
+- **`model`** (optional, default `inherit`). Per-skill model override. Example: `model: opus` (an alias, so the example does not pin a dated model ID) for a skill that demands deep reasoning. Source: `REVIEWER` G7.
 - **`effort`** (optional, default `inherit`). Per-skill reasoning level. Example: `effort: high` for a thinking-heavy skill.
 
 ### Subagent fork

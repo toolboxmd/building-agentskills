@@ -116,8 +116,8 @@ Every Iron Law begs a mechanism question. "NO PRODUCTION CODE WITHOUT A FAILING 
 
 - `LANDSCAPE` 1.2 (superpowers patterns).
 - `LANDSCAPE` 3.4 (the five canonical patterns: this doc covers four; the fifth, the "Don't X. Don't Y. Don't Z." enumeration, is folded into the rationalization table).
-- `KP-SKILL` lines 48-60 (Iron Laws block).
-- `KP-SKILL` lines 435-458 (rationalization table).
-- `KP-SKILL` lines 175-181 (red flag list).
+- [karpathy-wiki SKILL.md lines 48-60](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L48-L60) (Iron Laws block).
+- [karpathy-wiki SKILL.md lines 435-458](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L435-L458) (rationalization table).
+- [karpathy-wiki SKILL.md lines 175-181](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/skills/karpathy-wiki/SKILL.md?plain=1#L175-L181) (red flag list).
 
 Cross-links: [Mechanism vs decoration](/docs/07-mechanism-vs-decoration) (every Iron Law begs a mechanism question).

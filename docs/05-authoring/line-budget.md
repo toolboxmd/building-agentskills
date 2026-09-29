@@ -31,6 +31,8 @@ The agent reads SKILL.md by default. References load only when the agent decides
 
 Per the agent-skills spec: file references one level deep from SKILL.md. Avoid deeply nested reference chains.
 
+AgentsMD measured what a second hop costs. Over 14 days of real sessions on four hosts, agents skipped files two hops below its routing table in most triggering sessions: 91% for writing-for-agents to [`prose.md`](https://github.com/toolboxmd/agentsmd/blob/06b7af6/skills/operations/workflows/technical-writing/references/prose.md) (`wfa>prose`), 97% for technical-writing to the same file (`tw>prose`), 97% for domain-modeling to [`GLOSSARY-FORMAT.md`](https://github.com/toolboxmd/agentsmd/blob/06b7af6/skills/operations/workflows/domain-modeling/GLOSSARY-FORMAT.md) (`domain>glossary`) and 95% for [`test-design.md`](https://github.com/toolboxmd/agentsmd/blob/06b7af6/skills/operations/references/test-design.md) (`test-design`) ([baseline at `06b7af6`](https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/164-trigger-audit/baseline.md)). [toolboxmd/agentsmd#168](https://github.com/toolboxmd/agentsmd/pull/168) then linked each file one hop from the routing table. Claim boundary: that change also reworded the triggers to name the edit, so the baseline cannot separate the hop count from the wording.
+
 Per superpowers (`LANDSCAPE` 3.6): sibling files named `<skill-name>/<topic>.md` (for example, `systematic-debugging/{condition-based-waiting,defense-in-depth,root-cause-tracing}.md`). Never nested.
 
 The flat-references discipline is two-fold: agent UX (one-level-deep is browsable; nested chains are not) and validator simplicity (the agent-skills validator checks one-level-deep references; nested chains may not be supported uniformly).
@@ -65,5 +67,6 @@ If over 500, the next ship's plan should include a "split to references" task. D
 
 - `LANDSCAPE` 3.5 (the 500-line cap as universal across spec / superpowers / Anthropic docs).
 - `REVIEWER` G2 ("a 500-line SKILL.md is roughly 5,000 tokens").
+- [AgentsMD trigger baseline at `06b7af6`](https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/164-trigger-audit/baseline.md) (skip rates of files two hops below routing) and [toolboxmd/agentsmd#168](https://github.com/toolboxmd/agentsmd/pull/168) (the one-hop change).
 
 Cross-links: [Token economics](/docs/04-token-economics) (the full token-budget arithmetic), [Packaging as a plugin](/docs/08-packaging-as-plugin) (where references live in the directory tree).

@@ -25,7 +25,7 @@ Semantic versioning for skills, with one nuance the spec does not name:
 - **Major (X.0.0).** A breaking change to the public surface. Includes:
   - Frontmatter contract change (a removed field, a changed required-field set).
   - Script API change (a renamed function, a removed flag).
-  - **Description string change.** The description is the activation contract. Changing it can break implicit triggering for users whose prompts matched the old description and not the new one. Conceptually, this is a major shift even if no other surface changed. Document the trigger differences explicitly.
+  - **Description string change.** The description is the activation contract. Changing it can break implicit triggering for users whose prompts matched the old description and not the new one. Conceptually, this is a major shift even if no other surface changed. The semver level stays the author's choice, but a trigger change needs a before-and-after trigger measurement, and the release notes state the trigger differences. AgentsMD shipped routing-text changes as minor releases, each with that measurement: v14.2.0 in [toolboxmd/agentsmd#168](https://github.com/toolboxmd/agentsmd/pull/168) and v14.5.0 in [toolboxmd/agentsmd#184](https://github.com/toolboxmd/agentsmd/pull/184).
 - **Minor (0.X.0).** A non-breaking addition. New frontmatter field with a default. New script subcommand. New body section that does not change existing behavior.
 - **Patch (0.0.X).** Bug fix. No surface change. Prose tightening, fixture corrections, internal refactor.
 
@@ -65,7 +65,7 @@ The skill ecosystem is mixed-license. Authors should know what they are inheriti
 
 - **agentskills/agentskills (the spec org repo).** Apache 2.0. The reference implementation has explicit patent grant.
 - **anthropics/skills.** Mixed-license. Many skills are Apache 2.0; the document skills (pdf, docx, pptx, xlsx) are explicitly proprietary ("Source-available, not open source," per the repo's THIRD_PARTY_NOTICES). The earlier characterization of the repo as "MIT-licensed" was wrong (corrected by `REVIEWER` recommendation 8).
-- **obra/superpowers.** Apache 2.0.
+- **obra/superpowers.** MIT (GitHub license API for `obra/superpowers`, checked 2026-09-29).
 - **karpathy-wiki.** MIT. The author chose MIT for that repo; this is a per-repo choice.
 - **toolboxmd/building-agentskills (this repo).** Apache 2.0. The choice is deliberate: Apache 2.0's explicit patent grant matches `agentskills/agentskills`'s posture and eases cross-pollination. This repo is the ecosystem reference; it follows agentskills/agentskills' lead rather than mirroring karpathy-wiki's MIT choice.
 
@@ -83,6 +83,7 @@ Per [Update mechanism](/docs/12-update-mechanism): case studies, per-ship retros
 - `LESSONS` 3 (the brainstorming-spec-plan-execute pipeline as gestalt).
 - `REVIEWER` G3 (description-string change as conceptual major version).
 - `REVIEWER` M6 (the license-of-skills nuance; Apache 2.0 patent grant rationale).
-- `KP-LICENSE` (for contrast only; karpathy-wiki is MIT, this repo is Apache 2.0).
+- [karpathy-wiki `LICENSE` at `4f4c00d`](https://github.com/toolboxmd/karpathy-wiki/blob/4f4c00d/LICENSE) (for contrast only; karpathy-wiki is MIT, this repo is Apache 2.0).
+- [AgentsMD v14.2.0 (toolboxmd/agentsmd#168)](https://github.com/toolboxmd/agentsmd/pull/168) and [v14.5.0 (toolboxmd/agentsmd#184)](https://github.com/toolboxmd/agentsmd/pull/184) (routing-text changes shipped as minor releases with before-and-after trigger measurements).
 
 Cross-links: [Update mechanism](/docs/12-update-mechanism), [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2).
