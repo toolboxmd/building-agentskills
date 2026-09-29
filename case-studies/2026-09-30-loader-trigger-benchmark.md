@@ -75,7 +75,7 @@ The arm refs predate this branch's rebase; they stay reachable on the [`evidence
 | Grok Build | 1.0.44 | `grok-4.7`, effort medium | loader 3 per naive case and 2 negatives |
 | OpenCode | 1.18.33 | Muse 1.3 (`opencode-go/muse-spark-1.3-contributor`) | same as Grok Build |
 
-Issue #17 names Claude Code and Codex; the planner added Grok Build and OpenCode with a budget of about 60 runs. Those two hosts got 3 runs per cell, the size the AgentsMD sweep used to find misses. The control arm rotates the three naive prompts (2, 2 and 1 runs). The benchmark batch was 68 runs, interleaved by arm and case; the `desc` re-measure added 16.
+Issue #17 names Claude Code and Codex; the planner added Grok Build and OpenCode with a budget of about 60 runs. Those two hosts got 3 runs per cell, the size the AgentsMD sweep used to find misses. The control arm rotates the three naive prompts (2, 2 and 1 runs): five runs per host, pooled, as a floor for loads without installation. It is below the method's five runs per prompt and arm, so it supports no per-prompt comparison with the loader arm; the run budget went to the tool-prompt re-measure instead. The benchmark batch was 68 runs, interleaved by arm and case; the `desc` re-measure added 16.
 
 ### Scoring
 
@@ -137,6 +137,7 @@ Mean tokens per run (input including cache, plus output) on the author prompt: C
 
 - **Small samples, one fixture, one model per host.** 3 to 5 runs per cell. The results show the loader loads on these prompts; they are not rates.
 - **Grok Build and OpenCode ran 3 runs per cell and no control or re-measure.** Issue #17 scoped the hosts to Claude Code and Codex.
+- **The control arm is five pooled runs per host, not five per prompt**, so it shows only that the uninstalled copy was rarely opened (Codex 0/5, Claude Code 1/5); it does not compare prompts.
 - **The control arm is not a pure baseline on Claude Code.** The harness passes the copy as an `--add-dir` directory in every arm, which invites browsing.
 - **Fired needs any routed page, not a specific one.** The author prompt matches several rows (Quickstart, Three questions, Frontmatter, Triggers); the table reports Triggers and Anti-patterns separately.
 - **The `desc` arm does not include [#4](https://github.com/toolboxmd/building-agentskills/issues/4)'s tool-description row**, which merged after the runs. It measures only whether the description loads the loader; which page the loader then routes to on `main` now also depends on that row, which was not measured.

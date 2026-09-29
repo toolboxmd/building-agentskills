@@ -102,6 +102,7 @@
  ],
  "limits": [
   "3 to 5 runs per cell, one fixture, one model per host",
+  "control arm is 5 pooled runs per host (2, 2, 1 per prompt), below 5 per prompt and arm; no per-prompt comparison",
   "control arm on Claude Code can browse the --add-dir copy",
   "desc arm lacks #4's tool-description row",
   "OpenCode confinement is a permission rule, not an OS sandbox"
