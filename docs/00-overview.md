@@ -24,7 +24,7 @@ What Layer 1 leaves out:
 - Per-harness extensions (Claude Code's `when_to_use`, `model`, `effort`, `paths`, `hooks`, etc.). The spec is harness-neutral by design.
 - Distribution and versioning guidance.
 
-Layer 1 is your contract with the ecosystem. Stay inside it and your skill works on Claude Code, Codex, OpenCode, Cursor, Hermes, and any future harness that adopts the spec.
+Layer 1 is your contract with the ecosystem. Stay inside it and your skill loads on Claude Code, Codex, Grok Build, OpenCode, Gemini CLI, and any future harness that adopts the spec (see [Packaging as plugin](/docs/08-packaging-as-plugin) for which hosts were checked and when).
 
 ## Layer 2: superpowers (the convention layer)
 
@@ -32,7 +32,7 @@ The `obra/superpowers` skill library packages the skill-authoring meta-disciplin
 
 What Layer 2 adds on top of Layer 1:
 
-- The "Use when..." description format and the Claude Search Optimization (CSO) discipline. Description must describe triggering conditions, not summarize the workflow. Operationalized in `writing-skills` (the skill about writing skills).
+- The "Use when..." description format and the Skill Discovery Optimization discipline (earlier called Claude Search Optimization). Description must describe triggering conditions, not summarize the workflow. Operationalized in `writing-skills` (the skill about writing skills).
 - The Iron Law pattern. Single-sentence, all-caps, block-quoted code-fenced rules. Example: `NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST`.
 - The rationalization table. Two-column markdown grid mapping verbatim agent excuses to their counter.
 - The Red Flags list. Bulleted thought patterns the agent should recognize as signaling a violation in progress.
@@ -53,7 +53,7 @@ Layer 2 is the convention layer. Most patterns you read about online when resear
 
 ## Layer 3: this repo (the delta)
 
-`toolboxmd/building-agentskills` is the delta. It documents what karpathy-wiki learned across evidenced ships that the existing canon does not yet cover, plus a cross-platform reference frame so readers know which patterns are universal and which are harness specific.
+`toolboxmd/building-agentskills` is the delta. Its scope is designing Skills: authoring them, routing an agent to the right procedure before each action, and benchmarking whether it does. It documents what shipped Skills taught that the existing canon does not yet cover, with two evidence sources: karpathy-wiki's ships and the AgentsMD routing benchmarks. A cross-platform reference frame tells readers which patterns are universal and which are harness specific.
 
 What Layer 3 adds on top of Layers 1 and 2:
 
@@ -64,6 +64,8 @@ What Layer 3 adds on top of Layers 1 and 2:
 - Subagent reformatting hazard. Implementer subagents reformat unrelated lines as a "quality gesture"; the cure is an explicit Diff Scope clause. See [Anti-patterns](/docs/10-anti-patterns).
 - Provider-neutral semantic skills. Provider/model invocation, queue state, retries, fallback, heartbeat, and scheduling belong in adapters and deterministic runtime code rather than in semantic skill prose. See [Provider-neutral runtime](/docs/05-authoring/provider-neutral-runtime).
 - Benchmark integrity for agentic work. Guard model attribution and read isolation, blind the judge, grade authored retrieval utility, and preserve contaminated attempts. See [Benchmark integrity](/docs/06-testing/benchmark-integrity).
+- Routing. A description lets an agent load a Skill; it does not make the agent load it before the action that needs it. Routing rows name the action as a before-clause, give each required file its own clause, and ask for the read as its own step; where descriptions do not load a Skill, a session-start pointer does. Measured on four hosts in the [AgentsMD routing benchmarks](/case-studies/2026-09-29-agentsmd-routing-benchmarks); see [Triggers](/docs/05-authoring/triggers).
+- Trigger benchmarks. Naive and negative prompts, confined runs, reads counted only when they succeed, and a separate verdict for runs that never act. See [Trigger benchmarks](/docs/06-testing/trigger-benchmarks).
 - Cross-platform reference frame. Per-harness sections under `docs/11-cross-platform/` with explicit "X does NOT support Y" labels where applicable.
 
 What Layer 3 deliberately does not add:
@@ -76,7 +78,7 @@ What Layer 3 deliberately does not add:
 
 ## What this repo is
 
-This repo is a layered authoring reference for AI agent skills. It assumes you can find and read Layer 1 (agent-skills spec) and Layer 2 (superpowers) yourself. It contributes the Layer 3 patterns one stateful skill discovered in production and structures them for cross-platform use.
+This repo is a layered authoring reference for AI agent skills. It assumes you can find and read Layer 1 (agent-skills spec) and Layer 2 (superpowers) yourself. It contributes the Layer 3 patterns that karpathy-wiki and AgentsMD surfaced in production and structures them for cross-platform use.
 
 The three blocker docs ([01 quickstart](/docs/01-quickstart), [02 mental model](/docs/02-mental-model), [04 token economics](/docs/04-token-economics)) close the audience gap a layered repo would otherwise leave: a first-time author needs to know how to ship a hello-world skill, when a skill is the right primitive at all, and why the constraints exist. Read those three first. The rest of the docs make sense once those are in place.
 

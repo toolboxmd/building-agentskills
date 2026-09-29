@@ -1,6 +1,6 @@
 # Update mechanism: how new lessons flow in
 
-This page covers how new lessons enter this repo. The repository began with one seed case study and now includes a second evidence-backed ship. The mechanism has three sources: per-ship retrospective, reader-submitted issues, and quarterly landscape audit.
+This page covers how new lessons enter this repo. The repository began with one seed case study and now has three: two karpathy-wiki ships and the AgentsMD routing benchmarks. The mechanism has three sources: per-ship retrospective, reader-submitted issues, and quarterly landscape audit.
 
 Source: `REVIEWER` G11; `LESSONS` itself as the seed instance.
 
@@ -50,6 +50,8 @@ The skill-authoring landscape changes faster than any single ship. The Anthropic
 
 The v2.2 ship's landscape report — `LANDSCAPE` in our citations (see [Overview → Sources](/docs/00-overview#sources)) — is the seed instance. It enumerates state of the art, who is writing skill-authoring guides, the harness landscape, anatomy of a "good" skill, anti-patterns observed in the wild, the quality bar for 2026, source catalog.
 
+The last full landscape audit was the 2026-04 `LANDSCAPE` report. Platform facts for Claude Code, Codex, Grok Build, OpenCode and Gemini CLI were refreshed against primary sources on 2026-09-29 ([#8](https://github.com/toolboxmd/building-agentskills/issues/8)); each cross-platform page dates its sources.
+
 The audit cadence: every quarter, re-fetch the canonical sources (agentskills.io spec, Anthropic Claude Code docs, superpowers, the major harnesses' docs). Compare against the repo's current claims; file issues for divergence; update the docs.
 
 ## When a lesson lands in the repo
@@ -66,15 +68,16 @@ In all three paths, the lesson must cite ship evidence (a commit, a failure mode
 
 The current corpus ships:
 
-- Two case studies (karpathy-wiki v2.2 and the provider-aware ingest ship).
-- The patterns those ships surfaced: decoration-vs-mechanism, prose-as-code, subagent reformatting, cross-script regression, spec arithmetic, TDD inversions, provider-neutral runtimes, and benchmark integrity.
-- The cross-platform reference frame (Claude Code, Codex, Gemini CLI, others).
+- Three case studies: karpathy-wiki v2.2, the karpathy-wiki provider-aware ingest ship, and the [AgentsMD routing benchmarks](/case-studies/2026-09-29-agentsmd-routing-benchmarks).
+- The patterns those ships surfaced: decoration-vs-mechanism, prose-as-code, subagent reformatting, cross-script regression, spec arithmetic, TDD inversions, provider-neutral runtimes, benchmark integrity, and routing rows.
+- The [trigger-benchmark method](/docs/06-testing/trigger-benchmarks).
+- The cross-platform reference frame (Claude Code, Codex, Gemini CLI, and Grok Build, OpenCode and others in [Other harnesses](/docs/11-cross-platform/others)).
 - The hero framework (the three-question framework).
 - The blocker docs (Quickstart, Mental Model, Token Economics).
 - [The loader skill](https://github.com/toolboxmd/building-agentskills/blob/main/skills/building-agentskills/SKILL.md).
 - [The minimal example skill](/examples/minimal-skill/SKILL).
 
-Future ships can graduate repeated patterns once at least three independent ship samples exist, formalize more of the retrospective template, and add CI for SKILL.md validation. See the planning backlog for deferred work.
+Future ships can graduate repeated patterns once at least three independent ship samples exist and formalize more of the retrospective template. Deferred work is tracked in [GitHub Issues](https://github.com/toolboxmd/building-agentskills/issues).
 
 ## Sources
 
@@ -82,4 +85,4 @@ Future ships can graduate repeated patterns once at least three independent ship
 - `LESSONS` itself (the v2.2 lessons report as the seed retrospective instance).
 - `LANDSCAPE` itself (the 2026-04 landscape audit as the seed quarterly-audit instance).
 
-Cross-links: [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2), [provider-aware ingest case study](/case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest), [Benchmark integrity](/docs/06-testing/benchmark-integrity).
+Cross-links: [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2), [provider-aware ingest case study](/case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest), [AgentsMD routing benchmarks](/case-studies/2026-09-29-agentsmd-routing-benchmarks), [Benchmark integrity](/docs/06-testing/benchmark-integrity).

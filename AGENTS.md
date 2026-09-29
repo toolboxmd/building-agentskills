@@ -7,13 +7,13 @@ Before planning or changing this repository, read:
 1. `README.md`
 2. `docs/03-three-questions.md`
 3. `docs/12-update-mechanism.md`
-4. `docs/superpowers/plans/2026-08-12-continuous-learning-handoff.md`
+4. The open [GitHub Issues](https://github.com/toolboxmd/building-agentskills/issues). Planned work lives there, not in plan files: loader discovery (#17), continuous learning from upstream ships (#18), cross-case-study patterns (#19), a published doc index (#20), reader-Issue triage (#21), and version and changelog gates (#22).
 
-Use the project wiki in `wiki/` for orientation. Update it after a structural change or a durable decision, not for routine implementation detail.
+Use the project wiki in `wiki/` for orientation. karpathy-wiki maintains it, and the doc checks skip it. Update it after a structural change or a durable decision, not for routine implementation detail.
 
 ## Repository role
 
-`building-agentskills` is the evidence-backed doctrine layer for authoring and operating agent skills. It is not an implementation mirror of `karpathy-wiki`, and it must remain useful across projects, providers, and machines.
+`building-agentskills` is the evidence-backed doctrine layer for designing agent skills: authoring them, routing an agent to the right procedure before each action, and benchmarking whether it does. It is not an implementation mirror of `karpathy-wiki`, and it must remain useful across projects, providers, and machines.
 
 Repository artifacts are written in English. The user may discuss the work in Polish.
 
@@ -37,6 +37,10 @@ Automatic source detection may create a candidate lesson or draft. It must not s
 - Preserve unrelated local and untracked files.
 - Before reporting completion, state separately what was tested, committed, and pushed.
 
+## Proof
+
+Run `npm ci && npm test`. It checks links with `mint broken-links`, the freshness of the generated `public/llms.txt`, and path conventions. CI runs the same command on every pull request and on `main`. After changing a page listed in `docs.json`, run `npm run build:llms`; never edit `public/llms.txt` by hand.
+
 ## Current local drafts
 
-At the time of the active handoff, `TODO.md` and `docs/superpowers/specs/2026-05-06-drift-prevention-and-check-sources-design.md` are pre-existing untracked drafts. Do not delete, overwrite, stage, or describe them as shipped. Reconcile them with the active handoff before implementation.
+`TODO.md` and `docs/superpowers/specs/2026-05-06-drift-prevention-and-check-sources-design.md` are user-owned untracked files in the main checkout. Their entries now live in Issues #17 to #22 (mapped in #11). Never delete, overwrite or stage them, and do not describe them as shipped.

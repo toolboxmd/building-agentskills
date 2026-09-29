@@ -1,138 +1,54 @@
 ---
 name: building-agentskills
-description: Use when authoring, auditing, benchmarking, or operating an AI agent skill; covers the layered architecture, the three-question framework (who invokes / what fires on rules / what is the token budget), provider-neutral runtimes, contamination-resistant model benchmarks, frontmatter, prose discipline, triggers, testing, packaging, evolution, anti-patterns, and cross-platform packaging.
+description: Use before creating a Skill; before writing or changing a Skill's frontmatter, description, routing row or SKILL.md prose; before testing whether a Skill triggers; before benchmarking a model's output quality; before packaging, versioning or porting a Skill to another host; and before auditing a Skill that does not trigger or fails. Routes each of these actions to the building-agentskills page to read first.
 license: Apache-2.0
 ---
 
 # Building Agent Skills
 
-A layered authoring reference for AI agent skills. This skill is a thin loader; the substance lives in `docs/`.
+This Skill routes each Skill-authoring action to the building-agentskills page to read before that action. The pages hold the doctrine; this file holds only the routes.
 
-## The three-question framework
+## Paths
 
-Every skill must answer three questions. They are the hero mental model.
+Every path below is relative to this Skill's base directory, the directory that holds this `SKILL.md`. Claude Code shows it at the top of the loaded Skill as `Base directory for this skill: ...`. Resolve each path from that directory, never from the current working directory.
 
-1. **Who invokes?** Agent (auto-trigger by description), user (`/skill-name`), or both? See `docs/02-mental-model.md` and `docs/05-authoring/frontmatter.md` for the `disable-model-invocation` / `user-invocable` taxonomy.
-2. **What fires on rules?** Every "must," "always," "never," and numeric threshold in your SKILL.md is decoration (the agent reads and decides) or mechanism (a script, validator exit code, hook, or captured artifact fires on it). Decoration is fine for guidance; mechanism is required for invariants. See `docs/07-mechanism-vs-decoration.md`.
-3. **What is the token budget?** Auto-compaction floor is ~5,000 tokens (~500 lines); description listing cap is 1,536 chars combined; total description budget across all skills is 8,000 chars (or 1% of context window). See `docs/04-token-economics.md`.
+If the page does not exist there (the Skill was copied without its repository), read it from GitHub instead: replace the leading `../../` with `https://raw.githubusercontent.com/toolboxmd/building-agentskills/main/`.
 
-Read `docs/03-three-questions.md` end-to-end on first contact. Every other doc in this repo is a destination from one of the three questions.
+## Routing
+
+Find the row for the action you are about to take. Read its page as its own step, before any command or edit for that action. When two rows apply, read both pages.
+
+| Action | Read first |
+| --- | --- |
+| Before creating your first Skill | [Quickstart](../../docs/01-quickstart.md) |
+| Before choosing between a Skill, an always-loaded instruction file, a hook and a slash command | [Mental model](../../docs/02-mental-model.md) |
+| Before designing a new Skill or auditing an existing one | [Three questions](../../docs/03-three-questions.md) |
+| Before sizing a Skill, its description or a session-start injection | [Token economics](../../docs/04-token-economics.md) |
+| Before writing or changing a Skill's frontmatter fields | [Frontmatter](../../docs/05-authoring/frontmatter.md) |
+| Before writing or changing a Skill description or a routing row | [Triggers](../../docs/05-authoring/triggers.md) |
+| Before writing or editing prose or code snippets in a `SKILL.md` body | [Prose discipline](../../docs/05-authoring/prose-discipline.md) |
+| Before adding an Iron Law, a rationalization table or a Red Flags list | [Iron laws](../../docs/05-authoring/iron-laws.md) |
+| Before splitting a `SKILL.md` into reference files, or when it nears 500 lines | [Line budget](../../docs/05-authoring/line-budget.md) |
+| Before putting model invocation, retries or provider settings in a Skill | [Provider-neutral runtime](../../docs/05-authoring/provider-neutral-runtime.md) |
+| Before stating a threshold or invariant the agent must not break | [Mechanism vs decoration](../../docs/07-mechanism-vs-decoration.md) |
+| Before changing `SKILL.md` prose you need to prove | [Red-green for prose](../../docs/06-testing/red-green-for-prose.md) |
+| Before writing tests for a Skill's scripts | [Unit tests](../../docs/06-testing/unit-tests.md) |
+| Before keeping a new test that passed on its first run | [Tests that pass immediately](../../docs/06-testing/tests-that-pass-immediately.md) |
+| Before testing whether a Skill, description or routing row triggers | [Trigger benchmarks](../../docs/06-testing/trigger-benchmarks.md) |
+| Before benchmarking a model's output quality | [Benchmark integrity](../../docs/06-testing/benchmark-integrity.md) |
+| Before packaging a Skill as a plugin | [Packaging as plugin](../../docs/08-packaging-as-plugin.md) |
+| Before versioning, releasing or deprecating a Skill | [Evolution](../../docs/09-evolution.md) |
+| Before auditing a Skill that does not trigger or fails | [Anti-patterns](../../docs/10-anti-patterns.md) |
+| Before relying on Claude Code behavior (hooks, plugins, listing limits) | [Claude Code](../../docs/11-cross-platform/claude-code.md) |
+| Before porting a Skill to Codex | [Codex](../../docs/11-cross-platform/codex.md) |
+| Before porting a Skill to Gemini CLI | [Gemini CLI](../../docs/11-cross-platform/gemini-cli.md) |
+| Before porting a Skill to Grok Build, OpenCode or another host | [Other harnesses](../../docs/11-cross-platform/others.md) |
+| Before proposing a new lesson for this repository | [Update mechanism](../../docs/12-update-mechanism.md) |
 
 ## Iron Law
 
 ```
-NO SKILL DOC UPDATE WITHOUT A CITED SHIP-EVIDENCE COMMIT
+NO NEW LESSON WITHOUT CITED EVIDENCE
 ```
 
-Every pattern in this repo cites a real commit, a real failure mode, or a verbatim source. Aspirational patterns do not land. If you propose an addition, name the commit or the documented failure that motivates it.
-
-## The under-500-line discipline
-
-Keep your SKILL.md under 500 lines. The 500-line cap is the auto-compaction survival floor; it is not a stylistic preference. See `docs/04-token-economics.md` for the why and `docs/05-authoring/line-budget.md` for the rule statement and what to do when you push over.
-
-## The three blocker docs (must-read trio for any new author)
-
-1. `docs/01-quickstart.md`: "Your first skill in 10 minutes." The hello-world walkthrough; mirrors the agent-skills spec's 6-line minimal template and Anthropic's personal-scope install path.
-2. `docs/02-mental-model.md`: skills vs CLAUDE.md vs hooks vs slash commands. The decision matrix. When is a skill the right primitive at all?
-3. `docs/04-token-economics.md`: the why of skill constraints. Hard numbers; calculator for SKILL.md size, description budget, auto-compaction cost, SessionStart-hook injection cost.
-
-Read these three in order before reading anything else. Everything else makes sense once they are in place.
-
-## Documentation map
-
-The full repo. Each entry is one paragraph; follow the link for the full doc.
-
-### `docs/00-overview.md`
-The layered architecture explainer. Three layers: agent-skills (Layer 1, the spec foundation), superpowers (Layer 2, the convention layer), this repo (Layer 3, ship-evidenced deltas). Names what each layer adds and what each leaves out.
-
-### `docs/01-quickstart.md` (BLOCKER)
-Your first skill in 10 minutes. Pick a name, write minimal frontmatter, drop a SKILL.md in `~/.claude/skills/<name>/`, see it activate.
-
-### `docs/02-mental-model.md` (BLOCKER)
-The decision matrix: skills vs CLAUDE.md (always-on facts) vs hooks (event-driven mechanism) vs slash commands (user-initiated). Includes the recent Claude Code unification of custom commands into skills.
-
-### `docs/03-three-questions.md` (HERO)
-The three-question framework, deep dive. Worked answers for karpathy-wiki: 476 lines, ~5k tokens, fits 25k auto-compaction budget, three decoration-to-mechanism wirings, agent-only auto-trigger.
-
-### `docs/04-token-economics.md` (BLOCKER)
-The why of constraints. 25k auto-compaction budget shared across skills; 5k per-skill survival floor; 1024-char description hard cap; 1536-char Claude Code listing truncation; 8000-char total budget. SessionStart-hook injection cost: ~17.8k tokens / 13 firings / 57 hours measured in superpowers issue #1220.
-
-### `docs/05-authoring/frontmatter.md`
-Field-by-field frontmatter reference. Cross-platform-safe column (`name`, `description`, `license`, `compatibility`, `metadata`) vs Claude Code extensions (`when_to_use`, `disable-model-invocation`, `user-invocable`, `argument-hint`, `arguments`, `allowed-tools`, `model`, `effort`, `context: fork` + `agent`, `hooks`, `paths`, `shell`).
-
-### `docs/05-authoring/prose-discipline.md`
-Voice (imperative for the agent; third-person for the description; no first-person agent voice; no time-sensitive prose; no emojis) and the snippet-as-code rule (snippets in SKILL.md prose are production code; test verbatim; macOS `wc -c` whitespace gotcha; markdown numbered-list indent leak).
-
-### `docs/05-authoring/triggers.md`
-Description as activation contract. Three shapes: superpowers' "Use when..." with a before-clause, karpathy-wiki's TRIGGER/SKIP/anti-rationalization, Anthropic PDF skill's enumerative trigger inventory. When a description does not load a Skill, how to word routing rows, and how to test a trigger.
-
-### `docs/05-authoring/iron-laws.md`
-Four discipline-prose patterns: Iron Law (block-quoted code-fenced single sentence), forbidden-rationalization table, Red Flags list, spirit-vs-letter clause. Each with a karpathy-wiki example.
-
-### `docs/05-authoring/line-budget.md`
-The 500-line cap as load-bearing constraint. Why 500 lines specifically: the 5k-token auto-compaction survival floor.
-
-### `docs/05-authoring/provider-neutral-runtime.md`
-How to keep semantic judgment in the skill while provider adapters and a deterministic dispatcher own model invocation, configuration, limits, retries, fallback, heartbeat, completion, and activation.
-
-### `docs/06-testing/red-green-for-prose.md`
-RED-GREEN-REFACTOR for prose changes. Four sub-modes: prose-as-deletion (multi-pattern grep), prose-as-addition (section-header grep + verbatim-snippet test), prose-as-tightening (BEFORE/AFTER + reviewer reads diff), prose-as-refactor (`wc -l` + reviewer reads diff).
-
-### `docs/06-testing/unit-tests.md`
-What to test in a skill. Script unit tests (TDD discipline), pressure scenarios for discipline skills, `skills-ref validate` for spec compliance. The cross-script regression rule: contract-touching changes default to the full test suite.
-
-### `docs/06-testing/tests-that-pass-immediately.md`
-The TDD inversion. Two valid cases: regression-pin (test pins existing correct behavior) and mechanism-rehearsal (test rehearses an LLM-mechanism snippet). Plus the cases where the inversion is invalid.
-
-### `docs/06-testing/benchmark-integrity.md`
-How to freeze agent benchmarks, guard attribution and read isolation, blind semantic review, grade held-out retrieval, preserve contaminated attempts, and separate semantic quality from deterministic runtime acceptance.
-
-### `docs/06-testing/trigger-benchmarks.md`
-The trigger-benchmark method: write the decision first, build a fixture that makes the action possible, confine every run, count only successful reads, give no-action runs their own verdict, interleave arms, and regenerate every table from committed records. Read before building or trusting a trigger benchmark.
-
-### `docs/07-mechanism-vs-decoration.md`
-The standalone deep dive. Sharpened framing of the rule. Three karpathy-wiki v2.2 wirings (index-size threshold, manifest origin contract, validator-blocks-commit). The `paths:` glob as activation gate in reverse.
-
-### `docs/08-packaging-as-plugin.md`
-Claude Code plugin packaging from the karpathy-wiki shape. Minimal `.claude-plugin/plugin.json`, skills in `skills/<name>/SKILL.md`, optional `references/`/`scripts/`/`assets/` siblings. Symlink install pattern. The `${CLAUDE_PLUGIN_ROOT}` substitution gotcha and three workarounds.
-
-### `docs/09-evolution.md`
-Audit cycle, semver for skills, deprecation strategies, license-of-skills nuance. Reviewer fix-up rate as a quality signal (25-40% is healthy; `<5%` means rubber-stamp; `>50%` means vague plans).
-
-### `docs/10-anti-patterns.md`
-The failure modes catalog. Each pattern with a one-line definition, evidence trail (commit citation), and counter (cross-link to the positive form).
-
-### `docs/11-cross-platform/claude-code.md`
-Claude Code-specific appendix: per-scope priority, SessionStart-hook injection, `${CLAUDE_PLUGIN_ROOT}`, `disable-model-invocation` / `user-invocable` taxonomy, `paths:` glob.
-
-### `docs/11-cross-platform/codex.md`
-Codex CLI: native agent-skills support, optional `agents/openai.yaml` sidecar, multi-agent opt-in via `[features] multi_agent = true`, `AGENTS.md` for persistent context.
-
-### `docs/11-cross-platform/gemini-cli.md`
-Gemini CLI does NOT support Agent Skills. Uses Extensions: `~/.gemini/extensions/<name>/` with `gemini-extension.json` + `GEMINI.md` + `commands/*.toml`. Always-on context model, fundamentally different from progressive disclosure.
-
-### `docs/11-cross-platform/others.md`
-OpenCode (native, JS plugin, explicit `skill` tool), Cursor (full plugin bundle), Hermes (agentskills.io-compatible), Continue.dev (custom commands not skills), GitHub Copilot CLI (SessionStart hook bridge from v1.0.11+).
-
-### `docs/12-update-mechanism.md`
-How new lessons enter this repo. Per-ship retrospectives, reader-submitted issues, quarterly landscape audits. The case-study shape.
-
-### `case-studies/2026-04-25-karpathy-wiki-v2.2.md`
-The seed case study. The v2.2 ship retrospective, written for the public audience.
-
-### `case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest.md`
-The provider-neutral runtime and benchmark-integrity case study, including invalid-attempt lessons and real-harness acceptance.
-
-### `case-studies/2026-09-29-agentsmd-routing-benchmarks.md`
-The AgentsMD routing and trigger benchmarks (Claude Code, Codex, Grok Build, OpenCode): how the harness was set up, what it scored wrong, which trigger wordings made agents read the routed procedure, with numbers and record paths. Read before designing Skill routing or a trigger benchmark.
-
-### `examples/minimal-skill/SKILL.md`
-A working ~30-line SKILL.md the quickstart references. Copy as a starting point.
-
-## How to use this skill
-
-Read `docs/03-three-questions.md` first; it is the hero framework. Then read the three blocker docs (`01-quickstart.md`, `02-mental-model.md`, `04-token-economics.md`) in order.
-
-For specific authoring questions, jump to the relevant doc via the documentation map above. The cross-link map is dense; following one link usually surfaces the next two you need.
-
-For self-audit, work through `docs/10-anti-patterns.md` against your own SKILL.md. Each anti-pattern has a counter cross-link.
+A lesson added to this repository cites at least one of: a shipped implementation commit, a recorded failure with inspectable evidence, a benchmark or acceptance result with its claim boundary, or a primary source for external platform behavior. Plans, upstream ideas and unverified implementations do not qualify.
