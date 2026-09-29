@@ -18,6 +18,7 @@ Changes readers of this repository see, in [Keep a Changelog](https://keepachang
 
 - Case study of the AgentsMD routing benchmarks on Claude Code, Codex, Grok Build and OpenCode: harness setup, instrument failures, fixes and numbers with record paths, plus an evidence manifest and a first `GLOSSARY.md` ([#6](https://github.com/toolboxmd/building-agentskills/issues/6)).
 - `docs/06-testing/trigger-benchmarks.md`, the method for testing whether a description or routing row makes the agent read a file before it acts ([#5](https://github.com/toolboxmd/building-agentskills/issues/5)).
+- Case study of MCP tool descriptions as activation contracts: a deferred delegation tool whose description did not name the shell route it replaces, a `triggers.md` section on tool descriptions, and two anti-patterns (a shell recipe in memory outranking the host's routing, a decision-point tool deferred behind tool search) ([#4](https://github.com/toolboxmd/building-agentskills/issues/4)).
 - Nine routing and harness anti-patterns, and two AgentsMD cases for measuring and rewording before building a hook ([#13](https://github.com/toolboxmd/building-agentskills/issues/13)).
 - `npm test` checks links with `mint broken-links` and the freshness of `public/llms.txt`, and CI runs it on every pull request and push to `main` ([#10](https://github.com/toolboxmd/building-agentskills/issues/10)).
 
