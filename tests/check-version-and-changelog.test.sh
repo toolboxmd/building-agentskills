@@ -57,6 +57,10 @@ printf -- '- Changed the page.\n' >>CHANGELOG.md
 label="docs change with CHANGELOG passes"; expect_pass bash "$changelog" "$base"
 git reset -q --hard "$base"
 
+printf 'new\n' >docs/new.md
+label="untracked docs file without CHANGELOG fails"; expect_fail bash "$changelog" "$base"
+rm docs/new.md
+
 printf 'changed\n' >script.sh
 label="non-reader change without CHANGELOG passes"; expect_pass bash "$changelog" "$base"
 git checkout -q -- script.sh
