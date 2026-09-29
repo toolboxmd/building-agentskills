@@ -1,6 +1,6 @@
 ---
 name: building-agentskills
-description: Use before creating a Skill; before writing or changing a Skill's frontmatter, description, routing row or SKILL.md prose; before testing whether a Skill triggers; before benchmarking a model's output quality; before packaging, versioning or porting a Skill to another host; and before auditing a Skill that does not trigger or fails. Routes each of these actions to the building-agentskills page to read first.
+description: Use before creating a Skill; before writing or changing a Skill's frontmatter, description, routing row or SKILL.md prose; before writing or changing an MCP or agent tool description; before testing whether a Skill triggers; before benchmarking a model's output quality; before packaging, versioning or porting a Skill to another host; and before auditing a Skill that does not trigger or fails. Routes each of these actions to the building-agentskills page to read first.
 license: Apache-2.0
 ---
 
