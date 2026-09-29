@@ -125,9 +125,9 @@ As of v1.0.11, Copilot CLI supported `additionalContext` injection through a Ses
 Portable across Claude Code, Codex, Grok Build, OpenCode and Gemini CLI:
 
 - A `SKILL.md` with the spec's frontmatter (`name`, `description`, optional `license`, `compatibility`, `metadata`).
-- A plain Markdown body, with one-level `references/`, `scripts/` and `assets/` siblings.
+- A plain Markdown body, with one-level `references/`, `scripts/` and `assets/` siblings that the body points to and the model reads with its file tools (subject to each host's read permissions).
 - `.agents/skills/` as a project directory read by Codex, Grok Build, OpenCode and Gemini CLI; Claude Code reads `.claude/skills/`, which Grok Build and OpenCode also read.
-- Description-based activation: every host shows the model each Skill's description before the model decides to load it. Listing caps differ per host (see each host's section).
+- Description-based activation: for an enabled Skill the model may invoke, every host lists its description before the model decides to load it. Exceptions: Claude Code leaves out the description of a `disable-model-invocation: true` Skill; Grok Build holds a `paths:` Skill out of the listing until a matching file is touched; OpenCode leaves out Skills denied by `permission.skill`; and listing budgets can shorten or drop descriptions (see each host's section).
 
 Per host:
 

@@ -56,7 +56,7 @@ Optional sibling sub-directories under each skill:
 - **`references/`.** Heavy reference docs loaded on demand. One level deep from SKILL.md; never nested. See [Line budget](/docs/05-authoring/line-budget).
 - **`assets/`.** Data files, fixtures, images. Loaded as needed.
 
-These sub-directories are spec-canonical (Layer 1) and recognized by every spec-compatible harness, not just Claude Code.
+These sub-directories are optional directories in the [Agent Skills specification](https://agentskills.io/specification) (Layer 1). The spec does not require a harness to treat them specially: the model reads them with its ordinary file tools when the SKILL.md body points to them. They work on a host only if the model may read the Skill directory there; OpenCode's `external_directory` permission and Gemini CLI's activation consent are two such gates (see the [cross-platform pages](/docs/11-cross-platform/others)).
 
 ## Install paths
 
@@ -106,7 +106,7 @@ Other harnesses use different manifest shapes:
 - **Gemini CLI:** `~/.gemini/extensions/<name>/gemini-extension.json`; an extension bundles `GEMINI.md`, `commands/*.toml`, `skills/`, `hooks/hooks.json` and `agents/` (v0.61.0). See [Gemini CLI](/docs/11-cross-platform/gemini-cli).
 - **Cursor** (last checked 2026-04): `.cursor-plugin/plugin.json` declares every artifact path explicitly.
 
-Full coverage in the [cross-platform pages](/docs/11-cross-platform/claude-code). Most spec-compliant skills work in multiple harnesses with no modification (the SKILL.md is portable); only the manifest layer differs per harness.
+Full coverage in the [cross-platform pages](/docs/11-cross-platform/claude-code). A spec-compliant SKILL.md loads on every host covered there without modification. The packaging manifest differs per harness, and so do hooks, discovery paths, listing budgets, permissions and which frontmatter fields have an effect.
 
 ## Sources
 
