@@ -73,11 +73,13 @@ When `claude` started, it scanned `~/.claude/skills/` and read the frontmatter o
 
 When you typed "ping skill," the agent matched your prompt against the loaded descriptions. The `hello-skill` description starts with "Use when..." and lists "ping skill" as a trigger phrase, so the agent decided to activate it. Activation loads the full SKILL.md body into the conversation as a single message; that body told the agent what to reply with, and it complied.
 
+This is the easy case: your prompt contained the exact trigger phrase. A skill that must load at a moment, such as before an edit or a commit, faces prompts that never name it, and a description alone may not load it; see [Triggers](/docs/05-authoring/triggers).
+
 ## Why the description matters
 
-The description is the only part of your skill the agent reads on every turn. If the description does not name the trigger conditions, the skill will never activate. The Layer 2 convention is "Use when..." followed by an enumeration of triggers (per `obra/superpowers` writing-skills); the Layer 1 spec just says "describes what the skill does and when to use it." Both shapes work; both are covered in [Triggers](/docs/05-authoring/triggers).
+The description is the only part of your skill the agent sees before it decides to load it. If the description does not name the trigger conditions, the skill will not activate on its own. Naming them is necessary but not always enough: when the need is a moment rather than a topic, the agent can start acting without loading the skill. [Triggers](/docs/05-authoring/triggers) covers the session-start pointer and before-clauses that close that gap. The Layer 2 convention is "Use when..." followed by an enumeration of triggers (per `obra/superpowers` writing-skills); the Layer 1 spec just says "describes what the skill does and when to use it." Both shapes work; both are covered in [Triggers](/docs/05-authoring/triggers).
 
-What the description must NOT do: summarize the body's workflow. A description that reads "Replies with a one-line confirmation that the skill activated" instead of "Use when the user asks to test that a custom skill is working" causes the agent to follow the description instead of reading the body. This is the single most common Layer 2 failure mode; see [Anti-patterns](/docs/10-anti-patterns) for the full pattern.
+What the description must NOT do: summarize the body's workflow. A description that reads "Replies with a one-line confirmation that the skill activated" instead of "Use when the user asks to test that a custom skill is working" can cause the agent to follow the description instead of reading the body. The evidence is one reported case in `obra/superpowers`, where a description saying "code review between tasks" made the agent do one review although the body specified two; see [Triggers](/docs/05-authoring/triggers) and [Anti-patterns](/docs/10-anti-patterns).
 
 ## Troubleshooting
 

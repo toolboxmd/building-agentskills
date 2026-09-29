@@ -4,7 +4,7 @@ Authoring a skill well requires answering three questions. They are the hero men
 
 1. **Who invokes?** Is the skill auto-triggered by the agent, user-invoked only, or both?
 2. **What fires on rules?** Is each invariant in your SKILL.md decoration (the agent reads and decides) or mechanism (a script, validator exit code, hook, or captured artifact fires on it)?
-3. **What is the token budget?** Does your skill fit the auto-compaction floor (under ~5,000 tokens / ~500 lines), the description-listing budget (~1,536 chars combined description + when_to_use), and the per-session cost ceiling you can afford?
+3. **What is the token budget?** Does your skill fit the auto-compaction floor (under ~5,000 tokens / ~500 lines), each host's description-listing limit (1,536 characters per entry on Claude Code, 400 bytes on Grok Build), and the per-session cost ceiling you can afford?
 
 These three questions are independent. A skill can pass the budget question but fail the firing-mechanism question (decoration without enforcement). It can pass the mechanism question but fail the invocation question (the right rules with no one to apply them). All three must answer correctly for the skill to land.
 
@@ -12,9 +12,17 @@ These three questions are independent. A skill can pass the budget question but 
 
 The agent, the user, or both. The choice determines the frontmatter.
 
-- **Agent only (auto-trigger).** The default for skills. The description names triggering conditions; the agent matches them on each turn and activates the skill. Set nothing extra in frontmatter.
+- **Agent only (auto-trigger).** The default for skills. The description names triggering conditions, and the agent may load the skill when a request matches them. Set nothing extra in frontmatter. Whether matching is enough depends on the shape of the need (below).
 - **User only.** Set `disable-model-invocation: true` (Claude Code; see [the Claude Code field reference](/docs/11-cross-platform/claude-code)). The skill appears in `/skills` and on `/skill-name` invocation but the agent will not auto-fire. Use for side-effecting workflows: deploys, releases, commits.
 - **Both.** Set `user-invocable: true` in addition to (or instead of) `disable-model-invocation`. The agent may auto-fire AND the user may invoke explicitly.
+
+### Topic-shaped and moment-shaped needs
+
+Description matching has its best chance when the request names the topic: "ping skill", "fill in this PDF", "what do we know about X". The request contains the words the description lists, so the agent can match them and load the skill. The benchmarks below measured moment-shaped prompts, not topic-shaped ones, so they set no success rate for this case.
+
+It is not enough when the skill must be read at a moment: before an edit, a commit or a pull request. The request names the task, not the moment, and the agent starts acting. On Claude Code, Opus 5.5 never loaded the AgentsMD `operations` skill from its description on naive prompts (0 of 40 runs, [toolboxmd/agentsmd#164](https://github.com/toolboxmd/agentsmd/issues/164)). A session-start pointer, a short always-loaded note naming the skill and the actions, took the target read before the first edit from 3 of 20 to 20 of 20 ([toolboxmd/agentsmd#174](https://github.com/toolboxmd/agentsmd/issues/174)). Codex and Grok Build loaded the same skill without a pointer, so the gap is host- and model-specific.
+
+For a moment-shaped skill, answer Question 1 with three parts: the description, a session-start pointer on the hosts that need it, and before-clauses in the routing table that name each action. The setup and numbers are in the [routing case study](/case-studies/2026-09-29-agentsmd-routing-benchmarks); the wording rules are in [Triggers](/docs/05-authoring/triggers).
 
 The deeper why is in [Mental model](/docs/02-mental-model) (skills vs CLAUDE.md vs hooks vs slash commands). The taxonomy is in [Frontmatter reference](/docs/05-authoring/frontmatter).
 
@@ -53,11 +61,11 @@ The auditor named decoration vs mechanism as "the strongest signal for what v2.2
 
 Three budgets. All three matter.
 
-- **Auto-compaction budget.** Claude Code carries skills forward across compaction within a 25,000-token shared budget, keeping the first 5,000 tokens of each. A 500-line SKILL.md is roughly 5,000 tokens (the conversion is approximate but useful as a rule of thumb). A skill above that ceiling is silently truncated after compaction. Source: `LANDSCAPE` 1.3 (Anthropic docs).
-- **Description listing budget.** Each skill's combined `description` and `when_to_use` is truncated at 1,536 characters in the listing the agent reads. The total budget across all skills' descriptions is `1% of context window` with an `8,000-char fallback` controllable via `SLASH_COMMAND_TOOL_CHAR_BUDGET`. Source: `REVIEWER` G2, B4. The hard cap on the description field per the agent-skills spec is 1,024 characters.
-- **Per-session cost.** SessionStart-hook injection patterns (the `using-superpowers` shape) cost the full SKILL.md in input tokens every session. Superpowers issue #1220 measured ~17.8k tokens over 57 hours across 13 firings of `using-superpowers`. Source: `LANDSCAPE` 2.1, `REVIEWER` G2.
+- **Auto-compaction budget.** Claude Code carries skills forward across compaction within a 25,000-token shared budget, keeping the first 5,000 tokens of each. A 500-line SKILL.md is roughly 5,000 tokens (the conversion is approximate but useful as a rule of thumb). A skill above that ceiling is silently truncated after compaction. Source: [Claude Code Skills docs](https://code.claude.com/docs/en/skills), re-read 2026-09-29.
+- **Description listing budget.** Each host lists the descriptions of the skills the model may invoke, with [exceptions](/docs/11-cross-platform/others) such as Claude Code's `disable-model-invocation: true` and Grok Build's `paths:` skills, and each caps the listing differently: Claude Code cuts the combined `description` and `when_to_use` at 1,536 characters and gives the whole listing 1% of the context window; Codex, Grok Build and OpenCode have their own limits. The agent-skills spec caps the `description` field at 1,024 characters. The per-host table is in [Token economics](/docs/04-token-economics).
+- **Per-session cost.** A description that is in the listing is paid every session. Session-start injection adds its full text every session: the whole `using-superpowers` SKILL.md cost about 17,800 tokens over 57 hours and 13 firings ([obra/superpowers#1220](https://github.com/obra/superpowers/issues/1220)), while the AgentsMD pointer is about 105 tokens.
 
-The full numerical breakdown is in [Token economics](/docs/04-token-economics), which gives you a calculator: input your SKILL.md size, your loading mechanism (description-trigger vs hook), your per-session firing rate, and you get an estimated cost.
+The full numerical breakdown is in [Token economics](/docs/04-token-economics), which gives you a calculator: input your SKILL.md size, your loading mechanism (description-trigger, pointer or full-body hook), your per-session firing rate, and you get an estimated cost.
 
 ### Worked answer for karpathy-wiki
 
@@ -65,7 +73,7 @@ Karpathy-wiki's SKILL.md is 476 lines as of v2.2 (`REVIEWER` verification table)
 
 The description (lines 3-12) is approximately 750 characters, well under the 1,024 spec cap. Combined with `when_to_use` (not used here), it is well under the 1,536-character listing cap.
 
-Karpathy-wiki uses description-triggered loading (no SessionStart hook injection in the skill itself), so per-session cost is zero when the skill does not fire and ~5,000 tokens when it does. The skill fires often (typical session has 1-3 captures), but the cost amortizes against the value of the captured knowledge. The cost would be different (and probably unacceptable) if it used SessionStart injection; that is the conscious trade-off discussed in [Token economics](/docs/04-token-economics).
+Karpathy-wiki uses description-triggered loading (no SessionStart hook injection in the skill itself), so per-session cost is the description in the listing when the skill does not fire and ~5,000 tokens more when it does. The skill fires often (typical session has 1-3 captures), but the cost amortizes against the value of the captured knowledge. The cost would be different (and probably unacceptable) if it used SessionStart injection; that is the conscious trade-off discussed in [Token economics](/docs/04-token-economics).
 
 The number to remember: 476 lines, ~5k tokens, fits the 25k auto-compaction budget with room for at least four other concurrently active skills before truncation kicks in.
 
@@ -73,7 +81,7 @@ The number to remember: 476 lines, ~5k tokens, fits the 25k auto-compaction budg
 
 They are independent. They are minimal (no fourth question is forced by any v2.2 evidence). They cover the three classes of failure the v2.2 ship surfaced:
 
-- A skill that the agent never invokes is a Question 1 failure (description does not name triggers, or invocation taxonomy is wrong).
+- A skill that the agent never invokes is a Question 1 failure (description does not name triggers, a moment-shaped skill relies on its description alone, or invocation taxonomy is wrong).
 - A skill whose rules are decoration is a Question 2 failure (the audit found three of these in v2.2).
 - A skill that bloats the budget is a Question 3 failure (the auto-compaction floor is the silent killer; a 1,200-line skill survives one turn and gets truncated after compaction).
 
@@ -83,9 +91,9 @@ The three blocker docs in this repo ([01 quickstart](/docs/01-quickstart), [02 m
 
 When designing a new skill or auditing an existing one:
 
-1. Answer Question 1 explicitly. Write down "this skill is invoked by [agent / user / both]." Pick the frontmatter accordingly.
+1. Answer Question 1 explicitly. Write down "this skill is invoked by [agent / user / both]." Pick the frontmatter accordingly. If the agent must read it before a specific action, also write down which hosts get a session-start pointer.
 2. Grep your SKILL.md for "must," "always," "never," and digits. For each hit, write "fires on: [name of script / hook / captured file]." Anything that resolves to "the agent decides" is decoration; either rewrite as guidance or wire it to a mechanism.
-3. `wc -l SKILL.md`. If over 500, push detail to `references/`. Estimate the description's combined character count; if over 1,024 for description alone or 1,536 combined, tighten.
+3. `wc -l SKILL.md`. If over 500, push detail to `references/`. Count the description's characters; if over 1,024 for description alone, over 1,536 combined on Claude Code, or over 400 bytes for a Grok Build entry, tighten.
 
 If you do this honestly, the skill ships ready. If you skip a question, the next audit will find it.
 
@@ -97,7 +105,9 @@ If you do this honestly, the skill ships ready. If you skip a question, the next
 - `LESSONS` 2.1 (the three karpathy-wiki decoration-to-mechanism wirings, commits `dabf10a`, `36f0aa8`, `d325dda`).
 - `REVIEWER` G10 (the user-invocable / disable-model-invocation taxonomy).
 - `REVIEWER` G2 (the 25k auto-compaction budget, the 5k per-skill survival floor).
-- `REVIEWER` B4 (the 1024 / 1536 / 8000 description-budget nuance).
+- Per-host listing limits: [Claude Code](/docs/11-cross-platform/claude-code), [Codex](/docs/11-cross-platform/codex), [Grok Build and OpenCode](/docs/11-cross-platform/others), checked 2026-09-29.
+- [Routing case study](/case-studies/2026-09-29-agentsmd-routing-benchmarks) (0/40 without a pointer, 3/20 to 20/20 with one, the 105-token pointer).
+- [obra/superpowers#1220](https://github.com/obra/superpowers/issues/1220) (17,800 tokens over 57 hours and 13 firings).
 
 Cross-links: [Mental model](/docs/02-mental-model) (Q1 deep dive), [Mechanism vs decoration](/docs/07-mechanism-vs-decoration) (Q2 deep dive), [Token economics](/docs/04-token-economics) (Q3 deep dive), [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) (the worked answers above expanded).
 
