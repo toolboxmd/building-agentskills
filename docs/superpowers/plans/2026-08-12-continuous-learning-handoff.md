@@ -1,6 +1,6 @@
 ---
 title: Continuous learning from upstream skill ships — handoff
-status: READY FOR DESIGN REVIEW
+status: SUPERSEDED by #18
 date: 2026-08-12
 owner: lukemaj
 scope: building-agentskills general repository
