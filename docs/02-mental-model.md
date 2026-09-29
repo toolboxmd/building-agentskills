@@ -26,7 +26,7 @@ Examples:
 - A discipline rule for prose changes ("RED-GREEN-REFACTOR for prose"). Triggers when the agent is editing a SKILL.md.
 - A reference for a heavy domain (Anthropic's `pdf` skill in `anthropics/skills/skills/pdf`). Triggers when the user mentions a PDF; the body lists every PDF operation the skill supports.
 
-The cost trade-off: a skill that is never invoked still costs its description in every session, because the description sits in the skill listing (about 100 tokens, per the table above). The body loads only on activation, and then sits in the conversation for the rest of the session.
+The cost trade-off: a skill that is never invoked still costs its description in every session it is listed in, because the description sits in the skill listing (about 100 tokens, per the table above); a `disable-model-invocation: true` skill has no description in Claude Code's listing. The body loads only on activation, and then sits in the conversation for the rest of the session.
 
 ### Use CLAUDE.md (or AGENTS.md) when
 
@@ -94,7 +94,7 @@ If you are still unsure, these heuristics resolve most cases:
 
 ## Cost matters
 
-Per-session cost differs by primitive. CLAUDE.md is paid every session, every turn. A skill's description is paid every session; its body only when activated. Hooks are paid only when the event fires. The dollar consequences are real for long-running sessions; the full numbers are in [Token economics](/docs/04-token-economics) (Question 3 of the hero framework).
+Per-session cost differs by primitive. CLAUDE.md is paid every session, every turn. A listed skill's description is paid every session; its body only when activated. Hooks are paid only when the event fires. The dollar consequences are real for long-running sessions; the full numbers are in [Token economics](/docs/04-token-economics) (Question 3 of the hero framework).
 
 ## Source layering
 

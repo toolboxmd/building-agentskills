@@ -2,7 +2,7 @@
 
 This is Question 3 of the hero framework ([Three questions](/docs/03-three-questions)). What is the token budget for your skill, and what governs it?
 
-The 500-line cap is not a stylistic preference. It is the auto-compaction survival floor. The description is not free: every host lists it in every session, and each host caps the listing differently. SessionStart-hook injection is not free either; it costs its full text every session, so a 105-token pointer and a full SKILL.md are different decisions. Authors who do not know these numbers ship 1,200-line skills and wonder why the agent stops following the rules after a long session.
+The 500-line cap is not a stylistic preference. It is the auto-compaction survival floor. The description is not free: a skill the model may invoke has its description listed in every session on every host (with [exceptions](/docs/11-cross-platform/others)), and each host caps the listing differently. SessionStart-hook injection is not free either; it costs its full text every session, so a 105-token pointer and a full SKILL.md are different decisions. Authors who do not know these numbers ship 1,200-line skills and wonder why the agent stops following the rules after a long session.
 
 This page gives you the numbers, the calculator, and the design choices the numbers force.
 
