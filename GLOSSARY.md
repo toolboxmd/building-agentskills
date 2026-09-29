@@ -36,6 +36,10 @@ _Avoid_: checkpoint, trigger point
 A read whose tool result succeeded; a refused or failed read is an attempt and does not count.
 _Avoid_: read attempt, tool call
 
+**Arm**:
+One version of the text under test in a benchmark, such as the released rows or a candidate wording, built from a named ref and run on the same prompts as the other arms.
+_Avoid_: variant, condition
+
 **Verdict**:
 The score of one required file in one benchmark run, such as `fired`, `skip`, `read-noaction` or `clean`.
 _Avoid_: result, pass

@@ -52,7 +52,8 @@
           "docs/06-testing/red-green-for-prose",
           "docs/06-testing/unit-tests",
           "docs/06-testing/tests-that-pass-immediately",
-          "docs/06-testing/benchmark-integrity"
+          "docs/06-testing/benchmark-integrity",
+          "docs/06-testing/trigger-benchmarks"
         ]
       },
       {

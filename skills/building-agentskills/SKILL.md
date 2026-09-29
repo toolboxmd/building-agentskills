@@ -64,7 +64,7 @@ Field-by-field frontmatter reference. Cross-platform-safe column (`name`, `descr
 Voice (imperative for the agent; third-person for the description; no first-person agent voice; no time-sensitive prose; no emojis) and the snippet-as-code rule (snippets in SKILL.md prose are production code; test verbatim; macOS `wc -c` whitespace gotcha; markdown numbered-list indent leak).
 
 ### `docs/05-authoring/triggers.md`
-Description as activation contract. Two contrasting shapes: superpowers' "Use when..." enumerative format vs Anthropic PDF skill's long enumerative trigger inventory. The description-pressure-test loop.
+Description as activation contract. Three shapes: superpowers' "Use when..." with a before-clause, karpathy-wiki's TRIGGER/SKIP/anti-rationalization, Anthropic PDF skill's enumerative trigger inventory. When a description does not load a Skill, how to word routing rows, and how to test a trigger.
 
 ### `docs/05-authoring/iron-laws.md`
 Four discipline-prose patterns: Iron Law (block-quoted code-fenced single sentence), forbidden-rationalization table, Red Flags list, spirit-vs-letter clause. Each with a karpathy-wiki example.
@@ -86,6 +86,9 @@ The TDD inversion. Two valid cases: regression-pin (test pins existing correct b
 
 ### `docs/06-testing/benchmark-integrity.md`
 How to freeze agent benchmarks, guard attribution and read isolation, blind semantic review, grade held-out retrieval, preserve contaminated attempts, and separate semantic quality from deterministic runtime acceptance.
+
+### `docs/06-testing/trigger-benchmarks.md`
+The trigger-benchmark method: write the decision first, build a fixture that makes the action possible, confine every run, count only successful reads, give no-action runs their own verdict, interleave arms, and regenerate every table from committed records. Read before building or trusting a trigger benchmark.
 
 ### `docs/07-mechanism-vs-decoration.md`
 The standalone deep dive. Sharpened framing of the rule. Three karpathy-wiki v2.2 wirings (index-size threshold, manifest origin contract, validator-blocks-commit). The `paths:` glob as activation gate in reverse.
