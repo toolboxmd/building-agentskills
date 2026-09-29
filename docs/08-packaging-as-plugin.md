@@ -106,7 +106,7 @@ Other harnesses use different manifest shapes:
 - **Gemini CLI:** `~/.gemini/extensions/<name>/gemini-extension.json`; an extension bundles `GEMINI.md`, `commands/*.toml`, `skills/`, `hooks/hooks.json` and `agents/` (v0.61.0). See [Gemini CLI](/docs/11-cross-platform/gemini-cli).
 - **Cursor** (last checked 2026-04): `.cursor-plugin/plugin.json` declares every artifact path explicitly.
 
-Full coverage in the [cross-platform pages](/docs/11-cross-platform/claude-code). A spec-compliant SKILL.md loads on every host covered there without modification. The packaging manifest differs per harness, and so do hooks, discovery paths, listing budgets, permissions and which frontmatter fields have an effect.
+Full coverage in the [cross-platform pages](/docs/11-cross-platform/claude-code). A spec-compliant SKILL.md loads without modification on the five hosts with native Agent Skills support covered there (Claude Code, Codex, Grok Build, OpenCode, Gemini CLI); Continue.dev and Copilot CLI lacked native support when last checked (2026-04). The packaging manifest differs per harness, and so do hooks, discovery paths, listing budgets, permissions and which frontmatter fields have an effect.
 
 ## Sources
 
