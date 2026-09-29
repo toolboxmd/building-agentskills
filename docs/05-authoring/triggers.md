@@ -1,6 +1,6 @@
 # Triggers: description as activation contract
 
-The description is the only part of your SKILL.md the agent reads on every turn. It is the activation contract. If the description does not name a trigger, the skill never fires for that trigger. This page covers writing a description that triggers correctly, the description shapes in the wild, when a description is not enough, how to write routing rows that send the agent to a reference file before an action, and how to test a trigger.
+The description is the only part of your SKILL.md the agent reads on every turn. It is the activation contract. If the description does not name a trigger, the skill never fires for that trigger. This page covers writing a description that triggers correctly, the description shapes in the wild, when a description is not enough, how to write routing rows that send the agent to a reference file before an action, why an MCP tool description is an activation contract too, and how to test a trigger.
 
 ## The Layer 2 rule (superpowers convention)
 
@@ -93,6 +93,17 @@ A Skill that sends the agent to reference files needs a routing table: each rout
 - **Cover every new kind of action, not only task start.** An abstract "invoke at task start" rule did not fire: that is the 0 of 40 above. A pointer worded as a one-time check at the first tool call fixed research, prototype and grilling but dropped verification to 3 of 5 and opened the research procedure on a plain question in 2 of 5 runs. Naming each new kind of action restored both ([PR #184](https://github.com/toolboxmd/agentsmd/pull/184)).
 - **Test a change to always-loaded text on every host it reaches.** The pointer tuned on Claude Code made OpenCode (Muse 1.3) open the research procedure on "What does add(2, 3) return? Answer from the code only." in 5 of 5 runs, so 0 of 5 clean. A row-level exclusion, "(not for a direct answer from the code at hand)", brought it back to 5 of 5 clean. Negatives on the tuning host alone would have shipped the regression ([case study](/case-studies/2026-09-29-agentsmd-routing-benchmarks)).
 
+## Tool descriptions are activation contracts too
+
+An MCP tool description does the job of a Skill description: the model decides from it whether this is the moment to use the tool. The same rules apply, with one addition that deferred loading forces. The evidence is one recorded failure and one fresh session after the fix, on Claude Code in T3 Code ([T3 delegation tool descriptions](/case-studies/2026-09-29-t3-delegation-tool-descriptions)).
+
+- **Lead with when to use it.** A description that opens with what the tool does internally ("Start a child thread in this project and send it a task") leaves the model to decide whether its task is that kind of task. The planner in the case study classified a review as running a command, not as delegating, and never matched it. "Use when another agent should do one bounded task, such as a review, a second opinion, a check or a small fix" names the cases.
+- **Name the rationalized alternative.** Say what the tool replaces: "Use it instead of starting codex exec, claude -p, opencode run or grok in the shell: the user cannot see those runs." The agent had a ready shell command, and nothing in the old description said it was the wrong route.
+- **Keep the few decision-point tools always loaded.** Claude Code defers MCP tools by default: "Only tool names and server instructions load at session start" ([MCP docs](https://code.claude.com/docs/en/mcp)). A deferred tool's description is read only after the model decides to search for it, so it cannot change that decision. Mark only the tools the agent must choose at a decision point with `"anthropic/alwaysLoad": true` in the tool's `_meta`; a server-wide `alwaysLoad` loads every tool of the server and makes startup wait for it. In a debug-log check, one marked tool out of two left the deferred set (`0/1` against `0/2` deferred tools) and was the only one the model saw with its schema ([#4 re-check](https://github.com/toolboxmd/building-agentskills/issues/4#issuecomment-5899820668)).
+- **Put the trigger first.** Claude Code truncates each tool description at 2,048 characters by default ([MCP docs](https://code.claude.com/docs/en/mcp)); the T3 `spawn_thread` and `prism_submit` descriptions are 541 and 470 characters.
+
+This is a candidate lesson with thin behavioral evidence: after the fix, one fresh session chose the tool once (n=1), and the fix changed loading, wording and the launch prompt together, so it cannot say which part mattered. Other hosts that defer tools may differ; check their docs before relying on the marker.
+
 ## Test a trigger
 
 Source: `REVIEWER` M2; superpowers' [micro-test rules](https://github.com/obra/superpowers/blob/8ca22db/skills/writing-skills/SKILL.md?plain=1#L576-L587) and [transcript checks](https://github.com/prime-radiant-inc/superpowers-evals/blob/e64684c/docs/scenario-authoring.md?plain=1#L520-L524); the [AgentsMD routing benchmarks](/case-studies/2026-09-29-agentsmd-routing-benchmarks).
@@ -126,10 +137,11 @@ See [Anti-patterns](/docs/10-anti-patterns) for the catalog of failure modes; [U
 - obra/superpowers at `8ca22db`: [`skills/writing-skills/SKILL.md`](https://github.com/obra/superpowers/blob/8ca22db/skills/writing-skills/SKILL.md) lines 103, 140-172, 546-552 and 576-587; [`RELEASE-NOTES.md`](https://github.com/obra/superpowers/blob/8ca22db/RELEASE-NOTES.md?plain=1#L264) line 264; [`AGENTS.md`](https://github.com/obra/superpowers/blob/8ca22db/AGENTS.md?plain=1#L76) line 76.
 - prime-radiant-inc/superpowers-evals at `e64684c`: [`docs/scenario-authoring.md`](https://github.com/prime-radiant-inc/superpowers-evals/blob/e64684c/docs/scenario-authoring.md) lines 520-524 and 660-666; [`docs/experiments/2026-09-02-opus5-signature.md`](https://github.com/prime-radiant-inc/superpowers-evals/blob/e64684c/docs/experiments/2026-09-02-opus5-signature.md?plain=1#L311-L320) lines 311-320.
 - [AgentsMD routing benchmarks case study](/case-studies/2026-09-29-agentsmd-routing-benchmarks), with records and results in toolboxmd/agentsmd at `06b7af6`.
+- [T3 delegation tool descriptions case study](/case-studies/2026-09-29-t3-delegation-tool-descriptions), toolboxmd/chromeria [#66](https://github.com/toolboxmd/chromeria/issues/66) and [#67](https://github.com/toolboxmd/chromeria/pull/67), and Claude Code's [MCP docs](https://code.claude.com/docs/en/mcp), read 2026-09-29 (tool descriptions).
 - `LANDSCAPE` 3.3 (description format conventions across the ecosystem).
 - `REVIEWER` M1 (skill discoverability mechanics).
 - `REVIEWER` M2 (the description-pressure-test loop, now [Test a trigger](#test-a-trigger)).
 - `REVIEWER` "Failed-URL re-fetches" (the path correction: `skills/pdf` not `document-skills/pdf`; the PDF skill's enumerative trigger inventory shape).
 - `REVIEWER` B3 (Claude Code-specific patterns claimed as harness-neutral; the "use when..." format is convention, not spec rule).
 
-Cross-links: [Mental model](/docs/02-mental-model) (when a skill is the right primitive at all), [Unit tests](/docs/06-testing/unit-tests) (harness-side validation including pressure scenarios), [Trigger benchmarks](/docs/06-testing/trigger-benchmarks) (the full trigger-benchmark method).
+Cross-links: [Mental model](/docs/02-mental-model) (when a skill is the right primitive at all), [Unit tests](/docs/06-testing/unit-tests) (harness-side validation including pressure scenarios), [Trigger benchmarks](/docs/06-testing/trigger-benchmarks) (the full trigger-benchmark method), [T3 delegation tool descriptions](/case-studies/2026-09-29-t3-delegation-tool-descriptions) (tool descriptions and deferred loading).
