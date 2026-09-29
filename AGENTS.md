@@ -7,7 +7,7 @@ Before planning or changing this repository, read:
 1. `README.md`
 2. `docs/03-three-questions.md`
 3. `docs/12-update-mechanism.md`
-4. The open [GitHub Issues](https://github.com/toolboxmd/building-agentskills/issues). Planned work lives there, not in plan files: loader discovery (#17), continuous learning from upstream ships (#18), cross-case-study patterns (#19), a published doc index (#20), reader-Issue triage (#21), and version and changelog gates (#22).
+4. The open [GitHub Issues](https://github.com/toolboxmd/building-agentskills/issues). Planned work lives there, not in plan files: loader discovery (#17), continuous learning from upstream ships (#18), cross-case-study patterns (#19), a published doc index (#20), and reader-Issue triage (#21).
 
 Use the project wiki in `wiki/` for orientation. karpathy-wiki maintains it, and the doc checks skip it. Update it after a structural change or a durable decision, not for routine implementation detail.
 
@@ -39,7 +39,13 @@ Automatic source detection may create a candidate lesson or draft. It must not s
 
 ## Proof
 
-Run `npm ci && npm test`. It checks links with `mint broken-links`, the freshness of the generated `public/llms.txt`, and path conventions. CI runs the same command on every pull request and on `main`. After changing a page listed in `docs.json`, run `npm run build:llms`; never edit `public/llms.txt` by hand.
+Run `npm ci && npm test`. It checks links with `mint broken-links`, the freshness of the generated `public/llms.txt`, path conventions, version agreement and changelog entries. CI runs the same command on every pull request, on `main` and on `v*` tags, with full history so the changelog check finds the pull request's base. After changing a page listed in `docs.json`, run `npm run build:llms`; never edit `public/llms.txt` by hand.
+
+## Versions and changelog
+
+- A change under `docs/`, `case-studies/`, `skills/` or `examples/` adds a line under `## [Unreleased]` in `CHANGELOG.md`; `npm test` fails otherwise.
+- To release, choose the level: MAJOR for a removed or renamed pattern or breaking guidance, MINOR for a new page, case study, Skill or gate, PATCH otherwise. Run `bash scripts/bump-version.sh X.Y.Z`, which sets `package.json`, `package-lock.json` and `.claude-plugin/plugin.json`, and move the `[Unreleased]` notes under `## [X.Y.Z] - YYYY-MM-DD`.
+- A tag is a release artifact: only after the user merges and approves it, tag the merge commit with `git tag vX.Y.Z <merge-sha> && git push origin vX.Y.Z`. CI then checks that the tag matches the version files.
 
 ## Current local drafts
 

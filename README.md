@@ -14,7 +14,7 @@ Authoring a skill well requires answering three questions:
 
 1. **Who invokes?** Agent (the description lets it load the skill, but does not make it), user (`/skill-name`), or both?
 2. **What fires on rules?** Is each invariant in your SKILL.md decoration (the agent reads and decides) or mechanism (a script, validator exit code, hook, or captured artifact fires on it)?
-3. **What is the token budget?** Does your skill fit the auto-compaction floor (under ~5,000 tokens / ~500 lines) and the description listing budget?
+3. **What is the token budget?** Does your skill fit the auto-compaction floor (under ~5,000 tokens / ~500 lines) and each host's description-listing limit?
 
 Read [`docs/03-three-questions.md`](docs/03-three-questions.md) end-to-end on first contact. Every other doc here is a destination from one of the three questions.
 
@@ -45,7 +45,7 @@ These three docs close the audience gap a layered repo would otherwise leave. Re
 
 1. [`docs/01-quickstart.md`](docs/01-quickstart.md). Your first skill in 10 minutes.
 2. [`docs/02-mental-model.md`](docs/02-mental-model.md). When is a skill the right primitive at all?
-3. [`docs/04-token-economics.md`](docs/04-token-economics.md). The hard numbers: why the 500-line cap exists, what auto-compaction does, how SessionStart-hook injection cost compounds.
+3. [`docs/04-token-economics.md`](docs/04-token-economics.md). The hard numbers: why the 500-line cap exists, what auto-compaction does, each host's description-listing limit, and what session-start injection costs as a full body or a short pointer.
 
 ## Documentation map
 
@@ -103,7 +103,7 @@ These three docs close the audience gap a layered repo would otherwise leave. Re
 
 ## Contributing
 
-How new lessons enter this repo: per-ship retrospectives, reader-submitted issues, quarterly landscape audits. See [`docs/12-update-mechanism.md`](docs/12-update-mechanism.md) for the case-study shape and the contribution model. Planned work is tracked in [GitHub Issues](https://github.com/toolboxmd/building-agentskills/issues).
+How new lessons enter this repo: per-ship retrospectives, reader-submitted issues, quarterly landscape audits. See [`docs/12-update-mechanism.md`](docs/12-update-mechanism.md) for the case-study shape and the contribution model. Planned work is tracked in [GitHub Issues](https://github.com/toolboxmd/building-agentskills/issues). Each reader-visible change adds a line to [`CHANGELOG.md`](CHANGELOG.md).
 
 Every lesson cites at least one of: a shipped commit, a recorded failure with inspectable evidence, a benchmark result with its claim boundary, or a primary source for platform behavior. Aspirational patterns are out of scope; the case studies show what evidence-driven additions look like.
 
