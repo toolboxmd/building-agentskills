@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-29",
+  "subject": "Whether agents read the procedure an operations routing row links before the row's action (toolboxmd/agentsmd #164, #174, #182)",
+  "sources": {
+    "repository": "toolboxmd/agentsmd",
+    "commit": "06b7af6",
+    "commit_url": "https://github.com/toolboxmd/agentsmd/tree/06b7af6/docs/work",
+    "version": "14.5.0",
+    "issues": [
+      "https://github.com/toolboxmd/agentsmd/issues/164",
+      "https://github.com/toolboxmd/agentsmd/issues/174",
+      "https://github.com/toolboxmd/agentsmd/issues/182"
+    ],
+    "pull_requests": [
+      {
+        "number": 168,
+        "merge_commit": "038d40b",
+        "version": "14.2.0",
+        "role": "harness, confinement, reworded first-edit rows, #164 benchmark"
+      },
+      {
+        "number": 179,
+        "merge_commit": "3fa82c0",
+        "version": "14.4.0",
+        "role": "session-start pointer, prose before-clause, successful-read scoring, no-edit verdicts, plugin and config-link reads"
+      },
+      {
+        "number": 181,
+        "merge_commit": "b24f0a4",
+        "version": "14.4.1",
+        "role": "Bash allowed on Claude, verification cell measured, shell-read rule"
+      },
+      {
+        "number": 183,
+        "merge_commit": "588d713",
+        "version": "14.4.2",
+        "role": "Claude Code Bash sandbox, live v14.4.0 canary record"
+      },
+      {
+        "number": 184,
+        "merge_commit": "06b7af6",
+        "version": "14.5.0",
+        "role": "routing-row sweep, verification row, widened pointer, instrument fixes"
+      }
+    ],
+    "records": [
+      {
+        "path": "docs/work/164-trigger-audit/records.jsonl",
+        "lines": 600,
+        "sha256": "7a85cff2dab045f60aca5ef08251305e4b71c38572a021aa13c1b5a495fea3b3",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/164-trigger-audit/records.jsonl",
+        "runs": 600,
+        "role": "#164 four-host benchmark plus an earlier pilot; the pilot is out of scope"
+      },
+      {
+        "path": "docs/work/174-routing-injection/records.jsonl",
+        "lines": 180,
+        "sha256": "59c8f11dfd31583cbfddd4a386f42fefa3cd7bac855b31b5654734a84dd64b12",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/174-routing-injection/records.jsonl",
+        "runs": 180,
+        "role": "#174 first-edit cases, fixed harness"
+      },
+      {
+        "path": "docs/work/174-routing-injection/midtask.jsonl",
+        "lines": 40,
+        "sha256": "5c5abad859aa0e1422894b4e09f4139667db9b652086fa7f5573c340b63f953c",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/174-routing-injection/midtask.jsonl",
+        "runs": 40,
+        "role": "#174 mid-task cases on Claude Code and OpenCode, fixed harness"
+      },
+      {
+        "path": "docs/work/174-routing-injection/canary.jsonl",
+        "lines": 4,
+        "sha256": "2a770e8026e46de4a00e1433ea68d64f6adb9efc483a4d421cc39c4754218e9b",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/174-routing-injection/canary.jsonl",
+        "runs": 4,
+        "role": "post-install canary on live v14.4.0"
+      },
+      {
+        "path": "docs/work/174-routing-injection/records-prefix.jsonl",
+        "lines": 520,
+        "sha256": "9ac66ea73e9f126fbcca63412dd9f5866a4845bd542694383e68b40a43820d8d",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/174-routing-injection/records-prefix.jsonl",
+        "runs": 520,
+        "role": "superseded pre-fix batch"
+      },
+      {
+        "path": "docs/work/174-routing-injection/midtask-prefix.jsonl",
+        "lines": 60,
+        "sha256": "71ab2931c56b9b9a834a1184520190a1787ed77bafa1cff3465a582ecd728bb2",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/174-routing-injection/midtask-prefix.jsonl",
+        "runs": 60,
+        "role": "superseded pre-fix mid-task batch; Codex and Grok cells still cited"
+      },
+      {
+        "path": "docs/work/182-routing-sweep/records.jsonl",
+        "lines": 309,
+        "sha256": "323797dc5a40d046586e0147ec9e497b9c748d932f50fbc78ae92af20fedbc72",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/182-routing-sweep/records.jsonl",
+        "runs": 309,
+        "role": "#182 routing-row sweep and other-host check"
+      }
+    ],
+    "results": [
+      {
+        "path": "docs/work/164-trigger-audit/results.md",
+        "lines": 255,
+        "sha256": "e89c0ce1d860c0f89456e562e30090de63cdbfd0f5e5f685d04a7911f095804a",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/164-trigger-audit/results.md"
+      },
+      {
+        "path": "docs/work/174-routing-injection/results.md",
+        "lines": 172,
+        "sha256": "3d73d62a0ccd996e09ac979b7e1ac35ee02a3c04620ade906146fef52adbb291",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/174-routing-injection/results.md"
+      },
+      {
+        "path": "docs/work/182-routing-sweep/results.md",
+        "lines": 140,
+        "sha256": "0bba29204a8678a9475eef6bdc7e71c9990025d0619c1856a498d1ed0e78672d",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/182-routing-sweep/results.md"
+      }
+    ],
+    "harness": [
+      {
+        "path": "docs/work/164-trigger-audit/trigger_test.py",
+        "lines": 1145,
+        "sha256": "bfce6ade53ae06c253ea70b5b80026e8f6b69a426372a4f9561047d45db75d0a",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/docs/work/164-trigger-audit/trigger_test.py"
+      },
+      {
+        "path": "tests/test_trigger_harness.py",
+        "lines": 363,
+        "sha256": "196de1d57de569f8d38eff8077dd8b0a17a57ff225bd84557c42a9887ad72d3d",
+        "url": "https://github.com/toolboxmd/agentsmd/blob/06b7af6/tests/test_trigger_harness.py"
+      }
+    ],
+    "comments": [
+      "https://github.com/toolboxmd/agentsmd/issues/182#issuecomment-5897168360"
+    ]
+  },
+  "run_counts": {
+    "total_records": 1713,
+    "in_scope_note": "The pilot rows in 164 records.jsonl and the pilot-model rows in records-prefix.jsonl are out of scope and not reported."
+  },
+  "hosts": [
+    {
+      "host": "Claude Code",
+      "version": "2.1.284",
+      "models": [
+        {
+          "model": "claude-opus-5-5",
+          "effort": "medium"
+        }
+      ]
+    },
+    {
+      "host": "Codex",
+      "version": "0.159.0",
+      "models": [
+        {
+          "model": "gpt-6-astra",
+          "effort": "low"
+        },
+        {
+          "model": "gpt-6-luna",
+          "effort": "high",
+          "benchmarks": [
+            "#164"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "Grok Build",
+      "version": "1.0.44",
+      "models": [
+        {
+          "model": "grok-4.7",
+          "effort": "medium"
+        }
+      ]
+    },
+    {
+      "host": "OpenCode",
+      "version": "1.18.33",
+      "models": [
+        {
+          "model": "opencode-go/muse-spark-1.3-contributor",
+          "effort": "default variant"
+        }
+      ]
+    }
+  ],
+  "regenerate": "cd <extracted>/docs/work/<folder> && python3 ../164-trigger-audit/trigger_test.py --summary <records>.jsonl",
+  "counting_rules": {
+    "successful_read": "A read counts only when the tool call is not in permission_denials, not answered by an error (Read tools), and not an OpenCode error part. Shell calls fail only on a permission denial (from #181).",
+    "fired": "--summary counts a required file as fired when it was read before the moment and the moment happened.",
+    "read_noaction": "#182 results.md also counts read-noaction runs (read, then no action) as read before the action; the case study shows both counts.",
+    "both_counts": [
+      {
+        "cell": "#182 main finalization, repository-setup, reconciliation",
+        "summary": "0/3 each",
+        "results_md": "3/3 each"
+      },
+      {
+        "cell": "#182 fix2 finalization, repository-setup, reconciliation",
+        "summary": "0/3 each",
+        "results_md": "3/3 each"
+      },
+      {
+        "cell": "#182 main project-direction",
+        "summary": "2/3",
+        "results_md": "3/3"
+      },
+      {
+        "cell": "#182 fix2 project-direction",
+        "summary": "2/3",
+        "results_md": "3/3"
+      },
+      {
+        "cell": "#182 main delivery",
+        "summary": "1/3",
+        "results_md": "3/3"
+      },
+      {
+        "cell": "#182 Codex gpt-6-astra verification on 10ece7c",
+        "summary": "3/5",
+        "results_md": "5/5"
+      }
+    ]
+  },
+  "exclusions": [
+    "The #164 pilot batch that escaped into the canonical checkout, discarded by AgentsMD; the pilot model's scores are not reported.",
+    "Discarded or aborted batches listed in the #164 results, not present in the records.",
+    "The pre-fix #174 batch (records-prefix.jsonl) and the Claude Code and OpenCode cells of midtask-prefix.jsonl: invalid because refused reads counted and no-edit runs scored as fired.",
+    "#182 batches dropped for wrong moments or collapsed record keys, rerun before recording."
+  ],
+  "canaries": [
+    {
+      "version": "14.4.0",
+      "result": "4/4",
+      "source": "docs/work/174-routing-injection/canary.jsonl",
+      "note": "--summary raises KeyError on this file (no source or login_files_changed field); counted from verdict fields"
+    },
+    {
+      "version": "14.5.0",
+      "result": "4/4",
+      "source": "https://github.com/toolboxmd/agentsmd/issues/182#issuecomment-5897168360"
+    }
+  ],
+  "interpretation_limits": [
+    "3 to 10 runs per cell, one model per host, one fixture: the results rank wordings on these prompts and are not variance estimates.",
+    "#164 records carry no failed_calls; its OpenCode cells were never rescored under successful-read rules.",
+    "Opus base in #174 may be 5/20 rather than 3/20 under the non-zero-exit rule (per #174 results.md; the kept call lists show one such read before the first edit).",
+    "Codex and Grok mid-task cells in #174 come from the pre-fix batch.",
+    "Moments are tool-call patterns, so a regex decides what counts as the action.",
+    "The benchmarks are evidence, not release gates; behavioral Live Verification stays with the user."
+  ]
+}
