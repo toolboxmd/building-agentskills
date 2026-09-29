@@ -121,7 +121,17 @@ The Claude Code `paths:` frontmatter field accepts glob patterns that limit when
 
 This is decoration-vs-mechanism in reverse. A skill author can mechanically gate their skill's activation by file paths, instead of relying on description-keyword matching (which is a softer gate). For example, karpathy-wiki could declare `paths: ["**/*.md"]` to ensure it only auto-loads in markdown contexts.
 
-The mechanism-form (`paths:` glob) is more reliable than the decoration-form (description triggers); the harness handles the gating. The trade-off: `paths:` is Claude Code only; description triggers work everywhere.
+The mechanism-form (`paths:` glob) is more reliable than the decoration-form (description triggers); the harness handles the gating. The trade-off: `paths:` gates activation on Claude Code ([Skills docs](https://code.claude.com/docs/en/skills)) and Grok Build ([`conditional.rs` at `97f190f`](https://github.com/xai-org/grok-build/blob/97f190f644ae1ba07fd6ee185ef54c650e142666/crates/codegen/xai-grok-tools/src/types/skill_discovery_tracker/conditional.rs#L10-L60)); check any other host before relying on it. Description triggers work on every host.
+
+## Measure, reword, mechanism last: two AgentsMD cases
+
+Wiring a mechanism costs a script or hook to build, test and maintain on every host. AgentsMD measured each skipped rule first, reworded it, and built a mechanism only when the reworded prose still missed.
+
+**The Elon method record: rewording was not enough.** [toolboxmd/agentsmd#138](https://github.com/toolboxmd/agentsmd/issues/138) found that 9 of 11 Claude Code sessions that created Issues never opened the method, and fixed the wording. [toolboxmd/agentsmd#161](https://github.com/toolboxmd/agentsmd/issues/161) counted again: 5 of 13 Issue-creating sessions since that fix still opened no Elon method file. It then extended the existing PreToolUse hook to block `gh issue create` and `gh pr create` when the body lacks an Elon record field. Both counts come from Claude Code transcripts, and opening a file does not prove applying it.
+
+**Verification before a PR: rewording was enough.** Opus 5.5 read the verification procedure before `gh pr create` in 0 of 5 runs, and [toolboxmd/agentsmd#181](https://github.com/toolboxmd/agentsmd/pull/181) proposed a PreToolUse hook on `gh pr create` that points at the procedure. [toolboxmd/agentsmd#182](https://github.com/toolboxmd/agentsmd/issues/182) made the hook conditional: reword the row to name the action first, and build the hook only if the wording missed 5 of 5. The reworded row reached 5 of 5, so [toolboxmd/agentsmd#184](https://github.com/toolboxmd/agentsmd/pull/184) did not build the hook. The [AgentsMD routing benchmarks](/case-studies/2026-09-29-agentsmd-routing-benchmarks) case study has the full account.
+
+The order matters: a measure shows whether a rule is skipped, a rewording is the cheapest fix to try, and the measure then decides whether a mechanism is justified.
 
 ## When decoration is the right answer
 
@@ -139,5 +149,7 @@ The audit's question is not "is every rule a mechanism?" but "is every rule that
 - `REVIEWER` "What the analyzer got right" #4 (decoration-vs-mechanism is named in the audit; not in superpowers / agent-skills / Anthropic docs).
 - `REVIEWER` "Stress test of the decoration vs mechanism headline" (the sharpened framing used in this doc).
 - `REVIEWER` G8 (`paths:` glob as activation gate).
+- toolboxmd/agentsmd Issues [#138](https://github.com/toolboxmd/agentsmd/issues/138), [#161](https://github.com/toolboxmd/agentsmd/issues/161) and [#182](https://github.com/toolboxmd/agentsmd/issues/182), PRs [#181](https://github.com/toolboxmd/agentsmd/pull/181) and [#184](https://github.com/toolboxmd/agentsmd/pull/184) (measure, reword, mechanism last).
+- Claude Code [Skills docs](https://code.claude.com/docs/en/skills) and xai-org/grok-build [`conditional.rs` at `97f190f`](https://github.com/xai-org/grok-build/blob/97f190f644ae1ba07fd6ee185ef54c650e142666/crates/codegen/xai-grok-tools/src/types/skill_discovery_tracker/conditional.rs#L10-L60) (`paths:` hosts).
 
 Cross-links: [Three questions](/docs/03-three-questions) (Q2), [Anti-patterns](/docs/10-anti-patterns) (decoration without mechanism is the headline anti-pattern), [Provider-neutral runtime](/docs/05-authoring/provider-neutral-runtime), [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) (the three wirings as ship narrative).
