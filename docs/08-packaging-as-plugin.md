@@ -2,16 +2,16 @@
 
 This page covers Claude Code plugin packaging from the karpathy-wiki shape: minimal `.claude-plugin/plugin.json`, skills in `skills/<name>/SKILL.md`, optional sibling sub-directories, the symlink install pattern, and the `${CLAUDE_PLUGIN_ROOT}` substitution gotcha.
 
-Cross-platform packaging (Cursor, OpenCode, Gemini, Codex) lives in `docs/11-cross-platform/`. This page is Claude Code-specific.
+Cross-platform packaging (Codex, Grok Build, OpenCode, Gemini CLI, Cursor) is summarized [below](#cross-platform-manifests-brief) and covered in the cross-platform pages. This page is Claude Code-specific.
 
 ## The minimal plugin shape
 
-A Claude Code plugin is a directory with one required file plus skill directories.
+A Claude Code plugin is a directory of components in standard locations. The manifest is optional: without it, Claude Code loads the components it finds and takes the plugin name from the marketplace entry or the directory name ([Plugins reference](https://code.claude.com/docs/en/plugins-reference), read 2026-09-29).
 
 ```
 your-plugin/
 ├── .claude-plugin/
-│   └── plugin.json                    # required: name, version, description, author
+│   └── plugin.json                    # optional manifest; only `name` is required
 ├── skills/
 │   └── <skill-name>/
 │       ├── SKILL.md                   # required: the skill itself
@@ -27,20 +27,20 @@ your-plugin/
 
 ## Plugin manifest: `.claude-plugin/plugin.json`
 
-The minimal manifest, mirrored from karpathy-wiki's shape (`KP-PLUGIN`):
+A small manifest, following the shape of [karpathy-wiki's `plugin.json` at `d8107e7`](https://github.com/toolboxmd/karpathy-wiki/blob/d8107e727f4b585a9927cad813f90fda6b559ef3/.claude-plugin/plugin.json):
 
 ```json
 {
   "name": "your-plugin",
   "version": "0.1.0",
   "description": "One-sentence description of what this plugin provides.",
-  "author": "yourname",
+  "author": { "name": "yourname" },
   "repository": "https://github.com/yourname/your-plugin",
   "license": "Apache-2.0"
 }
 ```
 
-Required fields per the Claude Code plugin spec: `name`, `version`, `description`, `author`. Optional but recommended: `repository`, `license`, `keywords`.
+Per the [Plugins reference](https://code.claude.com/docs/en/plugins-reference) (read 2026-09-29), `name` is the only required field. `author` is an object with a required `name` and optional `email` and `url`. `version`, `description`, `repository`, `license` and `keywords` are optional; `claude plugin validate` warns when `version`, `description` or `author` is missing, and `--strict` turns those warnings into failures.
 
 The `name` is the namespace prefix for your plugin's skills (Claude Code uses `plugin-name:skill-name` for namespacing). Pick a name that will not collide with other plugins.
 
@@ -48,7 +48,7 @@ The `version` follows semantic versioning. Note: a description-string change in 
 
 ## Where skills live
 
-Per the convention from `KP-PLUGIN` and Claude Code's docs: plugin skills live at `skills/<skill-name>/SKILL.md` relative to the plugin root.
+Per Claude Code's docs, and as [karpathy-wiki's `skills/`](https://github.com/toolboxmd/karpathy-wiki/tree/d8107e727f4b585a9927cad813f90fda6b559ef3/skills) does: plugin skills live at `skills/<skill-name>/SKILL.md` relative to the plugin root.
 
 Optional sibling sub-directories under each skill:
 
@@ -56,62 +56,63 @@ Optional sibling sub-directories under each skill:
 - **`references/`.** Heavy reference docs loaded on demand. One level deep from SKILL.md; never nested. See [Line budget](/docs/05-authoring/line-budget).
 - **`assets/`.** Data files, fixtures, images. Loaded as needed.
 
-These sub-directories are spec-canonical (Layer 1) and recognized by every spec-compatible harness, not just Claude Code.
+These sub-directories are optional directories in the [Agent Skills specification](https://agentskills.io/specification) (Layer 1). The spec does not require a harness to treat them specially: the model reads them with its ordinary file tools when the SKILL.md body points to them. They work on a host only if the model may read the Skill directory there; OpenCode's `external_directory` permission and Gemini CLI's activation consent are two such gates (see the [cross-platform pages](/docs/11-cross-platform/others)).
 
 ## Install paths
 
 Claude Code recognizes plugins via:
 
-- **Plugin marketplace.** Subscribe via `claude plugin marketplace add <url>`. Plugins published in a marketplace install with `claude plugin install <name>`.
+- **Plugin marketplace.** Add one with `claude plugin marketplace add <url-path-or-github-repo>`, then install with `claude plugin install <name>` or `<name>@<marketplace>` (Claude Code 2.1.284 `--help`, 2026-09-29).
 - **Local clone + symlink.** The pattern karpathy-wiki uses for development: `git clone` the plugin repo, then `ln -s <plugin-skill-dir> ~/.claude/skills/<name>` to make the skill available without going through the plugin system.
 - **Direct copy.** `cp -r <plugin-skill-dir> ~/.claude/skills/<name>`. Less common; loses the link to upstream.
 
-Per-scope priority for Claude Code skills (per [Token economics](/docs/04-token-economics) and [Claude Code cross-platform notes](/docs/11-cross-platform/claude-code)):
+Name resolution for Claude Code skills ([Skills docs](https://code.claude.com/docs/en/skills), read 2026-09-29; see [Claude Code](/docs/11-cross-platform/claude-code)):
 
-> enterprise > personal > project > plugin
+> enterprise > personal > project; plugin skills load alongside all of them
 
-A skill at `~/.claude/skills/wiki/` (personal) shadows a skill at `<plugin>/skills/wiki/`. Plugin skills are namespaced (`plugin-name:wiki`) so they cannot shadow each other across plugins, but they CAN be shadowed by personal or project skills with the same bare name.
+A skill at `~/.claude/skills/wiki/` (personal) wins over `.claude/skills/wiki/` (project). A plugin skill is namespaced as `/plugin-name:wiki`, so it never collides: a personal `wiki` and a plugin's `wiki` both load. During symlink development with the plugin also installed, the model sees both copies.
 
 ## The `${CLAUDE_PLUGIN_ROOT}` gotcha
 
-Source: `REVIEWER` G3, "wiki concept page references" ([wiki concept page](https://github.com/toolboxmd/karpathy-wiki/blob/main/wiki/concepts/claude-code-plugin-root-substitution.md)).
+Source: `REVIEWER` G3; the [Plugins reference: where each variable resolves](https://code.claude.com/docs/en/plugins-reference#where-each-variable-resolves), read 2026-09-29.
 
-The literal string `${CLAUDE_PLUGIN_ROOT}` appears as a config-time substitution token in `plugin.json` and `hooks.json`. Claude Code expands it to the plugin's installed path when reading those files. The token works inside Claude Code's own configuration plumbing.
+Claude Code substitutes `${CLAUDE_PLUGIN_ROOT}` with the plugin's installed path in `plugin.json` and `hooks.json` fields, MCP and LSP server configs, and the Markdown body of a skill, command or agent that the plugin provides. Hook, MCP and LSP processes also get it as an environment variable.
 
-The token does NOT propagate to the Bash tool. A SKILL.md that says:
+The variable is NOT in the environment of commands Claude runs through the Bash tool, and a skill loaded from outside the plugin gets no substitution. A SKILL.md that says:
 
 ```bash
 bash "${CLAUDE_PLUGIN_ROOT}/scripts/foo.sh"
 ```
 
-will fail with `Exit 127 / No such file or directory` when run as a personal skill (the symlink-install case). The literal string `${CLAUDE_PLUGIN_ROOT}` reaches Bash, expands to the empty string (Bash sees an unset variable), and the command becomes `bash /scripts/foo.sh`, which does not exist.
+works when the skill loads from the installed plugin, because Claude Code substitutes the path into the body. It fails with `No such file or directory` when the same skill loads as a personal skill (the symlink-install case) or on Codex, OpenCode or Gemini CLI, which do not substitute it. Grok Build substitutes it in plugin skills ([`skill.rs` at `97f190f`](https://github.com/xai-org/grok-build/blob/97f190f644ae1ba07fd6ee185ef54c650e142666/crates/codegen/xai-grok-tools/src/implementations/skills/skill.rs#L286-L310)). The literal string `${CLAUDE_PLUGIN_ROOT}` reaches Bash, expands to the empty string (Bash sees an unset variable), and the command becomes `bash /scripts/foo.sh`, which does not exist.
 
-The failure mode is silent during plugin install; it surfaces only when someone installs the skill personally (via symlink) and tries to invoke it.
+The failure is silent during plugin install; it surfaces only when someone installs the skill another way and invokes it.
 
-The three workarounds documented in the wiki concept page:
+Three workarounds:
 
-1. **Use `${CLAUDE_SKILL_DIR}` instead.** Per Claude Code docs, this token is "available in bash injection commands to reference scripts or files bundled with the skill, regardless of the current working directory." It propagates to Bash where `${CLAUDE_PLUGIN_ROOT}` does not.
+1. **Use `${CLAUDE_SKILL_DIR}` instead.** Claude Code substitutes it with the skill's own directory in the body of any skill, plugin or not ([Skills docs](https://code.claude.com/docs/en/skills)). Grok Build substitutes it too ([`skill.rs` at `97f190f`](https://github.com/xai-org/grok-build/blob/97f190f644ae1ba07fd6ee185ef54c650e142666/crates/codegen/xai-grok-tools/src/implementations/skills/skill.rs#L286-L310)); Codex, OpenCode and Gemini CLI leave it literal, so pair it with workaround 3 for those hosts.
 2. **Use a relative path.** `bash scripts/foo.sh` works if the skill's working directory is set to the skill's base directory. Some skills do `cd "$(dirname "$0")"` first; some rely on Claude Code setting `pwd` correctly.
 3. **Compute the path explicitly.** From a SKILL.md prose preamble: "All script paths below are relative to this skill's base directory (shown at the top of the skill as `Base directory for this skill: ...`). `cd` into that directory before invoking any script, or prefix each script with the absolute base path." This is karpathy-wiki's chosen workaround.
 
-The wiki concept page tracks the failure mode and the workarounds. The build-agentskills repo's loader skill follows convention 3 (use the base directory the harness prints in the preamble).
+The build-agentskills repo's loader skill follows convention 3 (use the base directory the harness prints in the preamble).
 
 ## Cross-platform manifests (brief)
 
 Other harnesses use different manifest shapes:
 
-- **Cursor:** `.cursor-plugin/plugin.json` declares every artifact path explicitly.
-- **OpenCode:** `.opencode/plugins/<name>.js` is a JavaScript plugin that registers the skills directory and prepends bootstrap context to the first user message.
-- **Gemini:** `~/.gemini/extensions/<name>/gemini-extension.json` declares an extension (not a plugin); always-on context lives in `GEMINI.md`, custom commands in `commands/*.toml`.
-- **Codex:** `agents/openai.yaml` is the Codex-specific sidecar; the skills themselves live in `.agents/skills/<name>/`.
+- **Codex:** `.codex-plugin/plugin.json`, listed in a marketplace's `.agents/plugins/marketplace.json`; installed with `codex plugin marketplace add` and `codex plugin add` (Codex 0.159.0). The per-skill `agents/openai.yaml` sidecar is separate. See [Codex](/docs/11-cross-platform/codex).
+- **Grok Build:** an optional `plugin.json` next to `skills/`, `hooks/hooks.json` and `.mcp.json`; marketplaces index plugins in `.grok-plugin/marketplace.json` and Grok also accepts `.claude-plugin/`. Installed with `grok plugin install <name> --trust` (Grok 1.0.44). See [Other harnesses](/docs/11-cross-platform/others).
+- **OpenCode:** a JavaScript or TypeScript module in `.opencode/plugins/` or `~/.config/opencode/plugins/`, or an npm package listed under `plugin` in `opencode.json`. (OpenCode 1.18.33). See [Other harnesses](/docs/11-cross-platform/others).
+- **Gemini CLI:** `~/.gemini/extensions/<name>/gemini-extension.json`; an extension bundles `GEMINI.md`, `commands/*.toml`, `skills/`, `hooks/hooks.json` and `agents/` (v0.61.0). See [Gemini CLI](/docs/11-cross-platform/gemini-cli).
+- **Cursor** (last checked 2026-04): `.cursor-plugin/plugin.json` declares every artifact path explicitly.
 
-Full coverage in `docs/11-cross-platform/`. Most spec-compliant skills work in multiple harnesses with no modification (the SKILL.md is portable); only the manifest layer differs per harness.
+Full coverage in the [cross-platform pages](/docs/11-cross-platform/claude-code). A spec-compliant SKILL.md loads without modification on the five hosts with native Agent Skills support covered there (Claude Code, Codex, Grok Build, OpenCode, Gemini CLI); Continue.dev and Copilot CLI lacked native support when last checked (2026-04). The packaging manifest differs per harness, and so do hooks, discovery paths, listing budgets, permissions and which frontmatter fields have an effect.
 
 ## Sources
 
-- `LANDSCAPE` 2.1 (Claude Code plugin packaging).
-- `LANDSCAPE` 1.4 (cross-platform manifest landscape).
-- `REVIEWER` G3 (`${CLAUDE_PLUGIN_ROOT}` config-time-token-vs-shell-env-var gotcha; the three workarounds).
-- `KP-PLUGIN` (the minimal manifest shape used as exemplar).
+- Claude Code docs, read 2026-09-29: [Plugins reference](https://code.claude.com/docs/en/plugins-reference) (manifest fields, variable substitution), [Skills](https://code.claude.com/docs/en/skills) (name resolution, `${CLAUDE_SKILL_DIR}`); Claude Code 2.1.284 `claude plugin --help`.
+- `REVIEWER` G3 (`${CLAUDE_PLUGIN_ROOT}` gotcha; the three workarounds).
+- [karpathy-wiki `plugin.json` at `d8107e7`](https://github.com/toolboxmd/karpathy-wiki/blob/d8107e727f4b585a9927cad813f90fda6b559ef3/.claude-plugin/plugin.json) (the manifest shape used as exemplar).
+- Cross-platform manifests: sources on each [cross-platform page](/docs/11-cross-platform/others), checked 2026-09-29 except Cursor (`LANDSCAPE` 1.4, 2026-04).
 
-Cross-links: `docs/11-cross-platform/`.
+Cross-links: [Claude Code](/docs/11-cross-platform/claude-code), [Codex](/docs/11-cross-platform/codex), [Gemini CLI](/docs/11-cross-platform/gemini-cli), [Other harnesses](/docs/11-cross-platform/others).
