@@ -10,8 +10,15 @@ if [ ! -f "$script" ]; then
 fi
 
 cd "$root"
+before="$(mktemp)"
+trap 'rm -f "$before"' EXIT
+if [ -f "$out" ]; then cp "$out" "$before"; fi
 if ! npm run build:llms >/dev/null; then
   echo "FAIL: npm run build:llms exited non-zero" >&2
+  exit 1
+fi
+if ! cmp -s "$before" "$out"; then
+  echo "FAIL: public/llms.txt was stale; commit the regenerated file" >&2
   exit 1
 fi
 
