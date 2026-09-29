@@ -26,6 +26,7 @@ Find the row for the action you are about to take. Read its page as its own step
 | Before sizing a Skill, its description or a session-start injection | [Token economics](../../docs/04-token-economics.md) |
 | Before writing or changing a Skill's frontmatter fields | [Frontmatter](../../docs/05-authoring/frontmatter.md) |
 | Before writing or changing a Skill description or a routing row | [Triggers](../../docs/05-authoring/triggers.md) |
+| Before writing or changing an MCP tool description, or choosing which tools load at session start | [Triggers](../../docs/05-authoring/triggers.md) |
 | Before writing or editing prose or code snippets in a `SKILL.md` body | [Prose discipline](../../docs/05-authoring/prose-discipline.md) |
 | Before adding an Iron Law, a rationalization table or a Red Flags list | [Iron laws](../../docs/05-authoring/iron-laws.md) |
 | Before splitting a `SKILL.md` into reference files, or when it nears 500 lines | [Line budget](../../docs/05-authoring/line-budget.md) |

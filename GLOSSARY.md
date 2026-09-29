@@ -43,3 +43,11 @@ _Avoid_: variant, condition
 **Verdict**:
 The score of one required file in one benchmark run, such as `fired`, `skip`, `read-noaction` or `clean`.
 _Avoid_: result, pass
+
+**Deferred tool**:
+A tool whose name loads at session start while its description and schema load only after the agent searches for it.
+_Avoid_: lazy tool, hidden tool
+
+**Decision-point tool**:
+A tool the agent must choose over another route at a decision, such as a delegation tool over an agent CLI in the shell.
+_Avoid_: core tool, key tool
