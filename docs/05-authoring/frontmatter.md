@@ -58,7 +58,7 @@ Format constraints:
 
 Source: https://code.claude.com/docs/en/skills.
 
-These fields are recognized by Claude Code only. Other harnesses ignore them silently (which is the correct cross-platform fallback behavior; your skill still loads, it just lacks the Claude Code-specific features).
+These fields are defined by Claude Code. Other harnesses ignore them silently (which is the correct cross-platform fallback behavior; your skill still loads, it just lacks the Claude Code-specific features). An entry names any other harness that honors its field, such as Grok Build for `paths`.
 
 ### Activation control
 
