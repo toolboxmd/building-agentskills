@@ -82,6 +82,7 @@
           "case-studies/2026-08-11-karpathy-wiki-provider-aware-ingest",
           "case-studies/2026-09-29-agentsmd-routing-benchmarks",
           "case-studies/2026-09-29-t3-delegation-tool-descriptions",
+          "case-studies/2026-09-30-loader-trigger-benchmark",
           "examples/minimal-skill/SKILL"
         ]
       }

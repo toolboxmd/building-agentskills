@@ -6,11 +6,17 @@ Changes readers of this repository see, in [Keep a Changelog](https://keepachang
 
 ### Added
 
+- Case study of whether the loader Skill installs and loads on Claude Code, Codex, Grok Build and OpenCode: discovery output per host, 84 confined benchmark runs with committed records, and a test that regenerates the summary from them ([#17](https://github.com/toolboxmd/building-agentskills/issues/17)).
 - `npm test` fails when `package.json`, `.claude-plugin/plugin.json`, this file and a tag on the commit disagree on the version, and when `docs/`, `case-studies/`, `skills/` or `examples/` change without a change to this file ([#22](https://github.com/toolboxmd/building-agentskills/issues/22)).
 
 ### Changed
 
+- The loader's description names MCP and agent tool descriptions, so the loader loads on tool-description requests ([#17](https://github.com/toolboxmd/building-agentskills/issues/17)).
 - The README describes the quickstart, mental model, three-questions and token-economics pages as they read after [#12](https://github.com/toolboxmd/building-agentskills/issues/12).
+
+### Fixed
+
+- `.claude-plugin/plugin.json` gives `author` as an object; as a string, Claude Code refused to load the plugin and Grok Build installed it with no Skills ([#17](https://github.com/toolboxmd/building-agentskills/issues/17)).
 
 ## [0.2.0] - 2026-09-29
 

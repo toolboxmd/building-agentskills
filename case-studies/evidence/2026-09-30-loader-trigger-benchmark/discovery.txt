@@ -1,0 +1,140 @@
+
+## claude at 53f1864 (53f1864), installed
+
+$ claude plugin validate <plugin>
+(exit 1)
+Validating plugin manifest: <plugin>/.claude-plugin/plugin.json
+
+✘ Found 1 error:
+
+  ❯ author: Invalid input
+
+✘ Validation failed
+
+$ claude --plugin-dir <plugin> plugin list --json (session plugins)
+(exit 0)
+[
+ {
+  "id": "inline[0]",
+  "version": "unknown",
+  "scope": "session",
+  "enabled": false,
+  "installPath": "<plugin>",
+  "errors": [
+   "Failed to load plugin: Plugin building-agentskills has an invalid manifest file at <plugin>/.claude-plugin/plugin.json. Validation errors: author: Invalid input"
+  ],
+  "errorDetails": [
+   {
+    "type": "generic-error",
+    "path": "<plugin>"
+   }
+  ]
+ }
+]
+
+$ claude --plugin-dir <plugin> plugin list (session section)
+(exit 0)
+Session-only plugins (--plugin-dir / --plugin-url):
+
+  ❯ inline[0]: ✘ Failed to load plugin: Plugin building-agentskills has an invalid manifest file at <plugin>/.claude-plugin/plugin.json. Validation errors: author: Invalid input
+
+## codex at 53f1864 (53f1864), installed
+
+$ codex plugin list (this plugin)
+(exit 0)
+building-agentskills@local  installed, enabled  0.2.0    <home>/market/plugins/building-agentskills
+
+$ codex debug prompt-input hi (Skill roots and the listed Skill)
+(exit 0)
+- `r0` = `<home>/codex/skills/.system`
+- `r1` = `<home>/codex/plugins/cache/local`
+- building-agentskills:building-agentskills: Use before creating a Skill; before writing or changing a Skill's frontmatter, description, routing row or SKILL.md prose; before testing whether a Skill triggers; before benchmarking a model's output quality; before packaging, versioning or porting a Skill to another host; and before auditing a Skill that does not trigger or fails. Routes each of these actions to the building-agentskills page to read first. (file: r1/building-agentskills/0.2.0/skills/building-agentskills/SKILL.md)
+
+## grok at 53f1864 (53f1864), installed
+
+$ grok plugin validate <plugin>
+(exit 1)
+Error: Failed to load manifest: failed to parse <plugin>/.claude-plugin/plugin.json: invalid type: string "lukaszmaj", expected struct Author at line 5 column 23
+
+$ grok plugin list
+(exit 0)
+  building-agentskills-4c3f375c: building-agentskills-4c3f375c [local: <plugin>]
+
+$ grok inspect (Skills section)
+(exit 0)
+Skills (0)
+  └ (none)
+
+## opencode at 53f1864 (53f1864), installed
+
+$ opencode debug skill (name: location)
+(exit 0)
+customize-opencode: <built-in>
+building-agentskills: <plugin>/skills/building-agentskills/SKILL.md
+
+## claude at f8db18e (f8db18e), installed
+
+$ claude plugin validate <plugin>
+(exit 0)
+Validating plugin manifest: <plugin>/.claude-plugin/plugin.json
+
+✔ Validation passed
+
+$ claude --plugin-dir <plugin> plugin list --json (session plugins)
+(exit 0)
+[
+ {
+  "id": "building-agentskills@inline",
+  "version": "0.2.0",
+  "scope": "session",
+  "enabled": true,
+  "installPath": "<plugin>"
+ }
+]
+
+$ claude --plugin-dir <plugin> plugin list (session section)
+(exit 0)
+Session-only plugins (--plugin-dir / --plugin-url):
+
+  ❯ building-agentskills@inline
+    Version: 0.2.0
+    Path: <plugin>
+    Status: ✔ loaded
+
+## codex at f8db18e (f8db18e), installed
+
+$ codex plugin list (this plugin)
+(exit 0)
+building-agentskills@local  installed, enabled  0.2.0    <home>/market/plugins/building-agentskills
+
+$ codex debug prompt-input hi (Skill roots and the listed Skill)
+(exit 0)
+- `r0` = `<home>/codex/skills/.system`
+- `r1` = `<home>/codex/plugins/cache/local`
+- building-agentskills:building-agentskills: Use before creating a Skill; before writing or changing a Skill's frontmatter, description, routing row or SKILL.md prose; before testing whether a Skill triggers; before benchmarking a model's output quality; before packaging, versioning or porting a Skill to another host; and before auditing a Skill that does not trigger or fails. Routes each of these actions to the building-agentskills page to read first. (file: r1/building-agentskills/0.2.0/skills/building-agentskills/SKILL.md)
+
+## grok at f8db18e (f8db18e), installed
+
+$ grok plugin validate <plugin>
+(exit 0)
+Plugin manifest is valid.
+  name: building-agentskills
+  version: 0.2.0
+  description: Evidence-backed doctrine for designing AI agent skills: authoring, routing agents to the right procedure, and trigger benchmarks. The loader Skill routes each authoring action to the page to read first.
+  components: 1 skill dir(s), 0 command dir(s), 0 agent dir(s)
+
+$ grok plugin list
+(exit 0)
+  building-agentskills-28d56bd2: building-agentskills [local: <plugin>]
+
+$ grok inspect (Skills section)
+(exit 0)
+Skills (1)
+  └ building-agentskills  plugin: building-agentskills
+
+## opencode at f8db18e (f8db18e), installed
+
+$ opencode debug skill (name: location)
+(exit 0)
+customize-opencode: <built-in>
+building-agentskills: <plugin>/skills/building-agentskills/SKILL.md
