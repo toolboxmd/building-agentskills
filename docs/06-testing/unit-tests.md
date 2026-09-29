@@ -1,8 +1,8 @@
 # Unit tests: what to test in a skill
 
-A SKILL.md is documentation. Most documentation is not testable. Skills are different: their scripts are testable like any other code, their disciplines are testable via pressure scenarios, and their spec compliance is testable via the official validator. This page covers the three kinds of test a non-trivial skill should have, and the cross-script regression rule that determines test scope when contracts change.
+A SKILL.md is documentation. Most documentation is not testable. Skills are different: their scripts are testable like any other code, their disciplines are testable via pressure scenarios, and their spec compliance is testable via the official validator, and their triggers are testable with a trigger benchmark. This page covers the four kinds of test a non-trivial skill should have, and the cross-script regression rule that determines test scope when contracts change.
 
-## Three kinds of test
+## Four kinds of test
 
 ### Script unit tests
 
@@ -44,7 +44,7 @@ A pressure scenario is a fresh-subagent test of a discipline:
 
 The pressure scenario is the discipline-skill equivalent of a unit test. It is more expensive than a unit test (each scenario is a subagent dispatch) but it is the only way to verify a discipline rule actually steers behavior.
 
-Karpathy-wiki ships 4 GREEN scenarios at v2.2 (`tests/green/`; `REVIEWER` verification). Superpowers ships equivalents in `tests/skill-triggering/`.
+Karpathy-wiki ships 4 GREEN scenarios at v2.2 (`tests/green/`; `REVIEWER` verification). Superpowers removed its `tests/skill-triggering/` prompts in commit [`8611a4e`](https://github.com/obra/superpowers/commit/8611a4e) as covered by the `triggering-*` scenarios in [prime-radiant-inc/superpowers-evals](https://github.com/prime-radiant-inc/superpowers-evals/tree/e64684c/scenarios).
 
 ### `skills-ref validate` for spec compliance
 
@@ -65,7 +65,11 @@ It checks:
 
 Run it before merging any frontmatter or directory-structure change. The validator catches mechanical violations cheaply; a human reviewer should not be the first to notice that your `name` field has uppercase letters in it.
 
-Karpathy-wiki and superpowers both run validator-equivalent checks. Add `skills-ref validate` to your CI when CI exists (this repo's v0 has no CI; the validator is a manual step for now).
+Karpathy-wiki and superpowers both run validator-equivalent checks. Add `skills-ref validate` to your CI. This repo's CI runs `npm test`, which checks the docs; it does not run the validator, so validation is a manual step here.
+
+### Trigger benchmarks
+
+A description or routing row is tested by running the real host on naive prompts and negative prompts and checking the tool calls: was the required file read successfully before the action, and left alone when the work did not need it? Unit tests of the harness do not prove the harness observes anything; the AgentsMD harness passed 349 of them while scoring refused reads as reads. See [Triggers](/docs/05-authoring/triggers) for what to test and [Trigger benchmarks](/docs/06-testing/trigger-benchmarks) for the method.
 
 ## Cross-script regression: the contract-touching rule
 
@@ -105,4 +109,4 @@ For model-executed skills, add a frozen benchmark with held-out retrieval questi
 - `LANDSCAPE` 1.2 (superpowers' TDD-for-skills; pressure scenarios with subagents).
 - `LANDSCAPE` 3.7 (test patterns: unit tests, integration tests, GREEN scenarios, self-review meta-test).
 
-Cross-links: [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) (the cross-script regression in detail), [Benchmark integrity](/docs/06-testing/benchmark-integrity), [Evolution](/docs/09-evolution) (audit-cycle includes test surface coverage).
+Cross-links: [v2.2 case study](/case-studies/2026-04-25-karpathy-wiki-v2.2) (the cross-script regression in detail), [Benchmark integrity](/docs/06-testing/benchmark-integrity), [Trigger benchmarks](/docs/06-testing/trigger-benchmarks), [Evolution](/docs/09-evolution) (audit-cycle includes test surface coverage).

@@ -2,7 +2,7 @@
 
 An agent benchmark is an experiment, not a batch of impressive transcripts. The model under test must be the model that produced the output, each run must be isolated from prior answers and grading logic, and the score must measure the user's eventual task rather than only mechanical completion.
 
-The 2026-08-11 karpathy-wiki benchmark exposed two invalid attempts before producing a valid low/medium/high comparison: nested model delegation contaminated attribution, and cross-run read leakage exposed prior output and grader code. The failed attempts were stopped, preserved, excluded, and used to harden the harness. The condensed evidence is recorded in the [benchmark manifest](/case-studies/evidence/2026-08-11-karpathy-wiki-ingest-benchmark.json).
+The 2026-08-11 karpathy-wiki benchmark exposed two invalid attempts before producing a valid low/medium/high comparison: nested model delegation contaminated attribution, and cross-run read leakage exposed prior output and grader code. The failed attempts were stopped, preserved, excluded, and used to harden the harness. The condensed evidence is recorded in the [benchmark manifest](/case-studies/evidence/2026-08-11-karpathy-wiki-ingest-benchmark.json). For benchmarks that test whether a description or routing row makes the agent read a file before an action, see [Trigger benchmarks](/docs/06-testing/trigger-benchmarks).
 
 ## Start with the decision
 

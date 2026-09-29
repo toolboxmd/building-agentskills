@@ -63,6 +63,7 @@ These three docs close the audience gap a layered repo would otherwise leave. Re
 - [`docs/06-testing/unit-tests.md`](docs/06-testing/unit-tests.md). What to test and how.
 - [`docs/06-testing/tests-that-pass-immediately.md`](docs/06-testing/tests-that-pass-immediately.md). The two valid TDD inversions.
 - [`docs/06-testing/benchmark-integrity.md`](docs/06-testing/benchmark-integrity.md). Attribution, read isolation, blind retrieval grading, and contaminated-run handling.
+- [`docs/06-testing/trigger-benchmarks.md`](docs/06-testing/trigger-benchmarks.md). Testing whether a description or routing row makes the agent read a file before the action: fixtures, confinement, valid scoring, and records.
 
 ### Standalone deep dive and reference
 
