@@ -1,62 +1,73 @@
-# Gemini CLI: Extensions, not Skills
+# Gemini CLI: Agent Skills, hooks and extensions
 
-Google's Gemini CLI does NOT support Agent Skills. It uses a different mechanism called Extensions. Authors trying to ship the same skill on Gemini cannot do so directly; they must port to the Extension model. This page covers what Gemini supports, what it does not, and what the gap means for cross-platform skill authors.
+Google's Gemini CLI (`google-gemini/gemini-cli`) supports Agent Skills natively. A spec-compliant `SKILL.md` loads without changes. This page covers how Gemini discovers and activates Skills, its hook system, how extensions package both, and where it differs from the [Agent Skills spec](https://agentskills.io).
 
-Source: `LANDSCAPE` 1.4, 2.3.
+Source: Gemini CLI docs at release `v0.61.0`, commit [`bb52374`](https://github.com/google-gemini/gemini-cli/tree/bb523741c7429a44d03e964bc124c7c92df59d5f) (tagged 2026-09-23), read 2026-09-29. Gemini CLI was not installed on the checking machine, so nothing on this page was run.
 
-## What Gemini supports: Extensions
+## Skill discovery
 
-Extensions live at `~/.gemini/extensions/<extension-name>/`. Each extension contains:
+Gemini CLI reads Skills from four tiers, lowest precedence first ([`docs/cli/skills.md`](https://github.com/google-gemini/gemini-cli/blob/bb523741c7429a44d03e964bc124c7c92df59d5f/docs/cli/skills.md)):
 
-- **`gemini-extension.json`.** The manifest. Names the extension and its components.
-- **`GEMINI.md`.** The always-on context. Loaded at session start. Supports `@`-imports (one file can `@`-include another).
-- **`commands/*.toml`.** Custom slash commands. Each TOML file declares one command.
+1. **Built-in.** Skills shipped with Gemini CLI.
+2. **Extension.** `skills/<name>/SKILL.md` inside an installed extension.
+3. **User.** `~/.gemini/skills/` or the `~/.agents/skills/` alias.
+4. **Workspace.** `.gemini/skills/` or the `.agents/skills/` alias.
 
-There is no Agent Skills equivalent in Gemini. The closest mapping:
+When two Skills share a name, the higher tier wins. Within the user or workspace tier, `.agents/skills/` wins over `.gemini/skills/`. The `.agents/skills/` alias is the same path Codex and OpenCode read, so one checked-in Skill directory serves all three.
 
-| Agent Skills concept | Gemini Extensions equivalent |
-|---|---|
-| `SKILL.md` body | `GEMINI.md` (with the cost trade-off below) |
-| Skill description (auto-trigger) | No equivalent |
-| Slash command | `commands/*.toml` |
-| Progressive disclosure | None; `GEMINI.md` is always on |
-| Hooks | None |
+`gemini skills install <git-url-or-path>`, `gemini skills list` and the `/skills` slash command manage them.
 
-## The cost gap: always-on vs progressive disclosure
+## Activation
 
-The fundamental difference: Agent Skills use progressive disclosure (description ~100 tokens, body loaded on activation). Gemini Extensions use always-on context (`GEMINI.md` and all its `@`-imports load at session start, every session).
+The lifecycle from [`docs/cli/skills.md`](https://github.com/google-gemini/gemini-cli/blob/bb523741c7429a44d03e964bc124c7c92df59d5f/docs/cli/skills.md):
 
-For a 500-line skill:
+1. **Discovery.** At session start, Gemini CLI puts the name and description of every enabled Skill into the system prompt.
+2. **Activation.** When the model matches a task to a description, it calls the `activate_skill` tool with the Skill's name. Only the model calls this tool; the user cannot ([`docs/tools/activate-skill.md`](https://github.com/google-gemini/gemini-cli/blob/bb523741c7429a44d03e964bc124c7c92df59d5f/docs/tools/activate-skill.md)).
+3. **Consent.** The user sees a confirmation prompt naming the Skill and the directory it will gain access to.
+4. **Injection.** On approval, the `SKILL.md` body and the Skill's folder structure enter the conversation, and the Skill directory is added to the agent's allowed file paths.
 
-- **Agent Skills behavior.** ~100 tokens per session if not invoked; ~5,000 tokens per session if invoked. Activation cost paid once per session.
-- **Gemini Extensions behavior.** ~5,000 tokens per session, every session, whether the extension is "needed" or not. The full body is in context from turn 1.
+Progressive disclosure therefore works as the spec describes: descriptions are always in context, bodies load on activation, and bundled `scripts/`, `references/` and `assets/` are read on demand ([`docs/cli/creating-skills.md`](https://github.com/google-gemini/gemini-cli/blob/bb523741c7429a44d03e964bc124c7c92df59d5f/docs/cli/creating-skills.md)).
 
-For a power user with five extensions installed, the always-on cost is ~25,000 tokens of `GEMINI.md` content before the user has typed anything. This is the cost gap; it is real and it scales linearly.
+## Differences from the Agent Skills spec
 
-See [Token economics](/docs/04-token-economics) for the full token-budget arithmetic.
+- **Only `name` and `description` are read.** The loader parses those two fields and ignores the rest ([`skillLoader.ts`](https://github.com/google-gemini/gemini-cli/blob/bb523741c7429a44d03e964bc124c7c92df59d5f/packages/core/src/skills/skillLoader.ts#L41-L61)). `license`, `compatibility`, `metadata` and every Claude Code extension field (`paths`, `disable-model-invocation`, `allowed-tools`) have no effect.
+- **Activation needs user consent.** In an interactive session each activation asks the user first. A Skill that must load unattended needs that prompt accounted for.
+- **No listing budget is documented.** The docs state that every enabled Skill's name and description is injected; they give no cap.
 
-## What Gemini does NOT support
+For description-writing guidance from Google, see [`docs/cli/skills-best-practices.md`](https://github.com/google-gemini/gemini-cli/blob/bb523741c7429a44d03e964bc124c7c92df59d5f/docs/cli/skills-best-practices.md).
 
-- **No description-based auto-invoke.** Gemini does not read a skill's description to decide whether to load it. Extensions are loaded based on file presence, not content matching.
-- **No progressive disclosure.** Everything in `GEMINI.md` is always in context. Heavy reference material that would live in `references/` for Agent Skills must live in always-on space (or be cut entirely) for Gemini.
-- **No hooks.** No SessionStart, PreToolUse, PostToolUse, or Stop hook events. Behavior that requires the harness to fire on an event must be reimplemented as a slash command the user types.
-- **No Iron Law / rationalization-table-as-discipline pattern.** The patterns work in `GEMINI.md` (the prose is loaded), but the always-on cost makes large discipline blocks expensive.
+## Hooks
 
-## Porting a skill to Gemini
+Gemini CLI runs command hooks configured in `settings.json` at project (`.gemini/settings.json`), user, system and extension level ([`docs/hooks/index.md`](https://github.com/google-gemini/gemini-cli/blob/bb523741c7429a44d03e964bc124c7c92df59d5f/docs/hooks/index.md)). The event names differ from Claude Code's:
 
-If your skill is small (~100-200 lines) and the always-on cost is acceptable, port the SKILL.md body to a `GEMINI.md` directly. Replace `description` with the body's first paragraph (Gemini does not use it for triggering, but readers will see it).
+| Gemini CLI event | Nearest Claude Code event | Can add model context |
+|---|---|---|
+| `SessionStart` | `SessionStart` | Yes: interactive sessions get it as the first history turn; non-interactive runs get it prepended to the prompt |
+| `BeforeAgent` | `UserPromptSubmit` | Yes: appended to the prompt for that turn |
+| `BeforeTool` | `PreToolUse` | No: it can block or rewrite the call |
+| `AfterTool` | `PostToolUse` | Yes: appended to the tool result |
+| `AfterAgent`, `BeforeModel`, `AfterModel`, `BeforeToolSelection`, `PreCompress`, `SessionEnd`, `Notification` | Various | See the reference |
 
-If your skill is large (~500 lines), the port requires choices:
+The context column comes from [`docs/hooks/reference.md`](https://github.com/google-gemini/gemini-cli/blob/bb523741c7429a44d03e964bc124c7c92df59d5f/docs/hooks/reference.md). Hooks return JSON on stdout; any other stdout text breaks parsing, and the CLI then allows the action and shows the text as a system message. Timeouts are in milliseconds (default 60,000).
 
-- Cut to the iron-law-only essentials. The discipline rules survive; the worked examples and rationalization tables get trimmed.
-- Convert the skill to a slash command. The user types `/wiki-capture` to invoke; `GEMINI.md` carries only the activation prose.
-- Skip the Gemini port. Document in your README that the skill targets Agent Skills harnesses (Claude Code, Codex, OpenCode, Cursor, Hermes) and Gemini is not supported.
+## Extensions
 
-The skip-the-Gemini-port choice is legitimate. Not every skill needs every harness.
+An extension is a directory under `~/.gemini/extensions/<name>/` with a required `gemini-extension.json` manifest ([`docs/extensions/reference.md`](https://github.com/google-gemini/gemini-cli/blob/bb523741c7429a44d03e964bc124c7c92df59d5f/docs/extensions/reference.md)). It can bundle:
+
+- a context file (`GEMINI.md` by default, named by `contextFileName`), loaded every session;
+- custom commands in `commands/*.toml` (`commands/gcs/sync.toml` becomes `/gcs:sync`);
+- Skills in `skills/<name>/SKILL.md`;
+- hooks in `hooks/hooks.json` (not in the manifest);
+- subagents in `agents/`, MCP servers and themes.
+
+An extension is Gemini's plugin: it is the unit a user installs, and Skills inside it load through the extension tier above.
+
+## Always-on context costs every session
+
+`GEMINI.md`, including files it pulls in with `@file.md` imports ([`docs/cli/gemini-md.md`](https://github.com/google-gemini/gemini-cli/blob/bb523741c7429a44d03e964bc124c7c92df59d5f/docs/cli/gemini-md.md)), is always-on context, like `CLAUDE.md` or `AGENTS.md`. Put procedures in a Skill, where only the description is paid every session, and keep `GEMINI.md` for rules that apply to every turn. See [Token economics](/docs/04-token-economics) for the arithmetic.
 
 ## Sources
 
-- `LANDSCAPE` 1.4 (cross-platform comparison; Gemini section).
-- `LANDSCAPE` 2.3 (Gemini CLI: Extensions, not Skills; the always-on context model).
+- Gemini CLI docs and source at `v0.61.0` ([`bb52374`](https://github.com/google-gemini/gemini-cli/tree/bb523741c7429a44d03e964bc124c7c92df59d5f)), read 2026-09-29: Skills, `activate_skill`, creating Skills, hooks index and reference, extensions reference, `GEMINI.md`, `skillLoader.ts`.
 
-Cross-links: [Token economics](/docs/04-token-economics) (the cost gap of always-on context).
+Cross-links: [Other harnesses](/docs/11-cross-platform/others), [Codex](/docs/11-cross-platform/codex), [Token economics](/docs/04-token-economics).
